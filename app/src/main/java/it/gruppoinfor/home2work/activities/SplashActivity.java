@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import butterknife.BindView;
@@ -19,7 +20,7 @@ import it.gruppoinfor.home2work.UserPrefs;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.User;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends AppCompatActivity {
 
     private final int FINE_LOCATION_ACCESS = 0;
     private final int SPLASH_TIME = 2000;

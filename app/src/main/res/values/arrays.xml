@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="profile_privacy_array">
+        <item>Pubblica</item>
+        <item>Solo match</item>
+    </string-array>
+
+    <string-array name="sync_mode_array">
+        <item>WiFi e Dati</item>
+        <item>Solo WiFi</item>
+    </string-array>
+
+</resources>

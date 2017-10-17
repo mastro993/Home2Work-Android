@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.infor.fleetupht.view.ProfileActivity">
+    <item
+        android:id="@+id/show_match_details"
+        android:orderInCategory="100"
+        android:title="Vedi dettagli" />
+    <item
+        android:id="@+id/show_match_profile"
+        android:orderInCategory="100"
+        android:title="Visualizza profilo utente" />
+    <item
+        android:id="@+id/hide_match"
+        android:orderInCategory="100"
+        android:title="Nascondi" />
+</menu>

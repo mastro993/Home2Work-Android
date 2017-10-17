@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuTextColor">@color/light_bg_dark_primary_text</item>
+        <item name="android:actionMenuTextColor">@color/light_bg_dark_primary_text</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -20,21 +22,19 @@
     <style name="AppTheme.SplashTheme" parent="AppTheme.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/gradient_splashscreen</item>
+        <item name="android:windowBackground">@drawable/gradient</item>
     </style>
 
     <style name="AppTheme.SignInTheme" parent="AppTheme.NoActionBar">
-        <item name="android:textColor">@color/dark_bg_light_primary_text</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/gradient_splashscreen</item>
+        <item name="android:windowBackground">@drawable/gradient</item>
     </style>
 
     <style name="AppTheme.ConfigTheme" parent="AppTheme.NoActionBar">
-        <item name="android:textColor">@color/dark_bg_light_primary_text</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/gradient_splashscreen</item>
+        <item name="android:windowBackground">@drawable/gradient</item>
     </style>
 
 </resources>

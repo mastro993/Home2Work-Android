@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="180dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_home2work_logo_retina"
+        android:src="@drawable/home2work_logo"
         android:transitionName="logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

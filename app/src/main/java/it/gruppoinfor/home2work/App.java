@@ -3,6 +3,8 @@ package it.gruppoinfor.home2work;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+
 import it.gruppoinfor.home2work.api.Client;
 
 
@@ -25,7 +27,7 @@ public class App extends Application {
         super.onCreate();
         //setupUncaughtExceptionsHandler(); // Setup gestore eccezioni non gestite
         //setupLeakCanary(); // Inizializzazione LeakCanary
-        //setupStetho(); // Inizializzazione Stetho
+        setupStetho(); // Inizializzazione Stetho
         //setupRealm(); // Inizializzazione Realm.io
         //MyLogger.init(this); // Inizializzazione logger su file
         //PreferenceManager.init(this); // Inizializzazione gestore preferenze
@@ -64,7 +66,7 @@ public class App extends Application {
         Realm.setDefaultConfiguration(config);
     }*/
 
-/*    private void setupStetho() {
+    private void setupStetho() {
         // Create an InitializerBuilder
         Stetho.InitializerBuilder initializerBuilder =
                 Stetho.newInitializerBuilder(this);
@@ -79,16 +81,16 @@ public class App extends Application {
                 Stetho.defaultDumperPluginsProvider(this)
         );
 
-        // Realm.io
+/*        // Realm.io
         initializerBuilder.enableWebKitInspector(
                 RealmInspectorModulesProvider.builder(this).build()
-        );
+        );*/
 
         // Use the InitializerBuilder to generate an Initializer
         Stetho.Initializer initializer = initializerBuilder.build();
 
         // Initialize Stetho with the Initializer
         Stetho.initialize(initializer);
-    }*/
+    }
 
 }
