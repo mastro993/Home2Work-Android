@@ -3,6 +3,8 @@ package it.gruppoinfor.home2work;
 import android.app.Application;
 import android.content.Context;
 
+import it.gruppoinfor.home2work.api.Client;
+
 
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
@@ -27,7 +29,7 @@ public class App extends Application {
         //setupRealm(); // Inizializzazione Realm.io
         //MyLogger.init(this); // Inizializzazione logger su file
         //PreferenceManager.init(this); // Inizializzazione gestore preferenze
-        //FleetUpClient.init();
+        Client.init();
     }
 
 /*    private void setupUncaughtExceptionsHandler() {

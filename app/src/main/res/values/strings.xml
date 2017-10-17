@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Home2Work</string>
     <string name="title_activity_main">MainActivity</string>
+
+    <!-- SignInActivity  -->
+    <string name="activity_signin_sign_in">Accedi</string>
+    <string name="invalid_email_error">L\'email inserita non è valida</string>
+    <string name="invalid_password_error">La password inserita deve essere lunga almeno 6 caratteri</string>
+    <string name="server_error">Errore di comunicazione con il server. Ritenta più tardi o contatta l\'amministratore del sistema</string>
+    <string name="login_failed">Dati inseriti non validi</string>
 </resources>

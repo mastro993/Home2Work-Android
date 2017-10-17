@@ -1,15 +1,23 @@
 package it.gruppoinfor.home2work.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.SessionManager;
+import it.gruppoinfor.home2work.UserPrefs;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.models.User;
 
 public class SplashActivity extends Activity {
 
@@ -29,25 +37,34 @@ public class SplashActivity extends Activity {
             @Override
             public void run() {
 
-                //PreferenceManager.loadPrefs();
-                //checkPermissions();
+                UserPrefs.init(getApplicationContext());
 
-                Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(SplashActivity.this, logo, "logo");
-                startActivity(intent, options.toBundle());
+                if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS);
+                } else {
+                    startApp();
+                }
 
             }
         }, SPLASH_TIME);
 
     }
 
-    /*private void startApp() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    private void startApp() {
         SessionManager sessionManager = new SessionManager(SplashActivity.this);
         sessionManager.checkSession(new SessionManager.Callback() {
             @Override
             public void onValidSession(User user) {
-                FleetUpClient.setUser(user);
+
+                // Imposto l'utente autenticato nel Client
+                Client.setUser(user);
+
                 if (!user.isConfigured()) {
                     Intent i = new Intent(SplashActivity.this, ConfigurationActivity.class);
                     startActivity(i);
@@ -57,12 +74,14 @@ public class SplashActivity extends Activity {
                     startActivity(i);
                     finish();
                 }
+
             }
 
             @Override
             public void onInvalidSession(SessionManager.AuthCode code) {
+                // Se l'utente non ha una sessione valida viene portato alla schermata di login
 
-                Intent intent = new Intent(SplashActivity.this, AuthActivity.class);
+                Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
                 intent.putExtra(SessionManager.AUTH_CODE, code);
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation(SplashActivity.this, logo, "logo");
@@ -70,35 +89,16 @@ public class SplashActivity extends Activity {
 
             }
         });
-    }*/
+    }
 
-    /*private void checkPermissions() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            AlertDialog.Builder adb = new AlertDialog.Builder(this, R.style.LightAlertDialog);
-            adb.setTitle("Permessi applicazione");
-            adb.setMessage("FleetUp ha bisogno di monitorare la tua posizione per poter funzionare correttamente.");
-            adb.setPositiveButton("Consenti", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS);
-                }
-            });
-            adb.setNegativeButton("Esci", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            adb.setCancelable(false);
-            adb.show();
-        } else {
-            startApp();
-        }
-    }*/
-
-    /*@Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == FINE_LOCATION_ACCESS) {
-            checkPermissions();
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                startApp();
+            else
+                finish();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }*/
+    }
 }
