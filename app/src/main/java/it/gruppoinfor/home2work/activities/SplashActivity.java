@@ -23,7 +23,7 @@ import it.gruppoinfor.home2work.models.User;
 public class SplashActivity extends AppCompatActivity {
 
     private final int FINE_LOCATION_ACCESS = 0;
-    private final int SPLASH_TIME = 2000;
+    private final int SPLASH_TIME = 1000;
 
     @BindView(R.id.logo_imageview)
     ImageView logo;

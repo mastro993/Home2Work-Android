@@ -24,8 +24,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCkTiyOqSTUI8ST034p9T62kqdqlzgOnPM" />
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -44,6 +48,9 @@
         <activity
             android:name=".activities.ConfigurationActivity"
             android:theme="@style/AppTheme.ConfigTheme" />
+        <activity
+            android:name=".activities.MatchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

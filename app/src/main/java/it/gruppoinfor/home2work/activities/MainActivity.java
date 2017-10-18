@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,10 +24,12 @@ import it.gruppoinfor.home2work.fragments.NotificationFragment;
 import it.gruppoinfor.home2work.fragments.ProfileFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.page_title)
+    TextView pageTitle;
     @BindView(R.id.ntb_pager)
     ViewPager viewPager;
     @BindView(R.id.ntb)
@@ -39,10 +43,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        initUI();
-
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
+
+        initUI();
 
     }
 
@@ -56,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         models.add(
                 new NavigationTabBar.Model.Builder(
                         ContextCompat.getDrawable(this, R.drawable.ic_match),
-                        ContextCompat.getColor(this, R.color.grey_200)
+                        ContextCompat.getColor(this, R.color.grey_100)
                 ).title("Match")
                         .badgeTitle("Match")
                         .build()
@@ -64,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         models.add(
                 new NavigationTabBar.Model.Builder(
                         ContextCompat.getDrawable(this, R.drawable.ic_user),
-                        ContextCompat.getColor(this, R.color.grey_200)
+                        ContextCompat.getColor(this, R.color.grey_100)
                 ).title("Profilo")
                         .badgeTitle("Profilo")
                         .build()
@@ -72,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         models.add(
                 new NavigationTabBar.Model.Builder(
                         ContextCompat.getDrawable(this, R.drawable.ic_bell),
-                        ContextCompat.getColor(this, R.color.grey_200)
+                        ContextCompat.getColor(this, R.color.grey_100)
                 ).title("Notifiche")
                         .badgeTitle("Notifiche")
                         .build()
@@ -80,45 +88,51 @@ public class MainActivity extends AppCompatActivity {
         models.add(
                 new NavigationTabBar.Model.Builder(
                         ContextCompat.getDrawable(this, R.drawable.ic_settings),
-                        ContextCompat.getColor(this, R.color.grey_200)
+                        ContextCompat.getColor(this, R.color.grey_100)
                 ).title("Impostazioni")
                         .badgeTitle("Impostazioni")
                         .build()
         );
 
+        navigationTabBar.setOnPageChangeListener(this);
         navigationTabBar.setModels(models);
-        navigationTabBar.setViewPager(viewPager, 1);
+        navigationTabBar.setViewPager(viewPager, 0);
+        onPageSelected(0);
 
-        navigationTabBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-            }
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        setTitle("Match");
-                        break;
-                    case 1:
-                        setTitle("Profilo");
-                        break;
-                    case 2:
-                        setTitle("Notifiche");
-                        break;
-                    case 3:
-                        setTitle("Impostazioni");
-                        break;
-                }
-            }
+    }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+    @Override
+    public void onPageSelected(int position) {
+        switch (position) {
+            case 0:
+                setTitle("Match");
+                break;
+            case 1:
+                setTitle("Profilo");
+                break;
+            case 2:
+                setTitle("Notifiche");
+                break;
+            case 3:
+                setTitle("Impostazioni");
+                break;
+        }
+    }
 
-            }
-        });
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        pageTitle.setText(title);
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {
