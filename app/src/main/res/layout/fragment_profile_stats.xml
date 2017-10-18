@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/statsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableEnd="@drawable/ic_info"
+        android:drawablePadding="6dp"
+        android:drawableTint="@color/light_bg_dark_secondary_text"
+        android:gravity="center"
+        android:padding="@dimen/list_items_padding"
+        android:text="Statistiche"
+        android:textColor="@color/light_bg_dark_secondary_text" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_calendar"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/regdateView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Iscritto dal "
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_road"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/distanceView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="- km percorsi"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_gas"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/consumptionView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="- l di carburante usato"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_leaf"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/emissionView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="- g di CO2 emessi"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_car"
+                android:tint="@color/colorPrimaryDark"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/sharesView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="- condivisioni auto"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_road"
+                android:tint="@color/colorPrimaryDark"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/sharedDistanceView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="999,99 Km condivisi"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_gas"
+                android:tint="@color/colorPrimaryDark"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/savedConsumptionView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="999,99 l di carburante risparmiato"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:alpha="0.8"
+                android:padding="20dp"
+                android:src="@drawable/ic_leaf"
+                android:tint="@color/colorPrimaryDark"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/savedEmissionView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="999,99 g di CO2 evitati"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

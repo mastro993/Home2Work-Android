@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+    tools:ignore="Overdraw">
+
+    <Button
+        android:id="@+id/contactsButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_mail"
+        android:text="Contatta"
+        android:textColor="@color/light_bg_dark_primary_text"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/followButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_follow"
+        android:text="Segui"
+        android:textColor="@color/light_bg_dark_primary_text"
+        android:textSize="12sp" />
+
+
+</LinearLayout>

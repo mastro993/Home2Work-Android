@@ -24,12 +24,14 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Match;
@@ -39,12 +41,12 @@ import retrofit2.Response;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
 
-    private Activity activity;
+    private MainActivity activity;
     private ArrayList<Match> matches;
     private ViewHolder holder;
 
     public MatchAdapter(Activity activity, List<Match> values) {
-        this.activity = activity;
+        this.activity = (MainActivity) activity;
         this.matches = new ArrayList<>(values);
     }
 
@@ -59,7 +61,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         Glide.with(activity)
                 .load(match.getHost().getAvatarURL())
-                .placeholder(R.drawable.ic_user)
+                .placeholder(R.drawable.ic_avatar_placeholder)
                 .dontAnimate()
                 .into(holder.userAvatar);
 
@@ -72,12 +74,14 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         int color;
         Drawable bg = ContextCompat.getDrawable(activity, R.drawable.bg_match_score_percent);
-        if (match.getScore() < 60) {
+        if (match.getScore() < 50) {
             color = ContextCompat.getColor(activity, R.color.red_500);
-        } else if (match.getScore() < 80) {
+        } else if (match.getScore() < 70) {
             color = ContextCompat.getColor(activity, R.color.orange_500);
-        } else {
+        } else if (match.getScore() < 90) {
             color = ContextCompat.getColor(activity, R.color.green_500);
+        } else {
+            color = ContextCompat.getColor(activity, R.color.colorAccent);
         }
 
         holder.scoreProgress.setFinishedStrokeColor(color);
@@ -104,7 +108,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (match.isNew()) setMatchAsViewed(match);
+                if (match.isNew()) setMatchAsViewed(position);
 
                 Intent matchIntent = new Intent(activity, MatchActivity.class);
                 matchIntent.putExtra("match", match);
@@ -126,7 +130,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.show_match_details:
-                                showMatchDetails(match);
+                                showMatchDetails(position);
                                 break;
                             case R.id.show_match_profile:
                                 //showMatchUserProfile(match);
@@ -147,11 +151,14 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     }
 
 
-   private void showMatchDetails(Match match) {
-        if (match.isNew()) setMatchAsViewed(match);
+   private void showMatchDetails(final int position) {
+       Match match = matches.get(position);
+
+        if (match.isNew()) setMatchAsViewed(position);
         Intent matchIntent = new Intent(activity, MatchActivity.class);
         matchIntent.putExtra("match", match);
         activity.startActivity(matchIntent);
+
     }
 
 /*    private void showMatchUserProfile(Match match) {
@@ -209,13 +216,22 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         });
     }
 
-    private void setMatchAsViewed(Match match) {
+    private void setMatchAsViewed(final int position) {
+        matches.get(position).setNew(false);
 
-        match.setNew(false);
-
-        Client.getAPI().editMatch(match).enqueue(new Callback<Match>() {
+        Client.getAPI().editMatch(matches.get(position)).enqueue(new Callback<Match>() {
             @Override
             public void onResponse(Call<Match> call, Response<Match> response) {
+                Stream<Match> matchStream = matches.stream();
+                long newMatches = matchStream.filter(m -> m.isNew()).count();
+
+                activity.matchModel.hideBadge();
+
+                if(newMatches > 0){
+                    activity.matchModel.setBadgeTitle(Long.toString(newMatches));
+                    activity.matchModel.showBadge();
+                }
+
                 notifyDataSetChanged();
             }
 

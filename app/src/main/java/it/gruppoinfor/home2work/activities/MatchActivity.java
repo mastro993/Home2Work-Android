@@ -1,17 +1,20 @@
 package it.gruppoinfor.home2work.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -72,6 +75,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
 
     GoogleMap googleMap;
     Match match;
+    SupportMapFragment mapFragment;
 
     private boolean requesting = false;
     private User user;
@@ -98,10 +102,10 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
 
         match = getIntent().getParcelableExtra("match");
 
-        SupportMapFragment mapView = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-        //mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        mapFragment.onCreate(savedInstanceState);
+        mapFragment.getMapAsync(this);
 
     }
 
@@ -126,7 +130,6 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
 
         }
 
-        //progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -211,7 +214,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
             builder.setNegativeButton("Continua", null);
             builder.show();
         } else {
-            MatchActivity.super.onBackPressed();
+            super.onBackPressed();
         }
     }
 
@@ -261,6 +264,5 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
         });
 
     }
-
 
 }

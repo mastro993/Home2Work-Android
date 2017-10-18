@@ -1,112 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:paddingBottom="10dp"
-    android:paddingEnd="10dp"
-    android:paddingStart="10dp"
-    android:paddingTop="10dp">
+    android:background="@color/white">
 
-    <com.github.lzyzsd.circleprogress.ArcProgress
-        android:id="@+id/score_progress"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_margin="7.5dp"
-        app:arc_finished_color="@color/colorAccent"
-        app:arc_max="100"
-        app:arc_progress="70"
-        app:arc_stroke_width="5dp"
-        app:arc_unfinished_color="@color/grey_300" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/user_avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentStart="true"
-        android:padding="15dp"
-        android:src="@drawable/ic_user"
-        android:transitionName="avatar" />
-
-
-    <TextView
-        android:id="@+id/score_text"
-        android:layout_width="50dp"
-        android:layout_height="20dp"
-        android:layout_alignBottom="@+id/score_progress"
-        android:layout_alignStart="@+id/score_progress"
-        android:layout_marginStart="18dp"
-        android:background="@drawable/bg_match_score_percent"
-        android:gravity="center"
-        android:text="100%"
-        android:textColor="@color/dark_bg_light_primary_text"
-        android:textStyle="bold" />
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/score_progress"
-        android:orientation="vertical">
+        android:animateLayoutChanges="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:padding="@dimen/list_items_padding">
+
+        <com.github.lzyzsd.circleprogress.ArcProgress
+            android:id="@+id/score_progress"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_margin="7.5dp"
+            app:arc_finished_color="@color/colorAccent"
+            app:arc_max="100"
+            app:arc_progress="70"
+            app:arc_stroke_width="5dp"
+            app:arc_unfinished_color="@color/grey_300" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:padding="15dp"
+            android:src="@drawable/ic_avatar_placeholder"
+            android:transitionName="avatar" />
+
+
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@+id/score_progress"
+            android:layout_alignStart="@+id/score_progress"
+            android:layout_marginStart="18dp"
+            android:background="@drawable/bg_match_score_percent"
+            android:gravity="center"
+            android:text="100%"
+            android:textColor="@color/dark_bg_light_primary_text"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/score_progress"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/name_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:text="{nome congome}"
-                android:textColor="@color/light_bg_dark_primary_text"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/new_label"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:gravity="center_vertical"
-                android:text="Novità"
-                android:textColor="@color/colorAccent"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/name_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="{nome congome}"
+                    android:textColor="@color/light_bg_dark_primary_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/new_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:gravity="center_vertical"
+                    android:text="Novità"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/distance_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Lunghezza match: 0,00 Km"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/consumption_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Carburante risparmiato 0,00 l"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/emission_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Emissioni evitate: 0,00 g CO2"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/distance_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Lunghezza match: 0,00 Km"
-            android:textColor="@color/light_bg_dark_secondary_text" />
 
-        <TextView
-            android:id="@+id/consumption_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Carburante risparmiato 0,00 l"
-            android:textColor="@color/light_bg_dark_secondary_text" />
+    </RelativeLayout>
+</FrameLayout>
 
-        <TextView
-            android:id="@+id/emission_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Emissioni evitate: 0,00 g CO2"
-            android:textColor="@color/light_bg_dark_secondary_text" />
-
-
-    </LinearLayout>
-
-
-</RelativeLayout>

@@ -10,21 +10,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import devlight.io.library.ntb.NavigationTabBar;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.NotificationFragment;
 import it.gruppoinfor.home2work.fragments.ProfileFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
+import it.gruppoinfor.home2work.models.Match;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+
+    public NavigationTabBar.Model homeModel;
+    public NavigationTabBar.Model matchModel;
+    public NavigationTabBar.Model notificationModel;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -35,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @BindView(R.id.ntb)
     NavigationTabBar navigationTabBar;
 
-    PagerAdapter pagerAdapter;
+    private PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,60 +54,60 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-
         initUI();
+        refreshData();
 
     }
 
     private void initUI() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        pagerAdapter = new PagerAdapter(fragmentManager);
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
-        //pager.setPageTransformer(true, new DrawFromBackTransformer());
 
         final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
-        models.add(
-                new NavigationTabBar.Model.Builder(
-                        ContextCompat.getDrawable(this, R.drawable.ic_match),
-                        ContextCompat.getColor(this, R.color.grey_100)
-                ).title("Match")
-                        .badgeTitle("Match")
-                        .build()
+
+        homeModel = new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_home), ContextCompat.getColor(this, R.color.white))
+                .title("Home")
+                .badgeTitle("Home")
+                .build();
+
+        models.add(homeModel);
+
+        matchModel = new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_match), ContextCompat.getColor(this, R.color.white))
+                .title("Match")
+                .badgeTitle("Match")
+                .build();
+
+        models.add(matchModel);
+
+        models.add(new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_user), ContextCompat.getColor(this, R.color.white))
+                .title("Profilo")
+                .badgeTitle("Profilo")
+                .build()
         );
-        models.add(
-                new NavigationTabBar.Model.Builder(
-                        ContextCompat.getDrawable(this, R.drawable.ic_user),
-                        ContextCompat.getColor(this, R.color.grey_100)
-                ).title("Profilo")
-                        .badgeTitle("Profilo")
-                        .build()
-        );
-        models.add(
-                new NavigationTabBar.Model.Builder(
-                        ContextCompat.getDrawable(this, R.drawable.ic_bell),
-                        ContextCompat.getColor(this, R.color.grey_100)
-                ).title("Notifiche")
-                        .badgeTitle("Notifiche")
-                        .build()
-        );
-        models.add(
-                new NavigationTabBar.Model.Builder(
-                        ContextCompat.getDrawable(this, R.drawable.ic_settings),
-                        ContextCompat.getColor(this, R.color.grey_100)
-                ).title("Impostazioni")
-                        .badgeTitle("Impostazioni")
-                        .build()
+
+
+        notificationModel = new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_bell), ContextCompat.getColor(this, R.color.white))
+                .title("Notifiche")
+                .badgeTitle("Notifiche")
+                .build();
+
+        models.add(notificationModel);
+
+        models.add(new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_settings), ContextCompat.getColor(this, R.color.white))
+                .title("Impostazioni")
+                .badgeTitle("Impostazioni")
+                .build()
         );
 
         navigationTabBar.setOnPageChangeListener(this);
         navigationTabBar.setModels(models);
-        navigationTabBar.setViewPager(viewPager, 0);
-        onPageSelected(0);
+        navigationTabBar.setViewPager(viewPager, 2);
+        onPageSelected(2);
 
     }
 
@@ -110,15 +120,17 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     public void onPageSelected(int position) {
         switch (position) {
             case 0:
-                setTitle("Match");
+                setTitle("Home");
                 break;
             case 1:
-                setTitle("Profilo");
+                setTitle("Match");
                 break;
             case 2:
-                setTitle("Notifiche");
+                setTitle("Profilo");
                 break;
             case 3:
+                setTitle("Notifiche");
+            case 4:
                 setTitle("Impostazioni");
                 break;
         }
@@ -135,6 +147,32 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         pageTitle.setText(title);
     }
 
+    public void refreshData() {
+        Client.getAPI().getUserMatches(Client.getUser().getId()).enqueue(new Callback<List<Match>>() {
+
+            @Override
+            public void onResponse(retrofit2.Call<List<Match>> call, Response<List<Match>> response) {
+                Client.getUser().setMatches(response.body());
+
+                Stream<Match> matchStream = response.body().stream();
+                long newMatches = matchStream.filter(m -> m.isNew()).count();
+
+                matchModel.hideBadge();
+
+                if(newMatches > 0){
+                    matchModel.setBadgeTitle(Long.toString(newMatches));
+                    matchModel.showBadge();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Match>> call, Throwable t) {
+
+            }
+
+        });
+    }
+
     private class PagerAdapter extends FragmentPagerAdapter {
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
@@ -148,15 +186,18 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             Fragment frag = null;
             switch (position) {
                 case 0:
-                    frag = new MatchFragment();
+                    frag = new HomeFragment();
                     break;
                 case 1:
-                    frag = new ProfileFragment();
+                    frag = new MatchFragment();
                     break;
                 case 2:
-                    frag = new NotificationFragment();
+                    frag = new ProfileFragment();
                     break;
                 case 3:
+                    frag = new NotificationFragment();
+                    break;
+                case 4:
                     frag = new SettingsFragment();
                     break;
             }
@@ -178,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
 

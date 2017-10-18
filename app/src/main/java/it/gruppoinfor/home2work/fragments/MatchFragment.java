@@ -10,13 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Match;
@@ -46,11 +50,27 @@ public class MatchFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
         initUI();
-        refreshMatches();
         return rootView;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser)populateList();
+    }
+
     private void initUI() {
+
+        /*int resId = R.anim.layout_animation_fall_down;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(matchRecyclerView.getContext(), resId);
+        matchRecyclerView.setLayoutAnimation(animation);*/
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        matchRecyclerView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchRecyclerView.getContext(), layoutManager.getOrientation());
+        matchRecyclerView.addItemDecoration(dividerItemDecoration);
+
         rootView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -58,11 +78,7 @@ public class MatchFragment extends Fragment {
             }
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        matchRecyclerView.setLayoutManager(layoutManager);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchRecyclerView.getContext(), layoutManager.getOrientation());
-        matchRecyclerView.addItemDecoration(dividerItemDecoration);
+        rootView.setColorSchemeResources(R.color.colorAccent);
     }
 
     private void refreshMatches() {
@@ -73,6 +89,17 @@ public class MatchFragment extends Fragment {
             public void onResponse(retrofit2.Call<List<Match>> call, Response<List<Match>> response) {
                 rootView.setRefreshing(false);
                 Client.getUser().setMatches(response.body());
+
+                Stream<Match> matchStream = response.body().stream();
+                long newMatches = matchStream.filter(m -> m.isNew()).count();
+
+                ((MainActivity) getActivity()).matchModel.hideBadge();
+
+                if(newMatches > 0){
+                    ((MainActivity) getActivity()).matchModel.setBadgeTitle(Long.toString(newMatches));
+                    ((MainActivity) getActivity()).matchModel.showBadge();
+                }
+
                 populateList();
             }
 
