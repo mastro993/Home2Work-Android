@@ -1,0 +1,22 @@
+<tabs>
+    <tab
+        icon="@drawable/ic_home"
+        id="@+id/tab_home"
+        title="Home" />
+    <tab
+        icon="@drawable/ic_match"
+        id="@+id/tab_matches"
+        title="Match" />
+    <tab
+        icon="@drawable/ic_star_circle"
+        id="@+id/tab_progress"
+        title="Progresso" />
+    <tab
+        icon="@drawable/ic_bell"
+        id="@+id/tab_notifications"
+        title="Notifiche" />
+    <tab
+        icon="@drawable/ic_settings"
+        id="@+id/tab_settings"
+        title="Settings" />
+</tabs>

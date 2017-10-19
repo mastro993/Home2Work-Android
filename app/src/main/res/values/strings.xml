@@ -2,12 +2,27 @@
     <string name="app_name">Home2Work</string>
     <string name="title_activity_main">MainActivity</string>
 
+    <!-- MainActivity -->
+    <string name="home_tab">Home</string>
+    <string name="match_tab">Match</string>
+    <string name="progress_tab">Progresso</string>
+    <string name="notification_tab">Notifiche</string>
+    <string name="settings_tab">Impostazioni</string>
+
     <!-- SignInActivity  -->
     <string name="activity_signin_sign_in">Accedi</string>
     <string name="invalid_email_error">L\'email inserita non è valida</string>
     <string name="invalid_password_error">La password inserita deve essere lunga almeno 6 caratteri</string>
     <string name="server_error">Errore di comunicazione con il server. Ritenta più tardi o contatta l\'amministratore del sistema</string>
     <string name="login_failed">Dati inseriti non validi</string>
+    <string name="session_expired">Sessione scaduta. Rieffettua il login</string>
+    <string name="user_logout">Logout avvenuto con successo</string>
+
+    <!-- ProfileActivity -->
+    <string name="logout_dialog_title">Logout</string>
+    <string name="logout_dialog_content">Sei sicuro di voler uscire?</string>
+    <string name="logout_dialog_confirm">Esci</string>
+    <string name="logout_dialog_cancel">Annulla</string>
 
     <!-- ConfigurationActivity -->
     <string name="title_activity_configuration">Configurazione</string>
@@ -42,6 +57,30 @@
     <string name="match_share_request_error">Non è al momentro possibile inviare una richiesta.</string>
     <string name="match_start_time">Orario di partenza: %1$s</string>
     <string name="match_end_time">Orario di arrivo: %1$s</string>
+
+    <!-- MatchFragment -->
+    <string name="match_loading_error">Impossibile aggiornare lista match al momento, riprova più tardi</string>
+
+    <!-- ProfileFragment -->
+    <string name="profile_regdate">Iscritto dal %1$s</string>
+    <string name="profile_distance">%1$s km percorsi</string>
+    <string name="profile_gas">%1$s l di carburante utilizzati</string>
+    <string name="profile_emissions">%1$s g di CO2 emessi</string>
+    <string name="profile_shares">%1$d condivisioni auto</string>
+    <string name="profile_shared_distance">%1$s km condivisi</string>
+    <string name="profile_saved_gas">%1$s l di carburante risparmiato</string>
+    <string name="profile_saved_emissions">%1$s g di CO2 evitati</string>
+
+    <!-- MatchAdapter -->
+    <string name="match_item_distance">Distanza condivisa: %1$s km</string>
+    <string name="match_item_gas">Carburante risparmiato: %1$s l</string>
+    <string name="match_item_emission">Emissioni evitate: %1$s g CO2</string>
+    <string name="match_item_hide_dialog_title">Nascondi match</string>
+    <string name="match_item_hide_dialog_content">Nascondendo questo match non avrai più la possibilità di visualizzarlo. Sei sicuro di voler continuare?</string>
+    <string name="match_item_hide_dialog_confirm">Nascondi match</string>
+    <string name="match_item_hide_dialog_cancel">Annulla</string>
+    <string name="match_item_hided">Match nascosto</string>
+    <string name="match_item_hide_error">Impossibile rimuovere il match al momento, riprova più tardi</string>
 
     <!-- Altro -->
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>

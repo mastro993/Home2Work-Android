@@ -14,10 +14,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.Share;
-import it.gruppoinfor.home2work.models.User;
 
 public class ShareDetailsDialog extends AlertDialog {
 
@@ -42,8 +42,8 @@ public class ShareDetailsDialog extends AlertDialog {
         ButterKnife.bind(this, view);
         setView(view);
 
-        User host = share.getMatch().getHost();
-        User guest = share.getMatch().getGuest();
+        Account host = share.getMatch().getHost();
+        Account guest = share.getMatch().getGuest();
 
         Glide.with(context)
                 .load(host.getAvatarURL())
@@ -57,7 +57,7 @@ public class ShareDetailsDialog extends AlertDialog {
                 .placeholder(R.drawable.ic_user)
                 .into(guestAvatar);
 
-        if (Client.getUser().getId().equals(guest.getId())) {
+        if (APIClient.getAccount().getId().equals(guest.getId())) {
             actionText.setText("Condivisione con " + host.toString());
         } else {
             actionText.setText("Condivisione con " + guest.toString());

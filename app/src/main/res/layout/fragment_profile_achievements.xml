@@ -3,51 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:ignore="Overdraw">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/achievements_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/list_items_padding"
-        android:text="Obiettivi"
-        android:textColor="@color/light_bg_dark_secondary_text" />
+        android:scrollbars="none"
+        android:visibility="visible" />
 
-    <LinearLayout
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/achievements_loading"
+        style="@style/AVLoadingIndicatorView.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:indicatorColor="@color/colorAccent"
+        app:indicatorName="BallPulseIndicator" />
+
+    <Button
+        android:id="@+id/achievements_more_button"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:gravity="center"
-        android:minHeight="60dp"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/achievements_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
-
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/achievements_loading"
-            style="@style/AVLoadingIndicatorView.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:alpha="0.8"
-            app:indicatorColor="@color/colorAccent"
-            app:indicatorName="BallPulseIndicator" />
-
-        <Button
-            android:id="@+id/achievements_more_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Vedi tutti gli obiettivi"
-            android:textAllCaps="false"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
+        android:text="Vedi tutti gli obiettivi"
+        android:textAllCaps="false"
+        android:visibility="visible" />
 
 </LinearLayout>

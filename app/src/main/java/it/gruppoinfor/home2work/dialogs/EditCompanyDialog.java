@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
 import it.gruppoinfor.home2work.models.Company;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -35,7 +35,7 @@ public class EditCompanyDialog extends AlertDialog {
         setTitle("Modifica azienda");
         this.callback = callback;
 
-        Client.getAPI().getCompanies().enqueue(new retrofit2.Callback<List<Company>>() {
+        APIClient.API().getCompanies().enqueue(new retrofit2.Callback<List<Company>>() {
             @Override
             public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
                 Company[] companies = response.body().toArray(new Company[response.body().size()]);

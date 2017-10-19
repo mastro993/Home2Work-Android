@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
 
 
 public class App extends Application {
@@ -31,7 +31,7 @@ public class App extends Application {
         //setupRealm(); // Inizializzazione Realm.io
         //MyLogger.init(this); // Inizializzazione logger su file
         //PreferenceManager.init(this); // Inizializzazione gestore preferenze
-        Client.init();
+        APIClient.init();
     }
 
 /*    private void setupUncaughtExceptionsHandler() {

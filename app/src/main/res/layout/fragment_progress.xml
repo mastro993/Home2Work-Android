@@ -1,14 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profileOverview"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:background="@color/white"
-    android:orientation="vertical"
-    tools:ignore="Overdraw">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="it.gruppoinfor.home2work.fragments.ProgressFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +11,7 @@
         android:paddingTop="20dp">
 
         <com.github.lzyzsd.circleprogress.DonutProgress
-            android:id="@+id/karmaProgress"
+            android:id="@+id/karma_donut_progress"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:animateLayoutChanges="true"
@@ -48,11 +43,11 @@
             android:animateLayoutChanges="true"
             android:elevation="@dimen/cardview_default_elevation"
             android:src="@drawable/shape_circle"
-            app:layout_constraintBottom_toBottomOf="@+id/karmaProgress"
+            app:layout_constraintBottom_toBottomOf="@+id/karma_donut_progress"
             app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintLeft_toLeftOf="@+id/karmaProgress"
-            app:layout_constraintRight_toRightOf="@+id/karmaProgress"
-            app:layout_constraintTop_toTopOf="@+id/karmaProgress"
+            app:layout_constraintLeft_toLeftOf="@+id/karma_donut_progress"
+            app:layout_constraintRight_toRightOf="@+id/karma_donut_progress"
+            app:layout_constraintTop_toTopOf="@+id/karma_donut_progress"
             app:layout_constraintVertical_bias="0.9"
             tools:ignore="ContentDescription" />
 
@@ -73,35 +68,5 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="20dp"
-        android:paddingTop="5dp">
 
-        <TextView
-            android:id="@+id/name_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="Nome Cognome"
-            android:textColor="@color/light_bg_dark_primary_text"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/job_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/border_text_view"
-            android:text=" ... "
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
-            android:textStyle="bold|italic" />
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</FrameLayout>

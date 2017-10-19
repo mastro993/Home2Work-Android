@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.fragments;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +28,8 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.Tools;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -48,7 +46,7 @@ public class ConfigurationAvatarFragment extends Fragment implements BlockingSte
     @BindView(R.id.propicView)
     CircleImageView propicView;
 
-    private User user;
+    private Account account;
     private Bitmap propic;
     private boolean uploaded = false;
 
@@ -57,7 +55,7 @@ public class ConfigurationAvatarFragment extends Fragment implements BlockingSte
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_conf_propic, container, false);
         ButterKnife.bind(this, root);
-        this.user = Client.getUser();
+        this.account = APIClient.getAccount();
 
         return root;
     }
@@ -139,11 +137,11 @@ public class ConfigurationAvatarFragment extends Fragment implements BlockingSte
 
             RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-            String filename = user.getId() + ".jpg";
+            String filename = account.getId() + ".jpg";
 
             MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-            Client.getAPI().uploadAvatar(user.getId(), body).enqueue(new Callback<ResponseBody>() {
+            APIClient.API().uploadAvatar(account.getId(), body).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, Response<ResponseBody> response) {
                     callback.getStepperLayout().hideProgress();

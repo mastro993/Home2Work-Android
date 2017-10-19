@@ -28,9 +28,10 @@ import butterknife.OnFocusChange;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.models.Job;
 import it.gruppoinfor.home2work.models.Company;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.api.Account;
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -56,7 +57,7 @@ public class ConfigurationJobFragment extends Fragment implements Step {
 
         calendar = Calendar.getInstance();
 
-        Client.getAPI().getCompanies().enqueue(new Callback<List<Company>>() {
+        APIClient.API().getCompanies().enqueue(new Callback<List<Company>>() {
             @Override
             public void onResponse(retrofit2.Call<List<Company>> call, Response<List<Company>> response) {
                 ArrayAdapter spinnerArrayAdapter = new ArrayAdapter(getContext(),
@@ -148,15 +149,15 @@ public class ConfigurationJobFragment extends Fragment implements Step {
             return new VerificationError("Devi selezionare un orario di fine");
         }
 
-        User user = Client.getUser();
-        User.Job job = user.getJob();
+        Account account = APIClient.getAccount();
+        Job job = account.getJob();
 
         job.setStart(Converters.timeToTimestamp(startInput.getText().toString()));
         job.setEnd(Converters.timeToTimestamp(endInput.getText().toString()));
         job.setCompany((Company) companySpinner.getSelectedItem());
 
-        user.setJob(job);
-        Client.setUser(user);
+        account.setJob(job);
+        APIClient.setUser(account);
 
         return null;
     }

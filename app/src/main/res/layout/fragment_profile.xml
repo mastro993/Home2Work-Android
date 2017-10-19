@@ -16,15 +16,51 @@
             android:orientation="vertical"
             android:focusableInTouchMode="true">
 
-            <include layout="@layout/fragment_profile_header" />
+            <include layout="@layout/layout_profile_header" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/list_items_padding"
+                android:gravity="center"
+                android:text="Ultime attività" />
+
 
             <include layout="@layout/fragment_profile_routes" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/list_items_padding"
+                android:text="Condivisioni auto" />
+
             <include layout="@layout/fragment_profile_history" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/list_items_padding"
+                android:text="Obiettivi"
+                android:textColor="@color/light_bg_dark_secondary_text" />
 
             <include layout="@layout/fragment_profile_achievements" />
 
-            <include layout="@layout/fragment_profile_stats" />
+            <TextView
+                android:id="@+id/statsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableEnd="@drawable/ic_info"
+                android:drawablePadding="6dp"
+                android:drawableTint="@color/light_bg_dark_secondary_text"
+                android:gravity="center"
+                android:padding="@dimen/list_items_padding"
+                android:text="Statistiche"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <include layout="@layout/layout_profile_stats" />
 
         </LinearLayout>
 

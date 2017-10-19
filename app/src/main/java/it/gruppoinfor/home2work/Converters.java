@@ -69,6 +69,11 @@ public class Converters {
         return hours * 3600L + minutes * 60L + seconds;
     }
 
+    public static Long timeToTimestamp(int hours, int minutes, int seconds) {
+
+        return hours * 3600L + minutes * 60L + seconds;
+    }
+
     public static String timestampToTime(long timestamp, String template) {
         Date date = new Date(timestamp * 1000L);
         DateFormat df = new SimpleDateFormat(template, Locale.ITALY);

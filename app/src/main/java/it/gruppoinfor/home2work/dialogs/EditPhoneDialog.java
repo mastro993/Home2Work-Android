@@ -9,7 +9,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
 
 
 public class EditPhoneDialog extends AlertDialog {
@@ -28,7 +28,7 @@ public class EditPhoneDialog extends AlertDialog {
         setTitle("Modifica numero di telefono");
         this.context = context;
         this.callback = callback;
-        phoneInput.setText(Client.getUser().getContacts().getPhone());
+        phoneInput.setText(APIClient.getAccount().getContacts().getPhone());
     }
 
     @OnClick(R.id.saveButton)

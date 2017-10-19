@@ -4,12 +4,11 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import it.gruppoinfor.home2work.models.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Client {
+public class APIClient {
 
     private static final String SERVER_URL = "http://federicomastriniunipr.altervista.org/fleetup";
     public static final String API_BASE = SERVER_URL + "/V2/";
@@ -17,15 +16,15 @@ public class Client {
     public static final String COMPANIES_BASE_URL = SERVER_URL + "/images/companies/";
     public static final String ACHIEVEMENTS_BASE_URL = SERVER_URL + "/images/achievements/";
 
-    private static User signedUser;
+    private static Account signedAccount;
     private static EndpointInterface APIService;
 
-    public static User getUser() {
-        return signedUser;
+    public static Account getAccount() {
+        return signedAccount;
     }
 
-    public static void setUser(User user) {
-        signedUser = user;
+    public static void setUser(Account account) {
+        signedAccount = account;
     }
 
     public static void init() {
@@ -47,7 +46,7 @@ public class Client {
         APIService = retrofit.create(EndpointInterface.class);
     }
 
-    public static EndpointInterface getAPI() throws APINotInitializedException {
+    public static EndpointInterface API() throws APINotInitializedException {
         if (APIService == null)
             throw new APINotInitializedException();
         return APIService;

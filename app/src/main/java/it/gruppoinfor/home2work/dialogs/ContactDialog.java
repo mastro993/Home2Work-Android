@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.Tools;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.models.Contacts;
 
 
 public class ContactDialog extends AlertDialog {
@@ -38,7 +38,7 @@ public class ContactDialog extends AlertDialog {
     @BindView(R.id.telegramView)
     LinearLayout telegramView;
 
-    public ContactDialog(final Context context, final User.Contacts contacts) {
+    public ContactDialog(final Context context, final Contacts contacts) {
         super(context);
         View view = View.inflate(context, R.layout.dialog_contacts, null);
         ButterKnife.bind(this, view);

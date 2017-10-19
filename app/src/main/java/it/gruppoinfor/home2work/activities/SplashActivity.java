@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,8 +16,8 @@ import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.UserPrefs;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -61,12 +60,12 @@ public class SplashActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(SplashActivity.this);
         sessionManager.checkSession(new SessionManager.Callback() {
             @Override
-            public void onValidSession(User user) {
+            public void onValidSession(Account account) {
 
-                // Imposto l'utente autenticato nel Client
-                Client.setUser(user);
+                // Imposto l'utente autenticato nel APIClient
+                APIClient.setUser(account);
 
-                if (!user.isConfigured()) {
+                if (!account.isConfigured()) {
                     Intent i = new Intent(SplashActivity.this, ConfigurationActivity.class);
                     startActivity(i);
                     finish();

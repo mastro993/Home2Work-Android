@@ -15,8 +15,8 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 
 public class EditAddressDialog extends AlertDialog {
 
@@ -29,29 +29,24 @@ public class EditAddressDialog extends AlertDialog {
 
     private Callback callback;
     private Context context;
-    private User user;
 
-    public EditAddressDialog(Context context, Callback callback) {
+    public EditAddressDialog(Context context, LatLng latLng, Callback callback) {
         super(context);
         View view = View.inflate(context, R.layout.dialog_edit_address, null);
         ButterKnife.bind(this, view);
         setView(view);
         setTitle("Modifica indirizzo");
-        this.user = Client.getUser();
 
         this.context = context;
         this.callback = callback;
 
-        Converters.latLngToAddress(context, user.getHomeLoc(), new Converters.GeocoderCallback() {
-            @Override
-            public void onFinish(Address address) {
-                if (address != null) {
-                    addressInput.setText(address.getAddressLine(0));
-                    capInput.setText(address.getPostalCode());
-                    cityInput.setText(address.getLocality());
-                }
+        Converters.latLngToAddress(context, latLng, (address -> {
+            if (address != null) {
+                addressInput.setText(address.getAddressLine(0));
+                capInput.setText(address.getPostalCode());
+                cityInput.setText(address.getLocality());
             }
-        });
+        }));
 
     }
 

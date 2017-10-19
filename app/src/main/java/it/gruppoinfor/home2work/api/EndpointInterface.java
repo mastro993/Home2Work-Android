@@ -9,7 +9,6 @@ import it.gruppoinfor.home2work.models.Route;
 import it.gruppoinfor.home2work.models.SearchResults;
 import it.gruppoinfor.home2work.models.Share;
 import it.gruppoinfor.home2work.models.ShareRequest;
-import it.gruppoinfor.home2work.models.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -25,30 +24,34 @@ import retrofit2.http.Path;
 
 public interface EndpointInterface {
 
+
+    @FormUrlEncoded
+    @POST("user")
+    Call<Account> login(
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
+    @GET("user/{id}")
+    Call<Account> getUser(
+            @Path("id") Long id
+    );
+
+
+
+
+
+
+
+
+
+
+
     @GET("search/{term}")
     Call<SearchResults> search(
             @Path("term") String term
     );
 
-
-    @FormUrlEncoded
-    @POST("register")
-    Call<User> register(
-            @Field("email") String email,
-            @Field("password") String password
-    );
-
-    @FormUrlEncoded
-    @POST("users")
-    Call<User> login(
-            @Field("email") String email,
-            @Field("password") String password
-    );
-
-    @GET("users/{id}")
-    Call<User> getUser(
-            @Path("id") Long id
-    );
 
     @FormUrlEncoded
     @POST("users/{id}/follow/{profileId}")
@@ -59,12 +62,12 @@ public interface EndpointInterface {
     );
 
     @GET("users/{id}/followers")
-    Call<List<User>> getFollowers(
+    Call<List<Account>> getFollowers(
             @Path("id") Long id
     );
 
     @GET("users/{id}/follows")
-    Call<List<User>> getFollowees(
+    Call<List<Account>> getFollowees(
             @Path("id") Long id
     );
 
@@ -108,8 +111,8 @@ public interface EndpointInterface {
     */
 
     @PUT("users")
-    Call<User> updateUser(
-            @Body User user
+    Call<Account> updateUser(
+            @Body Account account
     );
 
     @GET("users/{id}/avatar")
@@ -133,7 +136,7 @@ public interface EndpointInterface {
     Call<List<Company>> getCompanies();
 
     @GET("companies/{id}/ranks")
-    Call<List<User>> getCompanyRanks(
+    Call<List<Account>> getCompanyRanks(
             @Path("id") Long id
     );
 

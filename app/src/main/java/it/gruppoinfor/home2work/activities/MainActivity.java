@@ -1,50 +1,53 @@
 package it.gruppoinfor.home2work.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import devlight.io.library.ntb.NavigationTabBar;
+import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.NotificationFragment;
-import it.gruppoinfor.home2work.fragments.ProfileFragment;
+import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
 import it.gruppoinfor.home2work.models.Match;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity {
 
-    public NavigationTabBar.Model homeModel;
-    public NavigationTabBar.Model matchModel;
-    public NavigationTabBar.Model notificationModel;
+    private final int START_POSITION = 2;
+    @BindView(R.id.bottom_navigation)
 
+
+    public AHBottomNavigation bottomNavigation;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.page_title)
-    TextView pageTitle;
-    @BindView(R.id.ntb_pager)
-    ViewPager viewPager;
-    @BindView(R.id.ntb)
-    NavigationTabBar navigationTabBar;
-
+    @BindView(R.id.view_pager)
+    AHBottomNavigationViewPager viewPager;
+    @BindView(R.id.user_avatar_button)
+    CircleImageView userAvatarButton;
     private PagerAdapter pagerAdapter;
 
     @Override
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowHomeEnabled(false);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            //getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         initUI();
@@ -65,112 +68,91 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     private void initUI() {
+
+        // Create items
+        AHBottomNavigationItem homeTab = new AHBottomNavigationItem(R.string.home_tab, R.drawable.ic_home, R.color.colorPrimaryDark);
+        AHBottomNavigationItem matchTab = new AHBottomNavigationItem(R.string.match_tab, R.drawable.ic_match, R.color.colorPrimary);
+        AHBottomNavigationItem progressTab = new AHBottomNavigationItem(R.string.progress_tab, R.drawable.ic_star_circle, R.color.light_blue_300);
+        AHBottomNavigationItem notificationTab = new AHBottomNavigationItem(R.string.notification_tab, R.drawable.ic_bell, R.color.light_blue_500);
+        AHBottomNavigationItem settingsTab = new AHBottomNavigationItem(R.string.settings_tab, R.drawable.ic_settings, R.color.colorAccent);
+
+
+        // Add items
+        bottomNavigation.addItem(homeTab);
+        bottomNavigation.addItem(matchTab);
+        bottomNavigation.addItem(progressTab);
+        bottomNavigation.addItem(notificationTab);
+        bottomNavigation.addItem(settingsTab);
+
+        // Disable the translation inside the CoordinatorLayout
+        bottomNavigation.setBehaviorTranslationEnabled(false);
+
+        // Change colors
+        bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.grey_400));
+
+        bottomNavigation.setForceTint(true);
+
+        //bottomNavigation.setTranslucentNavigationEnabled(true);
+
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_HIDE);
+
+        // Use colored navigation with circle reveal effect
+        //bottomNavigation.setColored(true);
+
+        // Set current item programmatically
+        bottomNavigation.setCurrentItem(START_POSITION);
+        setTitle(bottomNavigation.getItem(START_POSITION).getTitle(this));
+
+        // Customize notification (title, background, typeface)
+        bottomNavigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
+
+        bottomNavigation.setOnTabSelectedListener(((position, wasSelected) -> {
+            viewPager.setCurrentItem(position, false);
+            setTitle(bottomNavigation.getItem(position).getTitle(this));
+            return true;
+        }));
+
+        viewPager.setOffscreenPageLimit(4);
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
-        final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
-
-        homeModel = new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_home), ContextCompat.getColor(this, R.color.white))
-                .title("Home")
-                .badgeTitle("Home")
-                .build();
-
-        models.add(homeModel);
-
-        matchModel = new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_match), ContextCompat.getColor(this, R.color.white))
-                .title("Match")
-                .badgeTitle("Match")
-                .build();
-
-        models.add(matchModel);
-
-        models.add(new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_user), ContextCompat.getColor(this, R.color.white))
-                .title("Profilo")
-                .badgeTitle("Profilo")
-                .build()
-        );
-
-
-        notificationModel = new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_bell), ContextCompat.getColor(this, R.color.white))
-                .title("Notifiche")
-                .badgeTitle("Notifiche")
-                .build();
-
-        models.add(notificationModel);
-
-        models.add(new NavigationTabBar.Model.Builder(ContextCompat.getDrawable(this, R.drawable.ic_settings), ContextCompat.getColor(this, R.color.white))
-                .title("Impostazioni")
-                .badgeTitle("Impostazioni")
-                .build()
-        );
-
-        navigationTabBar.setOnPageChangeListener(this);
-        navigationTabBar.setModels(models);
-        navigationTabBar.setViewPager(viewPager, 2);
-        onPageSelected(2);
+        Glide.with(this)
+                .load(APIClient.getAccount().getAvatarURL())
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .dontAnimate()
+                .into(userAvatarButton);
 
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        switch (position) {
-            case 0:
-                setTitle("Home");
-                break;
-            case 1:
-                setTitle("Match");
-                break;
-            case 2:
-                setTitle("Profilo");
-                break;
-            case 3:
-                setTitle("Notifiche");
-            case 4:
-                setTitle("Impostazioni");
-                break;
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(title);
-        pageTitle.setText(title);
-    }
 
     public void refreshData() {
-        Client.getAPI().getUserMatches(Client.getUser().getId()).enqueue(new Callback<List<Match>>() {
+        APIClient.API().getUserMatches(APIClient.getAccount().getId()).enqueue(new Callback<List<Match>>() {
 
             @Override
-            public void onResponse(retrofit2.Call<List<Match>> call, Response<List<Match>> response) {
-                Client.getUser().setMatches(response.body());
+            public void onResponse(Call<List<Match>> call, Response<List<Match>> response) {
+                APIClient.getAccount().setMatches(response.body());
 
                 Stream<Match> matchStream = response.body().stream();
                 long newMatches = matchStream.filter(m -> m.isNew()).count();
 
-                matchModel.hideBadge();
-
-                if(newMatches > 0){
-                    matchModel.setBadgeTitle(Long.toString(newMatches));
-                    matchModel.showBadge();
+                if (newMatches > 0) {
+                    bottomNavigation.setNotification(Long.toString(newMatches), 1);
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<List<Match>> call, Throwable t) {
+            public void onFailure(Call<List<Match>> call, Throwable t) {
 
             }
 
         });
+    }
+
+    @OnClick(R.id.user_avatar_button)
+    public void onViewClicked() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {
@@ -192,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                     frag = new MatchFragment();
                     break;
                 case 2:
-                    frag = new ProfileFragment();
+                    frag = new ProgressFragment();
                     break;
                 case 3:
                     frag = new NotificationFragment();

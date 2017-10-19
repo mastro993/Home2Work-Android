@@ -1,20 +1,16 @@
 package it.gruppoinfor.home2work.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -47,11 +43,11 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.RouteUtils;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
 import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.RoutePoint;
 import it.gruppoinfor.home2work.models.ShareRequest;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.api.Account;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,7 +74,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
     SupportMapFragment mapFragment;
 
     private boolean requesting = false;
-    private User user;
+    private Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +82,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_match);
         ButterKnife.bind(this);
 
-        this.user = Client.getUser();
+        this.account = APIClient.getAccount();
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -249,7 +245,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
         loadingView.setVisibility(View.VISIBLE);
         infoText.setText(getString(R.string.match_confirmation_awaiting));
 
-        Client.getAPI().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
+        APIClient.API().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
             @Override
             public void onResponse(Call<ShareRequest> call, Response<ShareRequest> response) {
                 requesting = true;

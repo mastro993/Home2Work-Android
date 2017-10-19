@@ -1,12 +1,10 @@
 package it.gruppoinfor.home2work;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
-import retrofit2.Call;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 import retrofit2.Response;
 
 /**
@@ -31,47 +29,47 @@ public class SessionManager {
         prefs = context.getSharedPreferences("it.fleetup.app.session", Context.MODE_PRIVATE);
     }
 
-    public void storeSession(final User user) {
+    public void storeSession(final Account account) {
 
         // Salva le informazioni in modo persistente
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_EMAIL, user.getEmail());
-        editor.putString(KEY_TOKEN, user.getToken());
-        editor.putString(KEY_NAME, user.getName());
-        editor.putString(KEY_SURNAME, user.getSurname());
-        editor.putLong(KEY_ID, user.getId());
+        editor.putString(KEY_EMAIL, account.getEmail());
+        editor.putString(KEY_TOKEN, account.getToken());
+        editor.putString(KEY_NAME, account.getName());
+        editor.putString(KEY_SURNAME, account.getSurname());
+        editor.putLong(KEY_ID, account.getId());
         editor.apply();
 
         // TODO Controlla il token Firebase Cloud Messaging
         /* String fcmToken = FirebaseInstanceId.getInstance().getToken();
 
-        if (!user.getFcmToken().equals(fcmToken)) {
-            user.setFcmToken(fcmToken);
-            Client.getAPI().updateUser(user).enqueue(new retrofit2.Callback<User>() {
+        if (!account.getFcmToken().equals(fcmToken)) {
+            account.setFcmToken(fcmToken);
+            APIClient.API().updateUser(account).enqueue(new retrofit2.Callback<Account>() {
                 @Override
-                public void onResponse(Call<User> call, Response<User> response) {
+                public void onResponse(Call<Account> call, Response<Account> response) {
 
                 }
 
                 @Override
-                public void onFailure(Call<User> call, Throwable t) {
+                public void onFailure(Call<Account> call, Throwable t) {
 
                 }
             });
         }*/
     }
 
-    public User loadSession() {
+    public Account loadSession() {
         if (!isUserSignedIn())
             return null;
-        User user = new User();
-        user.setEmail(prefs.getString(KEY_EMAIL, null));
-        user.setId(prefs.getLong(KEY_ID, 0));
-        user.setToken(prefs.getString(KEY_TOKEN, null));
-        user.setName(prefs.getString(KEY_NAME, null));
-        user.setSurname(prefs.getString(KEY_SURNAME, null));
-        return user;
+        Account account = new Account();
+        account.setEmail(prefs.getString(KEY_EMAIL, null));
+        account.setId(prefs.getLong(KEY_ID, 0));
+        account.setToken(prefs.getString(KEY_TOKEN, null));
+        account.setName(prefs.getString(KEY_NAME, null));
+        account.setSurname(prefs.getString(KEY_SURNAME, null));
+        return account;
     }
 
     public void checkSession(final SessionManager.Callback callback) {
@@ -83,14 +81,14 @@ public class SessionManager {
             String email = prefs.getString(KEY_EMAIL, "");
             String password = prefs.getString(KEY_TOKEN, "");
 
-            Client.getAPI().login(email, password).enqueue(new retrofit2.Callback<User>() {
+            APIClient.API().login(email, password).enqueue(new retrofit2.Callback<Account>() {
                 @Override
-                public void onResponse(retrofit2.Call<User> call, Response<User> response) {
+                public void onResponse(retrofit2.Call<Account> call, Response<Account> response) {
                     switch (response.code()) {
                         case 200:
-                            User user = response.body();
-                            storeSession(user);
-                            callback.onValidSession(user);
+                            Account account = response.body();
+                            storeSession(account);
+                            callback.onValidSession(account);
                             break;
                         default:
                             callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
@@ -99,7 +97,7 @@ public class SessionManager {
                 }
 
                 @Override
-                public void onFailure(retrofit2.Call<User> call, Throwable t) {
+                public void onFailure(retrofit2.Call<Account> call, Throwable t) {
                     callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
                 }
             });
@@ -127,7 +125,7 @@ public class SessionManager {
     }
 
     public interface Callback {
-        void onValidSession(User user);
+        void onValidSession(Account account);
 
         void onInvalidSession(AuthCode code);
     }

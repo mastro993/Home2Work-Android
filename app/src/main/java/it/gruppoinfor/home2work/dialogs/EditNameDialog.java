@@ -9,8 +9,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 
 
 public class EditNameDialog extends AlertDialog {
@@ -21,7 +21,7 @@ public class EditNameDialog extends AlertDialog {
     EditText surnameEditText;
 
     private Callback callback;
-    private User user;
+    private Account account;
 
     public EditNameDialog(Context context, Callback callback) {
         super(context);
@@ -30,10 +30,10 @@ public class EditNameDialog extends AlertDialog {
         setView(view);
         setTitle("Modifica nome e cognome");
         this.callback = callback;
-        this.user = Client.getUser();
+        this.account = APIClient.getAccount();
 
-        nameEditText.setText(user.getName());
-        surnameEditText.setText(user.getSurname());
+        nameEditText.setText(account.getName());
+        surnameEditText.setText(account.getSurname());
 
     }
 

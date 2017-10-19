@@ -30,9 +30,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Account;
 import it.gruppoinfor.home2work.dialogs.EditAddressDialog;
-import it.gruppoinfor.home2work.models.User;
 
 
 public class ConfigurationHomeFragment extends Fragment implements Step, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks {
@@ -121,13 +121,14 @@ public class ConfigurationHomeFragment extends Fragment implements Step, OnMapRe
 
     @OnClick(R.id.setAddressButton)
     void setAddress() {
-        new EditAddressDialog(getContext(), new EditAddressDialog.Callback() {
-            @Override
-            public void onSave(android.app.AlertDialog dialog, LatLng latLng) {
-                setHomeLocation(latLng);
-                dialog.dismiss();
-            }
-        }).show();
+        new EditAddressDialog(
+                getContext(),
+                APIClient.getAccount().getLocation(),
+                (dialog, latLng) -> {
+                    setHomeLocation(latLng);
+                    dialog.dismiss();
+                }
+        ).show();
     }
 
     @OnClick(R.id.currentPositionButton)
@@ -180,9 +181,9 @@ public class ConfigurationHomeFragment extends Fragment implements Step, OnMapRe
         if (homeLocation == null)
             return new VerificationError("Devi impostare un indirizzo di casa prima di poter continuare");
 
-        User user = Client.getUser();
-        user.setHomeLoc(homeLocation);
-        Client.setUser(user);
+        Account account = APIClient.getAccount();
+        account.setLocation(homeLocation);
+        APIClient.setUser(account);
 
         return null;
     }

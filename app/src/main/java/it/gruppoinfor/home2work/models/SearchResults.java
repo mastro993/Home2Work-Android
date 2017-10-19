@@ -6,21 +6,23 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.gruppoinfor.home2work.api.Account;
+
 public class SearchResults {
 
-    @SerializedName("users")
+    @SerializedName("accounts")
     @Expose
-    private List<User> users = new ArrayList<>();
+    private List<Account> accounts = new ArrayList<>();
     @SerializedName("companies")
     @Expose
     private List<Company> companies = new ArrayList<>();
 
-    public List<User> getUsers() {
-        return users;
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     public List<Company> getCompanies() {

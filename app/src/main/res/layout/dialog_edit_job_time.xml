@@ -3,12 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/activity_padding">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:layout_marginTop="8dp">
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/startInput"
@@ -23,8 +22,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:layout_marginTop="8dp">
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/endInput"
@@ -36,14 +34,5 @@
             android:lines="1" />
 
     </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/saveButton"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:text="Salva" />
 
 </LinearLayout>

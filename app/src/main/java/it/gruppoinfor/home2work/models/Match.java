@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.gruppoinfor.home2work.api.Account;
+
 public class Match implements Parcelable {
 
     public final static Parcelable.Creator<Match> CREATOR = new Creator<Match>() {
@@ -20,8 +22,8 @@ public class Match implements Parcelable {
         public Match createFromParcel(Parcel in) {
             Match instance = new Match();
             instance.id = ((Long) in.readValue((Long.class.getClassLoader())));
-            instance.guest = ((User) in.readValue((User.class.getClassLoader())));
-            instance.host = ((User) in.readValue((User.class.getClassLoader())));
+            instance.guest = ((Account) in.readValue((Account.class.getClassLoader())));
+            instance.host = ((Account) in.readValue((Account.class.getClassLoader())));
             instance.score = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.length = ((Double) in.readValue((Double.class.getClassLoader())));
             instance.cunsumption = ((Double) in.readValue((Double.class.getClassLoader())));
@@ -42,10 +44,10 @@ public class Match implements Parcelable {
     private Long id;
     @SerializedName("guest")
     @Expose
-    private User guest;
+    private Account guest;
     @SerializedName("host")
     @Expose
-    private User host;
+    private Account host;
     @SerializedName("score")
     @Expose
     private Integer score;
@@ -76,19 +78,19 @@ public class Match implements Parcelable {
         this.id = id;
     }
 
-    public User getGuest() {
+    public Account getGuest() {
         return guest;
     }
 
-    public void setGuest(User guest) {
+    public void setGuest(Account guest) {
         this.guest = guest;
     }
 
-    public User getHost() {
+    public Account getHost() {
         return host;
     }
 
-    public void setHost(User host) {
+    public void setHost(Account host) {
         this.host = host;
     }
 
