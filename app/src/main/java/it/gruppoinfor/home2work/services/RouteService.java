@@ -11,13 +11,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 
 import com.arasthel.asyncjob.AsyncJob;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
@@ -32,8 +30,6 @@ import it.gruppoinfor.home2work.MyLogger;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.Tools;
-import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.activities.SplashActivity;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.models.User;
@@ -42,24 +38,16 @@ import static it.gruppoinfor.home2work.App.dbApp;
 
 public class RouteService extends Service {
 
-    public final static String TAG = RouteService.class.getSimpleName();
-
-    private final int LOCATION_INTERVAL = 10000; // Intervallo aggiornamento posizione 5 secondi
-    private final float DISTANCE = 100f; // 50 metri
-    private final int ACTIVITY_INTERVAL = 15000; // Intervallo aggiornamento attivita' 15 secondi
-    private final long STOP_INTERVAL = 900000; // msec = 15 minuti
-    private final int NOTIFICATION_ID = 1337;    // ID notifica
-    private final int MIN_ROUTEPOINTS = 5; // Nuimero minimo di punti per poter salvare uin percorso
-    private final String CHANNEL_ID = "ROUTE_SERVICE_NOTIFICATION";
-
-    LocationRequest locationRequest;
+    private boolean DEBUG_MODE = false;
+    private int NOTIFICATION_ID = 1337;
+    private String TAG = "ROUTE_SERVICE";
     private boolean isRecording = false;
     private MyLocationListener routeLocationListener;
     private GoogleApiClient activityClient;
     private GoogleApiClient locationClient;
     private User user;
-
-    private final boolean DEBUG_MODE = false;
+    private Notification idleNotification;
+    private Notification trackingNotification;
 
     public static boolean isRunning(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -74,70 +62,62 @@ public class RouteService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        MyLogger.d(TAG, "onCreate");
+        MyLogger.i(TAG, "Creazione servizio");
+
+        String channelID = "ROUTE_SERVICE_NOTIFICATION";
+        int notificationIcon = R.drawable.ic_map_marker_start;
+
+        idleNotification = new NotificationCompat.Builder(this, channelID)
+                .setSmallIcon(notificationIcon)
+                .setContentTitle("Home2Work")
+                .setContentText("Servizio di localizzazione")
+                .setOngoing(true)
+                .setShowWhen(false)
+                .build();
+
+        trackingNotification = new NotificationCompat.Builder(this, channelID)
+                .setSmallIcon(notificationIcon)
+                .setContentTitle("Home2Work")
+                .setContentText("Tracking attività in corso")
+                .setOngoing(true)
+                .build();
+
+        activityClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new ActivityClientCallbacks())
+                .addOnConnectionFailedListener((connectionResult -> {
+                    MyLogger.d("ACTIVITY_CLIENT", "Connessione fallita: " + connectionResult);
+                }))
+                .addApi(ActivityRecognition.API)
+                .build();
+
+        locationClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new LocationClientCallbacks())
+                .addOnConnectionFailedListener((connectionResult -> {
+                    MyLogger.w("LOCATION_CLIENT", "Connessione fallita: " + connectionResult);
+                }))
+                .addApi(LocationServices.API)
+                .build();
 
         SessionManager sessionManager = new SessionManager(this);
         user = sessionManager.loadSession();
 
         if (user != null) {
+            MyLogger.i(TAG, "Sessione presente. Utente: " + Client.getSignedUser().getEmail());
             startService();
-            //Toasty.success(this, "Servizio FleetUp avviato\nUtente collegato: " + user.getEmail(), Toast.LENGTH_LONG).show();
         } else {
-            //Toasty.error(this, "Errore durante l'avvio del servizio FleetUp", Toast.LENGTH_LONG).show();
+            MyLogger.i(TAG, "Sessione non presente");
         }
 
     }
 
     private void startService() {
-        // Setup API Client
-        if (activityClient == null) {
-            MyLogger.d(TAG, "Creazione ActivityClient");
-            activityClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(new ActivityClientCallbacks())
-                    .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                            MyLogger.w("ActivityAPIClient", "onConnectionFailed: " + connectionResult);
-                        }
-                    })
-                    .addApi(ActivityRecognition.API)
-                    .build();
-        }
-        if (locationClient == null) {
-            MyLogger.d(TAG, "Creazione LocationClient");
-            locationClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(new LocationClientCallbacks())
-                    .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                            MyLogger.w("LocationAPIClient", "onConnectionFailed: " + connectionResult);
-                        }
-                    })
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+        MyLogger.i(TAG, "Avvio servizio");
 
-
-        if(DEBUG_MODE) locationClient.connect();
+        if (DEBUG_MODE) locationClient.connect();
         else activityClient.connect();
 
         // Avvio servizio in foreground
-        startForeground(NOTIFICATION_ID, getNotification("Home2Work"));
-    }
-
-    private Notification getNotification(String title) {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
-                .setContentText("Tocca per aprire l'applicazione")
-                .setPriority(Notification.PRIORITY_MIN)
-                //.setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .build();
+        startForeground(NOTIFICATION_ID, idleNotification);
     }
 
     @Override
@@ -158,26 +138,26 @@ public class RouteService extends Service {
 
     private void startLocationRequests() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            MyLogger.d(TAG, "startLocationRequests");
+            MyLogger.d(TAG, "Tracking utente avviato");
 
-            locationRequest = LocationRequest.create();
+            LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(LOCATION_INTERVAL);
-            locationRequest.setSmallestDisplacement(DISTANCE);
+            locationRequest.setInterval(10000);
+            locationRequest.setSmallestDisplacement(100f);
 
             routeLocationListener = new MyLocationListener();
 
             LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, locationRequest, routeLocationListener);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(NOTIFICATION_ID, getNotification("Home2Work - Tracking in corso"));
+            mNotificationManager.notify(NOTIFICATION_ID, trackingNotification);
 
             isRecording = true;
         }
     }
 
     private void stopLocationRequests() {
-        MyLogger.d(TAG, "stopLocationRequests");
+        MyLogger.d(TAG, "Tracking utente arrestato");
 
         if (locationClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(locationClient, routeLocationListener);
@@ -185,7 +165,7 @@ public class RouteService extends Service {
         }
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(NOTIFICATION_ID, getNotification("FleetUp"));
+        mNotificationManager.notify(NOTIFICATION_ID, idleNotification);
 
         isRecording = false;
     }
@@ -199,14 +179,11 @@ public class RouteService extends Service {
     public void onDestroy() {
     }
 
-
     private class ActivityClientCallbacks implements GoogleApiClient.ConnectionCallbacks {
-
-        private final String TAG = this.getClass().getSimpleName();
 
         @Override
         public void onConnected(@Nullable Bundle bundle) {
-            MyLogger.d(TAG, "onConnected");
+            MyLogger.d("ACTIVITY_CLIENT", "Connessione avvenuta");
 
             Intent intent = new Intent(
                     RouteService.this,
@@ -220,7 +197,7 @@ public class RouteService extends Service {
             );
             ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                     activityClient,
-                    ACTIVITY_INTERVAL,
+                    15000,
                     pendingIntent
             );
         }
@@ -234,11 +211,9 @@ public class RouteService extends Service {
 
     private class LocationClientCallbacks implements GoogleApiClient.ConnectionCallbacks {
 
-        private final String TAG = this.getClass().getSimpleName();
-
         @Override
         public void onConnected(@Nullable Bundle bundle) {
-            MyLogger.d(TAG, "onConnected");
+            MyLogger.d("LOCATION_CLIENT", "Connessione avvenuta");
             startLocationRequests();
         }
 
@@ -251,20 +226,20 @@ public class RouteService extends Service {
 
     private class MyLocationListener implements LocationListener {
 
-        private final int MIN_LOCATIONS = 4; // Posizioni minime da avere per poter fare la stima della posizione migliore
+        private final int MIN_LOCATIONS = 3;
         private ArrayList<Location> lastLocations = new ArrayList<>();
 
         @Override
         public void onLocationChanged(Location location) {
             lastLocations.add(location);
-            if (lastLocations.size() >= MIN_LOCATIONS) {
+            if (lastLocations.size() >= MIN_LOCATIONS || DEBUG_MODE) {
                 Location bestLocation = getBestLocation();
 
                 final RoutePointEntity routePointEntity = new RoutePointEntity();
                 LatLng latLng = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
                 routePointEntity.setLatLng(latLng);
                 routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
-                routePointEntity.setUserId(Client.getSignedUser().getId());
+                routePointEntity.setUserId(user.getId());
 
                 AsyncJob.doInBackground(() -> {
                     dbApp.routePointDAO().insert(routePointEntity);

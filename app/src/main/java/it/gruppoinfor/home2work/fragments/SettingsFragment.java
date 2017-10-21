@@ -44,6 +44,7 @@ import it.gruppoinfor.home2work.PreferenceManager;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.UserPrefs;
+import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Address;
@@ -205,6 +206,7 @@ public class SettingsFragment extends Fragment {
                 builder.setPositiveButton("Disattiva", ((dialogInterface, i) -> {
                     UserPrefs.activityTrackingEnabled = false;
                     PreferenceManager.setBool(PreferenceManager.PrefsKey.ACTIVITY_TRACKING, false);
+                    ((MainActivity)getActivity()).bottomNavigation.setNotification("!", 4);
                 }));
                 builder.setNegativeButton("Annulla", (((dialogInterface, i) -> {
                     trackingSwitch.setChecked(true);
@@ -214,6 +216,7 @@ public class SettingsFragment extends Fragment {
             } else {
                 UserPrefs.activityTrackingEnabled = true;
                 PreferenceManager.setBool(PreferenceManager.PrefsKey.ACTIVITY_TRACKING, true);
+                ((MainActivity)getActivity()).bottomNavigation.setNotification("", 4);
             }
         });
     }

@@ -17,7 +17,7 @@ import it.gruppoinfor.home2work.services.RoutePointSync;
 
 public class SyncAlarm extends BroadcastReceiver {
 
-    public static final String TAG = SyncAlarm.class.getSimpleName();
+    public static final String TAG = "SYNC_ALARM";
 
     public SyncAlarm() {
     }

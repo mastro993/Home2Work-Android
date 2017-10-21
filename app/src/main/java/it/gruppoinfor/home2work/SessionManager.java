@@ -61,8 +61,8 @@ public class SessionManager {
         if (!isUserSignedIn())
             return null;
         User user = new User();
-        user.setEmail(prefs.getString(KEY_EMAIL, null));
         user.setId(prefs.getLong(KEY_ID, 0));
+        user.setEmail(prefs.getString(KEY_EMAIL, null));
         user.setToken(prefs.getString(KEY_TOKEN, null));
         return user;
     }

@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
+import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MessagesActivity;
 import it.gruppoinfor.home2work.activities.SignInActivity;
 
@@ -52,6 +53,7 @@ public class HomeFragment extends Fragment {
     private void initUI(){
 
         // TODO interfaccia utente
+        ((MainActivity)getActivity()).bottomNavigation.setNotification(String.valueOf(messages_count), 0);
 
     }
 

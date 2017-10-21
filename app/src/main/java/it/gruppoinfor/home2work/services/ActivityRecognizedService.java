@@ -15,7 +15,7 @@ import it.gruppoinfor.home2work.MyLogger;
 
 public class ActivityRecognizedService extends IntentService {
 
-    private static final String TAG = ActivityRecognizedService.class.getSimpleName();
+    private static final String TAG = "ACTIVITY_RECOGNITION";
     private static boolean isDriving = false;
     final int ACTIVITY_TRESHOLD = 85; // Valore minimo di affidabilita' per i trigger delle attivita'
     private static int stillStatusCounter = 0;
@@ -74,7 +74,7 @@ public class ActivityRecognizedService extends IntentService {
         Intent intent = new Intent(this, RouteService.class);
         intent.putExtra(DrivingActivity.class.getSimpleName(), DrivingActivity.STARTED_DRIVING);
         startService(intent);
-        MyLogger.d(TAG, "User started driving");
+        MyLogger.d(TAG, "Auto rilevata");
         isDriving = true;
     }
 
@@ -83,7 +83,7 @@ public class ActivityRecognizedService extends IntentService {
         Intent intent = new Intent(this, RouteService.class);
         intent.putExtra(DrivingActivity.class.getSimpleName(), DrivingActivity.STOPPED_DRIVING);
         startService(intent);
-        MyLogger.d(TAG, "User stopped driving");
+        MyLogger.d(TAG, "Auto non rilevata");
         isDriving = false;
     }
 

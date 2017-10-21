@@ -24,7 +24,7 @@ import static it.gruppoinfor.home2work.App.dbApp;
 
 public class RoutePointSync {
 
-    private static final String TAG = RoutePointSync.class.getSimpleName();
+    private static final String TAG = "ROUTE_POINT_SYNC";
 
     private static List<RoutePoint> routePoints = new ArrayList<>();
 

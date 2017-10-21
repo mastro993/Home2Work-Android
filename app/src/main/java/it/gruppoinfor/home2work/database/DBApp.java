@@ -8,7 +8,7 @@ import it.gruppoinfor.home2work.LatLngConverter;
 
 
 
-@Database(entities = {RoutePointEntity.class}, version = 2)
+@Database(entities = {RoutePointEntity.class}, version = 3)
 @TypeConverters({LatLngConverter.class})
 public abstract class DBApp extends RoomDatabase {
     public abstract RoutePointDAO routePointDAO();

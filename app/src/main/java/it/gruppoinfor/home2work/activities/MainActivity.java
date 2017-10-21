@@ -124,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void refreshData() {
+
+        if(!UserPrefs.activityTrackingEnabled) bottomNavigation.setNotification("!", 4);
+
         /*Client.getAPI().getUserMatches(Client.getAccount().getUserID()).enqueue(new SessionManagerCallback<List<MatchItem>>() {
 
             @Override
