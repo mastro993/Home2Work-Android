@@ -28,8 +28,7 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.Tools;
-import it.gruppoinfor.home2work.api.APIClient;
-import it.gruppoinfor.home2work.api.Account;
+import it.gruppoinfor.home2work.api.Client;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -46,7 +45,6 @@ public class ConfigurationAvatarFragment extends Fragment implements BlockingSte
     @BindView(R.id.propicView)
     CircleImageView propicView;
 
-    private Account account;
     private Bitmap propic;
     private boolean uploaded = false;
 
@@ -55,7 +53,6 @@ public class ConfigurationAvatarFragment extends Fragment implements BlockingSte
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_conf_propic, container, false);
         ButterKnife.bind(this, root);
-        this.account = APIClient.getAccount();
 
         return root;
     }
@@ -137,11 +134,11 @@ public class ConfigurationAvatarFragment extends Fragment implements BlockingSte
 
             RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-            String filename = account.getId() + ".jpg";
+            String filename = Client.getSignedUser().getId() + ".jpg";
 
             MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-            APIClient.API().uploadAvatar(account.getId(), body).enqueue(new Callback<ResponseBody>() {
+            Client.getAPI().uploadAvatar(Client.getSignedUser().getId(), body).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, Response<ResponseBody> response) {
                     callback.getStepperLayout().hideProgress();

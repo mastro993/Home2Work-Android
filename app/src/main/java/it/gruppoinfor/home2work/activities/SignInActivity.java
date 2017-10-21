@@ -18,8 +18,8 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
-import it.gruppoinfor.home2work.api.APIClient;
-import it.gruppoinfor.home2work.api.Account;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,10 +70,10 @@ public class SignInActivity extends AppCompatActivity {
         signInButton.setEnabled(false);
 
 
-        Call<Account> call = APIClient.API().login(email, password);
-        call.enqueue(new Callback<Account>() {
+        Call<User> call = Client.getAPI().login(email, password);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Account> call, Response<Account> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 switch (response.code()) {
                     case 404:
                         onLoginFailed();
@@ -88,7 +88,7 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Account> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 onLoginError();
             }
         });
@@ -119,14 +119,14 @@ public class SignInActivity extends AppCompatActivity {
         return valid;
     }
 
-    private void onLoginSuccess(final Account account) {
+    private void onLoginSuccess(final User user) {
 
-        APIClient.setUser(account);
+        Client.setSignedUser(user);
 
         SessionManager sessionManager = new SessionManager(getContext());
-        sessionManager.storeSession(account);
+        sessionManager.storeSession(user);
 
-        if (account.isConfigured()) {
+        if (user.isConfigured()) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
             finish();

@@ -33,8 +33,9 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
-import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Match;
+import it.gruppoinfor.home2work.models.MatchItem;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,10 +43,10 @@ import retrofit2.Response;
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
 
     private MainActivity activity;
-    private ArrayList<Match> matches;
+    private ArrayList<MatchItem> matches;
     private Resources res;
 
-    public MatchAdapter(Activity activity, List<Match> values) {
+    public MatchAdapter(Activity activity, List<MatchItem> values) {
         this.activity = (MainActivity) activity;
         this.matches = new ArrayList<>(values);
         this.res = activity.getResources();
@@ -53,50 +54,50 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Match match = matches.get(position);
+        final MatchItem matchItem = matches.get(position);
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
 
-        holder.scoreProgress.setProgress(match.getScore());
+        holder.scoreProgress.setProgress(Integer.parseInt(matchItem.getScore().toString()));
 
         Glide.with(activity)
-                .load(match.getHost().getAvatarURL())
+                .load(matchItem.getHostUser().getAvatarURL())
                 .placeholder(R.drawable.ic_avatar_placeholder)
                 .dontAnimate()
                 .into(holder.userAvatar);
 
-        holder.scoreText.setText(String.format(Locale.ITALY, "%1$d%%", match.getScore()));
-        holder.nameView.setText(match.getHost().toString());
+        holder.scoreText.setText(String.format(Locale.ITALY, "%1$d%%", matchItem.getScore()));
+        holder.nameView.setText(matchItem.getHostUser().toString());
         holder.distanceView.setText(
                 String.format(
                         res.getString(R.string.match_item_distance),
-                        df.format(match.getLength())
+                        df.format(matchItem.getDistance())
                 )
         );
-        holder.consumptionView.setText(
+        /*holder.consumptionView.setText(
                 String.format(
                         res.getString(R.string.match_item_gas),
-                        df.format(match.getCunsumption())
+                        df.format(matchItem.get())
                 )
         );
 
         holder.emissionView.setText(
                 String.format(
                         res.getString(R.string.match_item_emission),
-                        df.format(match.getEmission())
+                        df.format(matchItem.getEmission())
                 )
-        );
+        );*/
 
-        if (!match.isNew()) holder.newIcon.setVisibility(View.GONE);
+        if (!matchItem.isNew()) holder.newIcon.setVisibility(View.GONE);
 
         int color;
         Drawable bg = ContextCompat.getDrawable(activity, R.drawable.bg_match_score_percent);
-        if (match.getScore() < 50) {
+        if (matchItem.getScore() < 50) {
             color = ContextCompat.getColor(activity, R.color.red_500);
-        } else if (match.getScore() < 70) {
+        } else if (matchItem.getScore() < 70) {
             color = ContextCompat.getColor(activity, R.color.orange_500);
-        } else if (match.getScore() < 90) {
+        } else if (matchItem.getScore() < 90) {
             color = ContextCompat.getColor(activity, R.color.green_500);
         } else {
             color = ContextCompat.getColor(activity, R.color.colorAccent);
@@ -124,10 +125,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         });*/
 
         holder.container.setOnClickListener((v) -> {
-            if (match.isNew()) setMatchAsViewed(position);
+            if (matchItem.isNew()) setMatchAsViewed(position);
 
             Intent matchIntent = new Intent(activity, MatchActivity.class);
-            matchIntent.putExtra("match", match);
+            matchIntent.putExtra("matchID", matchItem.getMatchID());
 
             int left = 0, top = 0;
             int width = holder.container.getMeasuredWidth(), height = holder.container.getMeasuredHeight();
@@ -163,12 +164,12 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
 
     private void showMatchDetails(final int position) {
-        Match match = matches.get(position);
+        MatchItem matchItem = matches.get(position);
 
-        if (match.isNew()) setMatchAsViewed(position);
+        /*if (match.isNew()) setMatchAsViewed(position);
         Intent matchIntent = new Intent(activity, MatchActivity.class);
-        matchIntent.putExtra("match", match);
-        activity.startActivity(matchIntent);
+        matchIntent.putExtra("matchID", matchItem.getMatchID());
+        activity.startActivity(matchIntent);*/
 
     }
 
@@ -207,11 +208,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     }
 
     private void hideMatch(final int position) {
-        final Match match = matches.get(position);
+        /*final MatchItem match = matches.get(position);
 
         match.setHidden(true);
 
-        APIClient.API().editMatch(match).enqueue(new Callback<Match>() {
+        Client.getAPI().editMatch(match).enqueue(new SessionManagerCallback<Match>() {
             @Override
             public void onResponse(Call<Match> call, Response<Match> response) {
                 matches.remove(position);
@@ -225,13 +226,14 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
                 t.printStackTrace();
 
             }
-        });
+        });*/
     }
 
     private void setMatchAsViewed(final int position) {
         matches.get(position).setNew(false);
 
-        APIClient.API().editMatch(matches.get(position)).enqueue(new Callback<Match>() {
+        /* TODO edit match
+        Client.getAPI().editMatch(matches.get(position)).enqueue(new SessionManagerCallback<Match>() {
             @Override
             public void onResponse(Call<Match> call, Response<Match> response) {
                 Stream<Match> matchStream = matches.stream();
@@ -248,7 +250,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
             public void onFailure(Call<Match> call, Throwable t) {
 
             }
-        });
+        });*/
 
     }
 

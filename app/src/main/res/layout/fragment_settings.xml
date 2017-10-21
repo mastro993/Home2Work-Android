@@ -1,8 +1,61 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="it.gruppoinfor.home2work.fragments.SettingsFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/list_items_padding"
+            android:text="Indirizzi" />
+
+        <include layout="@layout/layout_settings_addresses" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/list_items_padding"
+            android:text="Orario di lavoro" />
+
+        <include layout="@layout/layout_settings_job_time" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/list_items_padding"
+            android:text="Preferenze match" />
+
+        <include layout="@layout/layout_settings_match_preferences" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/list_items_padding"
+            android:text="Preferenze applicazione" />
+
+        <include layout="@layout/layout_settings_app_preferences" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/list_items_padding"
+            android:text="Notifiche" />
+
+        <include layout="@layout/layout_settings_notifications_preferences" />
+
+
+    </LinearLayout>
+
+
+</ScrollView>

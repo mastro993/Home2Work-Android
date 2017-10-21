@@ -15,7 +15,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.activities.ConfigurationActivity;
+import it.gruppoinfor.home2work.api.Client;
 
 public class ConfigurationNameFragment extends Fragment implements Step {
 
@@ -46,8 +47,8 @@ public class ConfigurationNameFragment extends Fragment implements Step {
             return new VerificationError("Cognome non valido");
         }
 
-        APIClient.getAccount().setName(nameInput.getText().toString().trim());
-        APIClient.getAccount().setSurname(surnameInput.getText().toString().trim());
+        Client.getSignedUser().setName(nameInput.getText().toString().trim());
+        Client.getSignedUser().setSurname(surnameInput.getText().toString().trim());
 
         return null;
     }

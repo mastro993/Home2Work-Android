@@ -7,7 +7,7 @@
     <string name="match_tab">Match</string>
     <string name="progress_tab">Progresso</string>
     <string name="notification_tab">Notifiche</string>
-    <string name="settings_tab">Impostazioni</string>
+    <string name="settings_tab">Preferenze</string>
 
     <!-- SignInActivity  -->
     <string name="activity_signin_sign_in">Accedi</string>
@@ -70,6 +70,7 @@
     <string name="profile_shared_distance">%1$s km condivisi</string>
     <string name="profile_saved_gas">%1$s l di carburante risparmiato</string>
     <string name="profile_saved_emissions">%1$s g di CO2 evitati</string>
+
 
     <!-- MatchAdapter -->
     <string name="match_item_distance">Distanza condivisa: %1$s km</string>

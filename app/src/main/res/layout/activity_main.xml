@@ -27,22 +27,9 @@
                 android:layout_height="@dimen/action_bar_size"
                 android:layout_alignParentStart="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="53dp"
                 android:background="?attr/colorPrimary"
                 android:gravity="center_vertical"
                 android:weightSum="1" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:id="@+id/user_avatar_button"
-                android:transitionName="user_avatar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_avatar_placeholder"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 

@@ -77,6 +77,7 @@ public class Converters {
     public static String timestampToTime(long timestamp, String template) {
         Date date = new Date(timestamp * 1000L);
         DateFormat df = new SimpleDateFormat(template, Locale.ITALY);
+        df.setTimeZone(TimeZone.getTimeZone("GMT+2"));
         df.setTimeZone(TimeZone.getDefault());
         return df.format(date);
     }

@@ -1,17 +1,22 @@
 package it.gruppoinfor.home2work;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 
 import com.facebook.stetho.Stetho;
+import com.orhanobut.logger.Logger;
 
-import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.database.DBApp;
 
 
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
 
     private static App instance;
+
+    public static DBApp dbApp;
 
     public static App getInstance() {
         return instance;
@@ -25,16 +30,20 @@ public class App extends Application {
     public void onCreate() {
         instance = this;
         super.onCreate();
-        //setupUncaughtExceptionsHandler(); // Setup gestore eccezioni non gestite
-        //setupLeakCanary(); // Inizializzazione LeakCanary
-        setupStetho(); // Inizializzazione Stetho
-        //setupRealm(); // Inizializzazione Realm.io
-        //MyLogger.init(this); // Inizializzazione logger su file
+        setupUncaughtExceptionsHandler();
+        //setupLeakCanary();
+        setupStetho();
+        MyLogger.init(this);
+        ReceiverManager.init(this);
         //PreferenceManager.init(this); // Inizializzazione gestore preferenze
-        APIClient.init();
+        Client.init();
+
+        dbApp = Room.databaseBuilder(getApplicationContext(), DBApp.class, "home2work")
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
-/*    private void setupUncaughtExceptionsHandler() {
+    private void setupUncaughtExceptionsHandler() {
         final Thread.UncaughtExceptionHandler defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -46,7 +55,7 @@ public class App extends Application {
             }
         });
 
-    }*/
+    }
 
 /*    private void setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -55,15 +64,6 @@ public class App extends Application {
             return;
         }
         LeakCanary.install(this);
-    }*/
-
-/*    private void setupRealm() {
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder()
-                .schemaVersion(2) // Must be bumped when the schema changes
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(config);
     }*/
 
     private void setupStetho() {

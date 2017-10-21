@@ -14,26 +14,18 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
-import com.bumptech.glide.Glide;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.UserPrefs;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.NotificationFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
-import it.gruppoinfor.home2work.models.Match;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import it.gruppoinfor.home2work.services.RoutePointSync;
+import it.gruppoinfor.home2work.services.RouteService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.view_pager)
     AHBottomNavigationViewPager viewPager;
-    @BindView(R.id.user_avatar_button)
-    CircleImageView userAvatarButton;
     private PagerAdapter pagerAdapter;
 
     @Override
@@ -65,6 +55,16 @@ public class MainActivity extends AppCompatActivity {
         initUI();
         refreshData();
 
+        // Servizio di localizzazione
+        if (UserPrefs.activityTrackingEnabled) {
+            if (!RouteService.isRunning(this)) {
+                Intent locationIntent = new Intent(this, RouteService.class);
+                startService(locationIntent);
+            }
+        }
+
+        RoutePointSync.sync(this);
+
     }
 
     private void initUI() {
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         AHBottomNavigationItem matchTab = new AHBottomNavigationItem(R.string.match_tab, R.drawable.ic_match, R.color.colorPrimary);
         AHBottomNavigationItem progressTab = new AHBottomNavigationItem(R.string.progress_tab, R.drawable.ic_star_circle, R.color.light_blue_300);
         AHBottomNavigationItem notificationTab = new AHBottomNavigationItem(R.string.notification_tab, R.drawable.ic_bell, R.color.light_blue_500);
-        AHBottomNavigationItem settingsTab = new AHBottomNavigationItem(R.string.settings_tab, R.drawable.ic_settings, R.color.colorAccent);
+        AHBottomNavigationItem settingsTab = new AHBottomNavigationItem(R.string.settings_tab, R.drawable.ic_preferences, R.color.colorAccent);
 
 
         // Add items
@@ -117,23 +117,20 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
-        Glide.with(this)
-                .load(APIClient.getAccount().getAvatarURL())
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .dontAnimate()
-                .into(userAvatarButton);
+        viewPager.setCurrentItem(START_POSITION);
+
 
     }
 
 
     public void refreshData() {
-        APIClient.API().getUserMatches(APIClient.getAccount().getId()).enqueue(new Callback<List<Match>>() {
+        /*Client.getAPI().getUserMatches(Client.getAccount().getUserID()).enqueue(new SessionManagerCallback<List<MatchItem>>() {
 
             @Override
-            public void onResponse(Call<List<Match>> call, Response<List<Match>> response) {
-                APIClient.getAccount().setMatches(response.body());
+            public void onResponse(Call<List<MatchItem>> call, Response<List<MatchItem>> response) {
+                Client.getAccount().setMatches(response.body());
 
-                Stream<Match> matchStream = response.body().stream();
+                Stream<MatchItem> matchStream = response.body().stream();
                 long newMatches = matchStream.filter(m -> m.isNew()).count();
 
                 if (newMatches > 0) {
@@ -142,17 +139,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Match>> call, Throwable t) {
+            public void onFailure(Call<List<MatchItem>> call, Throwable t) {
 
             }
 
-        });
-    }
-
-    @OnClick(R.id.user_avatar_button)
-    public void onViewClicked() {
-        Intent intent = new Intent(this, ProfileActivity.class);
-        startActivity(intent);
+        });*/
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

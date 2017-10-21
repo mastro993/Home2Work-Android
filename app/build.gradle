@@ -30,6 +30,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile('com.afollestad.material-dialogs:core:0.9.4.7') {
+        transitive = false
+    }
+    compile('me.zhanghai.android.materialprogressbar:library:1.4.1') {
+        transitive = false
+    }
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.1.0'
@@ -54,14 +60,12 @@ dependencies {
     compile 'com.github.jd-alexander:library:1.1.0'
     compile 'com.arasthel:asyncjob-library:1.0.3'
     compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
-    compile('com.afollestad.material-dialogs:core:0.9.4.7') {
-        transitive = false
-    }
-    compile('me.zhanghai.android.materialprogressbar:library:1.4.1') {
-        transitive = false
-    }
+    compile 'com.orhanobut:logger:2.1.1'
+    compile 'android.arch.persistence.room:runtime:1.0.0-alpha9'
+    compile 'biz.kasual:materialnumberpicker:1.2.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-alpha9'
 }
 
 

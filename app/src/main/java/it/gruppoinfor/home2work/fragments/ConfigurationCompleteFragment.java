@@ -14,22 +14,20 @@ import com.stepstone.stepper.VerificationError;
 
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.APIClient;
-import it.gruppoinfor.home2work.api.Account;
+import it.gruppoinfor.home2work.activities.ConfigurationActivity;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ConfigurationCompleteFragment extends Fragment implements BlockingStep {
 
-    private Account account;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_conf_completed, container, false);
         ButterKnife.bind(this, root);
-        this.account = APIClient.getAccount();
         return root;
     }
 
@@ -58,22 +56,19 @@ public class ConfigurationCompleteFragment extends Fragment implements BlockingS
         callback.getStepperLayout().showProgress("Attendi..");
 
         String fcmToken = FirebaseInstanceId.getInstance().getToken();
-        account.setFcmToken(fcmToken);
-        account.setConfigured(true);
+        Client.getSignedUser().setFcmToken(fcmToken);
 
-        APIClient.API().updateUser(account).enqueue(new Callback<Account>() {
+        Client.getAPI().updateUser(Client.getSignedUser()).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Account> call, Response<Account> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 callback.getStepperLayout().hideProgress();
                 if(response.code()==200){
-                    Account account = response.body();
-                    APIClient.setUser(account);
                     callback.complete();
                 }
             }
 
             @Override
-            public void onFailure(Call<Account> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 callback.getStepperLayout().hideProgress();
             }
         });

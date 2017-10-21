@@ -12,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,10 +32,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.APIClient;
-import it.gruppoinfor.home2work.api.Account;
-import it.gruppoinfor.home2work.dialogs.EditAddressDialog;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.models.Address;
+import it.gruppoinfor.home2work.models.User;
 
 
 public class ConfigurationHomeFragment extends Fragment implements Step, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks {
@@ -121,14 +125,89 @@ public class ConfigurationHomeFragment extends Fragment implements Step, OnMapRe
 
     @OnClick(R.id.setAddressButton)
     void setAddress() {
-        new EditAddressDialog(
-                getContext(),
-                APIClient.getAccount().getLocation(),
-                (dialog, latLng) -> {
-                    setHomeLocation(latLng);
-                    dialog.dismiss();
-                }
-        ).show();
+        MaterialDialog editAddressDialog = new MaterialDialog.Builder(getContext())
+                .title("Modifica indirizzo")
+                .customView(R.layout.dialog_edit_address, false)
+                .positiveText("Salva")
+                .negativeText("Annulla")
+                .onPositive(((dialog, which) -> {
+
+                    Boolean valid = true;
+
+                    View view = dialog.getCustomView();
+
+                    EditText cityInput = view.findViewById(R.id.city_input);
+                    EditText capInput = view.findViewById(R.id.cap_input);
+                    EditText addressInput = view.findViewById(R.id.address_input);
+
+                    String addr = addressInput.getText().toString();
+                    String city = cityInput.getText().toString();
+                    String CAP = capInput.getText().toString();
+
+                    if (addr.isEmpty()) {
+                        addressInput.setError(getString(R.string.config_address_insert));
+                        valid = false;
+                    }
+
+                    if (city.isEmpty()) {
+                        capInput.setError(getString(R.string.config_cap_insert));
+                        valid = false;
+                    }
+
+                    if (CAP.isEmpty()) {
+                        cityInput.setError(getString(R.string.config_city_insert));
+                        valid = false;
+                    }
+
+                    if (valid) {
+                        LatLng latLng = Converters.addressToLatLng(getContext(), addr + ", " + city + " " + CAP);
+                        if (latLng != null) {
+
+                            User signedUser = Client.getSignedUser();
+
+                            signedUser.setLocation(latLng);
+
+                            Address newAddress = new Address();
+                            newAddress.setCity(city);
+                            newAddress.setAddress(addr);
+                            newAddress.setPostalCode(CAP);
+
+                            signedUser.setAddress(newAddress);
+
+
+                            Client.setSignedUser(signedUser);
+
+                            setHomeLocation(latLng);
+
+
+
+                        } else {
+                            Toasty.warning(getContext(), getString(R.string.config_no_address_found), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                }))
+                .build();
+
+        View view = editAddressDialog.getCustomView();
+
+        EditText cityInput = view.findViewById(R.id.city_input);
+        EditText capInput = view.findViewById(R.id.cap_input);
+        EditText addressInput = view.findViewById(R.id.address_input);
+
+        User signedUserr = Client.getSignedUser();
+
+        if(signedUserr.getAddress() != null){
+            addressInput.setText(signedUserr.getAddress().getAddress());
+            capInput.setText(signedUserr.getAddress().getPostalCode());
+            cityInput.setText(signedUserr.getAddress().getCity());
+        }
+
+
+
+        editAddressDialog.show();
+
+
     }
 
     @OnClick(R.id.currentPositionButton)
@@ -181,9 +260,7 @@ public class ConfigurationHomeFragment extends Fragment implements Step, OnMapRe
         if (homeLocation == null)
             return new VerificationError("Devi impostare un indirizzo di casa prima di poter continuare");
 
-        Account account = APIClient.getAccount();
-        account.setLocation(homeLocation);
-        APIClient.setUser(account);
+        Client.getSignedUser().setLocation(homeLocation);
 
         return null;
     }

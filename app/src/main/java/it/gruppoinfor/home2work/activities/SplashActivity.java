@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,13 +12,25 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
+import com.arasthel.asyncjob.AsyncJob;
+import com.google.android.gms.maps.model.LatLng;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import it.gruppoinfor.home2work.AutoStart;
+import it.gruppoinfor.home2work.LatLngConverter;
+import it.gruppoinfor.home2work.MyLogger;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.ReceiverManager;
 import it.gruppoinfor.home2work.SessionManager;
+import it.gruppoinfor.home2work.SyncAlarm;
+import it.gruppoinfor.home2work.Tools;
 import it.gruppoinfor.home2work.UserPrefs;
-import it.gruppoinfor.home2work.api.APIClient;
-import it.gruppoinfor.home2work.api.Account;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.database.RoutePointEntity;
+import it.gruppoinfor.home2work.models.User;
+
+import static it.gruppoinfor.home2work.App.dbApp;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -33,19 +46,18 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        SyncAlarm.set(this);
 
-                UserPrefs.init(getApplicationContext());
+        new Handler().postDelayed(()->{
 
-                if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS);
-                } else {
-                    startApp();
-                }
+            UserPrefs.init(getApplicationContext());
 
+            if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, FINE_LOCATION_ACCESS);
+            } else {
+                startApp();
             }
+
         }, SPLASH_TIME);
 
     }
@@ -58,14 +70,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startApp() {
         SessionManager sessionManager = new SessionManager(SplashActivity.this);
-        sessionManager.checkSession(new SessionManager.Callback() {
+        sessionManager.checkSession(new SessionManager.SessionManagerCallback() {
             @Override
-            public void onValidSession(Account account) {
+            public void onValidSession(User user) {
 
-                // Imposto l'utente autenticato nel APIClient
-                APIClient.setUser(account);
+                // Imposto l'utente autenticato nel Client
+                Client.setSignedUser(user);
 
-                if (!account.isConfigured()) {
+                if (!user.isConfigured()) {
                     Intent i = new Intent(SplashActivity.this, ConfigurationActivity.class);
                     startActivity(i);
                     finish();

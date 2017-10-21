@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:minHeight="60dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/match_max_time_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/list_items_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="Differenza di tempo [DA CAMBIARE]" />
+
+        <TextView
+            android:id="@+id/match_max_time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:text="30 minuti"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/horizontal_divider" />
+
+    <RelativeLayout
+        android:id="@+id/match_max_distance_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/list_items_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="Distanza massima" />
+
+        <TextView
+            android:id="@+id/match_max_distance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:text="500 metri"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/horizontal_divider" />
+
+    <RelativeLayout
+        android:id="@+id/match_min_score_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/list_items_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="Punteggio minimo" />
+
+        <TextView
+            android:id="@+id/match_min_score_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:text="50%"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</LinearLayout>
+

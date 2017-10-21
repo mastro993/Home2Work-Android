@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.infor.fleetupht.view.ProfileActivity">
+    <item
+        android:id="@+id/action_ranks"
+        android:icon="@drawable/ic_message"
+        android:title="Classifiche"
+        app:actionLayout="@layout/layout_message_icon"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_spend_points"
+        android:icon="@drawable/ic_message"
+        android:title="Spendi punti"
+        app:actionLayout="@layout/layout_message_icon"
+        app:showAsAction="never" />
+
+</menu>

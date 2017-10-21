@@ -2,9 +2,9 @@ package it.gruppoinfor.home2work.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +18,8 @@ import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.adapters.ConfigurationStepsAdapter;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.models.User;
 
 public class ConfigurationActivity extends AppCompatActivity implements StepperLayout.StepperListener {
 

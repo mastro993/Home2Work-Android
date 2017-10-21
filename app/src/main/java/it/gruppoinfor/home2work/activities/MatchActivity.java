@@ -43,11 +43,10 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.RouteUtils;
-import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.RoutePoint;
 import it.gruppoinfor.home2work.models.ShareRequest;
-import it.gruppoinfor.home2work.api.Account;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,19 +69,17 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
     AVLoadingIndicatorView loadingView;
 
     GoogleMap googleMap;
+    Long matchId;
     Match match;
     SupportMapFragment mapFragment;
 
     private boolean requesting = false;
-    private Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         ButterKnife.bind(this);
-
-        this.account = APIClient.getAccount();
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -96,7 +93,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        match = getIntent().getParcelableExtra("match");
+        matchId = getIntent().getLongExtra("matchID", 0L);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -245,7 +242,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
         loadingView.setVisibility(View.VISIBLE);
         infoText.setText(getString(R.string.match_confirmation_awaiting));
 
-        APIClient.API().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
+        Client.getAPI().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
             @Override
             public void onResponse(Call<ShareRequest> call, Response<ShareRequest> response) {
                 requesting = true;

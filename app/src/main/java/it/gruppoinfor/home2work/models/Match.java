@@ -1,65 +1,35 @@
 package it.gruppoinfor.home2work.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import it.gruppoinfor.home2work.api.Account;
+public class Match {
 
-public class Match implements Parcelable {
-
-    public final static Parcelable.Creator<Match> CREATOR = new Creator<Match>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Match createFromParcel(Parcel in) {
-            Match instance = new Match();
-            instance.id = ((Long) in.readValue((Long.class.getClassLoader())));
-            instance.guest = ((Account) in.readValue((Account.class.getClassLoader())));
-            instance.host = ((Account) in.readValue((Account.class.getClassLoader())));
-            instance.score = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.length = ((Double) in.readValue((Double.class.getClassLoader())));
-            instance.cunsumption = ((Double) in.readValue((Double.class.getClassLoader())));
-            instance.emission = ((Double) in.readValue((Double.class.getClassLoader())));
-            instance._new = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.hidden = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            in.readList(instance.route, (RoutePoint.class.getClassLoader()));
-            return instance;
-        }
-
-        public Match[] newArray(int size) {
-            return (new Match[size]);
-        }
-
-    };
     @SerializedName("id")
     @Expose
     private Long id;
     @SerializedName("guest")
     @Expose
-    private Account guest;
+    private User guest;
     @SerializedName("host")
     @Expose
-    private Account host;
+    private User host;
     @SerializedName("score")
     @Expose
-    private Integer score;
+    private Long score;
     @SerializedName("length")
     @Expose
-    private Double length;
+    private Long length;
     @SerializedName("cunsumption")
     @Expose
-    private Double cunsumption;
+    private Long cunsumption;
     @SerializedName("emission")
     @Expose
-    private Double emission;
+    private Long emission;
     @SerializedName("new")
     @Expose
     private Boolean _new;
@@ -68,7 +38,7 @@ public class Match implements Parcelable {
     private Boolean hidden;
     @SerializedName("route")
     @Expose
-    private List<RoutePoint> route = new ArrayList<>();
+    private List<RoutePoint> route = null;
 
     public Long getId() {
         return id;
@@ -78,51 +48,51 @@ public class Match implements Parcelable {
         this.id = id;
     }
 
-    public Account getGuest() {
+    public User getGuest() {
         return guest;
     }
 
-    public void setGuest(Account guest) {
+    public void setGuest(User guest) {
         this.guest = guest;
     }
 
-    public Account getHost() {
+    public User getHost() {
         return host;
     }
 
-    public void setHost(Account host) {
+    public void setHost(User host) {
         this.host = host;
     }
 
-    public Integer getScore() {
+    public Long getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Long score) {
         this.score = score;
     }
 
-    public Double getLength() {
+    public Long getLength() {
         return length;
     }
 
-    public void setLength(Double length) {
+    public void setLength(Long length) {
         this.length = length;
     }
 
-    public Double getCunsumption() {
+    public Long getCunsumption() {
         return cunsumption;
     }
 
-    public void setCunsumption(Double cunsumption) {
+    public void setCunsumption(Long cunsumption) {
         this.cunsumption = cunsumption;
     }
 
-    public Double getEmission() {
+    public Long getEmission() {
         return emission;
     }
 
-    public void setEmission(Double emission) {
+    public void setEmission(Long emission) {
         this.emission = emission;
     }
 
@@ -134,7 +104,7 @@ public class Match implements Parcelable {
         this._new = _new;
     }
 
-    public Boolean isHidden() {
+    public Boolean getHidden() {
         return hidden;
     }
 
@@ -148,23 +118,6 @@ public class Match implements Parcelable {
 
     public void setRoute(List<RoutePoint> route) {
         this.route = route;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(guest);
-        dest.writeValue(host);
-        dest.writeValue(score);
-        dest.writeValue(length);
-        dest.writeValue(cunsumption);
-        dest.writeValue(emission);
-        dest.writeValue(_new);
-        dest.writeValue(hidden);
-        dest.writeList(route);
-    }
-
-    public int describeContents() {
-        return 0;
     }
 
 }

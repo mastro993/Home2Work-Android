@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-import it.gruppoinfor.home2work.api.APIClient;
+import it.gruppoinfor.home2work.api.Client;
 
 
 public class Achievement {
@@ -66,6 +66,6 @@ public class Achievement {
     }
 
     public String getIconURL() {
-        return APIClient.ACHIEVEMENTS_BASE_URL + id + ".png";
+        return Client.ACHIEVEMENTS_BASE_URL + id + ".png";
     }
 }

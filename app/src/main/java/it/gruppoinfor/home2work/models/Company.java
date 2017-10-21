@@ -126,6 +126,6 @@ public class Company implements Parcelable {
 
     @Override
     public String toString() {
-        return name + " (" + address.getDistrict() + ")";
+        return name + " (" + address.getCity() + ")";
     }
 }

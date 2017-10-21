@@ -6,15 +6,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.gruppoinfor.home2work.models.Route;
 import it.gruppoinfor.home2work.models.RoutePoint;
 
 
 public class RouteUtils {
 
-    public static ArrayList<LatLng> getWayPoints(Route route, final int max) {
-        return getWayPoints(route.getPoints(), max);
-    }
 
     public static ArrayList<LatLng> getWayPoints(List<RoutePoint> points, final int max) {
 
@@ -47,13 +43,6 @@ public class RouteUtils {
 
         return rest > 0 ? step + 1 : step;
 
-    }
-
-    public static LatLngBounds getRouteBounds(Route route) {
-        List<LatLng> latLngs = new ArrayList<>();
-        for (RoutePoint point : route.getPoints())
-            latLngs.add(point.getLatLng());
-        return getRouteBounds(latLngs);
     }
 
     public static LatLngBounds getRouteBounds(List<LatLng> locations) {
