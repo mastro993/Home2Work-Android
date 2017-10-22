@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.receivers;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
@@ -10,14 +10,16 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
+import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.SessionManager;
+import it.gruppoinfor.home2work.UserPrefs;
 import it.gruppoinfor.home2work.activities.SplashActivity;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.User;
-import it.gruppoinfor.home2work.services.RoutePointSync;
 import it.gruppoinfor.home2work.services.RouteService;
 
 
-public class AutoStart extends BroadcastReceiver {
+public class BootReceiver extends BroadcastReceiver {
 
     private Context context;
 
@@ -34,7 +36,7 @@ public class AutoStart extends BroadcastReceiver {
                 Client.setSignedUser(user);
 
                 // Carica le preferenze
-                PreferenceManager.loadPrefs();
+                UserPrefs.init(context);
 
                 // Servizio di localizzazione
                 if (UserPrefs.activityTrackingEnabled) {

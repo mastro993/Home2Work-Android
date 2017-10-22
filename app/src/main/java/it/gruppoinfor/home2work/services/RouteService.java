@@ -30,7 +30,6 @@ import it.gruppoinfor.home2work.MyLogger;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.Tools;
-import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.models.User;
 
@@ -102,7 +101,7 @@ public class RouteService extends Service {
         user = sessionManager.loadSession();
 
         if (user != null) {
-            MyLogger.i(TAG, "Sessione presente. Utente: " + Client.getSignedUser().getEmail());
+            MyLogger.i(TAG, "Sessione presente. Utente: " + user.getEmail());
             startService();
         } else {
             MyLogger.i(TAG, "Sessione non presente");
@@ -263,6 +262,7 @@ public class RouteService extends Service {
             return bestLocation;
         }
     }
+
 
 
 }

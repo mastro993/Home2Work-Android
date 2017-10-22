@@ -31,7 +31,7 @@
             android:value="@string/google_maps_key" />
 
         <receiver
-            android:name=".AutoStart"
+            android:name=".receivers.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -44,8 +44,17 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".receivers.SyncAlarmReceiver"
+            android:enabled="true"
+            android:exported="true"/>
+
         <service
             android:name=".services.RouteService"
+            android:enabled="true"
+            android:stopWithTask="false" />
+        <service
+            android:name=".services.SyncService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service

@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,12 +34,10 @@ import com.google.android.gms.maps.model.LatLng;
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.Converters;
-import it.gruppoinfor.home2work.PreferenceManager;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.UserPrefs;
@@ -180,19 +177,19 @@ public class SettingsFragment extends Fragment {
         newsNotificationSwitch.setChecked(UserPrefs.newsNotificationsEnabled);
         newsNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.newsNotificationsEnabled = b;
-            PreferenceManager.setBool(PreferenceManager.PrefsKey.NEWS_NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.Keys.NEWS_NOTIFICATIONS, b);
         }));
 
         matchesNotificationSwitch.setChecked(UserPrefs.matchesNotificationsEnabled);
         matchesNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.matchesNotificationsEnabled = b;
-            PreferenceManager.setBool(PreferenceManager.PrefsKey.MATCHES_NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.Keys.MATCHES_NOTIFICATIONS, b);
         }));
 
         messagesNotificationSwitch.setChecked(UserPrefs.messagesNotificationsEnabled);
         messagesNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.messagesNotificationsEnabled = b;
-            PreferenceManager.setBool(PreferenceManager.PrefsKey.MSG_NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.Keys.MSG_NOTIFICATIONS, b);
         }));
 
     }
@@ -205,7 +202,7 @@ public class SettingsFragment extends Fragment {
                 builder.setMessage("Disattivando il tracking la tua posizione non sarà più registrata, ma Home2Work non potrà più segnalarti match. Disattivare la funzione?");
                 builder.setPositiveButton("Disattiva", ((dialogInterface, i) -> {
                     UserPrefs.activityTrackingEnabled = false;
-                    PreferenceManager.setBool(PreferenceManager.PrefsKey.ACTIVITY_TRACKING, false);
+                    UserPrefs.getManager().setBool(UserPrefs.Keys.ACTIVITY_TRACKING, false);
                     ((MainActivity)getActivity()).bottomNavigation.setNotification("!", 4);
                 }));
                 builder.setNegativeButton("Annulla", (((dialogInterface, i) -> {
@@ -215,7 +212,7 @@ public class SettingsFragment extends Fragment {
 
             } else {
                 UserPrefs.activityTrackingEnabled = true;
-                PreferenceManager.setBool(PreferenceManager.PrefsKey.ACTIVITY_TRACKING, true);
+                UserPrefs.getManager().setBool(UserPrefs.Keys.ACTIVITY_TRACKING, true);
                 ((MainActivity)getActivity()).bottomNavigation.setNotification("", 4);
             }
         });
@@ -226,10 +223,10 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(i==1){
-                    PreferenceManager.setBool(PreferenceManager.PrefsKey.SYNC_WITH_DATA, false);
+                    UserPrefs.getManager().setBool(UserPrefs.Keys.SYNC_WITH_DATA, false);
                     UserPrefs.syncWithData = false;
                 } else {
-                    PreferenceManager.setBool(PreferenceManager.PrefsKey.SYNC_WITH_DATA, true);
+                    UserPrefs.getManager().setBool(UserPrefs.Keys.SYNC_WITH_DATA, true);
                     UserPrefs.syncWithData = true;
                 }
             }
@@ -244,7 +241,7 @@ public class SettingsFragment extends Fragment {
     private CompoundButton.OnCheckedChangeListener getNotificationSwitchCheckedChangeListener(){
         return ((compoundButton, b) -> {
             UserPrefs.notificationsEnabled = b;
-            PreferenceManager.setBool(PreferenceManager.PrefsKey.NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.Keys.NOTIFICATIONS, b);
             newsNotificationSwitch.setEnabled(b);
             matchesNotificationSwitch.setEnabled(b);
             messagesNotificationSwitch.setEnabled(b);

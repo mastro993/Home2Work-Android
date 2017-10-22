@@ -26,8 +26,10 @@ public class UserPrefs {
 
     // METHODS
     private static Manager manager;
+    private static boolean inited;
     public static void init(Context context){
         manager = new Manager(context);
+        inited = true;
     }
 
     public static Manager getManager(){
@@ -88,5 +90,9 @@ public class UserPrefs {
         public static String ACTIVITY_TRACKING = "activity_tracking";
         public static String SYNC_WITH_DATA = "sync_with_data";
         public static String LAST_SYNC = "last_sync";
+    }
+
+    public static boolean isInited() {
+        return inited;
     }
 }

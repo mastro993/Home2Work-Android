@@ -1,7 +1,11 @@
 package it.gruppoinfor.home2work.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,13 +22,13 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
 import it.gruppoinfor.home2work.UserPrefs;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.NotificationFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
-import it.gruppoinfor.home2work.services.RoutePointSync;
 import it.gruppoinfor.home2work.services.RouteService;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        RoutePointSync.sync(this);
+        setSyncAlarm();
 
     }
 
@@ -122,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     public void refreshData() {
 
         if(!UserPrefs.activityTrackingEnabled) bottomNavigation.setNotification("!", 4);
@@ -147,6 +150,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });*/
+    }
+
+    private void setSyncAlarm(){
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(this, SyncAlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
+        am.setInexactRepeating(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime(),
+                AlarmManager.INTERVAL_HOUR,
+                pi);
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {
