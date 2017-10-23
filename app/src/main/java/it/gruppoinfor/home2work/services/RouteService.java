@@ -8,12 +8,15 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.arasthel.asyncjob.AsyncJob;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -64,10 +67,12 @@ public class RouteService extends Service {
         MyLogger.i(TAG, "Creazione servizio");
 
         String channelID = "ROUTE_SERVICE_NOTIFICATION";
-        int notificationIcon = R.drawable.ic_map_marker_start;
+        int notificationIcon = R.drawable.home2work_icon;
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_map_marker_start);
 
         idleNotification = new NotificationCompat.Builder(this, channelID)
                 .setSmallIcon(notificationIcon)
+                .setLargeIcon(icon)
                 .setContentTitle("Home2Work")
                 .setContentText("Servizio di localizzazione")
                 .setOngoing(true)
@@ -76,8 +81,9 @@ public class RouteService extends Service {
 
         trackingNotification = new NotificationCompat.Builder(this, channelID)
                 .setSmallIcon(notificationIcon)
-                .setContentTitle("Home2Work")
-                .setContentText("Tracking attività in corso")
+                .setLargeIcon(icon)
+                .setContentTitle("Home2Work - Tracking in corso")
+                .setContentText("Servizio di localizzazione")
                 .setOngoing(true)
                 .build();
 

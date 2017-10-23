@@ -16,6 +16,22 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="LightEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">#aafafafa</item>
+        <item name="android:textColor">@color/dark_bg_light_primary_text</item>
+        <item name="android:backgroundTint">#aafafafa</item>
+    </style>
+
+    <style name="LightTextInput" parent="Widget.Design.TextInputLayout">
+        <item name="android:textColorHint">#aafafafa</item>
+        <item name="android:textColor">@color/dark_bg_light_primary_text</item>
+        <item name="android:color">@color/dark_bg_light_primary_text</item>
+        <item name="android:textSize">20sp</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">#aafafafa</item>
+        <item name="colorControlActivated">#aafafafa</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
