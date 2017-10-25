@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,11 +17,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.arasthel.asyncjob.AsyncJob;
-import com.google.android.gms.awareness.fence.FenceState;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
@@ -44,33 +40,18 @@ import static it.gruppoinfor.home2work.App.dbApp;
 
 public class RouteService extends Service {
 
-    private boolean DEBUG_MODE = false;
     private int NOTIFICATION_ID = 1337;
     private String TAG = "ROUTE_SERVICE";
     private boolean isRecording = false;
     private MyLocationListener routeLocationListener;
-    private GoogleApiClient activityClient;
-    private GoogleApiClient locationClient;
-    private GoogleApiClient awarenesClient;
+    private GoogleApiClient mGoogleApiClient;
     private User user;
     private Notification idleNotification;
     private Notification trackingNotification;
-    private GoogleApiClient.ConnectionCallbacks locationClientCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+    private GoogleApiClient.ConnectionCallbacks mConnectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(@Nullable Bundle bundle) {
-            MyLogger.d("LOCATION_CLIENT", "Connessione avvenuta");
-            startLocationRequests();
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-            MyLogger.w(TAG, "onConnectionSuspended: " + i);
-        }
-    };
-    private GoogleApiClient.ConnectionCallbacks activityClientCallbacks = new GoogleApiClient.ConnectionCallbacks() {
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            MyLogger.d("ACTIVITY_CLIENT", "Connessione avvenuta");
+            MyLogger.d("GOOGLE_API_CLIENT", "Connessione avvenuta");
 
             Intent intent = new Intent(
                     RouteService.this,
@@ -83,7 +64,7 @@ public class RouteService extends Service {
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
             ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                    activityClient,
+                    mGoogleApiClient,
                     10000,
                     pendingIntent
             );
@@ -109,9 +90,16 @@ public class RouteService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        MyLogger.i(TAG, "Creazione servizio");
         initNotifications();
-        initClient();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(mConnectionCallbacks)
+                .addOnConnectionFailedListener((connectionResult -> {
+                    MyLogger.d("GOOGLE_API_CLIENT", "Connessione fallita: " + connectionResult);
+                }))
+                .addApi(ActivityRecognition.API)
+                .addApi(LocationServices.API)
+                .build();
 
         SessionManager sessionManager = new SessionManager(this);
         user = sessionManager.loadSession();
@@ -127,11 +115,7 @@ public class RouteService extends Service {
 
     private void startService() {
         MyLogger.i(TAG, "Avvio servizio");
-
-        if (DEBUG_MODE) locationClient.connect();
-        else activityClient.connect();
-
-        // Avvio servizio in foreground
+        mGoogleApiClient.connect();
         startForeground(NOTIFICATION_ID, idleNotification);
     }
 
@@ -163,24 +147,6 @@ public class RouteService extends Service {
                 .build();
     }
 
-    private void initClient() {
-        activityClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(activityClientCallbacks)
-                .addOnConnectionFailedListener((connectionResult -> {
-                    MyLogger.d("ACTIVITY_CLIENT", "Connessione fallita: " + connectionResult);
-                }))
-                .addApi(ActivityRecognition.API)
-                .build();
-
-        locationClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(locationClientCallbacks)
-                .addOnConnectionFailedListener((connectionResult -> {
-                    MyLogger.w("LOCATION_CLIENT", "Connessione fallita: " + connectionResult);
-                }))
-                .addApi(LocationServices.API)
-                .build();
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -188,7 +154,7 @@ public class RouteService extends Service {
         if (ActivityRecognizedService.hasResult(intent)) {
             DrivingActivity drivingActivity = ActivityRecognizedService.extractResult(intent);
             if (drivingActivity == DrivingActivity.STARTED_DRIVING && !isRecording) {
-                locationClient.connect();
+                startLocationRequests();
             } else if (drivingActivity == DrivingActivity.STOPPED_DRIVING) {
                 stopLocationRequests();
             }
@@ -208,7 +174,7 @@ public class RouteService extends Service {
 
             routeLocationListener = new MyLocationListener();
 
-            LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, locationRequest, routeLocationListener);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, routeLocationListener);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(NOTIFICATION_ID, trackingNotification);
@@ -220,11 +186,7 @@ public class RouteService extends Service {
     private void stopLocationRequests() {
         MyLogger.d(TAG, "Tracking utente arrestato");
 
-        if (locationClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(locationClient, routeLocationListener);
-            locationClient.disconnect();
-        }
-
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, routeLocationListener);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, idleNotification);
 
@@ -244,7 +206,7 @@ public class RouteService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             lastLocations.add(location);
-            if (lastLocations.size() >= MIN_LOCATIONS || DEBUG_MODE) {
+            if (lastLocations.size() >= MIN_LOCATIONS) {
                 Location bestLocation = getBestLocation();
 
                 final RoutePointEntity routePointEntity = new RoutePointEntity();
@@ -267,35 +229,50 @@ public class RouteService extends Service {
             for (Location location : lastLocations) {
                 if (bestLocation == null) bestLocation = location;
                 else {
-                    if (bestLocation.getAccuracy() > location.getAccuracy())
+                    if (isBetterLocation(location, bestLocation))
                         bestLocation = location;
                 }
             }
             lastLocations.clear();
             return bestLocation;
         }
-    }
 
-    // Handle the callback on the Intent.
-    public class MyFenceReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            FenceState fenceState = FenceState.extract(intent);
-
-            if (TextUtils.equals(fenceState.getFenceKey(), "headphoneFenceKey")) {
-                switch (fenceState.getCurrentState()) {
-                    case FenceState.TRUE:
-                        Log.i(TAG, "Headphones are plugged in.");
-                        break;
-                    case FenceState.FALSE:
-                        Log.i(TAG, "Headphones are NOT plugged in.");
-                        break;
-                    case FenceState.UNKNOWN:
-                        Log.i(TAG, "The headphone fence is in an unknown state.");
-                        break;
-                }
+        protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+            if (currentBestLocation == null) {
+                // A new location is always better than no location
+                return true;
             }
+
+            // Check whether the new location fix is more or less accurate
+            int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+            boolean isLessAccurate = accuracyDelta > 0;
+            boolean isMoreAccurate = accuracyDelta < 0;
+            boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+            // Check if the old and new location are from the same provider
+            boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                    currentBestLocation.getProvider());
+
+            // Determine location quality using a combination of timeliness and accuracy
+            if (isMoreAccurate) {
+                return true;
+            } else if (!isLessAccurate) {
+                return true;
+            } else if (!isSignificantlyLessAccurate && isFromSameProvider) {
+                return true;
+            }
+            return false;
         }
+
+
+        private boolean isSameProvider(String provider1, String provider2) {
+            if (provider1 == null) {
+                return provider2 == null;
+            }
+            return provider1.equals(provider2);
+        }
+
+
     }
 
 
