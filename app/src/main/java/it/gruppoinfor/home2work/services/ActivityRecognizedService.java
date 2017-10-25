@@ -18,7 +18,7 @@ public class ActivityRecognizedService extends IntentService {
 
     private static final String TAG = "ACTIVITY_RECOGNITION";
     private static boolean isDriving = false;
-    final int ACTIVITY_TRESHOLD = 85; // Valore minimo di affidabilita' per i trigger delle attivita'
+    final int ACTIVITY_TRESHOLD = 80; // Valore minimo di affidabilita' per i trigger delle attivita'
     private static int stillStatusCounter = 0;
     private final static int MAX_STILL_STATUS_COUNT = 2;
 

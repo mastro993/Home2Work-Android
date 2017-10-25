@@ -8,14 +8,12 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -24,16 +22,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.arasthel.asyncjob.AsyncJob;
-import com.google.android.gms.awareness.Awareness;
-import com.google.android.gms.awareness.fence.AwarenessFence;
-import com.google.android.gms.awareness.fence.DetectedActivityFence;
 import com.google.android.gms.awareness.fence.FenceState;
-import com.google.android.gms.awareness.fence.FenceUpdateRequest;
-import com.google.android.gms.awareness.fence.HeadphoneFence;
-import com.google.android.gms.awareness.state.HeadphoneState;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -65,11 +55,46 @@ public class RouteService extends Service {
     private User user;
     private Notification idleNotification;
     private Notification trackingNotification;
-/* /////   */
-    private PendingIntent myPendingIntent;
-    private MyFenceReceiver myFenceReceiver;
-    private AwarenessFence drivingFence = DetectedActivityFence.during(DetectedActivityFence.WALKING);
-    private String FENCE_RECEIVER_ACTION = "boh";
+    private GoogleApiClient.ConnectionCallbacks locationClientCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+        @Override
+        public void onConnected(@Nullable Bundle bundle) {
+            MyLogger.d("LOCATION_CLIENT", "Connessione avvenuta");
+            startLocationRequests();
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+            MyLogger.w(TAG, "onConnectionSuspended: " + i);
+        }
+    };
+    private GoogleApiClient.ConnectionCallbacks activityClientCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+        @Override
+        public void onConnected(@Nullable Bundle bundle) {
+            MyLogger.d("ACTIVITY_CLIENT", "Connessione avvenuta");
+
+            Intent intent = new Intent(
+                    RouteService.this,
+                    ActivityRecognizedService.class
+            );
+            PendingIntent pendingIntent = PendingIntent.getService(
+                    RouteService.this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
+                    activityClient,
+                    10000,
+                    pendingIntent
+            );
+
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+            MyLogger.w(TAG, "onConnectionSuspended: " + i);
+        }
+    };
 
     public static boolean isRunning(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -85,7 +110,32 @@ public class RouteService extends Service {
     public void onCreate() {
         super.onCreate();
         MyLogger.i(TAG, "Creazione servizio");
+        initNotifications();
+        initClient();
 
+        SessionManager sessionManager = new SessionManager(this);
+        user = sessionManager.loadSession();
+
+        if (user != null) {
+            MyLogger.i(TAG, "Sessione presente. Utente: " + user.getEmail());
+            startService();
+        } else {
+            MyLogger.i(TAG, "Sessione non presente");
+        }
+
+    }
+
+    private void startService() {
+        MyLogger.i(TAG, "Avvio servizio");
+
+        if (DEBUG_MODE) locationClient.connect();
+        else activityClient.connect();
+
+        // Avvio servizio in foreground
+        startForeground(NOTIFICATION_ID, idleNotification);
+    }
+
+    private void initNotifications() {
         String channelID = "ROUTE_SERVICE_NOTIFICATION";
         int notificationIcon = R.drawable.home2work_icon;
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_map_marker_start);
@@ -111,9 +161,11 @@ public class RouteService extends Service {
                 .setOngoing(true)
                 .setShowWhen(false)
                 .build();
+    }
 
+    private void initClient() {
         activityClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new ActivityClientCallbacks())
+                .addConnectionCallbacks(activityClientCallbacks)
                 .addOnConnectionFailedListener((connectionResult -> {
                     MyLogger.d("ACTIVITY_CLIENT", "Connessione fallita: " + connectionResult);
                 }))
@@ -121,66 +173,12 @@ public class RouteService extends Service {
                 .build();
 
         locationClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new LocationClientCallbacks())
+                .addConnectionCallbacks(locationClientCallbacks)
                 .addOnConnectionFailedListener((connectionResult -> {
                     MyLogger.w("LOCATION_CLIENT", "Connessione fallita: " + connectionResult);
                 }))
                 .addApi(LocationServices.API)
                 .build();
-
-
-        // WHAT
-
-        awarenesClient = new GoogleApiClient.Builder(this)
-                .addOnConnectionFailedListener((connectionResult -> {
-                    MyLogger.d("AWARENESS_CLIENT", "Connessione fallita: " + connectionResult);
-                }))
-                .addApi(Awareness.API).build();
-        awarenesClient.connect();
-
-        Intent intent = new Intent(FENCE_RECEIVER_ACTION);
-        PendingIntent myPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        MyFenceReceiver myFenceReceiver = new MyFenceReceiver();
-        registerReceiver(myFenceReceiver, new IntentFilter(FENCE_RECEIVER_ACTION));
-
-        Awareness.FenceApi.updateFences(
-                awarenesClient,
-                new FenceUpdateRequest.Builder()
-                        .addFence("headphoneFenceKey", stillFence, myPendingIntent)
-                        .build())
-                .setResultCallback((status)->{
-                    if (status.isSuccess()) {
-                        Log.i(TAG, "Fence was successfully registered.");
-                    } else {
-                        Log.e(TAG, "Fence could not be registered: " + status);
-                    }
-                });
-
-
-        // WHAT
-
-
-
-        SessionManager sessionManager = new SessionManager(this);
-        user = sessionManager.loadSession();
-
-        if (user != null) {
-            MyLogger.i(TAG, "Sessione presente. Utente: " + user.getEmail());
-            startService();
-        } else {
-            MyLogger.i(TAG, "Sessione non presente");
-        }
-
-    }
-
-    private void startService() {
-        MyLogger.i(TAG, "Avvio servizio");
-
-        if (DEBUG_MODE) locationClient.connect();
-        else activityClient.connect();
-
-        // Avvio servizio in foreground
-        startForeground(NOTIFICATION_ID, idleNotification);
     }
 
     @Override
@@ -238,56 +236,6 @@ public class RouteService extends Service {
         return null;
     }
 
-    @Override
-    public void onDestroy() {
-    }
-
-    private class ActivityClientCallbacks implements GoogleApiClient.ConnectionCallbacks {
-
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            MyLogger.d("ACTIVITY_CLIENT", "Connessione avvenuta");
-
-            Intent intent = new Intent(
-                    RouteService.this,
-                    ActivityRecognizedService.class
-            );
-            PendingIntent pendingIntent = PendingIntent.getService(
-                    RouteService.this,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                    activityClient,
-                    10000,
-                    pendingIntent
-            );
-
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-            MyLogger.w(TAG, "onConnectionSuspended: " + i);
-        }
-
-    }
-
-    private class LocationClientCallbacks implements GoogleApiClient.ConnectionCallbacks {
-
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            MyLogger.d("LOCATION_CLIENT", "Connessione avvenuta");
-            startLocationRequests();
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-            MyLogger.w(TAG, "onConnectionSuspended: " + i);
-        }
-
-    }
-
     private class MyLocationListener implements LocationListener {
 
         private final int MIN_LOCATIONS = 3;
@@ -335,7 +283,7 @@ public class RouteService extends Service {
             FenceState fenceState = FenceState.extract(intent);
 
             if (TextUtils.equals(fenceState.getFenceKey(), "headphoneFenceKey")) {
-                switch(fenceState.getCurrentState()) {
+                switch (fenceState.getCurrentState()) {
                     case FenceState.TRUE:
                         Log.i(TAG, "Headphones are plugged in.");
                         break;
