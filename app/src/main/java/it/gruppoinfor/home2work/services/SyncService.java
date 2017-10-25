@@ -46,8 +46,6 @@ public class SyncService extends Service {
     }
 
     public void sync() {
-        MyLogger.i(TAG, "Avvio sincronizzazione");
-
         AsyncJob.doInBackground(()->{
             for(RoutePointEntity routePointEntity : dbApp.routePointDAO().getAllUserPoints(Client.getSignedUser().getId())){
 
@@ -58,26 +56,30 @@ public class SyncService extends Service {
 
             }
 
-            if(routePoints.size() > 0)
+            if(routePoints.size() > 0){
+                MyLogger.i(TAG, "Sono presenti " + routePoints.size() + " location");
                 syncRoutePoints(routePoints);
+            }
+
         });
 
     }
 
     private void syncRoutePoints(final List<RoutePoint> routePointList) {
-        MyLogger.d(TAG, "Sincronizzazione RoutePoints (" + routePointList.size() + ")");
+        MyLogger.i(TAG, "Avvio sincronizzazione");
 
         Client.getAPI().uploadRoutePoint(Client.getSignedUser().getId(), routePointList)
                 .enqueue(new Callback<List<RoutePoint>>() {
                     @Override
                     public void onResponse(Call<List<RoutePoint>> call, Response<List<RoutePoint>> response) {
                         AsyncJob.doInBackground(()-> dbApp.routePointDAO().deleteAll(Client.getSignedUser().getId()));
-                        MyLogger.d(TAG, "Sync completata");
+
+                        MyLogger.d(TAG, "Sincronizzazione avvenuta (" + routePointList.size() + " location)");
                     }
 
                     @Override
                     public void onFailure(Call<List<RoutePoint>> call, Throwable t) {
-                        MyLogger.e(TAG, "Sync fallita. " + call.toString(), t);
+                        MyLogger.e(TAG, "Sincronizzazione fallita. " + call.toString(), t);
                     }
 
                 });

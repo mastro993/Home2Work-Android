@@ -30,6 +30,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <meta-data
+            android:name="com.google.android.awareness.API_KEY"
+            android:value="AIzaSyCXpyHnpMEv29bEOPRsFxRJ0ZNVQk3Bsis" />
+
         <receiver
             android:name=".receivers.BootReceiver"
             android:enabled="true"
@@ -85,6 +89,9 @@
             android:name=".activities.MatchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MessagesActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="46d1717c516ccf9648149cf19412063e5dace7cf" />
     </application>
 
 </manifest>

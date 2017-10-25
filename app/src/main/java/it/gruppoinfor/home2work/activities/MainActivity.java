@@ -12,12 +12,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.crashlytics.android.Crashlytics;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setSyncAlarm();
-
     }
 
     private void initUI() {

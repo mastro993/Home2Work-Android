@@ -4,9 +4,11 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.orhanobut.logger.Logger;
 
+import io.fabric.sdk.android.Fabric;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.DBApp;
 
@@ -30,31 +32,17 @@ public class App extends Application {
     public void onCreate() {
         instance = this;
         super.onCreate();
-        setupUncaughtExceptionsHandler();
+        Fabric.with(this, new Crashlytics());
         //setupLeakCanary();
         setupStetho();
         MyLogger.init(this);
         ReceiverManager.init(this);
-        //PreferenceManager.init(this); // Inizializzazione gestore preferenze
+        UserPrefs.init(this);
         Client.init();
 
         dbApp = Room.databaseBuilder(getApplicationContext(), DBApp.class, "home2work")
                 .fallbackToDestructiveMigration()
                 .build();
-    }
-
-    private void setupUncaughtExceptionsHandler() {
-        final Thread.UncaughtExceptionHandler defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                Logger.log(Logger.ERROR, thread.getName().toUpperCase(), ex.getLocalizedMessage(), ex);
-                // re-throw critical exception further to the os (important)
-                defaultUEH.uncaughtException(thread, ex);
-            }
-        });
-
     }
 
 /*    private void setupLeakCanary() {
@@ -80,11 +68,6 @@ public class App extends Application {
         initializerBuilder.enableDumpapp(
                 Stetho.defaultDumperPluginsProvider(this)
         );
-
-/*        // Realm.io
-        initializerBuilder.enableWebKitInspector(
-                RealmInspectorModulesProvider.builder(this).build()
-        );*/
 
         // Use the InitializerBuilder to generate an Initializer
         Stetho.Initializer initializer = initializerBuilder.build();

@@ -11,7 +11,8 @@
     <ImageView
         android:id="@+id/logo_imageview"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="120dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/home2work_icon"
         android:transitionName="logo"
         app:layout_constraintBottom_toBottomOf="parent"

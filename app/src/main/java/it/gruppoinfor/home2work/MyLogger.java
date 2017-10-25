@@ -53,7 +53,7 @@ public class MyLogger {
             isExternalStorageAvailable = isExternalStorageWriteable = false;
         }
 
-        baseDir = context.getFilesDir();
+        baseDir = Environment.getExternalStorageDirectory();
 
     }
 
@@ -65,7 +65,7 @@ public class MyLogger {
             String filename = filenameDateFormat.format(new Date());
 
 
-            File logFile = new File(baseDir + "/Logs/" + filename + ".txt");
+            File logFile = new File(baseDir + "/Home2Work/Logs/" + filename + ".txt");
 
             try {
                 if (!logFile.exists()) {

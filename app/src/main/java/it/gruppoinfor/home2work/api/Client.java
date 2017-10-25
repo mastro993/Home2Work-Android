@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.api;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,6 +26,9 @@ public class Client {
     }
 
     public static void setSignedUser(User signedUser) {
+        Crashlytics.setUserIdentifier(signedUser.getId().toString());
+        Crashlytics.setUserEmail(signedUser.getEmail());
+        Crashlytics.setUserName(signedUser.toString());
         Client.signedUser = signedUser;
     }
 

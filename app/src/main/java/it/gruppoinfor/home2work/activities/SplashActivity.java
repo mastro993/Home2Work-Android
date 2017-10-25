@@ -35,8 +35,6 @@ public class SplashActivity extends AppCompatActivity {
 
         new Handler().postDelayed(()->{
 
-            UserPrefs.init(getApplicationContext());
-
             if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, FINE_LOCATION_ACCESS);
             } else {

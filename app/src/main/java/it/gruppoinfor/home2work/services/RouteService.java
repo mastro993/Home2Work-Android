@@ -5,21 +5,35 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.arasthel.asyncjob.AsyncJob;
+import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
+import com.google.android.gms.awareness.fence.FenceState;
+import com.google.android.gms.awareness.fence.FenceUpdateRequest;
+import com.google.android.gms.awareness.fence.HeadphoneFence;
+import com.google.android.gms.awareness.state.HeadphoneState;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -47,9 +61,15 @@ public class RouteService extends Service {
     private MyLocationListener routeLocationListener;
     private GoogleApiClient activityClient;
     private GoogleApiClient locationClient;
+    private GoogleApiClient awarenesClient;
     private User user;
     private Notification idleNotification;
     private Notification trackingNotification;
+/* /////   */
+    private PendingIntent myPendingIntent;
+    private MyFenceReceiver myFenceReceiver;
+    private AwarenessFence drivingFence = DetectedActivityFence.during(DetectedActivityFence.WALKING);
+    private String FENCE_RECEIVER_ACTION = "boh";
 
     public static boolean isRunning(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -71,8 +91,10 @@ public class RouteService extends Service {
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_map_marker_start);
 
         idleNotification = new NotificationCompat.Builder(this, channelID)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setSmallIcon(notificationIcon)
-                .setLargeIcon(icon)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                //.setLargeIcon(icon)
                 .setContentTitle("Home2Work")
                 .setContentText("Servizio di localizzazione")
                 .setOngoing(true)
@@ -80,11 +102,14 @@ public class RouteService extends Service {
                 .build();
 
         trackingNotification = new NotificationCompat.Builder(this, channelID)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(notificationIcon)
-                .setLargeIcon(icon)
+                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+                //.setLargeIcon(icon)
                 .setContentTitle("Home2Work - Tracking in corso")
                 .setContentText("Servizio di localizzazione")
                 .setOngoing(true)
+                .setShowWhen(false)
                 .build();
 
         activityClient = new GoogleApiClient.Builder(this)
@@ -102,6 +127,39 @@ public class RouteService extends Service {
                 }))
                 .addApi(LocationServices.API)
                 .build();
+
+
+        // WHAT
+
+        awarenesClient = new GoogleApiClient.Builder(this)
+                .addOnConnectionFailedListener((connectionResult -> {
+                    MyLogger.d("AWARENESS_CLIENT", "Connessione fallita: " + connectionResult);
+                }))
+                .addApi(Awareness.API).build();
+        awarenesClient.connect();
+
+        Intent intent = new Intent(FENCE_RECEIVER_ACTION);
+        PendingIntent myPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        MyFenceReceiver myFenceReceiver = new MyFenceReceiver();
+        registerReceiver(myFenceReceiver, new IntentFilter(FENCE_RECEIVER_ACTION));
+
+        Awareness.FenceApi.updateFences(
+                awarenesClient,
+                new FenceUpdateRequest.Builder()
+                        .addFence("headphoneFenceKey", stillFence, myPendingIntent)
+                        .build())
+                .setResultCallback((status)->{
+                    if (status.isSuccess()) {
+                        Log.i(TAG, "Fence was successfully registered.");
+                    } else {
+                        Log.e(TAG, "Fence could not be registered: " + status);
+                    }
+                });
+
+
+        // WHAT
+
+
 
         SessionManager sessionManager = new SessionManager(this);
         user = sessionManager.loadSession();
@@ -202,9 +260,10 @@ public class RouteService extends Service {
             );
             ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                     activityClient,
-                    15000,
+                    10000,
                     pendingIntent
             );
+
         }
 
         @Override
@@ -269,6 +328,27 @@ public class RouteService extends Service {
         }
     }
 
+    // Handle the callback on the Intent.
+    public class MyFenceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FenceState fenceState = FenceState.extract(intent);
+
+            if (TextUtils.equals(fenceState.getFenceKey(), "headphoneFenceKey")) {
+                switch(fenceState.getCurrentState()) {
+                    case FenceState.TRUE:
+                        Log.i(TAG, "Headphones are plugged in.");
+                        break;
+                    case FenceState.FALSE:
+                        Log.i(TAG, "Headphones are NOT plugged in.");
+                        break;
+                    case FenceState.UNKNOWN:
+                        Log.i(TAG, "The headphone fence is in an unknown state.");
+                        break;
+                }
+            }
+        }
+    }
 
 
 }

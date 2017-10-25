@@ -3,6 +3,7 @@ package it.gruppoinfor.home2work.services;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
@@ -48,6 +49,7 @@ public class ActivityRecognizedService extends IntentService {
     }
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
+
         for (DetectedActivity activity : probableActivities) {
             if (activity.getConfidence() >= ACTIVITY_TRESHOLD) {
                 if (activity.getType() == DetectedActivity.IN_VEHICLE) {
@@ -67,6 +69,7 @@ public class ActivityRecognizedService extends IntentService {
                 }
             }
         }
+
     }
 
     private void startDrivingActivity() {
