@@ -82,6 +82,11 @@ public class Converters {
         return df.format(date);
     }
 
+    public static Date unixTimeToDate(long timestamp) {
+        Date date = new Date(timestamp * 1000L);
+        return date;
+    }
+
     public static Date stringToDate(String dateString, String template) {
         try {
             DateFormat format = new SimpleDateFormat(template, Locale.ITALIAN);
@@ -171,5 +176,19 @@ public class Converters {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static Date stringToDate(String timeString) {
+        String[] strings = timeString.split(":");
+        int hours = Integer.parseInt(strings[0]);
+        int mins = Integer.parseInt(strings[1]);
+        int time = hours * 60 + mins;
+        return new Date(60000L * time);
+    }
+
+    public static String dateToString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.ITALY);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+        return sdf.format(date);
     }
 }

@@ -1,31 +1,57 @@
 package it.gruppoinfor.home2work.models;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import java.util.Date;
 
 public class MatchItem {
 
-    @SerializedName("matchID")
-    @Expose
     private Long matchID;
-    @SerializedName("guestID")
-    @Expose
-    private Long guestID;
-    @SerializedName("guest")
-    @Expose
-    private User hostUser;
-    @SerializedName("type")
-    @Expose
-    private Long type;
-    @SerializedName("distance")
-    @Expose
-    private Double distance;
-    @SerializedName("score")
-    @Expose
-    private Long score;
-    @SerializedName("new")
-    @Expose
-    private int _new;
+    private User guest;
+    private User host;
+    private Double sharedDistance;
+    private Date arrivalTime;
+    private Date departureTime;
+    private Integer score;
+    private Boolean _new;
+    private Boolean hidden;
+
+    public MatchItem(Long matchID, User guest, User host, Double sharedDistance, Date arrivalTime, Date departureTime, Integer score, Boolean _new, Boolean hidden) {
+        this.matchID = matchID;
+        this.guest = guest;
+        this.host = host;
+        this.sharedDistance = sharedDistance;
+        this.arrivalTime = arrivalTime;
+        this.departureTime = departureTime;
+        this.score = score;
+        this._new = _new;
+        this.hidden = hidden;
+    }
+
+    public MatchItem() {
+    }
+
+    public Double getSharedDistance() {
+        return sharedDistance;
+    }
+
+    public void setSharedDistance(Double sharedDistance) {
+        this.sharedDistance = sharedDistance;
+    }
+
+    public Date getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public Date getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
 
     public Long getMatchID() {
         return matchID;
@@ -35,52 +61,43 @@ public class MatchItem {
         this.matchID = matchID;
     }
 
-    public Long getGuestID() {
-        return guestID;
+    public User getGuest() {
+        return guest;
     }
 
-    public void setGuestID(Long guestID) {
-        this.guestID = guestID;
+    public void setGuest(User guest) {
+        this.guest = guest;
     }
 
-    public Long getType() {
-        return type;
+    public User getHost() {
+        return host;
     }
 
-    public void setType(Long type) {
-        this.type = type;
+    public void setHost(User host) {
+        this.host = host;
     }
 
-    public Double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Double distance) {
-        this.distance = distance;
-    }
-
-    public Long getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(Long score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 
     public Boolean isNew() {
-        return _new == 1;
+        return _new;
     }
 
-    public void setNew(Boolean isNew) {
-        if(isNew) this._new = 1;
-        else this._new = 0;
+    public void setNew(Boolean _new) {
+        this._new = _new;
     }
 
-    public User getHostUser() {
-        return hostUser;
+    public Boolean getHidden() {
+        return hidden;
     }
 
-    public void setHostUser(User guest) {
-        this.hostUser = guest;
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

@@ -5,6 +5,10 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.List;
+
+import it.gruppoinfor.home2work.models.BookedMatchItem;
+import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.models.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -19,6 +23,8 @@ public class Client {
     public static final String ACHIEVEMENTS_BASE_URL = SERVER_URL + "/images/achievements/";
 
     private static User signedUser;
+    private static List<MatchItem> userMatches;
+    private static List<BookedMatchItem> userBookedMatches;
     private static EndpointInterface APIService;
 
     public static User getSignedUser() {
@@ -30,6 +36,22 @@ public class Client {
         Crashlytics.setUserEmail(signedUser.getEmail());
         Crashlytics.setUserName(signedUser.toString());
         Client.signedUser = signedUser;
+    }
+
+    public static List<MatchItem> getUserMatches() {
+        return userMatches;
+    }
+
+    public static void setUserMatches(List<MatchItem> userMatches) {
+        Client.userMatches = userMatches;
+    }
+
+    public static List<BookedMatchItem> getUserBookedMatches() {
+        return userBookedMatches;
+    }
+
+    public static void setUserBookedMatches(List<BookedMatchItem> userBookedMatches) {
+        Client.userBookedMatches = userBookedMatches;
     }
 
     public static void init() {

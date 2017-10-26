@@ -40,10 +40,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import it.gruppoinfor.home2work.models.MatchInfo;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.RouteUtils;
-import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.RoutePoint;
 
 public class MatchActivity extends AppCompatActivity implements OnMapReadyCallback, RoutingListener {
@@ -65,7 +65,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
 
     GoogleMap googleMap;
     Long matchId;
-    Match match;
+    MatchInfo match;
     SupportMapFragment mapFragment;
 
     private boolean requesting = false;

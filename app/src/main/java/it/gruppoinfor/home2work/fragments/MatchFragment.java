@@ -11,13 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.adapters.BookedMatchAdapter;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.Mockup;
 import it.gruppoinfor.home2work.models.MatchItem;
 
 
@@ -27,8 +31,6 @@ public class MatchFragment extends Fragment {
     RecyclerView matchRecyclerView;
     private SwipeRefreshLayout rootView;
     private Unbinder unbinder;
-
-    private List<MatchItem> matches;
 
     public MatchFragment() {
         // Required empty public constructor
@@ -48,7 +50,7 @@ public class MatchFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-// TODO        if (isVisibleToUser) populateList();
+        if (isVisibleToUser) populateList();
     }
 
     private void initUI() {
@@ -58,7 +60,7 @@ public class MatchFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchRecyclerView.getContext(), layoutManager.getOrientation());
         matchRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        //TODO rootView.setOnRefreshListener(this::refreshMatches);
+        rootView.setOnRefreshListener(this::refreshMatches);
 
         rootView.setColorSchemeResources(R.color.colorAccent);
     }
@@ -66,37 +68,29 @@ public class MatchFragment extends Fragment {
     private void refreshMatches() {
         rootView.setRefreshing(true);
 
+        // TODO fare refresh da web
+        Mockup.refreshUserMatches(matchItems -> {
+            rootView.setRefreshing(false);
+            Client.setUserMatches(matchItems);
 
-        /*Client.getAPI().getUserMatches(Client.getSignedUser().getId()).enqueue(new Callback<List<MatchItem>>() {
+            Stream<MatchItem> matchStream = matchItems.stream();
+            long newMatches = matchStream.filter(MatchItem::isNew).count();
 
-            @Override
-            public void onResponse(retrofit2.Call<List<MatchItem>> call, Response<List<MatchItem>> response) {
-                rootView.setRefreshing(false);
-
-
-                matches = response.body();
-
-                Stream<MatchItem> matchStream = response.body().stream();
-                long newMatches = matchStream.filter(m -> m.isNew()).count();
-
-                if (newMatches > 0) {
-                    ((MainActivity) getActivity()).bottomNavigation.setNotification(Long.toString(newMatches), 1);
-                }
-
-                populateList();
-
-
+            if (newMatches > 0) {
+                ((MainActivity) getActivity()).bottomNavigation.setNotification(Long.toString(newMatches), 1);
             }
 
-            @Override
-            public void onFailure(retrofit2.Call<List<MatchItem>> call, Throwable t) {
-                rootView.setRefreshing(false);
-                Toasty.warning(getContext(), getResources().getString(R.string.match_loading_error)).show();
-            }
+            populateList();
+        });
 
-        });*/
+        // TODO fare refresh da web
+        Mockup.refreshUserBookedMatches(bookedMatchItems -> {
+            Client.setUserBookedMatches(bookedMatchItems);
 
+            //BookedMatchAdapter bookedMatchAdapter = new BookedMatchAdapter(getActivity(), bookedMatchItems);
+            //bookedMatchesRecyclerView.setAdapter(bookedMatchAdapter);
 
+        });
 
     }
 
@@ -108,7 +102,7 @@ public class MatchFragment extends Fragment {
 
     private void populateList() {
 
-        MatchAdapter matchesAdapter = new MatchAdapter(getActivity(), matches);
+        MatchAdapter matchesAdapter = new MatchAdapter(getActivity(), Client.getUserMatches());
         matchRecyclerView.setAdapter(matchesAdapter);
 
     }

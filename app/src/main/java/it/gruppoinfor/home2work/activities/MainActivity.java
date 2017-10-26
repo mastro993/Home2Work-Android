@@ -19,17 +19,22 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
+import java.util.stream.Stream;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
-import it.gruppoinfor.home2work.utils.UserPrefs;
+import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.api.Mockup;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.NotificationFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
+import it.gruppoinfor.home2work.models.MatchItem;
+import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
 import it.gruppoinfor.home2work.services.RouteService;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -127,38 +132,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshData() {
 
-        if(!UserPrefs.activityTrackingEnabled) bottomNavigation.setNotification("!", 4);
+        if (!UserPrefs.activityTrackingEnabled) bottomNavigation.setNotification("!", 4);
 
-        /*Client.getAPI().getUserMatches(Client.getAccount().getUserID()).enqueue(new SessionManagerCallback<List<MatchItem>>() {
+        // TODO fare refresh da web
+        Mockup.refreshUserMatches(matchItems -> {
+            Client.setUserMatches(matchItems);
+            Stream<MatchItem> matchStream = matchItems.stream();
+            long newMatches = matchStream.filter(MatchItem::isNew).count();
+            bottomNavigation.setNotification(Long.toString(newMatches), 1);
+        });
 
-            @Override
-            public void onResponse(Call<List<MatchItem>> call, Response<List<MatchItem>> response) {
-                Client.getAccount().setMatches(response.body());
+        // TODO fare refresh da web
+        Mockup.refreshUserBookedMatches(Client::setUserBookedMatches);
 
-                Stream<MatchItem> matchStream = response.body().stream();
-                long newMatches = matchStream.filter(m -> m.isNew()).count();
-
-                if (newMatches > 0) {
-                    bottomNavigation.setNotification(Long.toString(newMatches), 1);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<MatchItem>> call, Throwable t) {
-
-            }
-
-        });*/
     }
 
-    private void setSyncAlarm(){
+    private void setSyncAlarm() {
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(this, SyncAlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
         am.setInexactRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime(),
-                AlarmManager.INTERVAL_HOUR,
+                AlarmManager.INTERVAL_HALF_DAY,
                 pi);
     }
 

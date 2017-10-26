@@ -2,10 +2,7 @@ package it.gruppoinfor.home2work.api;
 
 import java.util.List;
 
-import it.gruppoinfor.home2work.models.Achievement;
 import it.gruppoinfor.home2work.models.Company;
-import it.gruppoinfor.home2work.models.Match;
-import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.models.RoutePoint;
 import it.gruppoinfor.home2work.models.User;
 import okhttp3.MultipartBody;
@@ -80,7 +77,7 @@ public interface EndpointInterface {
 
 
     @GET("users/{id}/matches/with/{matchUserId}")
-    Call<List<Match>> getUserMatchesWith(
+    Call<List<MatchInfo>> getUserMatchesWith(
             @Path("id") Long id,
             @Path("matchUserId") Long matchedUserId
     );
@@ -115,13 +112,13 @@ public interface EndpointInterface {
     );
 
     @GET("matches/{id}")
-    Call<Match> getMatch(
+    Call<MatchInfo> getMatch(
             @Path("id") Long id
     );
 
     @PUT("matches")
-    Call<Match> editMatch(
-            @Body Match match
+    Call<MatchInfo> editMatch(
+            @Body MatchInfo match
     );
 
 

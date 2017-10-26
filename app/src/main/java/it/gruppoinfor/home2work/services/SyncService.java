@@ -35,13 +35,14 @@ public class SyncService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        MyLogger.i(TAG, "Creazione servizio");
+        MyLogger.i(TAG, "Servizio avviato");
 
         if(!UserPrefs.isInited())
             UserPrefs.init(this);
 
-        if (canSync())
+        if (getConnectivityType(this) == ConnectivityManager.TYPE_WIFI || UserPrefs.syncWithData) {
             sync();
+        }
 
     }
 
@@ -75,6 +76,7 @@ public class SyncService extends Service {
                         AsyncJob.doInBackground(()-> dbApp.routePointDAO().deleteAll(Client.getSignedUser().getId()));
 
                         MyLogger.d(TAG, "Sincronizzazione avvenuta (" + routePointList.size() + " location)");
+
                     }
 
                     @Override
@@ -102,6 +104,12 @@ public class SyncService extends Service {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        MyLogger.i(TAG, "Servizio arrestato");
+        super.onDestroy();
     }
 
     @Nullable

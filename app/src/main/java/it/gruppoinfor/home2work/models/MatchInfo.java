@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Match {
+public class MatchInfo {
 
     @SerializedName("id")
     @Expose

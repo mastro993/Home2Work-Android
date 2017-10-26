@@ -11,7 +11,6 @@ import io.fabric.sdk.android.Fabric;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.DBApp;
 import it.gruppoinfor.home2work.utils.MyLogger;
-import it.gruppoinfor.home2work.utils.ReceiverManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 
 
@@ -38,7 +37,6 @@ public class App extends Application {
         //setupLeakCanary();
         setupStetho();
         MyLogger.init(this);
-        ReceiverManager.init(this);
         UserPrefs.init(this);
         Client.init();
 

@@ -61,6 +61,11 @@
     <!-- MatchFragment -->
     <string name="match_loading_error">Impossibile aggiornare lista match al momento, riprova più tardi</string>
 
+    <!-- MatchItem -->
+    <string name="match_item_shared_distance">%1$s km condivisi</string>
+    <string name="match_item_arrival_time">Orario di arrivo: %1$s</string>
+    <string name="match_item_departure_time">Orario di partenza: %1$s</string>
+
     <!-- ProfileFragment -->
     <string name="profile_regdate">Iscritto dal %1$s</string>
     <string name="profile_distance">%1$s km percorsi</string>
