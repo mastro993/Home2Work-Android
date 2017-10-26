@@ -6,11 +6,13 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
-import com.orhanobut.logger.Logger;
 
 import io.fabric.sdk.android.Fabric;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.DBApp;
+import it.gruppoinfor.home2work.utils.MyLogger;
+import it.gruppoinfor.home2work.utils.ReceiverManager;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 
 
 public class App extends Application {

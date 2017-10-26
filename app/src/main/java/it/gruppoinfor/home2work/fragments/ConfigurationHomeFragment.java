@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
-import it.gruppoinfor.home2work.Converters;
+import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Address;

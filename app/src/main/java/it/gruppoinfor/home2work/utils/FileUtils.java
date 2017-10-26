@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.utils;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;

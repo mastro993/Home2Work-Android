@@ -28,11 +28,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-import it.gruppoinfor.home2work.DrivingActivity;
-import it.gruppoinfor.home2work.MyLogger;
+import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.SessionManager;
-import it.gruppoinfor.home2work.Tools;
+import it.gruppoinfor.home2work.api.SessionManager;
+import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.models.User;
 

@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,10 +18,8 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.SessionManager;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MessagesActivity;
-import it.gruppoinfor.home2work.activities.SignInActivity;
 
 /**
  * A simple {@link Fragment} subclass.

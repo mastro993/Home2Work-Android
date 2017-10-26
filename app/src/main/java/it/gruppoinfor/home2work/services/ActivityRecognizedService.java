@@ -3,15 +3,13 @@ package it.gruppoinfor.home2work.services;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 
 import java.util.List;
 
-import it.gruppoinfor.home2work.DrivingActivity;
-import it.gruppoinfor.home2work.MyLogger;
+import it.gruppoinfor.home2work.utils.MyLogger;
 
 
 public class ActivityRecognizedService extends IntentService {

@@ -6,7 +6,7 @@ import android.arch.persistence.room.TypeConverters;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import it.gruppoinfor.home2work.LatLngConverter;
+import it.gruppoinfor.home2work.utils.LatLngConverter;
 
 @Entity(tableName = "routePoint")
 public class RoutePointEntity {

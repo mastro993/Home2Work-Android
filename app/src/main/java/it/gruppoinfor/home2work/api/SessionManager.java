@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;

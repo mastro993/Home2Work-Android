@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.SessionManager;
-import it.gruppoinfor.home2work.UserPrefs;
+import it.gruppoinfor.home2work.api.SessionManager;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.activities.SplashActivity;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.User;

@@ -40,16 +40,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
-import it.gruppoinfor.home2work.Converters;
+import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.RouteUtils;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.RoutePoint;
-import it.gruppoinfor.home2work.models.ShareRequest;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MatchActivity extends AppCompatActivity implements OnMapReadyCallback, RoutingListener {
 
@@ -242,7 +237,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
         loadingView.setVisibility(View.VISIBLE);
         infoText.setText(getString(R.string.match_confirmation_awaiting));
 
-        Client.getAPI().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
+        /*Client.getAPI().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
             @Override
             public void onResponse(Call<ShareRequest> call, Response<ShareRequest> response) {
                 requesting = true;
@@ -254,7 +249,7 @@ public class MatchActivity extends AppCompatActivity implements OnMapReadyCallba
                 shareRequestButton.setVisibility(View.VISIBLE);
                 loadingView.setVisibility(View.GONE);
             }
-        });
+        });*/
 
     }
 

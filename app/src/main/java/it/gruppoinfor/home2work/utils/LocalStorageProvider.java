@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.utils;
 
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import it.gruppoinfor.home2work.R;
 
 public class LocalStorageProvider extends DocumentsProvider {
 

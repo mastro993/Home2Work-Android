@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.utils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;

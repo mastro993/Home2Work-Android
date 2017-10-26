@@ -7,30 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Company implements Parcelable {
-
-    public final static Parcelable.Creator<Company> CREATOR = new Creator<Company>() {
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Company createFromParcel(Parcel in) {
-            Company instance = new Company();
-            instance.id = ((Long) in.readValue((Long.class.getClassLoader())));
-            instance.name = ((String) in.readValue((String.class.getClassLoader())));
-            instance.location = ((LatLng) in.readValue((LatLng.class.getClassLoader())));
-            instance.address = ((Address) in.readValue((Address.class.getClassLoader())));
-            instance.website = ((String) in.readValue((String.class.getClassLoader())));
-            instance.karma = ((Karma) in.readValue((Karma.class.getClassLoader())));
-            instance.stats = ((Statistics) in.readValue((Statistics.class.getClassLoader())));
-            return instance;
-        }
-
-        public Company[] newArray(int size) {
-            return (new Company[size]);
-        }
-
-    };
+public class Company  {
 
     @SerializedName("id")
     @Expose
@@ -50,9 +27,6 @@ public class Company implements Parcelable {
     @SerializedName("karma")
     @Expose
     private Karma karma;
-    @SerializedName("stats")
-    @Expose
-    private Statistics stats;
 
     public Long getId() {
         return id;
@@ -100,28 +74,6 @@ public class Company implements Parcelable {
 
     public void setKarma(Karma karma) {
         this.karma = karma;
-    }
-
-    public Statistics getStats() {
-        return stats;
-    }
-
-    public void setStats(Statistics stats) {
-        this.stats = stats;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(name);
-        dest.writeValue(location);
-        dest.writeValue(address);
-        dest.writeValue(website);
-        dest.writeValue(karma);
-        dest.writeValue(stats);
-    }
-
-    public int describeContents() {
-        return 0;
     }
 
     @Override

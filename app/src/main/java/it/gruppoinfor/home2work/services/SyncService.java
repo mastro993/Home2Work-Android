@@ -13,8 +13,8 @@ import com.arasthel.asyncjob.AsyncJob;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.gruppoinfor.home2work.MyLogger;
-import it.gruppoinfor.home2work.UserPrefs;
+import it.gruppoinfor.home2work.utils.MyLogger;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.models.RoutePoint;

@@ -4,7 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
-import it.gruppoinfor.home2work.LatLngConverter;
+import it.gruppoinfor.home2work.utils.LatLngConverter;
 
 
 

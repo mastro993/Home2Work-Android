@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.utils;
 
 import android.arch.persistence.room.TypeConverter;
 

@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work;
+package it.gruppoinfor.home2work.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import it.gruppoinfor.home2work.utils.ScalingUtilities;
 
 /**
  * Created by Federico on 04/02/2017.

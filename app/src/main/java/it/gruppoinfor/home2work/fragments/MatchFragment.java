@@ -12,21 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.UserPrefs;
-import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.MatchItem;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class MatchFragment extends Fragment {
@@ -73,7 +65,9 @@ public class MatchFragment extends Fragment {
 
     private void refreshMatches() {
         rootView.setRefreshing(true);
-        Client.getAPI().getUserMatches(Client.getSignedUser().getId()).enqueue(new Callback<List<MatchItem>>() {
+
+
+        /*Client.getAPI().getUserMatches(Client.getSignedUser().getId()).enqueue(new Callback<List<MatchItem>>() {
 
             @Override
             public void onResponse(retrofit2.Call<List<MatchItem>> call, Response<List<MatchItem>> response) {
@@ -100,7 +94,10 @@ public class MatchFragment extends Fragment {
                 Toasty.warning(getContext(), getResources().getString(R.string.match_loading_error)).show();
             }
 
-        });
+        });*/
+
+
+
     }
 
     @Override

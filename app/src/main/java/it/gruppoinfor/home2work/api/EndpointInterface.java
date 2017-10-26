@@ -7,8 +7,6 @@ import it.gruppoinfor.home2work.models.Company;
 import it.gruppoinfor.home2work.models.Match;
 import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.models.RoutePoint;
-import it.gruppoinfor.home2work.models.Share;
-import it.gruppoinfor.home2work.models.ShareRequest;
 import it.gruppoinfor.home2work.models.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -50,18 +48,18 @@ public interface EndpointInterface {
             @Body List<RoutePoint> routePoints
     );
 
+    @Multipart
+    @POST("users/{id}/avatar")
+    Call<ResponseBody> uploadAvatar(
+            @Path("id") Long userID,
+            @Part MultipartBody.Part file
+    );
+
+    @GET("companies")
+    Call<List<Company>> getCompanies();
 
 
-
-
-
-
-
-
-
-
-
-    @GET("users/{id}/matches")
+    /*@GET("users/{id}/matches")
     Call<List<MatchItem>> getUserMatches(
             @Path("id") Long id
     );
@@ -87,23 +85,12 @@ public interface EndpointInterface {
             @Path("matchUserId") Long matchedUserId
     );
 
-    @GET("users/{id}/shares")
-    Call<List<Share>> getUserShares(
-            @Path("id") Long id
-    );
-
-    @GET("users/{id}/shares/with/{shareUserId}")
-    Call<List<Share>> getUserSharesWith(
-            @Path("id") Long id,
-            @Path("shareUserId") Long shareUserId
-    );
-
-    /*
+    *//*
     @GET("users/{id}/notifications")
     Call<List<Notification>> getUserNotification(
             @Path("id") Long id
     );
-    */
+    *//*
 
     @GET("users/{id}/avatar")
     Call<ResponseBody> getAvatar(
@@ -122,9 +109,6 @@ public interface EndpointInterface {
             @Path("id") Long companyID
     );
 
-    @GET("companies")
-    Call<List<Company>> getCompanies();
-
     @GET("companies/{id}/ranks")
     Call<List<User>> getCompanyRanks(
             @Path("id") Long id
@@ -140,33 +124,6 @@ public interface EndpointInterface {
             @Body Match match
     );
 
-    @POST("matches/{id}/request")
-    Call<ShareRequest> requestShare(
-            @Path("id") Long matchId
-    );
-
-    @GET("requests/{id}")
-    Call<ShareRequest> getRequest(
-            @Path("id") Long id
-    );
-
-    @FormUrlEncoded
-    @POST("requests/{id}")
-    Call<Share> respondToRequest(
-            @Path("id") Long requestId,
-            @Field("accepted") Boolean accepted
-    );
-
-    @GET("shares")
-    Call<List<Share>> getShares(
-            String sort
-    );
-
-    @GET("shares/{id}")
-    Call<Share> getShare(
-            @Path("id") Long shareId
-    );
-
 
     @GET("achievements")
     Call<List<Achievement>> getAchievements(
@@ -178,7 +135,7 @@ public interface EndpointInterface {
             @Path("id") Long achievementId
     );
 
-    /*
+    *//*
     @GET("notifications")
     Call<List<Notification>> getNotifications(
             String sort
