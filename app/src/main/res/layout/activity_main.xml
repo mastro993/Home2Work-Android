@@ -27,7 +27,7 @@
                 android:layout_height="@dimen/action_bar_size"
                 android:layout_alignParentStart="true"
                 android:layout_gravity="center_vertical"
-                android:background="?attr/colorPrimary"
+                android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
                 android:weightSum="1" />
 

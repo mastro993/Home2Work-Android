@@ -73,11 +73,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         if (matchItem.getScore() < 50) {
             color = ContextCompat.getColor(activity, R.color.red_500);
         } else if (matchItem.getScore() < 70) {
-            color = ContextCompat.getColor(activity, R.color.orange_500);
+            color = ContextCompat.getColor(activity, R.color.amber_500);
         } else if (matchItem.getScore() < 90) {
-            color = ContextCompat.getColor(activity, R.color.green_500);
+            color = ContextCompat.getColor(activity, R.color.light_green_500);
         } else {
-            color = ContextCompat.getColor(activity, R.color.colorAccent);
+            color = ContextCompat.getColor(activity, R.color.green_500);
         }
 
         holder.scoreProgress.setFinishedStrokeColor(color);
