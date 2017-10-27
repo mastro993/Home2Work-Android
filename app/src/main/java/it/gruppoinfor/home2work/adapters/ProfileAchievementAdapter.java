@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,10 +42,12 @@ public class ProfileAchievementAdapter extends RecyclerView.Adapter<ProfileAchie
         holder.achievementKarma.setText(String.format(Locale.ITALY, "+%1$d", achievement.getDelta()));
         holder.achievementDate.setText(dateFormat.format(achievement.getDate()));
 
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
+
+
         Glide.with(activity)
                 .load(achievement.getIconURL())
-                .placeholder(R.drawable.ic_trophy)
-                .dontAnimate()
+                .apply(requestOptions)
                 .into(holder.achievementIcon);
 
 

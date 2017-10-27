@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import java.math.RoundingMode;
@@ -57,10 +58,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         holder.scoreProgress.setProgress(Integer.parseInt(matchItem.getScore().toString()));
 
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
+
         Glide.with(activity)
                 .load(matchItem.getHost().getAvatarURL())
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .dontAnimate()
+                .apply(requestOptions)
                 .into(holder.userAvatar);
 
         holder.scoreText.setText(String.format(Locale.ITALY, "%1$d%%", matchItem.getScore()));
