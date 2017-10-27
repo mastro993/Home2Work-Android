@@ -1,7 +1,5 @@
 package it.gruppoinfor.home2work.models;
 
-import android.arch.persistence.room.Ignore;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -46,7 +44,7 @@ public class User {
     private Boolean configured;
     @SerializedName("match_preferences")
     @Expose
-    private MatchPreferences matchPreferences;
+    private UserMatchPreferences matchPreferences;
 
     public User(Long id, String name, String surname) {
         this.id = id;
@@ -145,11 +143,11 @@ public class User {
         this.configured = configured;
     }
 
-    public MatchPreferences getMatchPreferences() {
+    public UserMatchPreferences getMatchPreferences() {
         return matchPreferences;
     }
 
-    public void setMatchPreferences(MatchPreferences matchPreferences) {
+    public void setMatchPreferences(UserMatchPreferences matchPreferences) {
         this.matchPreferences = matchPreferences;
     }
 

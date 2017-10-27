@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class MatchPreferences {
+public class UserMatchPreferences {
 
     @SerializedName("max_time")
     @Expose

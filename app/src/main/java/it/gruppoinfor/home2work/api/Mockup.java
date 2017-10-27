@@ -1,17 +1,15 @@
 package it.gruppoinfor.home2work.api;
 
 import com.arasthel.asyncjob.AsyncJob;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import it.gruppoinfor.home2work.models.BookedMatchItem;
+import it.gruppoinfor.home2work.models.BookingItem;
 import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.models.User;
-import it.gruppoinfor.home2work.utils.Converters;
 
 import static it.gruppoinfor.home2work.utils.Converters.stringToDate;
 
@@ -30,8 +28,8 @@ public class Mockup {
     private static MatchItem matchItem5 = new MatchItem(5L, null, user1, 8.1, stringToDate("8:30"), stringToDate("17:30"), 70, true, false);
     private static MatchItem matchItem6 = new MatchItem(6L, null, user3, 2.4, stringToDate("8:30"), stringToDate("17:30"), 64, true, false);
     private static MatchItem matchItem7 = new MatchItem(7L, null, user2, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
-    private static BookedMatchItem bookedMatchItem1 = new BookedMatchItem(1L,matchItem2, new Date(unixTime + (5L * dayInMillis)), null);
-    private static BookedMatchItem bookedMatchItem2 = new BookedMatchItem(2L,matchItem5, new Date(unixTime + (3L * dayInMillis)), "Ho in macchina il cane che lo lascio dal veterinario");
+    private static BookingItem bookedMatchItem1;
+    private static BookingItem bookedMatchItem2;
 
 
     public static void refreshUserMatches(AsyncJob.AsyncResultAction<List<MatchItem>> asyncResultAction) {
@@ -56,13 +54,16 @@ public class Mockup {
                 .start();
     }
 
-    public static void refreshUserBookedMatches(AsyncJob.AsyncResultAction<List<BookedMatchItem>> asyncResultAction) {
-        new AsyncJob.AsyncJobBuilder<List<BookedMatchItem>>()
+    public static void refreshUserBookedMatches(AsyncJob.AsyncResultAction<List<BookingItem>> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<List<BookingItem>>()
                 .doInBackground(() -> {
 
                     lag();
 
-                    List<BookedMatchItem> bookedMatches = new ArrayList<>();
+                    bookedMatchItem1 = new BookingItem(1L, matchItem1, new Date(unixTime + (5L * dayInMillis)), null);
+                    bookedMatchItem2 = new BookingItem(2L, matchItem2, new Date(unixTime + (3L * dayInMillis)), "Ho in macchina il cane che lo lascio dal veterinario");
+
+                    List<BookingItem> bookedMatches = new ArrayList<>();
                     bookedMatches.add(bookedMatchItem1);
                     bookedMatches.add(bookedMatchItem2);
 

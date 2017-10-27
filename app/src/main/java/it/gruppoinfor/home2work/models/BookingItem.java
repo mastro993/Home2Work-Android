@@ -2,14 +2,14 @@ package it.gruppoinfor.home2work.models;
 
 import java.util.Date;
 
-public class BookedMatchItem {
+public class BookingItem {
 
     private Long bookingID;
     private MatchItem bookedMatch;
     private Date bookedDate;
     private String notes;
 
-    public BookedMatchItem(Long bookingID, MatchItem bookedMatch, Date bookedDate, String notes) {
+    public BookingItem(Long bookingID, MatchItem bookedMatch, Date bookedDate, String notes) {
         this.bookingID = bookingID;
         this.bookedMatch = bookedMatch;
         this.bookedDate = bookedDate;

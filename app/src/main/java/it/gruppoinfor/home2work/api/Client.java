@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
-import it.gruppoinfor.home2work.models.BookedMatchItem;
+import it.gruppoinfor.home2work.models.BookingItem;
 import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.models.User;
 import okhttp3.OkHttpClient;
@@ -24,7 +24,7 @@ public class Client {
 
     private static User signedUser;
     private static List<MatchItem> userMatches;
-    private static List<BookedMatchItem> userBookedMatches;
+    private static List<BookingItem> userBookedMatches;
     private static EndpointInterface APIService;
 
     public static User getSignedUser() {
@@ -46,11 +46,11 @@ public class Client {
         Client.userMatches = userMatches;
     }
 
-    public static List<BookedMatchItem> getUserBookedMatches() {
+    public static List<BookingItem> getUserBookedMatches() {
         return userBookedMatches;
     }
 
-    public static void setUserBookedMatches(List<BookedMatchItem> userBookedMatches) {
+    public static void setUserBookedMatches(List<BookingItem> userBookedMatches) {
         Client.userBookedMatches = userBookedMatches;
     }
 

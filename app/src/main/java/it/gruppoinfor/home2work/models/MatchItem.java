@@ -93,7 +93,7 @@ public class MatchItem {
         this._new = _new;
     }
 
-    public Boolean getHidden() {
+    public Boolean isHidden() {
         return hidden;
     }
 

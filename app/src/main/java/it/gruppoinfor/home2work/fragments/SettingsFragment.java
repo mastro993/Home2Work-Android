@@ -46,7 +46,7 @@ import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.models.Address;
 import it.gruppoinfor.home2work.models.Job;
-import it.gruppoinfor.home2work.models.MatchPreferences;
+import it.gruppoinfor.home2work.models.UserMatchPreferences;
 import it.gruppoinfor.home2work.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -155,7 +155,7 @@ public class SettingsFragment extends Fragment {
         jobStartTimeTextView.setText(Converters.timestampToTime(job.getStart(), "HH:mm"));
         jobEndTimeTextView.setText(Converters.timestampToTime(job.getEnd(), "HH:mm"));
 
-        MatchPreferences matchPreferences = signedUser.getMatchPreferences();
+        UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
         matchMaxTimeTextView.setText(matchPreferences.getMaxTime() + " minuti");
         matchMinScoreTextView.setText(matchPreferences.getMinScore() + "%");
@@ -401,7 +401,7 @@ public class SettingsFragment extends Fragment {
     public void onMatchMaxTimeContainerClicked() {
 
         User signedUser = Client.getSignedUser();
-        MatchPreferences matchPreferences = signedUser.getMatchPreferences();
+        UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
         MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(5)
@@ -442,7 +442,7 @@ public class SettingsFragment extends Fragment {
     public void onMatchMaxDistanceContainerClicked() {
 
         User signedUser = Client.getSignedUser();
-        MatchPreferences matchPreferences = signedUser.getMatchPreferences();
+        UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
         MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(500)
@@ -484,7 +484,7 @@ public class SettingsFragment extends Fragment {
     public void onMatchMinScoreContainerClicked() {
 
         User signedUser = Client.getSignedUser();
-        MatchPreferences matchPreferences = signedUser.getMatchPreferences();
+        UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
         MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(1)

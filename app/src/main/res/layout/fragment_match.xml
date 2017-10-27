@@ -4,9 +4,41 @@
     android:layout_height="match_parent"
     tools:context="it.gruppoinfor.home2work.fragments.MatchFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/matches_recycler_view"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:textAlignment="center"
+                android:padding="@dimen/list_items_padding"
+                android:text="Match prenotati"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/booked_matches_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textAlignment="center"
+                android:padding="@dimen/list_items_padding"
+                android:text="Match disponibili"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/matches_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.v4.widget.SwipeRefreshLayout>
