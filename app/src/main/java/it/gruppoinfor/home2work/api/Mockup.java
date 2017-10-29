@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.api;
 
 import com.arasthel.asyncjob.AsyncJob;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import it.gruppoinfor.home2work.models.BookingItem;
+import it.gruppoinfor.home2work.models.MatchInfo;
 import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.models.User;
 
@@ -68,6 +70,30 @@ public class Mockup {
                     bookedMatches.add(bookedMatchItem2);
 
                     return bookedMatches;
+
+                })
+                .doWhenFinished(asyncResultAction)
+                .create()
+                .start();
+    }
+
+    public static void getMatchInfo(AsyncJob.AsyncResultAction<MatchInfo> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<MatchInfo>()
+                .doInBackground(() -> {
+
+                    lag();
+
+                    MatchItem matchItem = new MatchItem(4L, null, user4, 5.3, stringToDate("8:00"), stringToDate("18:00"), 77, true, false);
+                    MatchInfo matchInfo = new MatchInfo();
+                    matchInfo.setMatchId(matchItem.getMatchID());
+                    matchInfo.setHost(matchItem.getHost());
+                    matchInfo.setScore(matchItem.getScore());
+                    matchInfo.setSharedDistance(matchItem.getSharedDistance());
+                    matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
+                    matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
+                    matchInfo.setDepartureTime(matchItem.getDepartureTime());
+                    matchInfo.setArrivalTime(matchItem.getArrivalTime());
+                    return matchInfo;
 
                 })
                 .doWhenFinished(asyncResultAction)

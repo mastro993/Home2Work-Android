@@ -2,50 +2,35 @@ package it.gruppoinfor.home2work.models;
 
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MatchInfo {
 
-    @SerializedName("id")
-    @Expose
-    private Long id;
-    @SerializedName("guest")
-    @Expose
+    private Long matchId;
     private User guest;
-    @SerializedName("host")
-    @Expose
     private User host;
-    @SerializedName("score")
-    @Expose
-    private Long score;
-    @SerializedName("length")
-    @Expose
-    private Long length;
-    @SerializedName("cunsumption")
-    @Expose
-    private Long cunsumption;
-    @SerializedName("emission")
-    @Expose
-    private Long emission;
-    @SerializedName("new")
-    @Expose
-    private Boolean _new;
-    @SerializedName("hidden")
-    @Expose
-    private Boolean hidden;
-    @SerializedName("route")
-    @Expose
-    private List<RoutePoint> route = null;
+    private Integer score;
+    private Double sharedDistance;
+    private Double cunsumption;
+    private Double emission;
+    private LatLng startLocation;
+    private Date departureTime;
+    private LatLng endLocation;
+    private Date arrivalTime;
+    private List<RoutePoint> route = new ArrayList<>();
 
-    public Long getId() {
-        return id;
+    public Long getMatchId() {
+        return matchId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
     }
 
     public User getGuest() {
@@ -64,52 +49,68 @@ public class MatchInfo {
         this.host = host;
     }
 
-    public Long getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(Long score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 
-    public Long getLength() {
-        return length;
+    public Double getSharedDistance() {
+        return sharedDistance;
     }
 
-    public void setLength(Long length) {
-        this.length = length;
+    public void setSharedDistance(Double sharedDistance) {
+        this.sharedDistance = sharedDistance;
     }
 
-    public Long getCunsumption() {
+    public Double getCunsumption() {
         return cunsumption;
     }
 
-    public void setCunsumption(Long cunsumption) {
+    public void setCunsumption(Double cunsumption) {
         this.cunsumption = cunsumption;
     }
 
-    public Long getEmission() {
+    public Double getEmission() {
         return emission;
     }
 
-    public void setEmission(Long emission) {
+    public void setEmission(Double emission) {
         this.emission = emission;
     }
 
-    public Boolean isNew() {
-        return _new;
+    public LatLng getStartLocation() {
+        return startLocation;
     }
 
-    public void setNew(Boolean _new) {
-        this._new = _new;
+    public void setStartLocation(LatLng startLocation) {
+        this.startLocation = startLocation;
     }
 
-    public Boolean getHidden() {
-        return hidden;
+    public Date getDepartureTime() {
+        return departureTime;
     }
 
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public LatLng getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(LatLng endLocation) {
+        this.endLocation = endLocation;
+    }
+
+    public Date getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
     public List<RoutePoint> getRoute() {
@@ -119,5 +120,4 @@ public class MatchInfo {
     public void setRoute(List<RoutePoint> route) {
         this.route = route;
     }
-
 }

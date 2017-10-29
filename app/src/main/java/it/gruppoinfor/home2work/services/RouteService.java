@@ -28,12 +28,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.api.SessionManager;
-import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.utils.MyLogger;
+import it.gruppoinfor.home2work.utils.Tools;
 
 import static it.gruppoinfor.home2work.App.dbApp;
 
@@ -47,6 +47,8 @@ public class RouteService extends Service {
     private User user;
     private Notification idleNotification;
     private Notification trackingNotification;
+    private Location lastKnownLocation;
+    private ArrayList<Location> lastLocations = new ArrayList<>();
     private GoogleApiClient.ConnectionCallbacks mConnectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(@Nullable Bundle bundle) {
@@ -185,6 +187,19 @@ public class RouteService extends Service {
     private void stopLocationRequests() {
         MyLogger.d(TAG, "Tracking utente arrestato");
 
+        if (lastKnownLocation != null && lastLocations.size() != 0) {
+            final RoutePointEntity routePointEntity = new RoutePointEntity();
+            LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+            routePointEntity.setLatLng(latLng);
+            routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
+            routePointEntity.setUserId(user.getId());
+            AsyncJob.doInBackground(() -> {
+                dbApp.routePointDAO().insert(routePointEntity);
+                MyLogger.d(TAG, "Ultima posizione aggiunta (" + routePointEntity.getLatLng().toString() + ")");
+            });
+        }
+
+
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, routeLocationListener);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_ID, idleNotification);
@@ -200,10 +215,11 @@ public class RouteService extends Service {
     private class MyLocationListener implements LocationListener {
 
         private final int MIN_LOCATIONS = 3;
-        private ArrayList<Location> lastLocations = new ArrayList<>();
+
 
         @Override
         public void onLocationChanged(Location location) {
+            lastKnownLocation = location;
             lastLocations.add(location);
             if (lastLocations.size() >= MIN_LOCATIONS) {
                 Location bestLocation = getBestLocation();
@@ -236,7 +252,7 @@ public class RouteService extends Service {
             return bestLocation;
         }
 
-        protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+        private boolean isBetterLocation(Location location, Location currentBestLocation) {
             if (currentBestLocation == null) {
                 // A new location is always better than no location
                 return true;

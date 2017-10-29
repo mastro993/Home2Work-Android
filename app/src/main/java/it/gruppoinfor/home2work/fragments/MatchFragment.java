@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.BookedMatchAdapter;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
@@ -41,7 +43,8 @@ public class MatchFragment extends Fragment {
     private Unbinder unbinder;
     private MatchAdapter matchesAdapter;
     private BookedMatchAdapter bookedMatchAdapter;
-
+    private boolean refreshingMatches = false;
+    private boolean refreshingBookedMatches = false;
 
     public MatchFragment() {
         // Required empty public constructor
@@ -59,7 +62,7 @@ public class MatchFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
+        if (isVisibleToUser) {
             if (Client.getUserMatches() == null) refreshMatches();
             else populateMatchList();
             if (Client.getUserBookedMatches() == null) refreshBookedMatches();
@@ -89,9 +92,6 @@ public class MatchFragment extends Fragment {
         rootView.setColorSchemeResources(R.color.colorAccent);
     }
 
-    private boolean refreshingMatches = false;
-    private boolean refreshingBookedMatches = false;
-
     private void refreshMatches() {
         rootView.setRefreshing(true);
         refreshingMatches = true;
@@ -107,7 +107,7 @@ public class MatchFragment extends Fragment {
 
     }
 
-    private void refreshBookedMatches(){
+    private void refreshBookedMatches() {
         rootView.setRefreshing(true);
         refreshingBookedMatches = true;
 
@@ -176,7 +176,7 @@ public class MatchFragment extends Fragment {
 
     }
 
-    private void populateBookedMatchList(){
+    private void populateBookedMatchList() {
         bookedMatchAdapter = new BookedMatchAdapter(getActivity(), Client.getUserBookedMatches());
         bookedMatchAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
             @Override
@@ -259,14 +259,11 @@ public class MatchFragment extends Fragment {
     }
 
     private void showMatchDetails(int position) {
-        /*
-        TODO Activity info Match
-        BookingItem matchItem = matches.get(position);
+        MatchItem matchItem = Client.getUserMatches().get(position);
 
-        if (match.isNew()) setMatchAsViewed(position);
-        Intent matchIntent = new Intent(activity, MatchActivity.class);
+        Intent matchIntent = new Intent(getContext(), MatchActivity.class);
         matchIntent.putExtra("matchID", matchItem.getMatchID());
-        activity.startActivity(matchIntent);*/
+        startActivity(matchIntent);
 
     }
 
