@@ -8,11 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import it.gruppoinfor.home2workapi.enums.RequestStatus;
+import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
-import it.gruppoinfor.home2workapi.model.Request;
 import it.gruppoinfor.home2workapi.model.User;
 
 import static it.gruppoinfor.home2workapi.Converters.stringToDate;
@@ -34,9 +33,6 @@ public class Mockup {
     private static Match match7 = new Match(7L, null, user2, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
     private static Booking bookedMatchItem1;
     private static Booking bookedMatchItem2;
-    private static Request request1;
-    private static Request request2;
-    private static Request request3;
 
 
     public static void refreshUserMatches(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
@@ -67,36 +63,14 @@ public class Mockup {
 
                     lag();
 
-                    bookedMatchItem1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), null);
-                    bookedMatchItem2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), "Ho in macchina il cane che lo lascio dal veterinario");
+                    bookedMatchItem1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
+                    bookedMatchItem2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
 
                     List<Booking> bookedMatches = new ArrayList<>();
                     bookedMatches.add(bookedMatchItem1);
                     bookedMatches.add(bookedMatchItem2);
 
                     return bookedMatches;
-
-                })
-                .doWhenFinished(asyncResultAction)
-                .create()
-                .start();
-    }
-
-    public static void refreshUserRequests(AsyncJob.AsyncResultAction<List<Request>> asyncResultAction) {
-        new AsyncJob.AsyncJobBuilder<List<Request>>()
-                .doInBackground(() -> {
-
-                    lag();
-
-                    request1 = new Request(1L, match1, new Date(unixTime + (1L * dayInMillis)), RequestStatus.PENDING);
-                    request1 = new Request(1L, match2, new Date(unixTime + (9L * dayInMillis)), RequestStatus.REJECTED);
-
-                    List<Request> requests = new ArrayList<>();
-                    requests.add(request1);
-                    requests.add(request2);
-                    requests.add(request3);
-
-                    return requests;
 
                 })
                 .doWhenFinished(asyncResultAction)

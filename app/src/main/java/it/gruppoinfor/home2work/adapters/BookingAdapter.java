@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 
@@ -54,18 +54,25 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         holder.nameView.setText(matchItem.getHost().toString());
 
         int color;
-        Drawable bg = ContextCompat.getDrawable(activity, R.drawable.bg_match_score_percent);
-        if (matchItem.getScore() < 50) {
-            color = ContextCompat.getColor(activity, R.color.red_500);
-        } else if (matchItem.getScore() < 70) {
-            color = ContextCompat.getColor(activity, R.color.amber_500);
-        } else if (matchItem.getScore() < 90) {
-            color = ContextCompat.getColor(activity, R.color.light_green_500);
-        } else {
+        String statusText;
+        Drawable bg = ContextCompat.getDrawable(activity, R.drawable.bg_rounded_box);
+        if (bookedMatchItem.getBookingStatus() == BookingStatus.CONFIRMED) {
             color = ContextCompat.getColor(activity, R.color.green_500);
+            statusText = "Confermato";
+        } else if (bookedMatchItem.getBookingStatus() == BookingStatus.PENDING) {
+            color = ContextCompat.getColor(activity, R.color.amber_500);
+            statusText = "In attesa";
+        } else if (bookedMatchItem.getBookingStatus() == BookingStatus.REJECTED) {
+            color = ContextCompat.getColor(activity, R.color.red_500);
+            statusText = "Rifiutato";
+        } else {
+            color = ContextCompat.getColor(activity, R.color.red_500);
+            statusText = "Rifiutato";
         }
 
         bg.setTint(color);
+        holder.statusText.setBackground(bg);
+        holder.statusText.setText(statusText);
 
         holder.arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(matchItem.getArrivalTime())));
         holder.departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(matchItem.getDepartureTime())));
@@ -75,6 +82,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
         String dateString = dateFormat.format(bookedMatchItem.getBookedDate());
+
         holder.dateView.setText(dateString);
 
         /*
@@ -119,6 +127,8 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         TextView arrivalTimeView;
         @BindView(R.id.departure_time_view)
         TextView departureTimeView;
+        @BindView(R.id.status_text)
+        TextView statusText;
 
         ViewHolder(View view) {
             super(view);

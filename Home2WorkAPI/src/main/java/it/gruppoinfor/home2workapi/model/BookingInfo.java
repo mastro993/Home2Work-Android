@@ -4,17 +4,19 @@ import java.util.Date;
 
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 
-public class Booking {
+public class BookingInfo {
 
     private Long bookingID;
     private Match bookedMatch;
     private Date bookedDate;
+    private String notes;
     private BookingStatus bookingStatus;
 
-    public Booking(Long bookingID, Match bookedMatch, Date bookedDate, BookingStatus bookingStatus) {
+    public BookingInfo(Long bookingID, Match bookedMatch, Date bookedDate, String notes, BookingStatus bookingStatus) {
         this.bookingID = bookingID;
         this.bookedMatch = bookedMatch;
         this.bookedDate = bookedDate;
+        this.notes = notes;
         this.bookingStatus = bookingStatus;
     }
 
@@ -40,6 +42,14 @@ public class Booking {
 
     public void setBookedDate(Date bookedDate) {
         this.bookedDate = bookedDate;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public BookingStatus getBookingStatus() {
