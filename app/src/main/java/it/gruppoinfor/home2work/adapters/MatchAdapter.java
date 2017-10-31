@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.models.MatchItem;
+import it.gruppoinfor.home2workapi.model.Match;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
@@ -34,10 +34,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     private ItemClickCallbacks itemClickCallbacks;
     private MainActivity activity;
-    private ArrayList<MatchItem> matches;
+    private ArrayList<Match> matches;
     private Resources res;
 
-    public MatchAdapter(Activity activity, List<MatchItem> values) {
+    public MatchAdapter(Activity activity, List<Match> values) {
         this.activity = (MainActivity) activity;
         this.matches = new ArrayList<>(values);
         this.res = activity.getResources();
@@ -51,7 +51,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final MatchItem matchItem = matches.get(position);
+        final Match matchItem = matches.get(position);
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);

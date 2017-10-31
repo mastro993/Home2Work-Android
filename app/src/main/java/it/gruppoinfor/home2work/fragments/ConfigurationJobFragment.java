@@ -28,9 +28,9 @@ import butterknife.OnFocusChange;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.Job;
-import it.gruppoinfor.home2work.models.Company;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.Company;
+import it.gruppoinfor.home2workapi.model.Job;
 import retrofit2.Callback;
 import retrofit2.Response;
 

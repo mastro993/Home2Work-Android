@@ -15,26 +15,28 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import com.arasthel.asyncjob.AsyncJob;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.api.Mockup;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.NotificationFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
-import it.gruppoinfor.home2work.models.MatchItem;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
 import it.gruppoinfor.home2work.services.RouteService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Mockup;
+import it.gruppoinfor.home2workapi.model.Match;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -137,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
         // TODO fare refresh da web
         Mockup.refreshUserMatches(matchItems -> {
             Client.setUserMatches(matchItems);
-            Stream<MatchItem> matchStream = matchItems.stream();
-            long newMatches = matchStream.filter(MatchItem::isNew).count();
+            Stream<Match> matchStream = matchItems.stream();
+            long newMatches = matchStream.filter(Match::isNew).count();
             bottomNavigation.setNotification(Long.toString(newMatches), 1);
         });
 

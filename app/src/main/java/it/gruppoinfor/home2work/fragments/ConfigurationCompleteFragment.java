@@ -14,9 +14,8 @@ import com.stepstone.stepper.VerificationError;
 
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.ConfigurationActivity;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

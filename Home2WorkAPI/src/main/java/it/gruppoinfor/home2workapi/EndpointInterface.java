@@ -1,10 +1,11 @@
-package it.gruppoinfor.home2work.api;
+package it.gruppoinfor.home2workapi;
 
 import java.util.List;
 
-import it.gruppoinfor.home2work.models.Company;
-import it.gruppoinfor.home2work.models.RoutePoint;
-import it.gruppoinfor.home2work.models.User;
+
+import it.gruppoinfor.home2workapi.model.Company;
+import it.gruppoinfor.home2workapi.model.RoutePoint;
+import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -57,7 +58,7 @@ public interface EndpointInterface {
 
 
     /*@GET("users/{id}/matches")
-    Call<List<MatchItem>> getUserMatches(
+    Call<List<Match>> getUserMatches(
             @Path("id") Long id
     );
 

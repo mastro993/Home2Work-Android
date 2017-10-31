@@ -15,8 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.ConfigurationActivity;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2workapi.Client;
 
 public class ConfigurationNameFragment extends Fragment implements Step {
 

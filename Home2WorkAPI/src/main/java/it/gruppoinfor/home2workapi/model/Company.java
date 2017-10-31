@@ -1,13 +1,10 @@
-package it.gruppoinfor.home2work.models;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package it.gruppoinfor.home2workapi.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Company  {
+public class Company {
 
     @SerializedName("id")
     @Expose

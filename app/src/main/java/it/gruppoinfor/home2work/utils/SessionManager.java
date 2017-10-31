@@ -1,12 +1,13 @@
-package it.gruppoinfor.home2work.api;
+package it.gruppoinfor.home2work.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 /**
  * Created by Federico on 10/01/2017.

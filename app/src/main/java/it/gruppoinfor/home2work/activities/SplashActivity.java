@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.SessionManager;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.utils.SessionManager;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.User;
 
 public class SplashActivity extends AppCompatActivity {
 

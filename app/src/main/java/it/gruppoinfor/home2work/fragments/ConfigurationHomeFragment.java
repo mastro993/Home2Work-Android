@@ -34,9 +34,9 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.Address;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.Address;
+import it.gruppoinfor.home2workapi.model.User;
 
 
 public class ConfigurationHomeFragment extends Fragment implements Step, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks {

@@ -13,12 +13,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.SessionManager;
+import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.activities.SplashActivity;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
 import it.gruppoinfor.home2work.services.RouteService;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.User;
 
 
 public class BootReceiver extends BroadcastReceiver {
@@ -69,6 +69,7 @@ public class BootReceiver extends BroadcastReceiver {
         int notificationIcon = R.drawable.home2work_icon;
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         Notification notification = new NotificationCompat.Builder(context, channelID)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(notificationIcon)

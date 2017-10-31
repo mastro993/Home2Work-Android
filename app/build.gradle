@@ -43,6 +43,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile project(path: ':Home2WorkAPI')
     compile('com.afollestad.material-dialogs:core:0.9.4.7') {
         transitive = false
     }

@@ -25,12 +25,12 @@ import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
-import it.gruppoinfor.home2work.adapters.BookedMatchAdapter;
+import it.gruppoinfor.home2work.adapters.BookingAdapter;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.api.Mockup;
-import it.gruppoinfor.home2work.models.MatchItem;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Mockup;
+import it.gruppoinfor.home2workapi.model.Match;
 
 
 public class MatchFragment extends Fragment {
@@ -42,7 +42,7 @@ public class MatchFragment extends Fragment {
     private SwipeRefreshLayout rootView;
     private Unbinder unbinder;
     private MatchAdapter matchesAdapter;
-    private BookedMatchAdapter bookedMatchAdapter;
+    private BookingAdapter bookedMatchAdapter;
     private boolean refreshingMatches = false;
     private boolean refreshingBookedMatches = false;
 
@@ -121,8 +121,8 @@ public class MatchFragment extends Fragment {
     }
 
     private void refreshBadge() {
-        Stream<MatchItem> matchStream = Client.getUserMatches().stream();
-        long newMatches = matchStream.filter(m -> !m.isHidden()).filter(MatchItem::isNew).count();
+        Stream<Match> matchStream = Client.getUserMatches().stream();
+        long newMatches = matchStream.filter(m -> !m.isHidden()).filter(Match::isNew).count();
 
         if (newMatches > 0) {
             ((MainActivity) getActivity()).bottomNavigation.setNotification(Long.toString(newMatches), 1);
@@ -137,7 +137,7 @@ public class MatchFragment extends Fragment {
         matchesAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
             @Override
             public void onItemClick(View view, int position) {
-                MatchItem matchItem = Client.getUserMatches().get(position);
+                Match matchItem = Client.getUserMatches().get(position);
                 if (matchItem.isNew()) {
                     matchItem.setNew(false);
                     matchesAdapter.notifyItemChanged(position);
@@ -177,7 +177,7 @@ public class MatchFragment extends Fragment {
     }
 
     private void populateBookedMatchList() {
-        bookedMatchAdapter = new BookedMatchAdapter(getActivity(), Client.getUserBookedMatches());
+        bookedMatchAdapter = new BookingAdapter(getActivity(), Client.getUserBookedMatches());
         bookedMatchAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
             @Override
             public void onItemClick(View view, int position) {
@@ -211,7 +211,7 @@ public class MatchFragment extends Fragment {
         bookedMatchRecyclerView.setAdapter(bookedMatchAdapter);
     }
 
-    private void setMatchAsViewed(MatchItem matchItem) {
+    private void setMatchAsViewed(Match match) {
 
         /*
         TODO match come visualizzato al server
@@ -236,7 +236,7 @@ public class MatchFragment extends Fragment {
 
     }
 
-    private void setMatchAsHidden(MatchItem matchItem) {
+    private void setMatchAsHidden(Match matchItem) {
 
         /*
         TODO nascondere match newl server
@@ -259,10 +259,10 @@ public class MatchFragment extends Fragment {
     }
 
     private void showMatchDetails(int position) {
-        MatchItem matchItem = Client.getUserMatches().get(position);
+        Match match = Client.getUserMatches().get(position);
 
         Intent matchIntent = new Intent(getContext(), MatchActivity.class);
-        matchIntent.putExtra("matchID", matchItem.getMatchID());
+        matchIntent.putExtra("matchID", match.getMatchID());
         startActivity(matchIntent);
 
     }
@@ -270,7 +270,7 @@ public class MatchFragment extends Fragment {
     private void showBookedMatchDetails(int position) {
         /*
         TODO Activity info Booked Match
-        BookingItem matchItem = matches.get(position);
+        Booking matchItem = matches.get(position);
 
         if (match.isNew()) setMatchAsViewed(position);
         Intent matchIntent = new Intent(activity, MatchActivity.class);
@@ -280,7 +280,7 @@ public class MatchFragment extends Fragment {
     }
 
     private void showHideMatchDialog(int position) {
-        MatchItem matchItem = Client.getUserMatches().get(position);
+        Match matchItem = Client.getUserMatches().get(position);
         MaterialDialog hideDialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.match_item_hide_dialog_title)
                 .content(R.string.match_item_hide_dialog_content)
@@ -300,7 +300,7 @@ public class MatchFragment extends Fragment {
     private void showDeleteBookedMatchDialog(int position) {
         /*
         TODO richiesta annullamento prenotazione
-        MatchItem matchItem = Client.getUserMatches().get(position);
+        Match matchItem = Client.getUserMatches().get(position);
         MaterialDialog hideDialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.match_item_hide_dialog_title)
                 .content(R.string.match_item_hide_dialog_content)

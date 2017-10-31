@@ -1,12 +1,12 @@
 package it.gruppoinfor.home2work.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -15,9 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -43,31 +43,29 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.Mockup;
-import it.gruppoinfor.home2work.models.MatchInfo;
 import it.gruppoinfor.home2work.utils.RouteUtils;
+import it.gruppoinfor.home2workapi.Mockup;
+import it.gruppoinfor.home2workapi.model.MatchInfo;
 
 public class MatchActivity extends AppCompatActivity {
 
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.container)
-    ConstraintLayout container;
-    @BindView(R.id.match_loading_view)
-    FrameLayout matchLoadingView;
-    @BindView(R.id.request_shere_button)
-    Button shareRequestButton;
-    @BindView(R.id.infoText)
-    TextView infoText;
-    @BindView(R.id.request_loading_view)
-    AVLoadingIndicatorView loadingView;
 
     GoogleMap googleMap;
     Long matchId;
     MatchInfo match;
     SupportMapFragment mapFragment;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.infoText)
+    TextView infoText;
+    @BindView(R.id.request_shere_button)
+    Button requestShereButton;
+    @BindView(R.id.request_loading_view)
+    AVLoadingIndicatorView requestLoadingView;
+    @BindView(R.id.match_loading_view)
+    FrameLayout matchLoadingView;
 
     private boolean requesting = false;
 
@@ -80,12 +78,7 @@ public class MatchActivity extends AppCompatActivity {
         matchLoadingView.setVisibility(View.VISIBLE);
 
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -132,10 +125,10 @@ public class MatchActivity extends AppCompatActivity {
             Bundle bundle = intent.getExtras();
             Boolean response = bundle.getBoolean("shareResponse");
             if (response) {
-                loadingView.setVisibility(View.GONE);
+                requestLoadingView.setVisibility(View.GONE);
                 infoText.setText(getString(R.string.match_share_request_accepted));
             } else {
-                loadingView.setVisibility(View.GONE);
+                requestLoadingView.setVisibility(View.GONE);
                 infoText.setText(getString(R.string.match_share_request_refused));
             }
             new Handler().postDelayed(new Runnable() {
@@ -150,8 +143,8 @@ public class MatchActivity extends AppCompatActivity {
     @OnClick(R.id.request_shere_button)
     void requestShare() {
 
-        shareRequestButton.setVisibility(View.GONE);
-        loadingView.setVisibility(View.VISIBLE);
+        requestShereButton.setVisibility(View.GONE);
+        requestLoadingView.setVisibility(View.VISIBLE);
         infoText.setText(getString(R.string.match_confirmation_awaiting));
 
         /*Client.getAPI().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
@@ -184,7 +177,7 @@ public class MatchActivity extends AppCompatActivity {
             googleMap = gmap;
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 MapsInitializer.initialize(context);
 
                 // TODO migliorare percorso con punti intermedi

@@ -1,8 +1,4 @@
-package it.gruppoinfor.home2work.models;
-
-import android.arch.persistence.room.Entity;
-import android.os.Parcel;
-import android.os.Parcelable;
+package it.gruppoinfor.home2workapi.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;

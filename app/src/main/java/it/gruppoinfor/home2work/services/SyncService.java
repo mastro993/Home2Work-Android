@@ -15,9 +15,9 @@ import java.util.List;
 
 import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.UserPrefs;
-import it.gruppoinfor.home2work.api.Client;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
-import it.gruppoinfor.home2work.models.RoutePoint;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.RoutePoint;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

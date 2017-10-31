@@ -1,15 +1,15 @@
-package it.gruppoinfor.home2work.models;
+package it.gruppoinfor.home2workapi.model;
 
 import java.util.Date;
 
-public class BookingItem {
+public class Booking {
 
     private Long bookingID;
-    private MatchItem bookedMatch;
+    private Match bookedMatch;
     private Date bookedDate;
     private String notes;
 
-    public BookingItem(Long bookingID, MatchItem bookedMatch, Date bookedDate, String notes) {
+    public Booking(Long bookingID, Match bookedMatch, Date bookedDate, String notes) {
         this.bookingID = bookingID;
         this.bookedMatch = bookedMatch;
         this.bookedDate = bookedDate;
@@ -24,11 +24,11 @@ public class BookingItem {
         this.bookingID = bookingID;
     }
 
-    public MatchItem getBookedMatch() {
+    public Match getBookedMatch() {
         return bookedMatch;
     }
 
-    public void setBookedMatch(MatchItem bookedMatch) {
+    public void setBookedMatch(Match bookedMatch) {
         this.bookedMatch = bookedMatch;
     }
 

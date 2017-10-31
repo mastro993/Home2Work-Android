@@ -28,7 +28,7 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2workapi.Client;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

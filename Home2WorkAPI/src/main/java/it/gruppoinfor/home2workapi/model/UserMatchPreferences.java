@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.models;
+package it.gruppoinfor.home2workapi.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -29,11 +29,11 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.SessionManager;
+import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
-import it.gruppoinfor.home2work.models.User;
 import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.Tools;
+import it.gruppoinfor.home2workapi.model.User;
 
 import static it.gruppoinfor.home2work.App.dbApp;
 
@@ -170,8 +170,8 @@ public class RouteService extends Service {
 
             LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(10000);
-            locationRequest.setSmallestDisplacement(100f);
+            locationRequest.setInterval(30000);
+            locationRequest.setSmallestDisplacement(200f);
 
             routeLocationListener = new MyLocationListener();
 

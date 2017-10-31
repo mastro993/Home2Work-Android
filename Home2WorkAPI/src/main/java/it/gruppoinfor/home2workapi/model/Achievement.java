@@ -1,11 +1,11 @@
-package it.gruppoinfor.home2work.models;
+package it.gruppoinfor.home2workapi.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-import it.gruppoinfor.home2work.api.Client;
+import it.gruppoinfor.home2workapi.Client;
 
 
 public class Achievement {

@@ -1,15 +1,15 @@
-package it.gruppoinfor.home2work.api;
+package it.gruppoinfor.home2workapi;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
-import it.gruppoinfor.home2work.models.BookingItem;
-import it.gruppoinfor.home2work.models.MatchItem;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2workapi.model.Booking;
+import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -23,8 +23,8 @@ public class Client {
     public static final String ACHIEVEMENTS_BASE_URL = SERVER_URL + "/images/achievements/";
 
     private static User signedUser;
-    private static List<MatchItem> userMatches;
-    private static List<BookingItem> userBookedMatches;
+    private static List<Match> userMatches;
+    private static List<Booking> userBookedMatches;
     private static EndpointInterface APIService;
 
     public static User getSignedUser() {
@@ -32,25 +32,22 @@ public class Client {
     }
 
     public static void setSignedUser(User signedUser) {
-        Crashlytics.setUserIdentifier(signedUser.getId().toString());
-        Crashlytics.setUserEmail(signedUser.getEmail());
-        Crashlytics.setUserName(signedUser.toString());
         Client.signedUser = signedUser;
     }
 
-    public static List<MatchItem> getUserMatches() {
+    public static List<Match> getUserMatches() {
         return userMatches;
     }
 
-    public static void setUserMatches(List<MatchItem> userMatches) {
+    public static void setUserMatches(List<Match> userMatches) {
         Client.userMatches = userMatches;
     }
 
-    public static List<BookingItem> getUserBookedMatches() {
+    public static List<Booking> getUserBookedMatches() {
         return userBookedMatches;
     }
 
-    public static void setUserBookedMatches(List<BookingItem> userBookedMatches) {
+    public static void setUserBookedMatches(List<Booking> userBookedMatches) {
         Client.userBookedMatches = userBookedMatches;
     }
 

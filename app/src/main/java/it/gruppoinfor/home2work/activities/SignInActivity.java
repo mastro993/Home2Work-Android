@@ -17,9 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.api.SessionManager;
-import it.gruppoinfor.home2work.api.Client;
-import it.gruppoinfor.home2work.models.User;
+import it.gruppoinfor.home2work.utils.SessionManager;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -144,14 +144,11 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void enableLogin() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                signInButton.setEnabled(true);
-                emailEditText.setEnabled(true);
-                passwordEditText.setEnabled(true);
-                signInLoading.setVisibility(View.GONE);
-            }
+        new Handler().postDelayed(() -> {
+            signInButton.setEnabled(true);
+            emailEditText.setEnabled(true);
+            passwordEditText.setEnabled(true);
+            signInLoading.setVisibility(View.GONE);
         }, 2000);
     }
 

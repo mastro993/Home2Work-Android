@@ -1,13 +1,10 @@
-package it.gruppoinfor.home2work.models;
+package it.gruppoinfor.home2workapi.model;
 
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Address  {
+public class Address {
 
 
     @SerializedName("city")

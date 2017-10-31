@@ -23,18 +23,17 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/container"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_bar_size"
-        android:animateLayoutChanges="true">
+        android:orientation="vertical">
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
             android:layout_marginBottom="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -42,66 +41,76 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/request_container"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"
+            android:padding="18dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/infoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical"
-                android:padding="18dp">
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:gravity="center"
+                android:text="Richiedi la condivisione dell'auto per questo percorso" />
 
-                <TextView
-                    android:id="@+id/infoText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="15dp"
-                    android:gravity="center"
-                    android:text="Richiedi la condivisione dell'auto per questo percorso" />
+            <Button
+                android:id="@+id/request_shere_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="228dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Richiedi condivisione"
+                android:visibility="visible" />
 
-                <Button
-                    android:id="@+id/request_shere_button"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="228dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Richiedi condivisione"
-                    android:visibility="visible" />
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/request_loading_view"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:indicatorColor="@color/colorAccent"
+                app:indicatorName="BallPulseIndicator"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
 
-                <com.wang.avi.AVLoadingIndicatorView
-                    android:id="@+id/request_loading_view"
-                    style="@style/AVLoadingIndicatorView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    app:indicatorColor="@color/colorAccent"
-                    app:indicatorName="BallPulseIndicator"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
+        </LinearLayout>
 
-            </LinearLayout>
+    </LinearLayout>
 
+    <!--    <android.support.constraint.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
 
-        </android.support.v7.widget.CardView>
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>-->
 
     <FrameLayout
-        android:visibility="gone"
         android:id="@+id/match_loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_bar_size"
-        android:background="@color/window_background">
+        android:background="@color/window_background"
+        android:visibility="gone">
 
         <com.wang.avi.AVLoadingIndicatorView
             style="@style/AVLoadingIndicatorView"

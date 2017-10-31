@@ -2,7 +2,6 @@ package it.gruppoinfor.home2work.adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.models.Achievement;
+import it.gruppoinfor.home2workapi.model.Achievement;
 
 public class ProfileAchievementAdapter extends RecyclerView.Adapter<ProfileAchievementAdapter.ViewHolder> {
 

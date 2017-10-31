@@ -1,8 +1,8 @@
-package it.gruppoinfor.home2work.models;
+package it.gruppoinfor.home2workapi.model;
 
 import java.util.Date;
 
-public class MatchItem {
+public class Match {
 
     private Long matchID;
     private User guest;
@@ -14,7 +14,7 @@ public class MatchItem {
     private Boolean _new;
     private Boolean hidden;
 
-    public MatchItem(Long matchID, User guest, User host, Double sharedDistance, Date arrivalTime, Date departureTime, Integer score, Boolean _new, Boolean hidden) {
+    public Match(Long matchID, User guest, User host, Double sharedDistance, Date arrivalTime, Date departureTime, Integer score, Boolean _new, Boolean hidden) {
         this.matchID = matchID;
         this.guest = guest;
         this.host = host;
@@ -26,7 +26,7 @@ public class MatchItem {
         this.hidden = hidden;
     }
 
-    public MatchItem() {
+    public Match() {
     }
 
     public Double getSharedDistance() {

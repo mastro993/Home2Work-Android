@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Home2Work.iml" filepath="$PROJECT_DIR$/Home2Work.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Home2WorkAPI/home2workapi.iml" filepath="$PROJECT_DIR$/Home2WorkAPI/home2workapi.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
