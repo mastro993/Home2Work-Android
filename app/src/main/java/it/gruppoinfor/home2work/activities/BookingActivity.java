@@ -1,28 +1,23 @@
 package it.gruppoinfor.home2work.activities;
 
 import android.Manifest;
-import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -39,15 +34,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.wang.avi.AVLoadingIndicatorView;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,13 +46,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.RouteUtils;
-import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
 
-import static it.gruppoinfor.home2work.utils.Converters.dateToString;
-
-public class MatchActivity extends AppCompatActivity {
+public class BookingActivity extends AppCompatActivity {
 
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
 
@@ -73,8 +60,12 @@ public class MatchActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.infoText)
+    TextView infoText;
     @BindView(R.id.request_shere_button)
     Button requestShereButton;
+    @BindView(R.id.request_loading_view)
+    AVLoadingIndicatorView requestLoadingView;
     @BindView(R.id.match_loading_view)
     FrameLayout matchLoadingView;
     @BindView(R.id.score_progress)
@@ -91,22 +82,23 @@ public class MatchActivity extends AppCompatActivity {
     TextView arrivalTimeView;
     @BindView(R.id.departure_time_view)
     TextView departureTimeView;
-    @BindView(R.id.karma_points_preview)
-    TextView karmaPointsPreview;
+    @BindView(R.id.metting_location)
+    TextView mettingLocation;
+    @BindView(R.id.meeting_time)
+    TextView meetingTime;
 
-    private Resources res;
+    private boolean requesting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match);
+        setContentView(R.layout.activity_booking);
         ButterKnife.bind(this);
-        res = getResources();
+
+        matchLoadingView.setVisibility(View.VISIBLE);
 
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -119,95 +111,74 @@ public class MatchActivity extends AppCompatActivity {
 
         Mockup.getMatchInfo(matchInfo -> {
             match = matchInfo;
-            initUI();
-            mapFragment.getMapAsync(new MyMapReadyCollback(MatchActivity.this));
+            mapFragment.getMapAsync(new MyMapReadyCollback(BookingActivity.this));
         });
 
-        matchLoadingView.setVisibility(View.VISIBLE);
-
     }
 
-    private void initUI() {
-
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
-
-        scoreProgress.setProgress(Integer.parseInt(match.getScore().toString()));
-
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
-
-        Glide.with(this)
-                .load(match.getHost().getAvatarURL())
-                .apply(requestOptions)
-                .into(userAvatar);
-
-        scoreText.setText(String.format(Locale.ITALY, "%1$d%%", match.getScore()));
-        nameView.setText(match.getHost().toString());
-
-        int color = ScoreColorUtility.getScoreColor(this, match.getScore());
-        Drawable bg = ContextCompat.getDrawable(this, R.drawable.bg_match_score_percent);
-
-        scoreProgress.setFinishedStrokeColor(color);
-        bg.setTint(color);
-        scoreText.setBackground(bg);
-        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), match.getSharedDistance().toString()));
-        arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(match.getArrivalTime())));
-        departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(match.getDepartureTime())));
-
-        int karmaPoints = match.getSharedDistance().intValue() * 10;
-        karmaPointsPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
-
+    @Override
+    public void onBackPressed() {
+        if (requesting) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.match_abort_request);
+            builder.setMessage(R.string.match_abort_request_message);
+            builder.setPositiveButton("Annulla richiesta", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    BookingActivity.super.onBackPressed();
+                }
+            });
+            builder.setNegativeButton("Continua", null);
+            builder.show();
+        } else {
+            super.onBackPressed();
+        }
     }
 
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (requesting) {
+            Bundle bundle = intent.getExtras();
+            Boolean response = bundle.getBoolean("shareResponse");
+            if (response) {
+                requestLoadingView.setVisibility(View.GONE);
+                infoText.setText(getString(R.string.match_share_request_accepted));
+            } else {
+                requestLoadingView.setVisibility(View.GONE);
+                infoText.setText(getString(R.string.match_share_request_refused));
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 2000);
+        }
+    }
 
     @OnClick(R.id.request_shere_button)
     void requestShare() {
 
+        requestShereButton.setVisibility(View.GONE);
+        requestLoadingView.setVisibility(View.VISIBLE);
+        infoText.setText(getString(R.string.match_confirmation_awaiting));
 
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
+        /*Client.getAPI().requestShare(match.getId()).enqueue(new Callback<ShareRequest>() {
+            @Override
+            public void onResponse(Call<ShareRequest> call, Response<ShareRequest> response) {
+                requesting = true;
+            }
 
-        MaterialDialog editAddressDialog = new MaterialDialog.Builder(this)
-                .title("Prenota condivisione auto")
-                .customView(R.layout.dialog_new_booking, false)
-                .positiveText("Prenota")
-                .negativeText("Annulla")
-                .onPositive(((MaterialDialog dialog, DialogAction which) -> {
-
-                    EditText dateInput = (EditText) dialog.findViewById(R.id.date_input);
-                    EditText noteInput = (EditText) dialog.findViewById(R.id.notes_input);
-
-                    String notes = noteInput.getText().toString();
-                    Date date = c.getTime();
-
-                    // TODO invio prenotazione al server
-
-                }))
-                .build();
-
-        TextView dateTitle = (TextView) editAddressDialog.findViewById(R.id.date_title);
-        TextView noteTitle = (TextView) editAddressDialog.findViewById(R.id.notes_title);
-        EditText dateInput = (EditText) editAddressDialog.findViewById(R.id.date_input);
-
-
-        dateTitle.setText(String.format(res.getString(R.string.new_booking_date_title), match.getHost().getName()));
-        noteTitle.setText(String.format(res.getString(R.string.new_booking_notes_title), match.getHost().getName()));
-
-        dateInput.setOnClickListener(view -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePicker, year, month, day) -> {
-                c.set(year, month, day);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
-                String dateString = dateFormat.format(c.getTime());
-                dateInput.setText(dateString);
-            }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        });
-
-        dateInput.setFocusable(false);
-
-        editAddressDialog.show();
+            @Override
+            public void onFailure(Call<ShareRequest> call, Throwable t) {
+                infoText.setText(getString(R.string.match_share_request_error));
+                shareRequestButton.setVisibility(View.VISIBLE);
+                loadingView.setVisibility(View.GONE);
+            }
+        });*/
 
     }
 
@@ -285,9 +256,6 @@ public class MatchActivity extends AppCompatActivity {
             LatLng first = match.getStartLocation();
             LatLng last = match.getEndLocation();
 
-
-            // TODO inserire informazioni di partenza ed arrivo
-
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))
                             .position(first)
@@ -307,6 +275,7 @@ public class MatchActivity extends AppCompatActivity {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(startMarker.getPosition()));
             matchLoadingView.setVisibility(View.GONE);
+
         }
 
 

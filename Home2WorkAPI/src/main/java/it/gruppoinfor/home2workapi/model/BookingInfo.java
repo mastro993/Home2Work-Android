@@ -9,13 +9,15 @@ public class BookingInfo {
     private Long bookingID;
     private Match bookedMatch;
     private Date bookedDate;
+    private Date creationDate;
     private String notes;
     private BookingStatus bookingStatus;
 
-    public BookingInfo(Long bookingID, Match bookedMatch, Date bookedDate, String notes, BookingStatus bookingStatus) {
+    public BookingInfo(Long bookingID, Match bookedMatch, Date bookedDate, Date creationDate, String notes, BookingStatus bookingStatus) {
         this.bookingID = bookingID;
         this.bookedMatch = bookedMatch;
         this.bookedDate = bookedDate;
+        this.creationDate = creationDate;
         this.notes = notes;
         this.bookingStatus = bookingStatus;
     }
@@ -42,6 +44,14 @@ public class BookingInfo {
 
     public void setBookedDate(Date bookedDate) {
         this.bookedDate = bookedDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public String getNotes() {

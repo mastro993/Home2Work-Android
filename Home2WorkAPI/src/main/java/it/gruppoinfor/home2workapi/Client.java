@@ -43,7 +43,7 @@ public class Client {
         Client.userMatches = userMatches;
     }
 
-    public static List<Booking> getUserBookedMatches() {
+    public static List<Booking> getUserBookings() {
         return userBookedMatches;
     }
 

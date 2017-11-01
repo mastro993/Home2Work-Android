@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.model.Match;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
@@ -70,17 +71,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         if (!matchItem.isNew()) holder.newBadgeView.setVisibility(View.GONE);
 
-        int color;
+        int color = ScoreColorUtility.getScoreColor(activity, matchItem.getScore());
         Drawable bg = ContextCompat.getDrawable(activity, R.drawable.bg_match_score_percent);
-        if (matchItem.getScore() < 50) {
-            color = ContextCompat.getColor(activity, R.color.red_500);
-        } else if (matchItem.getScore() < 70) {
-            color = ContextCompat.getColor(activity, R.color.amber_500);
-        } else if (matchItem.getScore() < 90) {
-            color = ContextCompat.getColor(activity, R.color.light_green_500);
-        } else {
-            color = ContextCompat.getColor(activity, R.color.green_500);
-        }
 
         holder.scoreProgress.setFinishedStrokeColor(color);
         bg.setTint(color);

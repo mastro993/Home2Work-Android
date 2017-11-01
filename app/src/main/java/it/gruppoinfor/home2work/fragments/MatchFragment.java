@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.BookingActivity;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.BookingAdapter;
@@ -30,6 +31,7 @@ import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
+import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 
 
@@ -65,8 +67,8 @@ public class MatchFragment extends Fragment {
         if (isVisibleToUser) {
             if (Client.getUserMatches() == null) refreshMatches();
             else populateMatchList();
-            if (Client.getUserBookedMatches() == null) refreshBookedMatches();
-            else populateBookedMatchList();
+            if (Client.getUserBookings() == null) refreshBookings();
+            else populateBookingList();
         }
     }
 
@@ -107,14 +109,14 @@ public class MatchFragment extends Fragment {
 
     }
 
-    private void refreshBookedMatches() {
+    private void refreshBookings() {
         rootView.setRefreshing(true);
         refreshingBookedMatches = true;
 
         // TODO fare refresh da web
         Mockup.refreshUserBookedMatches(bookedMatchItems -> {
             Client.setUserBookedMatches(bookedMatchItems);
-            populateBookedMatchList();
+            populateBookingList();
             refreshingBookedMatches = false;
             rootView.setRefreshing(refreshingBookedMatches || refreshingMatches);
         });
@@ -176,12 +178,12 @@ public class MatchFragment extends Fragment {
 
     }
 
-    private void populateBookedMatchList() {
-        bookedMatchAdapter = new BookingAdapter(getActivity(), Client.getUserBookedMatches());
+    private void populateBookingList() {
+        bookedMatchAdapter = new BookingAdapter(getActivity(), Client.getUserBookings());
         bookedMatchAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
             @Override
             public void onItemClick(View view, int position) {
-                showBookedMatchDetails(position);
+                showBookingDetails(position);
             }
 
             @Override
@@ -197,7 +199,7 @@ public class MatchFragment extends Fragment {
                             showBookedMatchUserProfile(position);
                             break;
                         case R.id.delete_booked_match:
-                            showDeleteBookedMatchDialog(position);
+                            showDeleteBookingDialog(position);
                             break;
                         default:
                             break;
@@ -267,15 +269,13 @@ public class MatchFragment extends Fragment {
 
     }
 
-    private void showBookedMatchDetails(int position) {
-        /*
-        TODO Activity info Booked Match
-        Booking matchItem = matches.get(position);
+    private void showBookingDetails(int position) {
 
-        if (match.isNew()) setMatchAsViewed(position);
-        Intent matchIntent = new Intent(activity, MatchActivity.class);
-        matchIntent.putExtra("matchID", matchItem.getMatchID());
-        activity.startActivity(matchIntent);*/
+        Booking booking = Client.getUserBookings().get(position);
+
+        Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);
+        bookingIntent.putExtra("bookingID", booking.getBookingID());
+        startActivity(bookingIntent);
 
     }
 
@@ -297,7 +297,7 @@ public class MatchFragment extends Fragment {
         hideDialog.show();
     }
 
-    private void showDeleteBookedMatchDialog(int position) {
+    private void showDeleteBookingDialog(int position) {
         /*
         TODO richiesta annullamento prenotazione
         Match matchItem = Client.getUserMatches().get(position);
