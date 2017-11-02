@@ -1,47 +1,25 @@
 package it.gruppoinfor.home2workapi.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+public class Karma {
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class Karma implements Parcelable {
-
-    public final static Creator<Karma> CREATOR = new Creator<Karma>() {
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Karma createFromParcel(Parcel in) {
-            Karma instance = new Karma();
-            instance.karma = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.level = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.forNextLevel = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            return instance;
-        }
-
-        public Karma[] newArray(int size) {
-            return (new Karma[size]);
-        }
-
-    };
-    @SerializedName("karma")
-    @Expose
-    private Integer karma;
-    @SerializedName("level")
-    @Expose
+    private Integer value;
     private Integer level;
-    @SerializedName("for_next_level")
-    @Expose
     private Integer forNextLevel;
+    private Float levelProgres;
 
-    public Integer getKarma() {
-        return karma;
+    public Karma(int value) {
+        this.value = value;
+        this.level = ((Double) (1 + 0.10 * Math.sqrt(value))).intValue();
+        this.forNextLevel = ((Double) Math.pow((level / 0.10), 2.0)).intValue();
+        this.levelProgres = (100.0f / forNextLevel) * value;
     }
 
-    public void setKarma(Integer karma) {
-        this.karma = karma;
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
     public Integer getLevel() {
@@ -60,20 +38,11 @@ public class Karma implements Parcelable {
         this.forNextLevel = forNextLevel;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(karma);
-        dest.writeValue(level);
-        dest.writeValue(forNextLevel);
+    public Float getLevelProgres() {
+        return levelProgres;
     }
 
-    public int describeContents() {
-        return 0;
+    public void setLevelProgres(Float levelProgres) {
+        this.levelProgres = levelProgres;
     }
-
-    public Float getProgress() {
-        float c = (float) karma;
-        float m = (float) forNextLevel;
-        return (100.0f / m) * c;
-    }
-
 }

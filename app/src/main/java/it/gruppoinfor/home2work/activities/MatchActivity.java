@@ -117,7 +117,8 @@ public class MatchActivity extends AppCompatActivity {
 
         mapFragment.onCreate(savedInstanceState);
 
-        Mockup.getMatchInfo(matchInfo -> {
+        // TODO ottenere info match dal srver
+        Mockup.getMatchInfo(matchId, matchInfo -> {
             match = matchInfo;
             initUI();
             mapFragment.getMapAsync(new MyMapReadyCollback(MatchActivity.this));

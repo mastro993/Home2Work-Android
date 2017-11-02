@@ -1,30 +1,37 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="it.gruppoinfor.home2work.fragments.ProgressFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/layout_progress_header" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/stats_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawablePadding="6dp"
-            android:gravity="center"
-            android:padding="@dimen/list_items_padding"
-            android:text="Statistiche" />
+            <include layout="@layout/layout_progress_header" />
 
-        <include layout="@layout/layout_progress_stats" />
+            <TextView
+                android:id="@+id/stats_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:padding="@dimen/list_items_padding"
+                android:text="Statistiche" />
+
+            <include layout="@layout/layout_progress_stats" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
 
-</ScrollView>
+    </ScrollView>
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

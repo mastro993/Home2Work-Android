@@ -99,8 +99,6 @@ public class BookingActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         res = getResources();
 
-        bookingLoadingView.setVisibility(View.VISIBLE);
-
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         if (getSupportActionBar() != null) {
@@ -113,11 +111,14 @@ public class BookingActivity extends AppCompatActivity {
 
         mapFragment.onCreate(savedInstanceState);
 
-        Mockup.getBookingInfo(bookingInfo -> {
+        // TODO ottenere info bookign dal srver
+        Mockup.getBookingInfo( bookingId, bookingInfo -> {
             booking = bookingInfo;
             initUI();
             mapFragment.getMapAsync(new MyMapReadyCollback(BookingActivity.this));
         });
+
+        bookingLoadingView.setVisibility(View.VISIBLE);
 
     }
 

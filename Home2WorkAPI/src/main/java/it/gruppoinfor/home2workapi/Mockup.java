@@ -11,8 +11,11 @@ import java.util.Random;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.BookingInfo;
+import it.gruppoinfor.home2workapi.model.Karma;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
+import it.gruppoinfor.home2workapi.model.Profile;
+import it.gruppoinfor.home2workapi.model.ProfileStats;
 import it.gruppoinfor.home2workapi.model.User;
 
 import static it.gruppoinfor.home2workapi.Converters.stringToDate;
@@ -79,13 +82,17 @@ public class Mockup {
                 .start();
     }
 
-    public static void getMatchInfo(AsyncJob.AsyncResultAction<MatchInfo> asyncResultAction) {
+    public static void getMatchInfo(final Long matchID, AsyncJob.AsyncResultAction<MatchInfo> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<MatchInfo>()
                 .doInBackground(() -> {
 
                     lag();
 
-                    Match match = new Match(4L, null, user4, 5.3, stringToDate("8:00"), stringToDate("18:00"), 77, true, false);
+                    Match match = Client.getUserMatches().stream()
+                            .filter(m -> m.getMatchID() == matchID)
+                            .findFirst()
+                            .get();
+
                     MatchInfo matchInfo = new MatchInfo();
                     matchInfo.setMatchId(match.getMatchID());
                     matchInfo.setHost(match.getHost());
@@ -95,6 +102,7 @@ public class Mockup {
                     matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
                     matchInfo.setDepartureTime(match.getDepartureTime());
                     matchInfo.setArrivalTime(match.getArrivalTime());
+
                     return matchInfo;
 
                 })
@@ -103,13 +111,18 @@ public class Mockup {
                 .start();
     }
 
-    public static void getBookingInfo(AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
+    public static void getBookingInfo(Long bookingID, AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<BookingInfo>()
                 .doInBackground(() -> {
 
                     lag();
 
-                    Match match = new Match(4L, null, user4, 5.3, stringToDate("8:00"), stringToDate("18:00"), 77, true, false);
+                    Booking booking = Client.getUserBookings().stream()
+                            .filter(b -> b.getBookingID() == bookingID)
+                            .findFirst()
+                            .get();
+
+                    Match match = booking.getBookedMatch();
                     MatchInfo matchInfo = new MatchInfo();
                     matchInfo.setMatchId(match.getMatchID());
                     matchInfo.setHost(match.getHost());
@@ -119,14 +132,32 @@ public class Mockup {
                     matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
                     matchInfo.setDepartureTime(match.getDepartureTime());
                     matchInfo.setArrivalTime(match.getArrivalTime());
-                    BookingInfo booking = new BookingInfo(1L, matchInfo, new Date(unixTime + (5L * dayInMillis)), new Date(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto", BookingStatus.CONFIRMED);
-                    return booking;
+
+                    BookingInfo bookingInfo = new BookingInfo(1L, matchInfo, booking.getBookedDate(), new Date(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto", booking.getBookingStatus());
+
+                    return bookingInfo;
 
 
                 })
                 .doWhenFinished(asyncResultAction)
                 .create()
                 .start();
+    }
+
+    public static void getUserProfile(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<Profile>()
+                .doInBackground(() -> {
+                    lag();
+
+                    Karma karma = new Karma(460);
+                    ProfileStats profileStats = new ProfileStats(new Date(), 132.7, 11, 218.4);
+
+                    return new Profile(karma, profileStats);
+                })
+                .doWhenFinished(asyncResultAction)
+                .create()
+                .start();
+
     }
 
     private static void lag() {
