@@ -7,13 +7,13 @@ import it.gruppoinfor.home2workapi.enums.BookingStatus;
 public class BookingInfo {
 
     private Long bookingID;
-    private Match bookedMatch;
+    private MatchInfo bookedMatch;
     private Date bookedDate;
     private Date creationDate;
     private String notes;
     private BookingStatus bookingStatus;
 
-    public BookingInfo(Long bookingID, Match bookedMatch, Date bookedDate, Date creationDate, String notes, BookingStatus bookingStatus) {
+    public BookingInfo(Long bookingID, MatchInfo bookedMatch, Date bookedDate, Date creationDate, String notes, BookingStatus bookingStatus) {
         this.bookingID = bookingID;
         this.bookedMatch = bookedMatch;
         this.bookedDate = bookedDate;
@@ -30,11 +30,11 @@ public class BookingInfo {
         this.bookingID = bookingID;
     }
 
-    public Match getBookedMatch() {
+    public MatchInfo getBookedMatch() {
         return bookedMatch;
     }
 
-    public void setBookedMatch(Match bookedMatch) {
+    public void setBookedMatch(MatchInfo bookedMatch) {
         this.bookedMatch = bookedMatch;
     }
 

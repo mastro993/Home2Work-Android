@@ -58,6 +58,9 @@
     <string name="match_start_time">Orario di partenza: %1$s</string>
     <string name="match_end_time">Orario di arrivo: %1$s</string>
 
+    <!-- BookingActivity -->
+    <string name="booking_meeting_location_and_time">In <b>%1$s</b> alle <b>%2$s</b></string>
+
     <!-- MatchFragment -->
     <string name="match_loading_error">Impossibile aggiornare lista match al momento, riprova più tardi</string>
 

@@ -9,6 +9,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 
+import com.arasthel.asyncjob.AsyncJob;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
@@ -119,54 +120,45 @@ public class Converters {
         return imageFile;
     }
 
-    public static void latLngToAddress(final Context context, final LatLng latLng, final GeocoderCallback geocoderCallback) {
-        new AsyncTask<Void, Void, Address>() {
+    public static void latLngToAddress(final Context context, final LatLng latLng, AsyncJob.AsyncResultAction<Address> addressAsyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<Address>()
+                .doInBackground(() -> {
+                    if (latLng == null) {
+                        return null;
+                    } else {
+                        Double latitude = latLng.latitude;
+                        Double longitude = latLng.longitude;
 
-            @Override
-            protected Address doInBackground(Void... voids) {
-                if (latLng == null) {
-                    return null;
-                } else {
-                    Double latitude = latLng.latitude;
-                    Double longitude = latLng.longitude;
-
-                    try {
-                        Geocoder geocoder = new Geocoder(context, Locale.ITALY);
-                        List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                        if (addresses.size() > 0) {
-                            return addresses.get(0);
-                        } else {
+                        try {
+                            Geocoder geocoder = new Geocoder(context, Locale.ITALY);
+                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            if (addresses.size() > 0) {
+                                return addresses.get(0);
+                            } else {
+                                return null;
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                             return null;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
                     }
-                }
-            }
-
-            public void onPostExecute(Address address) {
-                geocoderCallback.onFinish(address);
-            }
-
-        }.execute();
+                })
+                .doWhenFinished(addressAsyncResultAction)
+                .create()
+                .start();
     }
 
-    public static interface GeocoderCallback {
-        void onFinish(Address address);
-    }
-
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = null;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
+            if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
 
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
         } else {
             bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -191,4 +183,5 @@ public class Converters {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
         return sdf.format(date);
     }
+
 }

@@ -13,30 +13,6 @@
         android:orientation="vertical"
         android:padding="@dimen/list_items_padding">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/name_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="Pincopallo Fumagalli"
-                android:textColor="@color/light_bg_dark_primary_text"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/date_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="Lunedì, 30 Ottobre 2017"
-                android:textColor="@color/colorAccent" />
-
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -58,12 +34,29 @@
                 android:textColor="@color/dark_bg_light_primary_text"
                 android:textStyle="bold" />
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/name_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="Pincopallo Fumagalli"
+                    android:textColor="@color/light_bg_dark_primary_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/date_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="Lunedì, 30 Ottobre 2017"
+                    android:textColor="@color/colorAccent" />
 
                 <TextView
                     android:id="@+id/arrival_time_view"
@@ -78,7 +71,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/match_item_departure_time"
                     android:textColor="@color/light_bg_dark_secondary_text" />
-
 
             </LinearLayout>
 

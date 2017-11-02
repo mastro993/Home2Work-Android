@@ -10,6 +10,7 @@ import java.util.Random;
 
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
+import it.gruppoinfor.home2workapi.model.BookingInfo;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
 import it.gruppoinfor.home2workapi.model.User;
@@ -31,8 +32,8 @@ public class Mockup {
     private static Match match5 = new Match(5L, null, user1, 8.1, stringToDate("8:30"), stringToDate("17:30"), 70, true, false);
     private static Match match6 = new Match(6L, null, user3, 2.4, stringToDate("8:30"), stringToDate("17:30"), 64, true, false);
     private static Match match7 = new Match(7L, null, user2, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
-    private static Booking bookedMatchItem1;
-    private static Booking bookedMatchItem2;
+    private static Booking booking1;
+    private static Booking booking2;
 
 
     public static void refreshUserMatches(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
@@ -63,12 +64,12 @@ public class Mockup {
 
                     lag();
 
-                    bookedMatchItem1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
-                    bookedMatchItem2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
+                    booking1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
+                    booking2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
 
                     List<Booking> bookedMatches = new ArrayList<>();
-                    bookedMatches.add(bookedMatchItem1);
-                    bookedMatches.add(bookedMatchItem2);
+                    bookedMatches.add(booking1);
+                    bookedMatches.add(booking2);
 
                     return bookedMatches;
 
@@ -102,9 +103,35 @@ public class Mockup {
                 .start();
     }
 
+    public static void getBookingInfo(AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<BookingInfo>()
+                .doInBackground(() -> {
+
+                    lag();
+
+                    Match match = new Match(4L, null, user4, 5.3, stringToDate("8:00"), stringToDate("18:00"), 77, true, false);
+                    MatchInfo matchInfo = new MatchInfo();
+                    matchInfo.setMatchId(match.getMatchID());
+                    matchInfo.setHost(match.getHost());
+                    matchInfo.setScore(match.getScore());
+                    matchInfo.setSharedDistance(match.getSharedDistance());
+                    matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
+                    matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
+                    matchInfo.setDepartureTime(match.getDepartureTime());
+                    matchInfo.setArrivalTime(match.getArrivalTime());
+                    BookingInfo booking = new BookingInfo(1L, matchInfo, new Date(unixTime + (5L * dayInMillis)), new Date(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto", BookingStatus.CONFIRMED);
+                    return booking;
+
+
+                })
+                .doWhenFinished(asyncResultAction)
+                .create()
+                .start();
+    }
+
     private static void lag() {
         // Simula ritardo connessione dati
-        int randomTime = new Random().nextInt(2000);
+        int randomTime = new Random().nextInt(1500);
         try {
             Thread.sleep(randomTime);
         } catch (InterruptedException e) {
