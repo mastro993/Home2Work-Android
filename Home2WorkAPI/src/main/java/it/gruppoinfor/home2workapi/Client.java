@@ -9,6 +9,7 @@ import java.util.List;
 
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -25,6 +26,7 @@ public class Client {
     private static User signedUser;
     private static List<Match> userMatches;
     private static List<Booking> userBookedMatches;
+    private static Profile userProfile;
     private static EndpointInterface APIService;
 
     public static User getSignedUser() {
@@ -45,6 +47,14 @@ public class Client {
 
     public static List<Booking> getUserBookings() {
         return userBookedMatches;
+    }
+
+    public static Profile getUserProfile() {
+        return userProfile;
+    }
+
+    public static void setUserProfile(Profile userProfile) {
+        Client.userProfile = userProfile;
     }
 
     public static void setUserBookedMatches(List<Booking> userBookedMatches) {

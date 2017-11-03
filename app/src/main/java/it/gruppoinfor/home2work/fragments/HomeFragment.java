@@ -35,7 +35,6 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,10 +45,10 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    private void initUI(){
+    private void initUI() {
 
         // TODO interfaccia utente
-        ((MainActivity)getActivity()).bottomNavigation.setNotification(String.valueOf(messages_count), 0);
+        ((MainActivity) getActivity()).bottomNavigation.setNotification(String.valueOf(messages_count), 0);
 
     }
 
@@ -97,9 +96,11 @@ public class HomeFragment extends Fragment {
             view.setOnLongClickListener(this);
         }
 
-        @Override abstract public void onClick(View v);
+        @Override
+        abstract public void onClick(View v);
 
-        @Override public boolean onLongClick(View v) {
+        @Override
+        public boolean onLongClick(View v) {
             final int[] screenPos = new int[2];
             final Rect displayFrame = new Rect();
             view.getLocationOnScreen(screenPos);
