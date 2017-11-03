@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if(position==2)
+                if(position==2 || position == 1)
                     getSupportActionBar().hide();
                 else
                     getSupportActionBar().show();

@@ -1,21 +1,18 @@
 package it.gruppoinfor.home2work.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.stream.Stream;
 
@@ -23,28 +20,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.BookingActivity;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.activities.MatchActivity;
-import it.gruppoinfor.home2work.adapters.BookingAdapter;
-import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
-import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
-import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 
 
 public class MatchFragment extends Fragment {
 
-    @BindView(R.id.matches_recycler_view)
-    RecyclerView matchRecyclerView;
-    @BindView(R.id.booked_matches_recycler_view)
-    RecyclerView bookedMatchRecyclerView;
-    private SwipeRefreshLayout rootView;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private Unbinder unbinder;
-    private MatchAdapter matchesAdapter;
-    private BookingAdapter bookedMatchAdapter;
+    private MatchPagerAdapter pagerAdapter;
     private boolean refreshingMatches = false;
     private boolean refreshingBookedMatches = false;
 
@@ -54,73 +47,64 @@ public class MatchFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_match, container, false);
+        CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_match, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        setHasOptionsMenu(true);
         initUI();
         return rootView;
+    }
+
+    private void initUI() {
+        pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+        swipeRefreshLayout.setOnRefreshListener(this::refreshMatches);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (Client.getUserMatches() == null) refreshMatches();
-            else populateMatchList();
-            if (Client.getUserBookings() == null) refreshBookings();
-            else populateBookingList();
+            if (Client.getUserMatches() == null || Client.getUserBookings() == null) {
+                refreshMatches();
+            } else {
+                refreshUI();
+            }
         }
     }
 
-    private void initUI() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchRecyclerView.getContext(), layoutManager.getOrientation());
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
-
-        matchRecyclerView.setLayoutManager(layoutManager);
-        matchRecyclerView.addItemDecoration(dividerItemDecoration);
-        matchRecyclerView.setNestedScrollingEnabled(false);
-        matchRecyclerView.setLayoutAnimation(animation);
-
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration2 = new DividerItemDecoration(bookedMatchRecyclerView.getContext(), layoutManager.getOrientation());
-
-        bookedMatchRecyclerView.setLayoutManager(layoutManager2);
-        bookedMatchRecyclerView.addItemDecoration(dividerItemDecoration2);
-        bookedMatchRecyclerView.setNestedScrollingEnabled(false);
-        bookedMatchRecyclerView.setLayoutAnimation(animation);
-
-        rootView.setOnRefreshListener(this::refreshMatches);
-        rootView.setColorSchemeResources(R.color.colorAccent);
-    }
-
     private void refreshMatches() {
-        rootView.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(true);
         refreshingMatches = true;
-
-        // TODO fare refresh da web
-        Mockup.refreshUserMatches(matchItems -> {
-            Client.setUserMatches(matchItems);
-            refreshBadge();
-            populateMatchList();
-            refreshingMatches = false;
-            rootView.setRefreshing(refreshingBookedMatches || refreshingMatches);
-        });
-
-    }
-
-    private void refreshBookings() {
-        rootView.setRefreshing(true);
         refreshingBookedMatches = true;
 
         // TODO fare refresh da web
+
+        Mockup.refreshUserMatches(matchItems -> {
+            Client.setUserMatches(matchItems);
+            refreshBadge();
+            refreshingMatches = false;
+            refreshUI();
+        });
+
         Mockup.refreshUserBookedMatches(bookedMatchItems -> {
             Client.setUserBookedMatches(bookedMatchItems);
-            populateBookingList();
             refreshingBookedMatches = false;
-            rootView.setRefreshing(refreshingBookedMatches || refreshingMatches);
+            refreshUI();
         });
+
     }
+
+    private void refreshUI() {
+        if (!refreshingBookedMatches && !refreshingMatches) {
+            swipeRefreshLayout.setRefreshing(false);
+            pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
+            viewPager.setAdapter(pagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+        }
+    }
+
 
     private void refreshBadge() {
         Stream<Match> matchStream = Client.getUserMatches().stream();
@@ -133,212 +117,56 @@ public class MatchFragment extends Fragment {
         }
     }
 
-    private void populateMatchList() {
-
-        matchesAdapter = new MatchAdapter(getActivity(), Client.getUserMatches());
-        matchesAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Match matchItem = Client.getUserMatches().get(position);
-                if (matchItem.isNew()) {
-                    matchItem.setNew(false);
-                    matchesAdapter.notifyItemChanged(position);
-                    setMatchAsViewed(matchItem);
-                    refreshBadge();
-                }
-                showMatchDetails(position);
-            }
-
-            @Override
-            public boolean onLongItemClick(View view, int position) {
-                PopupMenu popup = new PopupMenu(getActivity(), view);
-                popup.getMenuInflater().inflate(R.menu.menu_match, popup.getMenu());
-                popup.setOnMenuItemClickListener((item) -> {
-                    switch (item.getItemId()) {
-                        case R.id.show_match_details:
-                            showMatchDetails(position);
-                            break;
-                        case R.id.show_match_profile:
-                            showMatchUserProfile(position);
-                            break;
-                        case R.id.hide_match:
-                            showHideMatchDialog(position);
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
-                });
-                popup.show();
-                return true;
-            }
-        });
-
-        matchRecyclerView.setAdapter(matchesAdapter);
-
-    }
-
-    private void populateBookingList() {
-        bookedMatchAdapter = new BookingAdapter(getActivity(), Client.getUserBookings());
-        bookedMatchAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
-            @Override
-            public void onItemClick(View view, int position) {
-                showBookingDetails(position);
-            }
-
-            @Override
-            public boolean onLongItemClick(View view, int position) {
-                PopupMenu popup = new PopupMenu(getActivity(), view);
-                popup.getMenuInflater().inflate(R.menu.menu_booked_match, popup.getMenu());
-                popup.setOnMenuItemClickListener((item) -> {
-                    switch (item.getItemId()) {
-                        case R.id.show_booked_match_details:
-                            showMatchDetails(position);
-                            break;
-                        case R.id.show_booked_match_profile:
-                            showBookedMatchUserProfile(position);
-                            break;
-                        case R.id.delete_booked_match:
-                            showDeleteBookingDialog(position);
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
-                });
-                popup.show();
-                return true;
-            }
-        });
-        bookedMatchRecyclerView.setAdapter(bookedMatchAdapter);
-    }
-
-    private void setMatchAsViewed(Match match) {
-
-        /*
-        TODO match come visualizzato al server
-        Client.getAPI().editMatch(matchItem).enqueue(new SessionManagerCallback<MatchInfo>() {
-            @Override
-            public void onResponse(Call<MatchInfo> call, Response<MatchInfo> response) {
-                Stream<MatchInfo> matchStream = matches.stream();
-                long newMatches = matchStream.filter(MatchInfo::isNew).count();
-
-                if (newMatches > 0) {
-                    activity.bottomNavigation.setNotification(Long.toString(newMatches), 1);
-                }
-
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<MatchInfo> call, Throwable t) {
-
-            }
-        });*/
-
-    }
-
-    private void setMatchAsHidden(Match matchItem) {
-
-        /*
-        TODO nascondere match newl server
-
-        Client.getAPI().editMatch(matchItem).enqueue(new SessionManagerCallback<MatchInfo>() {
-            @Override
-            public void onResponse(Call<MatchInfo> call, Response<MatchInfo> response) {
-                matches.remove(position);
-                notifyItemRemoved(position);
-                Toasty.success(activity, res.getString(R.string.match_item_hided), Toast.LENGTH_SHORT, true).show();
-            }
-
-            @Override
-            public void onFailure(Call<MatchInfo> call, Throwable t) {
-                Toasty.error(activity, res.getString(R.string.match_item_hide_error)).show();
-                t.printStackTrace();
-
-            }
-        });*/
-    }
-
-    private void showMatchDetails(int position) {
-        Match match = Client.getUserMatches().get(position);
-
-        Intent matchIntent = new Intent(getContext(), MatchActivity.class);
-        matchIntent.putExtra("matchID", match.getMatchID());
-        startActivity(matchIntent);
-
-    }
-
-    private void showBookingDetails(int position) {
-
-        Booking booking = Client.getUserBookings().get(position);
-
-        Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);
-        bookingIntent.putExtra("bookingID", booking.getBookingID());
-        startActivity(bookingIntent);
-
-    }
-
-    private void showHideMatchDialog(int position) {
-        Match matchItem = Client.getUserMatches().get(position);
-        MaterialDialog hideDialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.match_item_hide_dialog_title)
-                .content(R.string.match_item_hide_dialog_content)
-                .positiveText(R.string.match_item_hide_dialog_confirm)
-                .negativeText(R.string.match_item_hide_dialog_cancel)
-                .onPositive((dialog, which) -> {
-                    Client.getUserMatches().remove(position);
-                    matchesAdapter.remove(position);
-                    setMatchAsHidden(matchItem);
-                    refreshBadge();
-                })
-                .build();
-
-        hideDialog.show();
-    }
-
-    private void showDeleteBookingDialog(int position) {
-        /*
-        TODO richiesta annullamento prenotazione
-        Match matchItem = Client.getUserMatches().get(position);
-        MaterialDialog hideDialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.match_item_hide_dialog_title)
-                .content(R.string.match_item_hide_dialog_content)
-                .positiveText(R.string.match_item_hide_dialog_confirm)
-                .negativeText(R.string.match_item_hide_dialog_cancel)
-                .onPositive((dialog, which) -> {
-                    Client.getUserMatches().remove(position);
-                    matchesAdapter.remove(position);
-                    setMatchAsHidden(matchItem);
-                    refreshBadge();
-                })
-                .build();
-
-        hideDialog.show();*/
-    }
-
-    private void showMatchUserProfile(int position) {
-        /*
-        TODO Activity info utente
-        Intent userIntent = new Intent(activity, ShowUserActivity.class);
-        User matchedUser = match.getHost();
-        userIntent.putExtra("userID", matchedUser.getId());
-        activity.startActivity(userIntent);*/
-    }
-
-    private void showBookedMatchUserProfile(int position) {
-        /*
-        TODO Activity info utente
-        Intent userIntent = new Intent(activity, ShowUserActivity.class);
-        User matchedUser = match.getHost();
-        userIntent.putExtra("userID", matchedUser.getId());
-        activity.startActivity(userIntent);*/
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    private class MatchPagerAdapter extends FragmentStatePagerAdapter {
+
+        MatchPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment frag = null;
+            switch (position) {
+                case 0:
+                    frag = new MatchListFragment();
+                    break;
+                case 1:
+                    frag = new MatchBookingFragment();
+                    break;
+                case 2:
+                    frag = new MatchRequestFragment();
+                    break;
+            }
+            return frag;
+        }
+
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Disponibili";
+                case 1:
+                    return "Prenotazioni";
+                case 2:
+                    return "Richieste";
+            }
+            return null;
+        }
+
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+
     }
 
 

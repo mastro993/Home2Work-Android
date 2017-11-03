@@ -1,29 +1,44 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="it.gruppoinfor.home2work.fragments.ProgressAchievementsFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/achievement_recycler_view"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <RelativeLayout
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:padding="48dp"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Al momento non ci sono obiettivi, continua ad utilizzare Home2Work per sbloccare nuovi obiettivi!"
-            android:textColor="@color/light_bg_dark_secondary_text" />
+            android:layout_height="match_parent">
 
-    </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/achievement_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
 
+            <RelativeLayout
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="48dp"
+                    android:text="Al momento non ci sono obiettivi, continua ad utilizzare Home2Work per sbloccare nuovi obiettivi!"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+            </RelativeLayout>
+
+
+        </FrameLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
 
 </FrameLayout>

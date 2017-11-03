@@ -15,7 +15,7 @@
             android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/shares_recycler_view"
+                android:id="@+id/requests_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
@@ -30,14 +30,24 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="48dp"
-                    android:text="Non hai ancora condiviso iul tuo percorso casa-lavoro. Che ne dici di iniziare a farlo?"
+                    android:text="Non hai ricevuto ancora nessuna richiesta."
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+                <TextView
+                    android:textSize="38sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="48dp"
+                    android:text="@string/lorem"
                     android:textColor="@color/light_bg_dark_secondary_text" />
 
             </RelativeLayout>
 
+
         </FrameLayout>
 
-    </android.support.v4.widget.NestedScrollView>
 
+    </android.support.v4.widget.NestedScrollView>
 
 </FrameLayout>
