@@ -16,8 +16,8 @@ import com.stepstone.stepper.VerificationError;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.adapters.ConfigurationStepsAdapter;
+import it.gruppoinfor.home2work.utils.SessionManager;
 
 public class ConfigurationActivity extends AppCompatActivity implements StepperLayout.StepperListener {
 
