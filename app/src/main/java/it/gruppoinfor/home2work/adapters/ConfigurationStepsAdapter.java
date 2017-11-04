@@ -8,12 +8,12 @@ import android.support.v4.app.FragmentManager;
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter;
 
-import it.gruppoinfor.home2work.fragments.ConfigurationAvatarFragment;
-import it.gruppoinfor.home2work.fragments.ConfigurationCompleteFragment;
-import it.gruppoinfor.home2work.fragments.ConfigurationHomeFragment;
-import it.gruppoinfor.home2work.fragments.ConfigurationJobFragment;
-import it.gruppoinfor.home2work.fragments.ConfigurationNameFragment;
-import it.gruppoinfor.home2work.fragments.ConfigurationStartFragment;
+import it.gruppoinfor.home2work.fragments.ConfigurationFragmentAvatar;
+import it.gruppoinfor.home2work.fragments.ConfigurationFragmentComplete;
+import it.gruppoinfor.home2work.fragments.ConfigurationFragmentHome;
+import it.gruppoinfor.home2work.fragments.ConfigurationFragmentJob;
+import it.gruppoinfor.home2work.fragments.ConfigurationFragmentName;
+import it.gruppoinfor.home2work.fragments.ConfigurationFragmentStart;
 
 public class ConfigurationStepsAdapter extends AbstractFragmentStepAdapter {
 
@@ -32,25 +32,25 @@ public class ConfigurationStepsAdapter extends AbstractFragmentStepAdapter {
 
         switch (position) {
             case 0:
-                fragment = new ConfigurationStartFragment();
+                fragment = new ConfigurationFragmentStart();
                 break;
             case 1:
-                fragment = new ConfigurationNameFragment();
+                fragment = new ConfigurationFragmentName();
                 break;
             case 2:
-                fragment = new ConfigurationHomeFragment();
+                fragment = new ConfigurationFragmentHome();
                 break;
             case 3:
-                fragment = new ConfigurationJobFragment();
+                fragment = new ConfigurationFragmentJob();
                 break;
             case 4:
-                fragment = new ConfigurationAvatarFragment();
+                fragment = new ConfigurationFragmentAvatar();
                 break;
             case 5:
-                fragment = new ConfigurationCompleteFragment();
+                fragment = new ConfigurationFragmentComplete();
                 break;
             default:
-                fragment = new ConfigurationStartFragment();
+                fragment = new ConfigurationFragmentStart();
         }
 
         fragment.setArguments(bundle);

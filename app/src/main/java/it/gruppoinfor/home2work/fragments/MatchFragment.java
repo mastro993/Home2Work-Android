@@ -134,13 +134,13 @@ public class MatchFragment extends Fragment {
             Fragment frag = null;
             switch (position) {
                 case 0:
-                    frag = new MatchListFragment();
+                    frag = new MatchFragmentList();
                     break;
                 case 1:
-                    frag = new MatchBookingFragment();
+                    frag = new MatchFragmentBooking();
                     break;
                 case 2:
-                    frag = new MatchRequestFragment();
+                    frag = new MatchFragmentRequest();
                     break;
             }
             return frag;

@@ -141,16 +141,16 @@ public class ProgressFragment extends Fragment {
             Fragment frag = null;
             switch (position) {
                 case 0:
-                    frag = new ProgressKarmaFragment();
+                    frag = new ProgressFragmentKarma();
                     break;
                 case 1:
-                    frag = new ProgressAchievementsFragment();
+                    frag = new ProgressFragmentAchievements();
                     break;
                 case 2:
-                    frag = new ProgressSharesFragment();
+                    frag = new ProgressFragmentShares();
                     break;
                 case 3:
-                    frag = new ProgressStatsFragment();
+                    frag = new ProgressFragmentStats();
                     break;
             }
             return frag;
