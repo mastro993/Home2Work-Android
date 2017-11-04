@@ -76,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
         setSyncAlarm();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private void initUI() {
 
         // Create items

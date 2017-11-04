@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.directions.route.Route;
@@ -46,6 +47,7 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.RouteUtils;
+import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.BookingInfo;
@@ -54,8 +56,10 @@ import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class RequestActivity extends AppCompatActivity {
 
+    public static final int REQUEST_RESPONSE_CODE = 433;
+    public static final int REQUEST_ACCEPTED = 3;
+    public static final int REQUEST_REJECTED = 4;
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.reject_request_button)
@@ -80,6 +84,7 @@ public class RequestActivity extends AppCompatActivity {
     TextView departureTimeView;
 
     private Long bookingId;
+    private int position;
     private BookingInfo booking;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
@@ -96,7 +101,8 @@ public class RequestActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        bookingId = getIntent().getLongExtra("bookingID", 0L);
+        position = getIntent().getIntExtra("request_position", 0);
+        bookingId = Client.getUserRequests().get(position).getBookingID();
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -127,7 +133,7 @@ public class RequestActivity extends AppCompatActivity {
             rejectRequestButton.setVisibility(View.VISIBLE);
         }
 
-        Converters.latLngToAddress(this, booking.getBookedMatch().getStartLocation(), address -> {
+        Converters.latLngToAddress(this, booking.getMatchInfo().getStartLocation(), address -> {
             String location = address.getAddressLine(0);
             String time = "8:00"; // TODO orario di incontro
 
@@ -159,10 +165,37 @@ public class RequestActivity extends AppCompatActivity {
 
     @OnClick(R.id.reject_request_button)
     public void onRejectRequestButtonClicked() {
+        MaterialDialog hideDialog = new MaterialDialog.Builder(this)
+                .title("Rifiuta prenotazione")
+                .content("Sei sicuro di voler rifiuatare questa prenotazione?")
+                .positiveText("Rifiuta")
+                .negativeText("Annulla")
+                .onPositive((dialog, which) -> {
+                    // TODO risposta al server
+                    Client.getUserRequests().remove(position);
+                    setResult(REQUEST_REJECTED);
+                    finish();
+                })
+                .build();
+
+        hideDialog.show();
     }
 
     @OnClick(R.id.accept_request_button)
     public void onAcceptRequestButtonClicked() {
+        MaterialDialog hideDialog = new MaterialDialog.Builder(this)
+                .title("Accetta prenotazione")
+                .content("Accettando la prenotazione ti impegnerai a rispettare l'accordo preso con l'utente")
+                .positiveText("Accetta")
+                .negativeText("Annulla")
+                .onPositive((dialog, which) -> {
+                    // TODO risposta al server
+                    Client.getUserRequests().get(position).setBookingStatus(BookingStatus.CONFIRMED);
+                    setResult(REQUEST_ACCEPTED);
+                })
+                .build();
+
+        hideDialog.show();
     }
 
     @OnClick(R.id.start_share_button)
@@ -191,8 +224,8 @@ public class RequestActivity extends AppCompatActivity {
 
 
                 List<LatLng> matchWaypoints = new ArrayList<>();
-                matchWaypoints.add(booking.getBookedMatch().getStartLocation());
-                matchWaypoints.add(booking.getBookedMatch().getEndLocation());
+                matchWaypoints.add(booking.getMatchInfo().getStartLocation());
+                matchWaypoints.add(booking.getMatchInfo().getEndLocation());
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
@@ -240,8 +273,8 @@ public class RequestActivity extends AppCompatActivity {
 
             final LatLngBounds latLngBounds = RouteUtils.getRouteBounds(route.getPoints());
 
-            LatLng first = booking.getBookedMatch().getStartLocation();
-            LatLng last = booking.getBookedMatch().getEndLocation();
+            LatLng first = booking.getMatchInfo().getStartLocation();
+            LatLng last = booking.getMatchInfo().getEndLocation();
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))

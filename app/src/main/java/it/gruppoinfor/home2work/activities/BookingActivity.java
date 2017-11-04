@@ -136,7 +136,7 @@ public class BookingActivity extends AppCompatActivity {
             notesText.setVisibility(View.GONE);
         }
 
-        Converters.latLngToAddress(this, booking.getBookedMatch().getStartLocation(), address -> {
+        Converters.latLngToAddress(this, booking.getMatchInfo().getStartLocation(), address -> {
             String location = address.getAddressLine(0);
             String time = "8:00"; // TODO orario di incontro
 
@@ -209,8 +209,8 @@ public class BookingActivity extends AppCompatActivity {
 
 
                 List<LatLng> matchWaypoints = new ArrayList<>();
-                matchWaypoints.add(booking.getBookedMatch().getStartLocation());
-                matchWaypoints.add(booking.getBookedMatch().getEndLocation());
+                matchWaypoints.add(booking.getMatchInfo().getStartLocation());
+                matchWaypoints.add(booking.getMatchInfo().getEndLocation());
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
@@ -258,8 +258,8 @@ public class BookingActivity extends AppCompatActivity {
 
             final LatLngBounds latLngBounds = RouteUtils.getRouteBounds(route.getPoints());
 
-            LatLng first = booking.getBookedMatch().getStartLocation();
-            LatLng last = booking.getBookedMatch().getEndLocation();
+            LatLng first = booking.getMatchInfo().getStartLocation();
+            LatLng last = booking.getMatchInfo().getEndLocation();
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))

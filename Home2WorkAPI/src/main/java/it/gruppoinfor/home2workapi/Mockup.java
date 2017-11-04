@@ -75,9 +75,9 @@ public class Mockup {
 
                     lag();
 
-                    booking1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
-                    booking2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
-                    booking3 = new Booking(3L, match3, new Date(unixTime + (3L * dayInMillis)), BookingStatus.REJECTED);
+                    booking1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), new Date(), BookingStatus.CONFIRMED);
+                    booking2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.PENDING);
+                    booking3 = new Booking(3L, match3, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.REJECTED);
 
                     List<Booking> bookedMatches = new ArrayList<>();
                     bookedMatches.add(booking1);
@@ -98,9 +98,9 @@ public class Mockup {
 
                     lag();
 
-                    booking4 = new Booking(4L, match8, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
-                    booking5 = new Booking(5L, match9, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
-                    booking6 = new Booking(6L, match10, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
+                    booking4 = new Booking(4L, match8, new Date(unixTime + (5L * dayInMillis)), new Date(), BookingStatus.CONFIRMED);
+                    booking5 = new Booking(5L, match9, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.PENDING);
+                    booking6 = new Booking(6L, match10, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.PENDING);
 
                     List<Booking> requests = new ArrayList<>();
                     requests.add(booking4);
@@ -127,7 +127,7 @@ public class Mockup {
                             .get();
 
                     MatchInfo matchInfo = new MatchInfo();
-                    matchInfo.setMatchId(match.getMatchID());
+                    matchInfo.setMatchID(match.getMatchID());
                     matchInfo.setHost(match.getHost());
                     matchInfo.setScore(match.getScore());
                     matchInfo.setSharedDistance(match.getSharedDistance());
@@ -157,16 +157,18 @@ public class Mockup {
 
                     Match match = booking.getBookedMatch();
                     MatchInfo matchInfo = new MatchInfo();
-                    matchInfo.setMatchId(match.getMatchID());
+                    matchInfo.setMatchID(match.getMatchID());
                     matchInfo.setHost(match.getHost());
                     matchInfo.setScore(match.getScore());
                     matchInfo.setSharedDistance(match.getSharedDistance());
+                    matchInfo.setCunsumption((match.getSharedDistance() / 100.0) * 7.5);
+                    matchInfo.setEmission(matchInfo.getCunsumption() * 9.0);
                     matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
                     matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
                     matchInfo.setDepartureTime(match.getDepartureTime());
                     matchInfo.setArrivalTime(match.getArrivalTime());
 
-                    BookingInfo bookingInfo = new BookingInfo(1L, matchInfo, booking.getBookedDate(), new Date(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto", booking.getBookingStatus());
+                    BookingInfo bookingInfo = new BookingInfo(1L, matchInfo, booking.getBookedDate(), new Date(), booking.getBookingStatus(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto");
 
                     return bookingInfo;
 
@@ -190,16 +192,18 @@ public class Mockup {
 
                     Match match = booking.getBookedMatch();
                     MatchInfo matchInfo = new MatchInfo();
-                    matchInfo.setMatchId(match.getMatchID());
+                    matchInfo.setMatchID(match.getMatchID());
                     matchInfo.setGuest(match.getGuest());
                     matchInfo.setScore(match.getScore());
                     matchInfo.setSharedDistance(match.getSharedDistance());
+                    matchInfo.setCunsumption((match.getSharedDistance() / 100.0) * 7.5);
+                    matchInfo.setEmission(matchInfo.getCunsumption() * 9.0);
                     matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
                     matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
                     matchInfo.setDepartureTime(match.getDepartureTime());
                     matchInfo.setArrivalTime(match.getArrivalTime());
 
-                    BookingInfo bookingInfo = new BookingInfo(1L, matchInfo, booking.getBookedDate(), new Date(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto", booking.getBookingStatus());
+                    BookingInfo bookingInfo = new BookingInfo(1L, matchInfo, booking.getBookedDate(), new Date(), booking.getBookingStatus(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto");
 
                     return bookingInfo;
 

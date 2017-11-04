@@ -9,12 +9,14 @@ public class Booking {
     private Long bookingID;
     private Match bookedMatch;
     private Date bookedDate;
+    private Date creationDate;
     private BookingStatus bookingStatus;
 
-    public Booking(Long bookingID, Match bookedMatch, Date bookedDate, BookingStatus bookingStatus) {
+    public Booking(Long bookingID, Match bookedMatch, Date bookedDate, Date creationDate, BookingStatus bookingStatus) {
         this.bookingID = bookingID;
         this.bookedMatch = bookedMatch;
         this.bookedDate = bookedDate;
+        this.creationDate = creationDate;
         this.bookingStatus = bookingStatus;
     }
 

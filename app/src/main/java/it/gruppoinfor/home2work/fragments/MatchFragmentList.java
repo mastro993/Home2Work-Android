@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,8 +163,8 @@ public class MatchFragmentList extends Fragment {
 
         Intent matchIntent = new Intent(getContext(), MatchActivity.class);
         matchIntent.putExtra("matchID", match.getMatchID());
-        startActivity(matchIntent);
-
+        //startActivity(matchIntent);
+        startActivityForResult(matchIntent, MatchActivity.NEW_BOOKIG_REQUEST);
     }
 
     private void showMatchUserProfile(int position) {

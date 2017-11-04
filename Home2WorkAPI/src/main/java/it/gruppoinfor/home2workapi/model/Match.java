@@ -7,12 +7,13 @@ public class Match {
     private Long matchID;
     private User guest;
     private User host;
+    private Integer score;
     private Double sharedDistance;
     private Date arrivalTime;
     private Date departureTime;
-    private Integer score;
     private Boolean _new;
     private Boolean hidden;
+
 
     public Match(Long matchID, User guest, User host, Double sharedDistance, Date arrivalTime, Date departureTime, Integer score, Boolean _new, Boolean hidden) {
         this.matchID = matchID;

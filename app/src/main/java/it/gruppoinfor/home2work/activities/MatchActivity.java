@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -59,16 +58,19 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
+import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
+import it.gruppoinfor.home2workapi.enums.BookingStatus;
+import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class MatchActivity extends AppCompatActivity {
 
+    public static final int NEW_BOOKIG_REQUEST = 888;
+    public static final int BOOKING_ADDED = 2;
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
-
-
     GoogleMap googleMap;
     Long matchId;
     MatchInfo match;
@@ -179,10 +181,8 @@ public class MatchActivity extends AppCompatActivity {
         animator.start();
     }
 
-
     @OnClick(R.id.request_shere_button)
     void requestShare() {
-
 
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
@@ -203,6 +203,12 @@ public class MatchActivity extends AppCompatActivity {
                     Date date = c.getTime();
 
                     // TODO invio prenotazione al server
+                    Long nextID = Long.parseLong(String.valueOf(Client.getUserBookings().size())) + 1L;
+                    Booking booking = new Booking(nextID, match, date, new Date(), BookingStatus.PENDING);
+                    Client.getUserBookings().add(0, booking);
+                    setResult(BOOKING_ADDED);
+                    finish();
+
 
                 }))
                 .build();
@@ -230,6 +236,7 @@ public class MatchActivity extends AppCompatActivity {
         editAddressDialog.show();
 
     }
+
 
     private class MyMapReadyCollback implements OnMapReadyCallback {
 

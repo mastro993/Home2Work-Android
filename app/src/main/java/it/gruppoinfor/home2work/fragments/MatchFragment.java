@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -22,6 +23,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.MatchActivity;
+import it.gruppoinfor.home2work.activities.RequestActivity;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Match;
@@ -60,7 +63,6 @@ public class MatchFragment extends Fragment {
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
-
 
     private void refreshMatches() {
         refreshingMatches = true;
@@ -113,6 +115,22 @@ public class MatchFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == MatchActivity.BOOKING_ADDED) {
+            pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
+            viewPager.setAdapter(pagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+            viewPager.setCurrentItem(1);
+        } else if (resultCode == RequestActivity.REQUEST_REJECTED || resultCode == RequestActivity.REQUEST_ACCEPTED){
+            pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
+            viewPager.setAdapter(pagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+            viewPager.setCurrentItem(2);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private class MatchPagerAdapter extends FragmentStatePagerAdapter {

@@ -89,8 +89,8 @@ public class MatchFragmentRequest extends Fragment {
         Booking booking = Client.getUserRequests().get(position);
 
         Intent bookingIntent = new Intent(getActivity(), RequestActivity.class);
-        bookingIntent.putExtra("bookingID", booking.getBookingID());
-        startActivity(bookingIntent);
+        bookingIntent.putExtra("request_position", position);
+        startActivityForResult(bookingIntent, RequestActivity.REQUEST_RESPONSE_CODE);
 
     }
 
