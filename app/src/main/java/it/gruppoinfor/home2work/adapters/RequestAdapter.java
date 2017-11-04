@@ -30,14 +30,14 @@ import it.gruppoinfor.home2workapi.model.Match;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
-public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHolder> {
+public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
 
     private MainActivity activity;
     private ArrayList<Booking> bookedMatches;
     private Resources res;
     private ItemClickCallbacks itemClickCallbacks;
 
-    public BookingAdapter(Activity activity, List<Booking> values) {
+    public RequestAdapter(Activity activity, List<Booking> values) {
         this.activity = (MainActivity) activity;
         this.bookedMatches = new ArrayList<>(values);
         this.res = activity.getResources();
@@ -57,11 +57,11 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
 
         Glide.with(activity)
-                .load(matchItem.getHost().getAvatarURL())
+                .load(matchItem.getGuest().getAvatarURL())
                 .apply(requestOptions)
                 .into(holder.userAvatar);
 
-        holder.nameView.setText(matchItem.getHost().toString());
+        holder.nameView.setText(matchItem.getGuest().toString());
 
         int color;
         String statusText;
@@ -120,12 +120,6 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
             }
         });*/
 
-    }
-
-    public void remove(int position) {
-        bookedMatches.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, bookedMatches.size());
     }
 
     @Override

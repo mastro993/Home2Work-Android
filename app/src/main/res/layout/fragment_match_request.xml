@@ -1,53 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="it.gruppoinfor.home2work.fragments.ProgressFragmentAchievements">
+    android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/requests_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <!-- TODO empty view -->
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/requests_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-
-            <RelativeLayout
-                android:id="@+id/empty_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="48dp"
-                    android:text="Non hai ricevuto ancora nessuna richiesta."
-                    android:textColor="@color/light_bg_dark_secondary_text" />
-
-                <TextView
-                    android:textSize="38sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="48dp"
-                    android:text="@string/lorem"
-                    android:textColor="@color/light_bg_dark_secondary_text" />
-
-            </RelativeLayout>
-
-
-        </FrameLayout>
-
-
-    </android.support.v4.widget.NestedScrollView>
-
-</FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

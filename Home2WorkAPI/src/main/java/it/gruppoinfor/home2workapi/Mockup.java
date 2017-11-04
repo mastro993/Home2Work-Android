@@ -35,8 +35,16 @@ public class Mockup {
     private static Match match5 = new Match(5L, null, user1, 8.1, stringToDate("8:30"), stringToDate("17:30"), 70, true, false);
     private static Match match6 = new Match(6L, null, user3, 2.4, stringToDate("8:30"), stringToDate("17:30"), 64, true, false);
     private static Match match7 = new Match(7L, null, user2, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
+    private static Match match8 = new Match(6L, user3, null, 2.4, stringToDate("8:30"), stringToDate("17:30"), 64, true, false);
+    private static Match match9 = new Match(9L, user2, null, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
+    private static Match match10 = new Match(10L, user4, null, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
+
     private static Booking booking1;
     private static Booking booking2;
+    private static Booking booking3;
+    private static Booking booking4;
+    private static Booking booking5;
+    private static Booking booking6;
 
 
     public static void refreshUserMatches(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
@@ -61,7 +69,7 @@ public class Mockup {
                 .start();
     }
 
-    public static void refreshUserBookedMatches(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
+    public static void refreshUserBookings(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<List<Booking>>()
                 .doInBackground(() -> {
 
@@ -69,12 +77,37 @@ public class Mockup {
 
                     booking1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
                     booking2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
+                    booking3 = new Booking(3L, match3, new Date(unixTime + (3L * dayInMillis)), BookingStatus.REJECTED);
 
                     List<Booking> bookedMatches = new ArrayList<>();
                     bookedMatches.add(booking1);
                     bookedMatches.add(booking2);
+                    bookedMatches.add(booking3);
 
                     return bookedMatches;
+
+                })
+                .doWhenFinished(asyncResultAction)
+                .create()
+                .start();
+    }
+
+    public static void refreshUserRequests(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<List<Booking>>()
+                .doInBackground(() -> {
+
+                    lag();
+
+                    booking4 = new Booking(4L, match8, new Date(unixTime + (5L * dayInMillis)), BookingStatus.CONFIRMED);
+                    booking5 = new Booking(5L, match9, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
+                    booking6 = new Booking(6L, match10, new Date(unixTime + (3L * dayInMillis)), BookingStatus.PENDING);
+
+                    List<Booking> requests = new ArrayList<>();
+                    requests.add(booking4);
+                    requests.add(booking5);
+                    requests.add(booking6);
+
+                    return requests;
 
                 })
                 .doWhenFinished(asyncResultAction)
@@ -143,6 +176,7 @@ public class Mockup {
                 .create()
                 .start();
     }
+
 
     public static void getUserProfile(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<Profile>()

@@ -17,12 +17,12 @@ import it.gruppoinfor.home2work.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NotificationFragment extends Fragment {
+public class MessagesFragment extends Fragment {
 
     private Unbinder unbinder;
 
 
-    public NotificationFragment() {
+    public MessagesFragment() {
         // Required empty public constructor
     }
 
@@ -30,7 +30,7 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_notification, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
         initUI();
@@ -39,7 +39,7 @@ public class NotificationFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment_notifications, menu);
+        inflater.inflate(R.menu.menu_fragment_messages, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

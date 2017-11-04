@@ -1,45 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="it.gruppoinfor.home2work.fragments.ProgressFragmentAchievements">
+    android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/matches_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <!--TODO empty view -->
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/matches_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
+</android.support.v4.widget.SwipeRefreshLayout>
 
-            <RelativeLayout
-                android:id="@+id/empty_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="48dp"
-                    android:text="Al momento non ci sono match disponibili."
-                    android:textColor="@color/light_bg_dark_secondary_text" />
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
-
-
-    </android.support.v4.widget.NestedScrollView>
-
-</FrameLayout>

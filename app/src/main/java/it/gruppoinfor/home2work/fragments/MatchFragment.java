@@ -8,12 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import butterknife.BindView;
@@ -32,14 +33,13 @@ public class MatchFragment extends Fragment {
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     private Unbinder unbinder;
     private MatchPagerAdapter pagerAdapter;
     private boolean refreshingMatches = false;
     private boolean refreshingBookedMatches = false;
+    private boolean refreshingRequests = false;
 
     public MatchFragment() {
         // Required empty public constructor
@@ -50,37 +50,23 @@ public class MatchFragment extends Fragment {
         CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_match, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
+        refreshMatches();
         return rootView;
     }
 
     private void initUI() {
         pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
-
-        swipeRefreshLayout.setOnRefreshListener(this::refreshMatches);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (Client.getUserMatches() == null || Client.getUserBookings() == null) {
-                refreshMatches();
-            } else {
-                refreshUI();
-            }
-        }
-    }
 
     private void refreshMatches() {
-        swipeRefreshLayout.setRefreshing(true);
         refreshingMatches = true;
         refreshingBookedMatches = true;
 
-        // TODO fare refresh da web
-
+        // TODO refresh da web
         Mockup.refreshUserMatches(matchItems -> {
             Client.setUserMatches(matchItems);
             refreshBadge();
@@ -88,23 +74,29 @@ public class MatchFragment extends Fragment {
             refreshUI();
         });
 
-        Mockup.refreshUserBookedMatches(bookedMatchItems -> {
+        // TODO refresh da web
+        Mockup.refreshUserBookings(bookedMatchItems -> {
             Client.setUserBookedMatches(bookedMatchItems);
             refreshingBookedMatches = false;
+            refreshUI();
+        });
+
+        // TODO refresh da web
+        Mockup.refreshUserRequests(bookedMatchItems -> {
+            Client.setUserRequests(bookedMatchItems);
+            refreshingRequests = false;
             refreshUI();
         });
 
     }
 
     private void refreshUI() {
-        if (!refreshingBookedMatches && !refreshingMatches) {
-            swipeRefreshLayout.setRefreshing(false);
+        if (!refreshingBookedMatches && !refreshingMatches && !refreshingRequests) {
             pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
             viewPager.setAdapter(pagerAdapter);
             tabLayout.setupWithViewPager(viewPager);
         }
     }
-
 
     private void refreshBadge() {
         Stream<Match> matchStream = Client.getUserMatches().stream();
@@ -125,45 +117,31 @@ public class MatchFragment extends Fragment {
 
     private class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
+        private ArrayList<Pair<Fragment, String>> fragments;
+
         MatchPagerAdapter(FragmentManager fm) {
             super(fm);
+            fragments = new ArrayList<>();
+            fragments.add(new Pair<>(new MatchFragmentList(), "Disponibili"));
+            fragments.add(new Pair<>(new MatchFragmentBooking(), "Prenotazioni"));
+            fragments.add(new Pair<>(new MatchFragmentRequest(), "Richieste"));
         }
 
         @Override
         public Fragment getItem(int position) {
-            Fragment frag = null;
-            switch (position) {
-                case 0:
-                    frag = new MatchFragmentList();
-                    break;
-                case 1:
-                    frag = new MatchFragmentBooking();
-                    break;
-                case 2:
-                    frag = new MatchFragmentRequest();
-                    break;
-            }
-            return frag;
+            return fragments.get(position).first;
         }
 
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Disponibili";
-                case 1:
-                    return "Prenotazioni";
-                case 2:
-                    return "Richieste";
-            }
-            return null;
+            return fragments.get(position).second;
         }
 
 
         @Override
         public int getCount() {
-            return 3;
+            return fragments.size();
         }
 
 

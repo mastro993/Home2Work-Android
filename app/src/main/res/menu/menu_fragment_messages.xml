@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.infor.fleetupht.view.ProfileActivity">
     <item
-        android:id="@+id/action_clear_all"
-        android:icon="@drawable/ic_clear_all"
+        android:id="@+id/action_new_message"
+        android:icon="@drawable/ic_plus"
         android:title="Cancella tutto"
         app:showAsAction="always" />
 

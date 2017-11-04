@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -132,50 +135,34 @@ public class ProgressFragment extends Fragment {
 
     private class ProgressPagerAdapter extends FragmentStatePagerAdapter {
 
+        private ArrayList<Pair<Fragment, String>> fragments;
+
         ProgressPagerAdapter(FragmentManager fm) {
             super(fm);
+            fragments = new ArrayList<>();
+            fragments.add(new Pair<>(new ProgressFragmentKarma(), "Karma"));
+            fragments.add(new Pair<>(new ProgressFragmentAchievements(), "Obiettivi"));
+            fragments.add(new Pair<>(new ProgressFragmentShares(), "Condivisioni"));
+            fragments.add(new Pair<>(new ProgressFragmentStats(), "Statistiche"));
+
+
         }
 
         @Override
         public Fragment getItem(int position) {
-            Fragment frag = null;
-            switch (position) {
-                case 0:
-                    frag = new ProgressFragmentKarma();
-                    break;
-                case 1:
-                    frag = new ProgressFragmentAchievements();
-                    break;
-                case 2:
-                    frag = new ProgressFragmentShares();
-                    break;
-                case 3:
-                    frag = new ProgressFragmentStats();
-                    break;
-            }
-            return frag;
+            return fragments.get(position).first;
         }
 
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Karma";
-                case 1:
-                    return "Obiettivi";
-                case 2:
-                    return "Condivisioni";
-                case 3:
-                    return "Statistiche";
-            }
-            return null;
+            return fragments.get(position).second;
         }
 
 
         @Override
         public int getCount() {
-            return 4;
+            return fragments.size();
         }
 
 

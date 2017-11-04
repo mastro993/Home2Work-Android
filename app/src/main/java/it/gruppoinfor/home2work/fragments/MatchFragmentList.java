@@ -1,9 +1,9 @@
 package it.gruppoinfor.home2work.fragments;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -29,18 +27,14 @@ import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Match;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MatchFragmentList extends Fragment {
-
 
     @BindView(R.id.matches_recycler_view)
     RecyclerView matchesRecyclerView;
-    @BindView(R.id.empty_view)
-    RelativeLayout emptyView;
+    private SwipeRefreshLayout rootView;
     private Unbinder unbinder;
     private MatchAdapter matchesAdapter;
 
@@ -50,31 +44,22 @@ public class MatchFragmentList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FrameLayout rootView = (FrameLayout) inflater.inflate(R.layout.fragment_match_list, container, false);
+        rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_match_list, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
+        //refresh();
+        rootView.setOnRefreshListener(this::refresh);
+        rootView.setColorSchemeResources(R.color.colorAccent);
         return rootView;
     }
 
     private void initUI() {
-        if (Client.getUserMatches() != null && Client.getUserMatches().size() > 0) {
-            emptyView.setVisibility(View.GONE);
-            matchesRecyclerView.setVisibility(View.VISIBLE);
-            initMatchList();
-        } else {
-            emptyView.setVisibility(View.VISIBLE);
-            matchesRecyclerView.setVisibility(View.GONE);
-        }
-    }
-
-    private void initMatchList() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchesRecyclerView.getContext(), layoutManager.getOrientation());
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
         matchesRecyclerView.setLayoutManager(layoutManager);
         matchesRecyclerView.addItemDecoration(dividerItemDecoration);
-        matchesRecyclerView.setNestedScrollingEnabled(false);
         matchesRecyclerView.setLayoutAnimation(animation);
 
         matchesAdapter = new MatchAdapter(getActivity(), Client.getUserMatches());
@@ -84,9 +69,9 @@ public class MatchFragmentList extends Fragment {
                 Match matchItem = Client.getUserMatches().get(position);
                 if (matchItem.isNew()) {
                     matchItem.setNew(false);
+                    refreshBadge();
                     matchesAdapter.notifyItemChanged(position);
                     setMatchAsViewed(matchItem);
-                    refreshBadge();
                 }
                 showMatchDetails(position);
             }
@@ -97,12 +82,6 @@ public class MatchFragmentList extends Fragment {
                 popup.getMenuInflater().inflate(R.menu.menu_match, popup.getMenu());
                 popup.setOnMenuItemClickListener((item) -> {
                     switch (item.getItemId()) {
-                        case R.id.show_match_details:
-                            showMatchDetails(position);
-                            break;
-                        case R.id.show_match_profile:
-                            showMatchUserProfile(position);
-                            break;
                         case R.id.hide_match:
                             showHideMatchDialog(position);
                             break;
@@ -115,6 +94,20 @@ public class MatchFragmentList extends Fragment {
                 return true;
             }
         });
+
+        matchesRecyclerView.setAdapter(matchesAdapter);
+    }
+
+    public void refresh() {
+        rootView.setRefreshing(true);
+        // TODO fare refresh da web
+        Mockup.refreshUserMatches(matchItems -> {
+            Client.setUserMatches(matchItems);
+            matchesAdapter.notifyDataSetChanged();
+            refreshBadge();
+            rootView.setRefreshing(false);
+        });
+
     }
 
     private void setMatchAsViewed(Match match) {
@@ -164,17 +157,6 @@ public class MatchFragmentList extends Fragment {
         });*/
     }
 
-    private void refreshBadge() {
-        Stream<Match> matchStream = Client.getUserMatches().stream();
-        long newMatches = matchStream.filter(m -> !m.isHidden()).filter(Match::isNew).count();
-
-        if (newMatches > 0) {
-            ((MainActivity) getActivity()).bottomNavigation.setNotification(Long.toString(newMatches), 1);
-        } else {
-            ((MainActivity) getActivity()).bottomNavigation.setNotification("", 1);
-        }
-    }
-
     private void showMatchDetails(int position) {
         Match match = Client.getUserMatches().get(position);
 
@@ -204,11 +186,21 @@ public class MatchFragmentList extends Fragment {
                     Client.getUserMatches().remove(position);
                     matchesAdapter.remove(position);
                     setMatchAsHidden(matchItem);
-                    refreshBadge();
                 })
                 .build();
 
         hideDialog.show();
+    }
+
+    private void refreshBadge() {
+        Stream<Match> matchStream = Client.getUserMatches().stream();
+        long newMatches = matchStream.filter(m -> !m.isHidden()).filter(Match::isNew).count();
+
+        if (newMatches > 0) {
+            ((MainActivity) getActivity()).bottomNavigation.setNotification(Long.toString(newMatches), 1);
+        } else {
+            ((MainActivity) getActivity()).bottomNavigation.setNotification("", 1);
+        }
     }
 
     @Override

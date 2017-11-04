@@ -16,12 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import com.arasthel.asyncjob.AsyncJob;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import butterknife.BindView;
@@ -29,7 +27,7 @@ import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
-import it.gruppoinfor.home2work.fragments.NotificationFragment;
+import it.gruppoinfor.home2work.fragments.MessagesFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
@@ -84,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         AHBottomNavigationItem homeTab = new AHBottomNavigationItem(R.string.home_tab, R.drawable.ic_home, R.color.colorPrimaryDark);
         AHBottomNavigationItem matchTab = new AHBottomNavigationItem(R.string.match_tab, R.drawable.ic_match, R.color.colorPrimary);
         AHBottomNavigationItem progressTab = new AHBottomNavigationItem(R.string.progress_tab, R.drawable.ic_star_circle, R.color.light_blue_300);
-        AHBottomNavigationItem notificationTab = new AHBottomNavigationItem(R.string.notification_tab, R.drawable.ic_bell, R.color.light_blue_500);
+        AHBottomNavigationItem notificationTab = new AHBottomNavigationItem(R.string.messages_tab, R.drawable.ic_mail, R.color.light_blue_500);
         AHBottomNavigationItem settingsTab = new AHBottomNavigationItem(R.string.settings_tab, R.drawable.ic_preferences, R.color.colorAccent);
 
 
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if(position==2 || position == 1)
+                if (position == 2 || position == 1)
                     getSupportActionBar().hide();
                 else
                     getSupportActionBar().show();
@@ -168,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // TODO fare refresh da web
-        Mockup.refreshUserBookedMatches(Client::setUserBookedMatches);
+        Mockup.refreshUserBookings(Client::setUserBookedMatches);
 
     }
 
@@ -205,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     frag = new ProgressFragment();
                     break;
                 case 3:
-                    frag = new NotificationFragment();
+                    frag = new MessagesFragment();
                     break;
                 case 4:
                     frag = new SettingsFragment();

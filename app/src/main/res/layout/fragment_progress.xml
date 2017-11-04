@@ -42,6 +42,8 @@
             app:layout_anchor="@id/appBar"
             app:layout_anchorGravity="bottom"
             app:tabGravity="fill"
+            app:tabIndicatorColor="@color/light_bg_dark_disabled_text"
+            app:tabIndicatorHeight="3dp"
             app:tabMode="scrollable" />
 
     </android.support.design.widget.AppBarLayout>

@@ -5,6 +5,7 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.gruppoinfor.home2workapi.model.Booking;
@@ -24,8 +25,9 @@ public class Client {
     public static final String ACHIEVEMENTS_BASE_URL = SERVER_URL + "/images/achievements/";
 
     private static User signedUser;
-    private static List<Match> userMatches;
-    private static List<Booking> userBookedMatches;
+    private static List<Match> userMatches = new ArrayList<>();
+    private static List<Booking> userBookedMatches = new ArrayList<>();
+    private static List<Booking> userRequestedMatches = new ArrayList<>();
     private static Profile userProfile;
     private static EndpointInterface APIService;
 
@@ -47,6 +49,14 @@ public class Client {
 
     public static List<Booking> getUserBookings() {
         return userBookedMatches;
+    }
+
+    public static List<Booking> getUserRequests() {
+        return userRequestedMatches;
+    }
+
+    public static void setUserRequests(List<Booking> userRequestedMatches) {
+        Client.userRequestedMatches = userRequestedMatches;
     }
 
     public static Profile getUserProfile() {

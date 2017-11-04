@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
 import it.gruppoinfor.home2work.database.DBApp;
@@ -16,10 +17,8 @@ import it.gruppoinfor.home2workapi.Client;
 
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
-
-    private static App instance;
-
     public static DBApp dbApp;
+    private static App instance;
 
     public static App getInstance() {
         return instance;
@@ -34,7 +33,7 @@ public class App extends Application {
         instance = this;
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        //setupLeakCanary();
+        setupLeakCanary();
         setupStetho();
         MyLogger.init(this);
         UserPrefs.init(this);
@@ -45,14 +44,14 @@ public class App extends Application {
                 .build();
     }
 
-/*    private void setupLeakCanary() {
+    private void setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
         LeakCanary.install(this);
-    }*/
+    }
 
     private void setupStetho() {
         // Create an InitializerBuilder
