@@ -12,12 +12,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 
-public class ProgressKarmaFragment extends Fragment {
+public class ProgressFragmentKarma extends Fragment {
 
 
     private Unbinder unbinder;
 
-    public ProgressKarmaFragment() {
+    public ProgressFragmentKarma() {
         // Required empty public constructor
     }
 

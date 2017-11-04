@@ -17,7 +17,7 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2workapi.Client;
 
-public class ConfigurationNameFragment extends Fragment implements Step {
+public class ConfigurationFragmentName extends Fragment implements Step {
 
     @BindView(R.id.nameInput)
     EditText nameInput;

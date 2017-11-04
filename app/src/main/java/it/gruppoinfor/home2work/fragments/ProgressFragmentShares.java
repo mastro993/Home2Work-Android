@@ -18,15 +18,16 @@ import it.gruppoinfor.home2work.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProgressAchievementsFragment extends Fragment {
+public class ProgressFragmentShares extends Fragment {
 
-    @BindView(R.id.achievement_recycler_view)
-    RecyclerView achievementRecyclerView;
+
+    @BindView(R.id.shares_recycler_view)
+    RecyclerView sharesRecyclerView;
     @BindView(R.id.empty_view)
     RelativeLayout emptyView;
     private Unbinder unbinder;
 
-    public ProgressAchievementsFragment() {
+    public ProgressFragmentShares() {
         // Required empty public constructor
     }
 
@@ -34,14 +35,14 @@ public class ProgressAchievementsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FrameLayout root = (FrameLayout) inflater.inflate(R.layout.fragment_progress_achievements, container, false);
+        FrameLayout root = (FrameLayout) inflater.inflate(R.layout.fragment_progress_shares, container, false);
         unbinder = ButterKnife.bind(this, root);
         initUI();
         return root;
     }
 
     private void initUI() {
-        // TODO lista achievements
+        // TODO lista condivisioni
     }
 
     @Override
@@ -49,4 +50,5 @@ public class ProgressAchievementsFragment extends Fragment {
         unbinder.unbind();
         super.onDestroyView();
     }
+
 }

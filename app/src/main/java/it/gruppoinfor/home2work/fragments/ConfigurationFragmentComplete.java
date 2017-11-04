@@ -20,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConfigurationCompleteFragment extends Fragment implements BlockingStep {
+public class ConfigurationFragmentComplete extends Fragment implements BlockingStep {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -12,10 +12,10 @@ import it.gruppoinfor.home2work.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MatchRequestFragment extends Fragment {
+public class MatchFragmentRequest extends Fragment {
 
 
-    public MatchRequestFragment() {
+    public MatchFragmentRequest() {
         // Required empty public constructor
     }
 

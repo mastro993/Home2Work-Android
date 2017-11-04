@@ -34,7 +34,7 @@ import it.gruppoinfor.home2workapi.model.Match;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MatchListFragment extends Fragment {
+public class MatchFragmentList extends Fragment {
 
 
     @BindView(R.id.matches_recycler_view)
@@ -44,7 +44,7 @@ public class MatchListFragment extends Fragment {
     private Unbinder unbinder;
     private MatchAdapter matchesAdapter;
 
-    public MatchListFragment() {
+    public MatchFragmentList() {
         // Required empty public constructor
     }
 

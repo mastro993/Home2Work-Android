@@ -31,7 +31,7 @@ import it.gruppoinfor.home2workapi.model.Match;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MatchBookingFragment extends Fragment {
+public class MatchFragmentBooking extends Fragment {
 
     @BindView(R.id.bookings_recycler_view)
     RecyclerView bookingsRecyclerView;
@@ -40,7 +40,7 @@ public class MatchBookingFragment extends Fragment {
     private Unbinder unbinder;
     private BookingAdapter bookingAdapter;
 
-    public MatchBookingFragment() {
+    public MatchFragmentBooking() {
         // Required empty public constructor
     }
 

@@ -35,7 +35,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class ConfigurationJobFragment extends Fragment implements Step {
+public class ConfigurationFragmentJob extends Fragment implements Step {
 
     @BindView(R.id.loadingView)
     LinearLayout loadingView;

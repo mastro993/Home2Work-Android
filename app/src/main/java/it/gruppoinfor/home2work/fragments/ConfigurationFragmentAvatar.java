@@ -38,7 +38,7 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ConfigurationAvatarFragment extends Fragment implements BlockingStep {
+public class ConfigurationFragmentAvatar extends Fragment implements BlockingStep {
 
     private final int PHOTO_INTENT = 0;
 

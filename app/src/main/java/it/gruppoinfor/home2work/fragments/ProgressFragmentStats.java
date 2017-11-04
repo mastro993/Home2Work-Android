@@ -25,7 +25,7 @@ import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.ProfileStats;
 
 
-public class ProgressStatsFragment extends Fragment {
+public class ProgressFragmentStats extends Fragment {
 
     Profile profile;
     ProfileStats profileStats;
@@ -48,7 +48,7 @@ public class ProgressStatsFragment extends Fragment {
     @BindView(R.id.saved_emissions_text_view)
     TextView savedEmissionsTextView;
 
-    public ProgressStatsFragment() {
+    public ProgressFragmentStats() {
         // Required empty public constructor
     }
 

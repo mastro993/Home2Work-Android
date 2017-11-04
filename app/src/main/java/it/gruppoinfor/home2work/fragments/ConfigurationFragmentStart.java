@@ -13,7 +13,7 @@ import com.stepstone.stepper.VerificationError;
 import it.gruppoinfor.home2work.R;
 
 
-public class ConfigurationStartFragment extends Fragment implements Step {
+public class ConfigurationFragmentStart extends Fragment implements Step {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

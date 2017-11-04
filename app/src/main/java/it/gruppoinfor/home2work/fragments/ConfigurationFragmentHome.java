@@ -39,7 +39,7 @@ import it.gruppoinfor.home2workapi.model.Address;
 import it.gruppoinfor.home2workapi.model.User;
 
 
-public class ConfigurationHomeFragment extends Fragment implements Step, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks {
+public class ConfigurationFragmentHome extends Fragment implements Step, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks {
 
     private final int FINE_LOCATION_ACCESS = 0;
 
