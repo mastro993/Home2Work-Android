@@ -20,7 +20,7 @@
             android:animateLayoutChanges="true"
             android:elevation="2dp"
             android:rotation="40"
-            app:donut_finished_color="@color/colorAccent"
+            app:donut_finished_color="@color/dark_bg_light_secondary_text"
             app:donut_unfinished_color="#55454545"
             app:layout_constraintBottom_toBottomOf="@+id/user_propic"
             app:layout_constraintLeft_toLeftOf="@+id/user_propic"

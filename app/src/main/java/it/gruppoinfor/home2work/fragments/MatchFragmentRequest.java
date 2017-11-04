@@ -1,12 +1,12 @@
 package it.gruppoinfor.home2work.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.RequestActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.RequestAdapter;
 import it.gruppoinfor.home2workapi.Client;
@@ -87,10 +88,9 @@ public class MatchFragmentRequest extends Fragment {
 
         Booking booking = Client.getUserRequests().get(position);
 
-        // TODO booking activity
-        /*Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);
+        Intent bookingIntent = new Intent(getActivity(), RequestActivity.class);
         bookingIntent.putExtra("bookingID", booking.getBookingID());
-        startActivity(bookingIntent);*/
+        startActivity(bookingIntent);
 
     }
 

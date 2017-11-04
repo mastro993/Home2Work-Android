@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -48,6 +50,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
@@ -60,7 +63,6 @@ import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 public class BookingActivity extends AppCompatActivity {
 
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
-
 
     GoogleMap googleMap;
     Long bookingId;
@@ -149,7 +151,12 @@ public class BookingActivity extends AppCompatActivity {
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
 
-        scoreProgress.setProgress(Integer.parseInt(booking.getBookedMatch().getScore().toString()));
+        //scoreProgress.setProgress(Integer.parseInt(booking.getBookedMatch().getScore().toString()));
+
+        ArcProgressAnimation animation = new ArcProgressAnimation(scoreProgress, 0, booking.getBookedMatch().getScore());
+        animation.setDuration(500);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        scoreProgress.startAnimation(animation);
 
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
 

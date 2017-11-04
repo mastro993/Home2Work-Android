@@ -177,6 +177,39 @@ public class Mockup {
                 .start();
     }
 
+    public static void getRequestInfo(Long bookingID, AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<BookingInfo>()
+                .doInBackground(() -> {
+
+                    lag();
+
+                    Booking booking = Client.getUserRequests().stream()
+                            .filter(b -> b.getBookingID() == bookingID)
+                            .findFirst()
+                            .get();
+
+                    Match match = booking.getBookedMatch();
+                    MatchInfo matchInfo = new MatchInfo();
+                    matchInfo.setMatchId(match.getMatchID());
+                    matchInfo.setGuest(match.getGuest());
+                    matchInfo.setScore(match.getScore());
+                    matchInfo.setSharedDistance(match.getSharedDistance());
+                    matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
+                    matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
+                    matchInfo.setDepartureTime(match.getDepartureTime());
+                    matchInfo.setArrivalTime(match.getArrivalTime());
+
+                    BookingInfo bookingInfo = new BookingInfo(1L, matchInfo, booking.getBookedDate(), new Date(), "Devo portare il cane dal veterinario, allunghiamo di qualche minuto", booking.getBookingStatus());
+
+                    return bookingInfo;
+
+
+                })
+                .doWhenFinished(asyncResultAction)
+                .create()
+                .start();
+    }
+
 
     public static void getUserProfile(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<Profile>()

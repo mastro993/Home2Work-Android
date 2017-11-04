@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.adapters;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -8,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +30,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.model.Match;
 
@@ -57,7 +62,20 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
 
-        holder.scoreProgress.setProgress(Integer.parseInt(matchItem.getScore().toString()));
+        //holder.scoreProgress.setProgress(Integer.parseInt(matchItem.getScore().toString()));
+
+        ArcProgressAnimation animation = new ArcProgressAnimation(holder.scoreProgress, 0, matchItem.getScore());
+        animation.setDuration(500);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        holder.scoreProgress.startAnimation(animation);
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, matchItem.getScore());
+        animator.setDuration(500);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addUpdateListener(animation1 ->
+                holder.scoreText.setText(String.format(Locale.ITALY, "%1$s%%", animation1.getAnimatedValue().toString()))
+        );
+        animator.start();
 
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
 
@@ -66,7 +84,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
                 .apply(requestOptions)
                 .into(holder.userAvatar);
 
-        holder.scoreText.setText(String.format(Locale.ITALY, "%1$d%%", matchItem.getScore()));
+        //holder.scoreText.setText(String.format(Locale.ITALY, "%1$d%%", matchItem.getScore()));
         holder.nameView.setText(matchItem.getHost().toString());
 
         if (!matchItem.isNew()) holder.newBadgeView.setVisibility(View.GONE);

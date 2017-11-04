@@ -29,7 +29,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
             android:value="AIzaSyCXpyHnpMEv29bEOPRsFxRJ0ZNVQk3Bsis" />
@@ -47,11 +46,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".receivers.SyncAlarmReceiver"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
         <service
             android:name=".services.RouteService"
@@ -81,7 +79,7 @@
         <activity
             android:name=".activities.SignInActivity"
             android:theme="@style/AppTheme.SignInTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
+            android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".activities.ConfigurationActivity"
             android:theme="@style/AppTheme.ConfigTheme" />
@@ -90,13 +88,19 @@
             android:label="Informazioni match"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activities.RequestActivity"
+            android:label="Approva richiesta"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activities.BookingActivity"
             android:label="Informazioni prenotazione"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MessagesActivity" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="46d1717c516ccf9648149cf19412063e5dace7cf" />
+
     </application>
 
 </manifest>
