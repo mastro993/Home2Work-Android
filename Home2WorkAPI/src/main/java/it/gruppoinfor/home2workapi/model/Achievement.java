@@ -1,36 +1,37 @@
 package it.gruppoinfor.home2workapi.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
-
-import it.gruppoinfor.home2workapi.Client;
 
 
 public class Achievement {
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("name")
-    @Expose
-    private String name;
-    @SerializedName("description")
-    @Expose
-    private String description;
-    @SerializedName("delta")
-    @Expose
-    private Integer delta;
-    @SerializedName("date")
-    @Expose
-    private Date date;
 
-    public Integer getId() {
-        return id;
+    private Long achievementID;
+    private String name;
+    private String description;
+    private Integer karma;
+    private Date unlockDate;
+    private Double goal;
+    private Double current;
+
+    public Achievement() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Achievement(Long achievementID, String name, String description, Integer karma, Date unlockDate, Double goal, Double current) {
+        this.achievementID = achievementID;
+        this.name = name;
+        this.description = description;
+        this.karma = karma;
+        this.unlockDate = unlockDate;
+        this.goal = goal;
+        this.current = current;
+    }
+
+    public Long getAchievementID() {
+        return achievementID;
+    }
+
+    public void setAchievementID(Long achievementID) {
+        this.achievementID = achievementID;
     }
 
     public String getName() {
@@ -49,23 +50,39 @@ public class Achievement {
         this.description = description;
     }
 
-    public Integer getDelta() {
-        return delta;
+    public Integer getKarma() {
+        return karma;
     }
 
-    public void setDelta(Integer delta) {
-        this.delta = delta;
+    public void setKarma(Integer karma) {
+        this.karma = karma;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getUnlockDate() {
+        return unlockDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setUnlockDate(Date unlockDate) {
+        this.unlockDate = unlockDate;
     }
 
-    public String getIconURL() {
-        return Client.ACHIEVEMENTS_BASE_URL + id + ".png";
+    public Double getGoal() {
+        return goal;
+    }
+
+    public void setGoal(Double goal) {
+        this.goal = goal;
+    }
+
+    public Double getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(Double current) {
+        this.current = current;
+    }
+
+    public Double getProgress() {
+        return (100.0 / goal) * current;
     }
 }

@@ -52,11 +52,11 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
 
     private void initUI() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(bookingsRecyclerView.getContext(), layoutManager.getOrientation());
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(bookingsRecyclerView.getContext(), layoutManager.getOrientation());
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
         bookingsRecyclerView.setLayoutManager(layoutManager);
-        bookingsRecyclerView.addItemDecoration(dividerItemDecoration);
+        //bookingsRecyclerView.addItemDecoration(dividerItemDecoration);
         bookingsRecyclerView.setLayoutAnimation(animation);
 
         bookingAdapter = new BookingAdapter(getActivity(), Client.getUserBookings());

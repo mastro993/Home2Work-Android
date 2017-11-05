@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
+import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.BookingInfo;
 import it.gruppoinfor.home2workapi.model.Karma;
@@ -38,6 +39,12 @@ public class Mockup {
     private static Match match8 = new Match(6L, user3, null, 2.4, stringToDate("8:30"), stringToDate("17:30"), 64, true, false);
     private static Match match9 = new Match(9L, user2, null, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
     private static Match match10 = new Match(10L, user4, null, 15.5, stringToDate("8:30"), stringToDate("17:30"), 51, true, false);
+
+    private static Achievement achievement1;
+    private static Achievement achievement2;
+    private static Achievement achievement3;
+    private static Achievement achievement4;
+    private static Achievement achievement5;
 
     private static Booking booking1;
     private static Booking booking2;
@@ -273,6 +280,34 @@ public class Mockup {
                 .create()
                 .start();
 
+    }
+
+    public static void getAchievementsAsync(AsyncJob.AsyncResultAction<Achievement> asyncResultAction) {
+        new AsyncJob.AsyncJobBuilder<List<Achievement>>()
+                .doInBackground(() -> {
+
+                    lag();
+
+
+                    achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 100, new Date(), 50.0, 50.0);
+                    achievement2 = new Achievement(1L, "Obiettivo 2", "Descrizione dell'obiettivo", 150, new Date(), 100.0, 77.0);
+                    achievement3 = new Achievement(1L, "Obiettivo 3", "Descrizione dell'obiettivo", 75, new Date(), 1.0, 0.0);
+                    achievement4 = new Achievement(1L, "Obiettivo 4", "Descrizione dell'obiettivo", 200, new Date(), 200.0, 133.0);
+                    achievement5 = new Achievement(1L, "Obiettivo 5", "Descrizione dell'obiettivo", 50, new Date(), 5.0, 0.0);
+
+
+                    List<Achievement> achievements = new ArrayList<>();
+                    achievements.add(achievement1);
+                    achievements.add(achievement2);
+                    achievements.add(achievement3);
+                    achievements.add(achievement4);
+                    achievements.add(achievement5);
+                    return achievements;
+
+                })
+                .doWhenFinished(asyncResultAction)
+                .create()
+                .start();
     }
 
     private static void lag() {

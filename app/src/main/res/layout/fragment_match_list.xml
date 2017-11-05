@@ -7,6 +7,8 @@
         android:id="@+id/matches_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="@dimen/list_padding"
         android:visibility="visible" />
 
     <!--TODO empty view -->

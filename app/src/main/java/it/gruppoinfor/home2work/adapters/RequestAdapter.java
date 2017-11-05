@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +101,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
         String dateString = dateFormat.format(bookedMatchItem.getBookedDate());
 
-        holder.dateView.setText(dateString);
+        holder.dateView.setText(WordUtils.capitalize(dateString));
 
         /*
         TODO Activity info utente

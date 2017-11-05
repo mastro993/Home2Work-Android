@@ -6,7 +6,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bookings_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="@dimen/list_padding" />
 
     <!-- TODO empty view -->
 

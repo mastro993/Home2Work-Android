@@ -46,11 +46,11 @@ public class MatchFragmentRequest extends Fragment {
 
     private void initUI() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requestsRecyclerView.getContext(), layoutManager.getOrientation());
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requestsRecyclerView.getContext(), layoutManager.getOrientation());
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
         requestsRecyclerView.setLayoutManager(layoutManager);
-        requestsRecyclerView.addItemDecoration(dividerItemDecoration);
+        //requestsRecyclerView.addItemDecoration(dividerItemDecoration);
         requestsRecyclerView.setLayoutAnimation(animation);
 
         requestAdapter = new RequestAdapter(getActivity(), Client.getUserRequests());
