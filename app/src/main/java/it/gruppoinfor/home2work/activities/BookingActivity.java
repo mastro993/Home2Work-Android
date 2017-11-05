@@ -13,14 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -114,7 +112,7 @@ public class BookingActivity extends AppCompatActivity {
         mapFragment.onCreate(savedInstanceState);
 
         // TODO ottenere info bookign dal srver
-        Mockup.getBookingInfo( bookingId, bookingInfo -> {
+        Mockup.getBookingInfoAsync( bookingId, bookingInfo -> {
             booking = bookingInfo;
             initUI();
             mapFragment.getMapAsync(new MyMapReadyCollback(BookingActivity.this));

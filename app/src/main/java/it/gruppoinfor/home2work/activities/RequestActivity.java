@@ -109,7 +109,7 @@ public class RequestActivity extends AppCompatActivity {
         mapFragment.onCreate(savedInstanceState);
 
         // TODO ottenere info bookign dal srver
-        Mockup.getRequestInfo(bookingId, bookingInfo -> {
+        Mockup.getRequestInfoAsync(bookingId, bookingInfo -> {
             booking = bookingInfo;
             initUI();
             mapFragment.getMapAsync(new MyMapReadyCollback(this));

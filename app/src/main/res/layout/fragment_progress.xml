@@ -19,7 +19,7 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <include
                 layout="@layout/layout_progress_header"
@@ -64,71 +64,3 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>
-
-
-    <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="it.gruppoinfor.home2work.fragments.ProgressFragment">
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <include layout="@layout/layout_progress_header" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:drawablePadding="6dp"
-                    android:gravity="center"
-                    android:padding="@dimen/list_items_padding"
-                    android:text="Obiettivi recenti" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:visibility="visible"
-                    android:id="@+id/achievements_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:drawablePadding="6dp"
-                    android:gravity="center"
-                    android:padding="@dimen/list_items_padding"
-                    android:text="Ultime condivisioni" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/shares_history_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/stats_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:drawablePadding="6dp"
-                    android:gravity="center"
-                    android:padding="@dimen/list_items_padding"
-                    android:text="Statistiche" />
-
-                <include layout="@layout/layout_progress_stats" />
-
-
-            </LinearLayout>
-
-
-        </android.support.v4.widget.NestedScrollView>
-
-
-    </android.support.v4.widget.SwipeRefreshLayout>-->

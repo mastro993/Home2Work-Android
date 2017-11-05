@@ -8,7 +8,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +30,10 @@ import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Match;
 
-public class MatchFragmentList extends Fragment {
+public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
 
     @BindView(R.id.matches_recycler_view)
     RecyclerView matchesRecyclerView;
-    private SwipeRefreshLayout rootView;
     private Unbinder unbinder;
     private MatchAdapter matchesAdapter;
 
@@ -45,16 +43,14 @@ public class MatchFragmentList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_match_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_match_list, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
-        //refresh();
-        rootView.setOnRefreshListener(this::refresh);
-        rootView.setColorSchemeResources(R.color.colorAccent);
         return rootView;
     }
 
     private void initUI() {
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchesRecyclerView.getContext(), layoutManager.getOrientation());
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
@@ -64,51 +60,38 @@ public class MatchFragmentList extends Fragment {
         matchesRecyclerView.setLayoutAnimation(animation);
 
         matchesAdapter = new MatchAdapter(getActivity(), Client.getUserMatches());
-        matchesAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Match matchItem = Client.getUserMatches().get(position);
-                if (matchItem.isNew()) {
-                    matchItem.setNew(false);
-                    refreshBadge();
-                    matchesAdapter.notifyItemChanged(position);
-                    setMatchAsViewed(matchItem);
-                }
-                showMatchDetails(position);
-            }
-
-            @Override
-            public boolean onLongItemClick(View view, int position) {
-                PopupMenu popup = new PopupMenu(getActivity(), view);
-                popup.getMenuInflater().inflate(R.menu.menu_match, popup.getMenu());
-                popup.setOnMenuItemClickListener((item) -> {
-                    switch (item.getItemId()) {
-                        case R.id.hide_match:
-                            showHideMatchDialog(position);
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
-                });
-                popup.show();
-                return true;
-            }
-        });
-
+        matchesAdapter.setItemClickCallbacks(this);
         matchesRecyclerView.setAdapter(matchesAdapter);
     }
 
-    public void refresh() {
-        rootView.setRefreshing(true);
-        // TODO fare refresh da web
-        Mockup.refreshUserMatches(matchItems -> {
-            Client.setUserMatches(matchItems);
-            matchesAdapter.notifyDataSetChanged();
-            refreshBadge();
-            rootView.setRefreshing(false);
-        });
+    @Override
+    public void onItemClick(View view, int position) {
+        Match matchItem = Client.getUserMatches().get(position);
+        if (matchItem.isNew()) {
+            matchItem.setNew(false);
+            matchesAdapter.notifyItemChanged(position);
+            setMatchAsViewed(matchItem);
+            ((MainActivity)getActivity()).refreshMatchTabBadge();
+        }
+        showMatchDetails(position);
+    }
 
+    @Override
+    public boolean onLongItemClick(View view, int position) {
+        PopupMenu popup = new PopupMenu(getActivity(), view);
+        popup.getMenuInflater().inflate(R.menu.menu_match, popup.getMenu());
+        popup.setOnMenuItemClickListener((item) -> {
+            switch (item.getItemId()) {
+                case R.id.hide_match:
+                    showHideMatchDialog(position);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        });
+        popup.show();
+        return true;
     }
 
     private void setMatchAsViewed(Match match) {
@@ -163,7 +146,6 @@ public class MatchFragmentList extends Fragment {
 
         Intent matchIntent = new Intent(getContext(), MatchActivity.class);
         matchIntent.putExtra("matchID", match.getMatchID());
-        //startActivity(matchIntent);
         startActivityForResult(matchIntent, MatchActivity.NEW_BOOKIG_REQUEST);
     }
 
@@ -193,20 +175,10 @@ public class MatchFragmentList extends Fragment {
         hideDialog.show();
     }
 
-    private void refreshBadge() {
-        Stream<Match> matchStream = Client.getUserMatches().stream();
-        long newMatches = matchStream.filter(m -> !m.isHidden()).filter(Match::isNew).count();
-
-        if (newMatches > 0) {
-            ((MainActivity) getActivity()).bottomNavigation.setNotification(Long.toString(newMatches), 1);
-        } else {
-            ((MainActivity) getActivity()).bottomNavigation.setNotification("", 1);
-        }
-    }
-
     @Override
     public void onDestroyView() {
         unbinder.unbind();
         super.onDestroyView();
     }
+
 }

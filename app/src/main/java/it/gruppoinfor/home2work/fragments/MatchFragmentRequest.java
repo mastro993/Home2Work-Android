@@ -4,7 +4,6 @@ package it.gruppoinfor.home2work.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +29,6 @@ public class MatchFragmentRequest extends Fragment {
 
     @BindView(R.id.requests_recycler_view)
     RecyclerView requestsRecyclerView;
-    private SwipeRefreshLayout rootView;
     private Unbinder unbinder;
     private RequestAdapter requestAdapter;
 
@@ -40,12 +38,9 @@ public class MatchFragmentRequest extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_match_request, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_match_request, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
-        //refresh();
-        rootView.setOnRefreshListener(this::refresh);
-        rootView.setColorSchemeResources(R.color.colorAccent);
         return rootView;
     }
 
@@ -72,16 +67,6 @@ public class MatchFragmentRequest extends Fragment {
         });
 
         requestsRecyclerView.setAdapter(requestAdapter);
-    }
-
-    public void refresh() {
-        rootView.setRefreshing(true);
-        // TODO refresh da web
-        Mockup.refreshUserBookings(requests -> {
-            Client.setUserRequests(requests);
-            requestAdapter.notifyDataSetChanged();
-            rootView.setRefreshing(false);
-        });
     }
 
     private void showRequestDetails(int position) {

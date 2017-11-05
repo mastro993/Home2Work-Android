@@ -47,7 +47,7 @@ public class Mockup {
     private static Booking booking6;
 
 
-    public static void refreshUserMatches(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
+    public static void refreshUserMatchesAsync(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<List<Match>>()
                 .doInBackground(() -> {
 
@@ -69,7 +69,22 @@ public class Mockup {
                 .start();
     }
 
-    public static void refreshUserBookings(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
+    public static List<Match> refreshUserMatches() {
+        lag();
+
+        List<Match> matches = new ArrayList<>();
+        matches.add(match1);
+        matches.add(match2);
+        matches.add(match3);
+        matches.add(match4);
+        matches.add(match5);
+        matches.add(match6);
+        matches.add(match7);
+
+        return matches;
+    }
+
+    public static void refreshUserBookingsAsync(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<List<Booking>>()
                 .doInBackground(() -> {
 
@@ -92,7 +107,22 @@ public class Mockup {
                 .start();
     }
 
-    public static void refreshUserRequests(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
+    public static List<Booking> refreshUserBookings() {
+        lag();
+
+        booking1 = new Booking(1L, match1, new Date(unixTime + (5L * dayInMillis)), new Date(), BookingStatus.CONFIRMED);
+        booking2 = new Booking(2L, match2, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.PENDING);
+        booking3 = new Booking(3L, match3, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.REJECTED);
+
+        List<Booking> bookedMatches = new ArrayList<>();
+        bookedMatches.add(booking1);
+        bookedMatches.add(booking2);
+        bookedMatches.add(booking3);
+
+        return bookedMatches;
+    }
+
+    public static void refreshUserRequestsAsync(AsyncJob.AsyncResultAction<List<Booking>> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<List<Booking>>()
                 .doInBackground(() -> {
 
@@ -115,7 +145,22 @@ public class Mockup {
                 .start();
     }
 
-    public static void getMatchInfo(final Long matchID, AsyncJob.AsyncResultAction<MatchInfo> asyncResultAction) {
+    public static List<Booking> refreshUserRequests() {
+        lag();
+
+        booking4 = new Booking(4L, match8, new Date(unixTime + (5L * dayInMillis)), new Date(), BookingStatus.CONFIRMED);
+        booking5 = new Booking(5L, match9, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.PENDING);
+        booking6 = new Booking(6L, match10, new Date(unixTime + (3L * dayInMillis)), new Date(), BookingStatus.PENDING);
+
+        List<Booking> requests = new ArrayList<>();
+        requests.add(booking4);
+        requests.add(booking5);
+        requests.add(booking6);
+
+        return requests;
+    }
+
+    public static void getMatchInfoAsync(final Long matchID, AsyncJob.AsyncResultAction<MatchInfo> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<MatchInfo>()
                 .doInBackground(() -> {
 
@@ -144,7 +189,7 @@ public class Mockup {
                 .start();
     }
 
-    public static void getBookingInfo(Long bookingID, AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
+    public static void getBookingInfoAsync(Long bookingID, AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<BookingInfo>()
                 .doInBackground(() -> {
 
@@ -179,7 +224,7 @@ public class Mockup {
                 .start();
     }
 
-    public static void getRequestInfo(Long bookingID, AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
+    public static void getRequestInfoAsync(Long bookingID, AsyncJob.AsyncResultAction<BookingInfo> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<BookingInfo>()
                 .doInBackground(() -> {
 
@@ -214,8 +259,7 @@ public class Mockup {
                 .start();
     }
 
-
-    public static void getUserProfile(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
+    public static void getUserProfileAsync(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<Profile>()
                 .doInBackground(() -> {
                     lag();
@@ -233,7 +277,7 @@ public class Mockup {
 
     private static void lag() {
         // Simula ritardo connessione dati
-        int randomTime = new Random().nextInt(1500);
+        int randomTime = new Random().nextInt(500) + new Random().nextInt(500);
         try {
             Thread.sleep(randomTime);
         } catch (InterruptedException e) {

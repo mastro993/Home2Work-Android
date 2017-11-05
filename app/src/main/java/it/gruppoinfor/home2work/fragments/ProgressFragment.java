@@ -2,9 +2,7 @@ package it.gruppoinfor.home2work.fragments;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +35,9 @@ import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Karma;
 
 
-public class ProgressFragment extends Fragment {
+public class ProgressFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     Unbinder unbinder;
-    Resources res;
     MainActivity activity;
     ProgressPagerAdapter pagerAdapter;
     @BindView(R.id.tab_layout)
@@ -62,9 +58,6 @@ public class ProgressFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
 
 
-    private int currentPage = 0;
-
-
     public ProgressFragment() {
         // Required empty public constructor
     }
@@ -79,35 +72,17 @@ public class ProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_progress, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        res = getResources();
-
         initUI();
-
-        if (Client.getUserProfile() == null) {
-            refreshProfile();
-        }
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            currentPage = tabLayout.getSelectedTabPosition();
-            refreshProfile();
-        });
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-
+        refreshData();
         return rootView;
     }
 
-    private void refreshProfile() {
-        swipeRefreshLayout.setRefreshing(true);
-
-        // TODO refresh profilo dal server
-        Mockup.getUserProfile(p -> {
-            Client.setUserProfile(p);
-            swipeRefreshLayout.setRefreshing(false);
-            refreshProfileUI();
-        });
-    }
-
     private void initUI() {
+
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        viewPager.addOnPageChangeListener(this);
 
         nameTextView.setText(Client.getSignedUser().toString());
         jobTextView.setText(Client.getSignedUser().getJob().getCompany().toString());
@@ -121,11 +96,48 @@ public class ProgressFragment extends Fragment {
 
     }
 
-    private void refreshProfileUI() {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        toggleRefreshing(state == ViewPager.SCROLL_STATE_IDLE);
+    }
+
+    public void toggleRefreshing(boolean enabled) {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setEnabled(enabled);
+        }
+    }
+
+    private void refreshData() {
+        swipeRefreshLayout.setRefreshing(true);
+
+        // TODO refresh profilo dal server
+        Mockup.getUserProfileAsync(profile -> {
+            Client.setUserProfile(profile);
+            swipeRefreshLayout.setRefreshing(false);
+            refreshProfileUI();
+            refreshTabs();
+        });
+    }
+
+    private void refreshTabs() {
+        int currentPage = viewPager.getCurrentItem();
         pagerAdapter = new ProgressPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPage);
+    }
+
+    private void refreshProfileUI() {
 
         Karma karma = Client.getUserProfile().getKarma();
 
@@ -142,8 +154,6 @@ public class ProgressFragment extends Fragment {
         );
         animator.start();
 
-        //karmaDonutProgress.setProgress(karma.getLevelProgres());
-        //karmaLevel.setText(karma.getLevel().toString());
     }
 
     @Override

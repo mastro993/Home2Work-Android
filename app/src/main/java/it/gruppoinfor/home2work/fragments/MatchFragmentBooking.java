@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.BookingActivity;
@@ -30,11 +31,10 @@ import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 
-public class MatchFragmentBooking extends Fragment {
+public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks {
 
     @BindView(R.id.bookings_recycler_view)
     RecyclerView bookingsRecyclerView;
-    private SwipeRefreshLayout rootView;
     private Unbinder unbinder;
     private BookingAdapter bookingAdapter;
 
@@ -44,12 +44,9 @@ public class MatchFragmentBooking extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_match_booking, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_match_booking, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
-        //refresh();
-        rootView.setOnRefreshListener(this::refresh);
-        rootView.setColorSchemeResources(R.color.colorAccent);
         return rootView;
     }
 
@@ -63,45 +60,34 @@ public class MatchFragmentBooking extends Fragment {
         bookingsRecyclerView.setLayoutAnimation(animation);
 
         bookingAdapter = new BookingAdapter(getActivity(), Client.getUserBookings());
-        bookingAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
-            @Override
-            public void onItemClick(View view, int position) {
-                showBookingDetails(position);
-            }
-
-            @Override
-            public boolean onLongItemClick(View view, int position) {
-                PopupMenu popup = new PopupMenu(getActivity(), view);
-                popup.getMenuInflater().inflate(R.menu.menu_booked_match, popup.getMenu());
-                popup.setOnMenuItemClickListener((item) -> {
-                    switch (item.getItemId()) {
-                        case R.id.show_booked_match_profile:
-                            showBookedMatchUserProfile(position);
-                            break;
-                        case R.id.delete_booked_match:
-                            showDeleteBookingDialog(position);
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
-                });
-                popup.show();
-                return true;
-            }
-        });
-
+        bookingAdapter.setItemClickCallbacks(this);
         bookingsRecyclerView.setAdapter(bookingAdapter);
     }
 
-    public void refresh() {
-        rootView.setRefreshing(true);
-        // TODO refresh da web
-        Mockup.refreshUserBookings(bookedMatchItems -> {
-            Client.setUserBookedMatches(bookedMatchItems);
-            bookingAdapter.notifyDataSetChanged();
-            rootView.setRefreshing(false);
+    @Override
+    public void onItemClick(View view, int position) {
+        showBookingDetails(position);
+    }
+
+    @Override
+    public boolean onLongItemClick(View view, int position) {
+        PopupMenu popup = new PopupMenu(getActivity(), view);
+        popup.getMenuInflater().inflate(R.menu.menu_booked_match, popup.getMenu());
+        popup.setOnMenuItemClickListener((item) -> {
+            switch (item.getItemId()) {
+                case R.id.show_booked_match_profile:
+                    showBookedMatchUserProfile(position);
+                    break;
+                case R.id.delete_booked_match:
+                    showDeleteBookingDialog(position);
+                    break;
+                default:
+                    break;
+            }
+            return true;
         });
+        popup.show();
+        return true;
     }
 
     private void showBookingDetails(int position) {
