@@ -141,7 +141,7 @@ public class MatchFragment extends Fragment {
             super(fm);
             fragments = new ArrayList<>();
             fragments.add(new Pair<>(new MatchFragmentList(), "Disponibili"));
-            fragments.add(new Pair<>(new MatchFragmentBooking(), "Prenotazioni"));
+            fragments.add(new Pair<>(new MatchFragmentBooking(), "Prenotati"));
             fragments.add(new Pair<>(new MatchFragmentRequest(), "Richieste"));
         }
 

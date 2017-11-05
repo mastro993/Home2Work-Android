@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.view_pager)
     AHBottomNavigationViewPager viewPager;
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
     private PagerAdapter pagerAdapter;
 
     @Override
@@ -74,6 +77,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setSyncAlarm();
+    }
+
+    @Override
+    public void setTitle(int titleId) {
+        toolbarTitle.setText(titleId);
+        super.setTitle(titleId);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        toolbarTitle.setText(title);
+        super.setTitle(title);
     }
 
     @Override

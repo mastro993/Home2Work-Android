@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gradient"
     android:orientation="vertical"
     android:paddingBottom="@dimen/action_bar_size">
 
@@ -85,6 +84,7 @@
             android:layout_marginBottom="4dp"
             android:gravity="center"
             android:text="Nome Cognome"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
             android:textColor="@color/dark_bg_light_primary_text"
             android:textSize="22sp" />
 

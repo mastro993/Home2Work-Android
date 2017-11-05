@@ -23,15 +23,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/action_bar_size"
                 android:background="?attr/colorPrimary"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                android:contentInsetEnd="0dp"
+                android:contentInsetLeft="0dp"
+                android:contentInsetRight="0dp"
+                android:contentInsetStart="0dp"
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp">
 
                 <TextView
                     android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:singleLine="true"
                     android:text="Match"
                     android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
 
             </android.support.v7.widget.Toolbar>
 
@@ -42,11 +51,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_anchor="@id/appBar"
-            app:layout_anchorGravity="bottom"
+            app:layout_anchorGravity="center_horizontal|bottom"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/light_bg_dark_disabled_text"
             app:tabIndicatorHeight="3dp"
-            app:tabMode="scrollable"/>
+            app:tabMode="fixed" />
 
     </android.support.design.widget.AppBarLayout>
 

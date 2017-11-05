@@ -192,6 +192,10 @@ public class RequestActivity extends AppCompatActivity {
                     // TODO risposta al server
                     Client.getUserRequests().get(position).setBookingStatus(BookingStatus.CONFIRMED);
                     setResult(REQUEST_ACCEPTED);
+
+                    startShareButton.setVisibility(View.VISIBLE);
+                    acceptRequestButton.setVisibility(View.GONE);
+                    rejectRequestButton.setVisibility(View.GONE);
                 })
                 .build();
 
