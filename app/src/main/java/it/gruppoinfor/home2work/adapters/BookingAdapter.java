@@ -68,29 +68,24 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         int color;
         String statusText;
         int icon;
-        Drawable bg = ContextCompat.getDrawable(activity, R.drawable.bg_rounded_box);
+        Drawable bg = ContextCompat.getDrawable(activity, R.drawable.shape_badge_circle);
         if (bookedMatchItem.getBookingStatus() == BookingStatus.CONFIRMED) {
             color = ContextCompat.getColor(activity, R.color.green_500);
-            statusText = "Confermato";
             icon = R.drawable.ic_check;
         } else if (bookedMatchItem.getBookingStatus() == BookingStatus.PENDING) {
             color = ContextCompat.getColor(activity, R.color.amber_500);
-            statusText = "In attesa";
             icon = R.drawable.ic_clock;
         } else if (bookedMatchItem.getBookingStatus() == BookingStatus.REJECTED) {
             color = ContextCompat.getColor(activity, R.color.red_500);
-            statusText = "Rifiutato";
             icon = R.drawable.ic_close;
         } else {
             color = ContextCompat.getColor(activity, R.color.red_500);
-            statusText = "Rifiutato";
             icon = R.drawable.ic_close;
         }
 
         bg.setTint(color);
-        holder.statusView.setBackground(bg);
+        holder.statusIcon.setBackground(bg);
         holder.statusIcon.setImageResource(icon);
-        holder.statusText.setText(statusText);
 
         holder.arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(matchItem.getArrivalTime())));
         holder.departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(matchItem.getDepartureTime())));
@@ -153,12 +148,8 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         TextView arrivalTimeView;
         @BindView(R.id.departure_time_view)
         TextView departureTimeView;
-        @BindView(R.id.status_badge_text)
-        TextView statusText;
         @BindView(R.id.status_badge_icon)
         ImageView statusIcon;
-        @BindView(R.id.status_badge_view)
-        LinearLayout statusView;
 
         ViewHolder(View view) {
             super(view);
