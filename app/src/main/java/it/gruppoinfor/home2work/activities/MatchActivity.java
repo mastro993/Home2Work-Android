@@ -17,12 +17,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -97,6 +99,12 @@ public class MatchActivity extends AppCompatActivity {
     TextView departureTimeView;
     @BindView(R.id.karma_points_preview)
     TextView karmaPointsPreview;
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @BindView(R.id.container)
+    LinearLayout container;
+    @BindView(R.id.linearLayout2)
+    LinearLayout linearLayout2;
 
     private Resources res;
 
@@ -106,6 +114,8 @@ public class MatchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_match);
         ButterKnife.bind(this);
         res = getResources();
+
+        toolbarTitle.setText("Dettagli match");
 
         setSupportActionBar(toolbar);
 
@@ -180,6 +190,7 @@ public class MatchActivity extends AppCompatActivity {
         );
         animator.start();
     }
+
 
     @OnClick(R.id.request_shere_button)
     void requestShare() {

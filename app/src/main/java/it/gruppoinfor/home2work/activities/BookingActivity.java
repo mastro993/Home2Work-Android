@@ -3,7 +3,6 @@ package it.gruppoinfor.home2work.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -90,14 +90,20 @@ public class BookingActivity extends AppCompatActivity {
     Button startShareButton;
     @BindView(R.id.notes_text)
     TextView notesText;
-    private Resources res;
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @BindView(R.id.container)
+    LinearLayout container;
+    @BindView(R.id.linearLayout3)
+    LinearLayout linearLayout3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
         ButterKnife.bind(this);
-        res = getResources();
+
+        toolbarTitle.setText("Dettagli prenotazione");
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -108,19 +114,21 @@ public class BookingActivity extends AppCompatActivity {
         bookingId = getIntent().getLongExtra("bookingID", 0L);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
         mapFragment.onCreate(savedInstanceState);
 
+        bookingLoadingView.setVisibility(View.VISIBLE);
+
+
         // TODO ottenere info bookign dal srver
-        Mockup.getBookingInfoAsync( bookingId, bookingInfo -> {
+        Mockup.getBookingInfoAsync(bookingId, bookingInfo -> {
             booking = bookingInfo;
             initUI();
             mapFragment.getMapAsync(new MyMapReadyCollback(BookingActivity.this));
         });
 
-        bookingLoadingView.setVisibility(View.VISIBLE);
 
     }
+
 
     private void initUI() {
 
@@ -172,9 +180,9 @@ public class BookingActivity extends AppCompatActivity {
         scoreProgress.setFinishedStrokeColor(color);
         bg.setTint(color);
         scoreText.setBackground(bg);
-        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), booking.getBookedMatch().getSharedDistance().toString()));
-        arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(booking.getBookedMatch().getArrivalTime())));
-        departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(booking.getBookedMatch().getDepartureTime())));
+        distanceView.setText(String.format(getResources().getString(R.string.match_item_shared_distance), booking.getBookedMatch().getSharedDistance().toString()));
+        arrivalTimeView.setText(String.format(getResources().getString(R.string.match_item_arrival_time), dateToString(booking.getBookedMatch().getArrivalTime())));
+        departureTimeView.setText(String.format(getResources().getString(R.string.match_item_departure_time), dateToString(booking.getBookedMatch().getDepartureTime())));
 
 
     }

@@ -72,23 +72,14 @@ public class ProgressFragmentStats extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
         String dateString = dateFormat.format(profileStats.getRegDate());
 
-        String regDateString = String.format(res.getString(R.string.profile_regdate), dateString);
-        String distanceString = String.format(res.getString(R.string.profile_distance), df.format(profileStats.getTotalKilometers()));
-        String gasString = String.format(res.getString(R.string.profile_gas), df.format(profileStats.getTotalGas()));
-        String emissionString = String.format(res.getString(R.string.profile_emissions), df.format(profileStats.getTotalEmissions()));
-        String sharesString = String.format(res.getString(R.string.profile_shares), profileStats.getTotalShares());
-        String distanceSharedString = String.format(res.getString(R.string.profile_shared_distance), df.format(profileStats.getTotalSharedKilometers()));
-        String savedGasString = String.format(res.getString(R.string.profile_saved_gas), df.format(profileStats.getTotalGasSaved()));
-        String savedEmissionString = String.format(res.getString(R.string.profile_saved_emissions), df.format(profileStats.getTotalEmissionSaved()));
-
-        regdateTextView.setText(regDateString);
-        distanceTextView.setText(distanceString);
-        gasTextView.setText(gasString);
-        emissionsTextView.setText(emissionString);
-        sharesTextView.setText(sharesString);
-        sharedDistanceTextView.setText(distanceSharedString);
-        savedGasTextView.setText(savedGasString);
-        savedEmissionsTextView.setText(savedEmissionString);
+        regdateTextView.setText(dateString);
+        distanceTextView.setText(df.format(profileStats.getTotalKilometers()));
+        gasTextView.setText(df.format(profileStats.getTotalGas()));
+        emissionsTextView.setText(df.format(profileStats.getTotalEmissions()));
+        sharesTextView.setText(profileStats.getTotalShares().toString());
+        sharedDistanceTextView.setText(df.format(profileStats.getTotalSharedKilometers()));
+        savedGasTextView.setText(df.format(profileStats.getTotalGasSaved()));
+        savedEmissionsTextView.setText(df.format(profileStats.getTotalEmissionSaved()));
     }
 
 

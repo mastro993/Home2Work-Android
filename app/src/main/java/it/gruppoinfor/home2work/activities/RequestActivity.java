@@ -13,11 +13,13 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -82,6 +84,12 @@ public class RequestActivity extends AppCompatActivity {
     TextView arrivalTimeView;
     @BindView(R.id.departure_time_view)
     TextView departureTimeView;
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @BindView(R.id.container)
+    LinearLayout container;
+    @BindView(R.id.linearLayout3)
+    LinearLayout linearLayout3;
 
     private Long bookingId;
     private int position;
@@ -94,6 +102,8 @@ public class RequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
         ButterKnife.bind(this);
+
+        toolbarTitle.setText("Dettagli richiesta");
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());

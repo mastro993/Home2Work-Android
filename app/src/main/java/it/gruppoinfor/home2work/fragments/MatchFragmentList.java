@@ -50,13 +50,10 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
     }
 
     private void initUI() {
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchesRecyclerView.getContext(), layoutManager.getOrientation());
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
         matchesRecyclerView.setLayoutManager(layoutManager);
-        //matchesRecyclerView.addItemDecoration(dividerItemDecoration);
         matchesRecyclerView.setLayoutAnimation(animation);
 
         matchesAdapter = new MatchAdapter(getActivity(), Client.getUserMatches());

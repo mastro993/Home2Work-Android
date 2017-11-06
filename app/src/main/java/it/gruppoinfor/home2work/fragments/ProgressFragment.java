@@ -122,8 +122,8 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         // TODO refresh profilo dal server
         Mockup.getUserProfileAsync(profile -> {
-            Client.setUserProfile(profile);
             swipeRefreshLayout.setRefreshing(false);
+            Client.setUserProfile(profile);
             refreshProfileUI();
             refreshTabs();
         });

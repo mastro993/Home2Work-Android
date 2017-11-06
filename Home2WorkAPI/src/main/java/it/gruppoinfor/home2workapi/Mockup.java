@@ -45,6 +45,11 @@ public class Mockup {
     private static Achievement achievement3;
     private static Achievement achievement4;
     private static Achievement achievement5;
+    private static Achievement achievement6;
+    private static Achievement achievement7;
+    private static Achievement achievement8;
+    private static Achievement achievement9;
+    private static Achievement achievement10;
 
     private static Booking booking1;
     private static Booking booking2;
@@ -274,7 +279,31 @@ public class Mockup {
                     Karma karma = new Karma(460);
                     ProfileStats profileStats = new ProfileStats(new Date(), 132.7, 11, 218.4);
 
-                    return new Profile(karma, profileStats);
+                    achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 100, new Date(), 50.0, 50.0);
+                    achievement2 = new Achievement(2L, "Obiettivo 2", "Descrizione dell'obiettivo", 150, new Date(), 100.0, 77.0);
+                    achievement3 = new Achievement(3L, "Obiettivo 3", "Descrizione dell'obiettivo", 75, new Date(), 1.0, 0.0);
+                    achievement4 = new Achievement(4L, "Obiettivo 4", "Descrizione dell'obiettivo", 200, new Date(), 200.0, 133.0);
+                    achievement5 = new Achievement(5L, "Obiettivo 5", "Descrizione dell'obiettivo", 50, new Date(), 5.0, 0.0);
+                    achievement6 = new Achievement(6L, "Obiettivo 6", "Descrizione dell'obiettivo", 100, new Date(), 70.0, 50.0);
+                    achievement7 = new Achievement(7L, "Obiettivo 7", "Descrizione dell'obiettivo", 150, new Date(), 80.0, 77.0);
+                    achievement8 = new Achievement(8L, "Obiettivo 8", "Descrizione dell'obiettivo", 75, new Date(), 10.0, 0.0);
+                    achievement9 = new Achievement(9L, "Obiettivo 9", "Descrizione dell'obiettivo", 200, new Date(), 500.0, 133.0);
+                    achievement10 = new Achievement(10L, "Obiettivo 10", "Descrizione dell'obiettivo", 50, new Date(), 15.0, 0.0);
+
+
+                    List<Achievement> achievements = new ArrayList<>();
+                    achievements.add(achievement1);
+                    achievements.add(achievement2);
+                    achievements.add(achievement3);
+                    achievements.add(achievement4);
+                    achievements.add(achievement5);
+                    achievements.add(achievement6);
+                    achievements.add(achievement7);
+                    achievements.add(achievement8);
+                    achievements.add(achievement9);
+                    achievements.add(achievement10);
+
+                    return new Profile(karma, profileStats, achievements);
                 })
                 .doWhenFinished(asyncResultAction)
                 .create()
@@ -290,10 +319,15 @@ public class Mockup {
 
 
                     achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 100, new Date(), 50.0, 50.0);
-                    achievement2 = new Achievement(1L, "Obiettivo 2", "Descrizione dell'obiettivo", 150, new Date(), 100.0, 77.0);
-                    achievement3 = new Achievement(1L, "Obiettivo 3", "Descrizione dell'obiettivo", 75, new Date(), 1.0, 0.0);
-                    achievement4 = new Achievement(1L, "Obiettivo 4", "Descrizione dell'obiettivo", 200, new Date(), 200.0, 133.0);
-                    achievement5 = new Achievement(1L, "Obiettivo 5", "Descrizione dell'obiettivo", 50, new Date(), 5.0, 0.0);
+                    achievement2 = new Achievement(2L, "Obiettivo 2", "Descrizione dell'obiettivo", 150, new Date(), 100.0, 77.0);
+                    achievement3 = new Achievement(3L, "Obiettivo 3", "Descrizione dell'obiettivo", 75, new Date(), 1.0, 0.0);
+                    achievement4 = new Achievement(4L, "Obiettivo 4", "Descrizione dell'obiettivo", 200, new Date(), 200.0, 133.0);
+                    achievement5 = new Achievement(5L, "Obiettivo 5", "Descrizione dell'obiettivo", 50, new Date(), 5.0, 0.0);
+                    achievement6 = new Achievement(6L, "Obiettivo 6", "Descrizione dell'obiettivo", 100, new Date(), 70.0, 50.0);
+                    achievement7 = new Achievement(7L, "Obiettivo 7", "Descrizione dell'obiettivo", 150, new Date(), 80.0, 77.0);
+                    achievement8 = new Achievement(8L, "Obiettivo 8", "Descrizione dell'obiettivo", 75, new Date(), 10.0, 0.0);
+                    achievement9 = new Achievement(9L, "Obiettivo 9", "Descrizione dell'obiettivo", 200, new Date(), 500.0, 133.0);
+                    achievement10 = new Achievement(10L, "Obiettivo 10", "Descrizione dell'obiettivo", 50, new Date(), 15.0, 0.0);
 
 
                     List<Achievement> achievements = new ArrayList<>();
@@ -302,6 +336,11 @@ public class Mockup {
                     achievements.add(achievement3);
                     achievements.add(achievement4);
                     achievements.add(achievement5);
+                    achievements.add(achievement6);
+                    achievements.add(achievement7);
+                    achievements.add(achievement8);
+                    achievements.add(achievement9);
+                    achievements.add(achievement10);
                     return achievements;
 
                 })

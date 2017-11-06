@@ -82,7 +82,7 @@ public class Achievement {
         this.current = current;
     }
 
-    public Double getProgress() {
-        return (100.0 / goal) * current;
+    public Integer getProgress() {
+        return Double.valueOf(((100.0 / goal) * current)).intValue();
     }
 }

@@ -6,6 +6,8 @@
     tools:context="it.gruppoinfor.home2work.fragments.ProgressFragmentAchievements">
 
     <android.support.v7.widget.RecyclerView
+        android:clipToPadding="false"
+        android:padding="@dimen/list_padding"
         android:id="@+id/achievement_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

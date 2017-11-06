@@ -24,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
@@ -142,6 +143,7 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
             // E' stata aggiunta una nuova prenotazione, aggiorno la UI e apro il tab prenotazioni
             refreshTabs();
             viewPager.setCurrentItem(1);
+            Toasty.success(getContext(), "Prenotazione effettuata").show();
         } else if (resultCode == RequestActivity.REQUEST_REJECTED || resultCode == RequestActivity.REQUEST_ACCEPTED) {
             // E' stata accettata/rifiutata una richiesta, aggiorno la UI e apro il tab richieste
             refreshTabs();

@@ -9,229 +9,320 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/list_items_padding">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/list_items_padding"
-            android:layout_marginTop="@dimen/list_items_padding"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
+            android:layout_marginBottom="@dimen/list_items_spacing">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_calendar"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/list_items_padding">
 
-            <TextView
-                android:id="@+id/regdate_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_regdate"
-                android:textSize="16sp" />
+                <ImageView
+                    android:id="@+id/regdate_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentStart="true"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_calendar"
+                    tools:ignore="ContentDescription" />
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_toRightOf="@id/regdate_icon"
+                    android:text="Iscrizione" />
 
-        <LinearLayout
+                <TextView
+                    android:layout_marginEnd="8dp"
+                    android:id="@+id/regdate_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="11 Novembre 2017"
+                    android:textColor="@color/colorAccent" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
+            android:layout_marginBottom="@dimen/list_items_spacing">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_road"
-                tools:ignore="ContentDescription" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <TextView
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
 
-                android:id="@+id/distance_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_distance"
-                android:textSize="16sp" />
+                    <ImageView
+                        android:id="@+id/road_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_road"
+                        tools:ignore="ContentDescription" />
 
-        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/road_icon"
+                        android:text="Kilometri percorsi" />
 
-        <LinearLayout
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/distance_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999,99"
+                        android:textColor="@color/colorAccent" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
+
+                    <ImageView
+                        android:id="@+id/gas_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_gas"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/gas_icon"
+                        android:text="Litri di carbuarnte utilizzato" />
+
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/gas_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999,99"
+                        android:textColor="@color/colorAccent" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
+
+                    <ImageView
+                        android:id="@+id/emissions_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_leaf"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/emissions_icon"
+                        android:text="Grammi di CO2 emessi" />
+
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/emissions_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999,99"
+                        android:textColor="@color/colorAccent"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_gas"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/gas_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_gas"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_leaf"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-
-                android:id="@+id/emissions_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_emissions"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_items_padding"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_car"
-                android:tint="@color/colorPrimaryDark"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-
-                android:id="@+id/shares_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_shares"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_road"
-                android:tint="@color/colorPrimaryDark"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-
-                android:id="@+id/shared_distance_text_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_shared_distance"
-                android:textSize="16sp" />
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
+                    <ImageView
+                        android:id="@+id/car_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_car"
+                        android:tint="@color/colorPrimary"
+                        tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_gas"
-                android:tint="@color/colorPrimaryDark"
-                tools:ignore="ContentDescription" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/car_icon"
+                        android:text="Condivisioni auto" />
 
-            <TextView
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/shares_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999"
+                        android:textColor="@color/colorAccent" />
 
-                android:id="@+id/saved_gas_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_saved_gas"
-                android:textSize="16sp" />
+                </RelativeLayout>
 
-        </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/list_items_padding"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_items_padding">
+                    <ImageView
+                        android:id="@+id/shared_road_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_road"
+                        android:tint="@color/colorPrimary"
+                        tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_leaf"
-                android:tint="@color/colorPrimaryDark"
-                tools:ignore="ContentDescription" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/shared_road_icon"
+                        android:text="Kilometri condivisi" />
 
-            <TextView
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/shared_distance_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999,99"
+                        android:textColor="@color/colorAccent"/>
 
-                android:id="@+id/saved_emissions_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                android:text="@string/profile_saved_emissions"
-                android:textSize="16sp" />
+                </RelativeLayout>
 
-        </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
+
+                    <ImageView
+                        android:id="@+id/saved_gas_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_gas"
+                        android:tint="@color/colorPrimary"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/saved_gas_icon"
+                        android:text="Litri di carburante risparmiato"/>
+
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/saved_gas_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999,99"
+                        android:textColor="@color/colorAccent" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/list_items_padding">
+
+                    <ImageView
+                        android:id="@+id/saved_emissions_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_leaf"
+                        android:tint="@color/colorPrimary"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toRightOf="@id/saved_emissions_icon"
+                        android:text="Grammi di CO2 evitati" />
+
+                    <TextView
+                        android:layout_marginEnd="8dp"
+                        android:id="@+id/saved_emissions_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="999,99"
+                        android:textColor="@color/colorAccent" />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
 
     </LinearLayout>
