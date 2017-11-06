@@ -2,6 +2,8 @@ package it.gruppoinfor.home2workapi.model;
 
 import java.util.Date;
 
+import it.gruppoinfor.home2workapi.Client;
+
 
 public class Achievement {
 
@@ -84,5 +86,9 @@ public class Achievement {
 
     public Integer getProgress() {
         return Double.valueOf(((100.0 / goal) * current)).intValue();
+    }
+
+    public String getIconURL() {
+        return Client.ACHIEVEMENTS_BASE_URL + achievementID + ".jpg";
     }
 }

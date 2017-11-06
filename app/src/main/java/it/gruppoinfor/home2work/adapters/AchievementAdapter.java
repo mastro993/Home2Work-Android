@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,13 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Achievement achievement = achievements.get(position);
 
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.color.grey_200).dontAnimate();
+
+        Glide.with(activity)
+                .load(achievement.getAchievementID())
+                .apply(requestOptions)
+                .into(holder.achievementIcon);
+
         holder.achievementName.setText(achievement.getName());
         holder.achievementDescription.setText(achievement.getDescription());
         holder.progressText.setText(String.format("%1$s/%2$s", achievement.getCurrent(), achievement.getGoal()));
@@ -67,7 +77,6 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
             holder.progressPercentile.setVisibility(View.VISIBLE);
             holder.progressPercentile.setText(String.format("%1$s%%", holder.progressBar.getProgress()));
         }
-
 
     }
 

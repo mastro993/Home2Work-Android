@@ -23,8 +23,8 @@
                 android:id="@+id/guest_avatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                android:layout_marginLeft="-65dp"
+                android:layout_toRightOf="@id/host_avatar"
                 android:padding="13dp"
                 android:src="@drawable/ic_avatar_placeholder"
                 android:transitionName="avatar"
@@ -32,12 +32,9 @@
                 app:civ_border_width="2dp" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-
                 android:id="@+id/host_avatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginLeft="-60dp"
-                android:layout_toRightOf="@id/guest_avatar"
                 android:padding="13dp"
                 android:src="@drawable/ic_avatar_placeholder"
                 android:transitionName="avatar"
@@ -53,6 +50,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/name_info_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="4dp"
@@ -63,12 +61,14 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/distance_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Kilometri condivisi: 999,99"
                 android:textColor="@color/light_bg_dark_secondary_text" />
 
             <TextView
+                android:id="@+id/karma_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Karma guadagnato: 500"

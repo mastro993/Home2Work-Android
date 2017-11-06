@@ -9,6 +9,15 @@ public class Profile {
     private Karma karma;
     private ProfileStats profileStats;
     private List<Achievement> achievements = new ArrayList<>();
+    private List<Share> shares = new ArrayList<>();
+
+    public List<Share> getShares() {
+        return shares;
+    }
+
+    public void setShares(List<Share> shares) {
+        this.shares = shares;
+    }
 
     public List<Achievement> getAchievements() {
         return achievements;
@@ -34,9 +43,10 @@ public class Profile {
         this.profileStats = profileStats;
     }
 
-    public Profile(Karma karma, ProfileStats profileStats, List<Achievement> achievements) {
+    public Profile(Karma karma, ProfileStats profileStats, List<Achievement> achievements, List<Share> shares) {
         this.karma = karma;
         this.profileStats = profileStats;
         this.achievements = achievements;
+        this.shares = shares;
     }
 }

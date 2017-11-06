@@ -3,29 +3,32 @@ package it.gruppoinfor.home2work.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
+import it.gruppoinfor.home2work.adapters.SharesAdapter;
+import it.gruppoinfor.home2workapi.Client;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProgressFragmentShares extends Fragment {
+public class ProgressFragmentShares extends Fragment implements ItemClickCallbacks {
 
 
     @BindView(R.id.shares_recycler_view)
     RecyclerView sharesRecyclerView;
-    @BindView(R.id.empty_view)
-    RelativeLayout emptyView;
     private Unbinder unbinder;
+    private SharesAdapter sharesAdapter;
 
     public ProgressFragmentShares() {
         // Required empty public constructor
@@ -35,14 +38,32 @@ public class ProgressFragmentShares extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FrameLayout root = (FrameLayout) inflater.inflate(R.layout.fragment_progress_shares, container, false);
-        unbinder = ButterKnife.bind(this, root);
+        View rootView = inflater.inflate(R.layout.fragment_progress_shares, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         initUI();
-        return root;
+        return rootView;
     }
 
     private void initUI() {
-        // TODO lista condivisioni
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+
+        sharesRecyclerView.setLayoutManager(layoutManager);
+        sharesRecyclerView.setLayoutAnimation(animation);
+
+        sharesAdapter = new SharesAdapter(getActivity(), Client.getUserProfile().getShares());
+        sharesAdapter.setItemClickCallbacks(this);
+        sharesRecyclerView.setAdapter(sharesAdapter);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
+
+    @Override
+    public boolean onLongItemClick(View view, int position) {
+        return false;
     }
 
     @Override

@@ -17,6 +17,7 @@ import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
 import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.ProfileStats;
+import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 
 import static it.gruppoinfor.home2workapi.Converters.stringToDate;
@@ -57,6 +58,11 @@ public class Mockup {
     private static Booking booking4;
     private static Booking booking5;
     private static Booking booking6;
+
+    private static Share share1;
+    private static Share share2;
+    private static Share share3;
+    private static Share share4;
 
 
     public static void refreshUserMatchesAsync(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
@@ -303,50 +309,24 @@ public class Mockup {
                     achievements.add(achievement9);
                     achievements.add(achievement10);
 
-                    return new Profile(karma, profileStats, achievements);
+                    share1 = new Share(1L, user1, null, 16.4, new Date());
+                    share2 = new Share(2L, user2, null, 16.4, new Date());
+                    share3 = new Share(3L, null, user1, 16.4, new Date());
+                    share4 = new Share(4L, user4, null, 16.4, new Date());
+
+                    List<Share> shares = new ArrayList<>();
+                    shares.add(share1);
+                    shares.add(share2);
+                    shares.add(share3);
+                    shares.add(share4);
+
+
+                    return new Profile(karma, profileStats, achievements, shares);
                 })
                 .doWhenFinished(asyncResultAction)
                 .create()
                 .start();
 
-    }
-
-    public static void getAchievementsAsync(AsyncJob.AsyncResultAction<Achievement> asyncResultAction) {
-        new AsyncJob.AsyncJobBuilder<List<Achievement>>()
-                .doInBackground(() -> {
-
-                    lag();
-
-
-                    achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 100, new Date(), 50.0, 50.0);
-                    achievement2 = new Achievement(2L, "Obiettivo 2", "Descrizione dell'obiettivo", 150, new Date(), 100.0, 77.0);
-                    achievement3 = new Achievement(3L, "Obiettivo 3", "Descrizione dell'obiettivo", 75, new Date(), 1.0, 0.0);
-                    achievement4 = new Achievement(4L, "Obiettivo 4", "Descrizione dell'obiettivo", 200, new Date(), 200.0, 133.0);
-                    achievement5 = new Achievement(5L, "Obiettivo 5", "Descrizione dell'obiettivo", 50, new Date(), 5.0, 0.0);
-                    achievement6 = new Achievement(6L, "Obiettivo 6", "Descrizione dell'obiettivo", 100, new Date(), 70.0, 50.0);
-                    achievement7 = new Achievement(7L, "Obiettivo 7", "Descrizione dell'obiettivo", 150, new Date(), 80.0, 77.0);
-                    achievement8 = new Achievement(8L, "Obiettivo 8", "Descrizione dell'obiettivo", 75, new Date(), 10.0, 0.0);
-                    achievement9 = new Achievement(9L, "Obiettivo 9", "Descrizione dell'obiettivo", 200, new Date(), 500.0, 133.0);
-                    achievement10 = new Achievement(10L, "Obiettivo 10", "Descrizione dell'obiettivo", 50, new Date(), 15.0, 0.0);
-
-
-                    List<Achievement> achievements = new ArrayList<>();
-                    achievements.add(achievement1);
-                    achievements.add(achievement2);
-                    achievements.add(achievement3);
-                    achievements.add(achievement4);
-                    achievements.add(achievement5);
-                    achievements.add(achievement6);
-                    achievements.add(achievement7);
-                    achievements.add(achievement8);
-                    achievements.add(achievement9);
-                    achievements.add(achievement10);
-                    return achievements;
-
-                })
-                .doWhenFinished(asyncResultAction)
-                .create()
-                .start();
     }
 
     private static void lag() {

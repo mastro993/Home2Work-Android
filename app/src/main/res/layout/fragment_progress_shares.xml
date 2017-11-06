@@ -1,43 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="it.gruppoinfor.home2work.fragments.ProgressFragmentAchievements">
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
+        android:clipToPadding="false"
+        android:padding="@dimen/list_padding"
+        android:id="@+id/shares_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/shares_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-
-            <RelativeLayout
-                android:id="@+id/empty_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="48dp"
-                    android:text="Non hai ancora condiviso iul tuo percorso casa-lavoro. Che ne dici di iniziare a farlo?"
-                    android:textColor="@color/light_bg_dark_secondary_text" />
-
-            </RelativeLayout>
-
-        </FrameLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-
-</FrameLayout>
+</LinearLayout>

@@ -1,0 +1,101 @@
+package it.gruppoinfor.home2work.adapters;
+
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
+import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.Share;
+
+public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder> {
+
+    private MainActivity activity;
+    private ArrayList<Share> shares;
+    private ItemClickCallbacks itemClickCallbacks;
+
+    public SharesAdapter(Activity activity, List<Share> values) {
+        this.activity = (MainActivity) activity;
+        this.shares = new ArrayList<>(values);
+    }
+
+    public void setItemClickCallbacks(ItemClickCallbacks itemClickCallbacks) {
+        this.itemClickCallbacks = itemClickCallbacks;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final Share share = shares.get(position);
+
+        if (share.getGuest() == null) {
+            share.setGuest(Client.getSignedUser());
+            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getHost().toString()));
+        } else {
+            share.setHost(Client.getSignedUser());
+            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getGuest().toString()));
+        }
+
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
+
+        Glide.with(activity)
+                .load(share.getGuest().getAvatarURL())
+                .apply(requestOptions)
+                .into(holder.guestAvatar);
+
+        Glide.with(activity)
+                .load(share.getHost().getAvatarURL())
+                .apply(requestOptions)
+                .into(holder.hostAvatar);
+
+        holder.distanceView.setText(String.format("%1$s Km condivisi", share.getSharedDistance()));
+        holder.karmaView.setText(String.format("Karma guadagnato: %1$s", share.getKarma()));
+
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return shares.size();
+    }
+
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.guest_avatar)
+        CircleImageView guestAvatar;
+        @BindView(R.id.host_avatar)
+        CircleImageView hostAvatar;
+        @BindView(R.id.name_info_view)
+        TextView nameInfoView;
+        @BindView(R.id.distance_view)
+        TextView distanceView;
+        @BindView(R.id.karma_view)
+        TextView karmaView;
+        @BindView(R.id.container)
+        LinearLayout container;
+
+        ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
+}
