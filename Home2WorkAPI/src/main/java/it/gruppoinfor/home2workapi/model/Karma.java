@@ -5,13 +5,19 @@ public class Karma {
     private Integer value;
     private Integer level;
     private Integer forNextLevel;
-    private Float levelProgres;
+    private Float levelProgress;
 
     public Karma(int value) {
         this.value = value;
         this.level = ((Double) (1 + 0.10 * Math.sqrt(value))).intValue();
-        this.forNextLevel = ((Double) Math.pow((level / 0.10), 2.0)).intValue();
-        this.levelProgres = (100.0f / forNextLevel) * value;
+
+        int thisLevelKarma = (int) Math.pow(10.0 * (level - 1.0), 2.0);
+        int nextLevelKarma = (int) Math.pow(10 * level, 2.0);
+        this.forNextLevel = nextLevelKarma - thisLevelKarma;
+
+        int thisLevelKarmaDelta = value - thisLevelKarma;
+
+        this.levelProgress = (100.0f / forNextLevel) * thisLevelKarmaDelta;
     }
 
     public Integer getValue() {
@@ -23,7 +29,7 @@ public class Karma {
     }
 
     public Integer getLevel() {
-        return level;
+        return Math.min(level, 100);
     }
 
     public void setLevel(Integer level) {
@@ -38,11 +44,11 @@ public class Karma {
         this.forNextLevel = forNextLevel;
     }
 
-    public Float getLevelProgres() {
-        return levelProgres;
+    public Float getLevelProgress() {
+        return level > 100? 100f : levelProgress;
     }
 
-    public void setLevelProgres(Float levelProgres) {
-        this.levelProgres = levelProgres;
+    public void setLevelProgress(Float levelProgres) {
+        this.levelProgress = levelProgres;
     }
 }

@@ -5,7 +5,8 @@
     android:layout_gravity="center"
     android:background="@drawable/bg_rounded_blue_box"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:clipToPadding="false">
 
     <ImageView
         android:layout_marginTop="3dp"

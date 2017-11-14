@@ -12,12 +12,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 
-public class ProgressFragmentKarma extends Fragment {
+public class ProgressFragmentProfile extends Fragment {
 
 
     private Unbinder unbinder;
 
-    public ProgressFragmentKarma() {
+    public ProgressFragmentProfile() {
         // Required empty public constructor
     }
 
@@ -25,7 +25,7 @@ public class ProgressFragmentKarma extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FrameLayout root = (FrameLayout) inflater.inflate(R.layout.fragment_progress_karma, container, false);
+        FrameLayout root = (FrameLayout) inflater.inflate(R.layout.fragment_progress_profile, container, false);
         unbinder = ButterKnife.bind(this, root);
         initUI();
         return root;

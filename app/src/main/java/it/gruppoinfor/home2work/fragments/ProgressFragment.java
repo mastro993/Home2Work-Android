@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.fragments;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -14,22 +13,16 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.custom.DonutProgressAnimation;
+import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Karma;
@@ -44,18 +37,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
-    @BindView(R.id.karma_donut_progress)
-    DonutProgress karmaDonutProgress;
-    @BindView(R.id.user_propic)
-    CircleImageView userPropic;
-    @BindView(R.id.karma_level)
-    TextView karmaLevel;
     @BindView(R.id.name_text_view)
     TextView nameTextView;
     @BindView(R.id.job_text_view)
     TextView jobTextView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.avatar_view)
+    AvatarView avatarView;
 
 
     public ProgressFragment() {
@@ -87,12 +76,8 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         nameTextView.setText(Client.getSignedUser().toString());
         jobTextView.setText(Client.getSignedUser().getJob().getCompany().toString());
 
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
+        avatarView.setAvatarURL(Client.getSignedUser().getAvatarURL());
 
-        Glide.with(getActivity())
-                .load(Client.getSignedUser().getAvatarURL())
-                .apply(requestOptions)
-                .into(userPropic);
 
     }
 
@@ -141,18 +126,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         Karma karma = Client.getUserProfile().getKarma();
 
-        DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, 0, karma.getLevelProgres());
-        animation.setDuration(500);
-        animation.setInterpolator(new AccelerateDecelerateInterpolator());
-        karmaDonutProgress.startAnimation(animation);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, karma.getLevel());
-        animator.setDuration(250);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addUpdateListener(animation1 ->
-                karmaLevel.setText(animation1.getAnimatedValue().toString())
-        );
-        animator.start();
+        avatarView.setKarma(karma);
 
     }
 
@@ -169,7 +143,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         ProgressPagerAdapter(FragmentManager fm) {
             super(fm);
             fragments = new ArrayList<>();
-            fragments.add(new Pair<>(new ProgressFragmentKarma(), "Karma"));
+            fragments.add(new Pair<>(new ProgressFragmentProfile(), "Profilo"));
             fragments.add(new Pair<>(new ProgressFragmentAchievements(), "Obiettivi"));
             fragments.add(new Pair<>(new ProgressFragmentShares(), "Condivisioni"));
             fragments.add(new Pair<>(new ProgressFragmentStats(), "Statistiche"));

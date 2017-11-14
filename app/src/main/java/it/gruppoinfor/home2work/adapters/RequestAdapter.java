@@ -1,5 +1,7 @@
 package it.gruppoinfor.home2work.adapters;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -97,6 +99,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         String dateString = dateFormat.format(bookedMatchItem.getBookedDate());
 
         holder.dateView.setText(WordUtils.capitalize(dateString));
+
+        /*ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
+                holder.statusIcon,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        scaleDown.setDuration(250);
+
+        scaleDown.setRepeatCount(1);
+        scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
+
+        scaleDown.start();*/
 
         /*
         TODO Activity info utente

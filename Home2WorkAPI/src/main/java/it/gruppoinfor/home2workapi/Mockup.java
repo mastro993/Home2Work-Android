@@ -277,12 +277,16 @@ public class Mockup {
                 .start();
     }
 
+    private static int karmaValue = 460;
+
     public static void getUserProfileAsync(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<Profile>()
                 .doInBackground(() -> {
                     lag();
 
-                    Karma karma = new Karma(460);
+                    //TODO karmaValue *= 5;
+
+                    Karma karma = new Karma(karmaValue);
                     ProfileStats profileStats = new ProfileStats(new Date(), 132.7, 11, 218.4);
 
                     achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 100, new Date(), 50.0, 50.0);

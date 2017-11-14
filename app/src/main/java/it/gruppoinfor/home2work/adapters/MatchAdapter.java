@@ -1,5 +1,7 @@
 package it.gruppoinfor.home2work.adapters;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
@@ -101,6 +103,17 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
+
+        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
+                holder.newBadgeView,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        scaleDown.setDuration(250);
+
+        scaleDown.setRepeatCount(1);
+        scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
+
+        scaleDown.start();
 
         /*
         TODO Activity info utente

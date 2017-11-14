@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.github.lzyzsd.circleprogress.DonutProgress
+        android:id="@+id/karma_donut_progress"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true"
+        android:animateLayoutChanges="true"
+        android:elevation="2dp"
+        android:rotation="40"
+        app:donut_finished_color="@color/dark_bg_light_secondary_text"
+        app:donut_unfinished_color="#55454545" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_propic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:elevation="2dp"
+        android:src="@drawable/ic_avatar_placeholder"
+        android:transitionName="avatar" />
+
+    <RelativeLayout
+        android:id="@+id/level_container"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignBottom="@id/karma_donut_progress"
+        android:layout_alignRight="@id/karma_donut_progress"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/shape_circle"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/karma_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
