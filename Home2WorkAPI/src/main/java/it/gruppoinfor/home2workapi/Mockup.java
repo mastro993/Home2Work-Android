@@ -224,7 +224,7 @@ public class Mockup {
                     matchInfo.setHost(match.getHost());
                     matchInfo.setScore(match.getScore());
                     matchInfo.setSharedDistance(match.getSharedDistance());
-                    matchInfo.setCunsumption((match.getSharedDistance() / 100.0) * 7.5);
+                    matchInfo.setConsumption((match.getSharedDistance() / 100.0) * 7.5);
                     matchInfo.setEmission(matchInfo.getCunsumption() * 9.0);
                     matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
                     matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));
@@ -259,7 +259,7 @@ public class Mockup {
                     matchInfo.setGuest(match.getGuest());
                     matchInfo.setScore(match.getScore());
                     matchInfo.setSharedDistance(match.getSharedDistance());
-                    matchInfo.setCunsumption((match.getSharedDistance() / 100.0) * 7.5);
+                    matchInfo.setConsumption((match.getSharedDistance() / 100.0) * 7.5);
                     matchInfo.setEmission(matchInfo.getCunsumption() * 9.0);
                     matchInfo.setStartLocation(new LatLng(44.17069120, 10.11676220));
                     matchInfo.setEndLocation(new LatLng(44.20258260, 10.08343070));

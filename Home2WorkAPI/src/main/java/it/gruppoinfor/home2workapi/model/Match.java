@@ -1,17 +1,38 @@
 package it.gruppoinfor.home2workapi.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class Match {
 
+    @SerializedName("matchID")
+    @Expose
     private Long matchID;
+    @SerializedName("guest")
+    @Expose
     private User guest;
+    @SerializedName("host")
+    @Expose
     private User host;
+    @SerializedName("score")
+    @Expose
     private Integer score;
+    @SerializedName("sharedDistance")
+    @Expose
     private Double sharedDistance;
+    @SerializedName("arrivalTime")
+    @Expose
     private Date arrivalTime;
+    @SerializedName("departureTime")
+    @Expose
     private Date departureTime;
+    @SerializedName("new")
+    @Expose
     private Boolean _new;
+    @SerializedName("hidden")
+    @Expose
     private Boolean hidden;
 
 

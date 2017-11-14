@@ -1,24 +1,36 @@
 package it.gruppoinfor.home2workapi.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchInfo extends Match {
 
-    private Double cunsumption;
+    @SerializedName("consumption")
+    @Expose
+    private Double consumption;
+    @SerializedName("emission")
+    @Expose
     private Double emission;
+    @SerializedName("startLocation")
+    @Expose
     private LatLng startLocation;
+    @SerializedName("endLocation")
+    @Expose
     private LatLng endLocation;
-    private List<RoutePoint> route = new ArrayList<>();
+    @SerializedName("route")
+    @Expose
+    private List<RoutePoint> route;
 
     public Double getCunsumption() {
-        return cunsumption;
+        return consumption;
     }
 
-    public void setCunsumption(Double cunsumption) {
-        this.cunsumption = cunsumption;
+    public void setConsumption(Double consumption) {
+        this.consumption = consumption;
     }
 
     public Double getEmission() {

@@ -1,10 +1,15 @@
 package it.gruppoinfor.home2work.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
+import it.gruppoinfor.home2work.services.RouteService;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.User;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -19,10 +24,10 @@ public class SessionManager {
     public static final String AUTH_CODE = "auth_code";
     private final SharedPreferences prefs;
     private final Context context;
-    private final String IS_LOGIN = "IsLoggedIn";
     private final String KEY_TOKEN = "token";
     private final String KEY_EMAIL = "email";
-    private final String KEY_ID = "id";
+    private final String KEY_LAST_LOGIN = "lastLogin";
+    private final String KEY_USER = "user";
 
     public SessionManager(Context context) {
         this.context = context;
@@ -31,12 +36,14 @@ public class SessionManager {
 
     public void storeSession(final User signedUser) {
 
+        Gson gson = new Gson();
+
         // Salva le informazioni in modo persistente
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_EMAIL, signedUser.getEmail());
         editor.putString(KEY_TOKEN, signedUser.getToken());
-        editor.putLong(KEY_ID, signedUser.getId());
+        editor.putLong(KEY_LAST_LOGIN, System.currentTimeMillis());
+        editor.putString(KEY_USER, gson.toJson(signedUser));
         editor.apply();
 
         // TODO Controlla il token Firebase Cloud Messaging
@@ -58,45 +65,60 @@ public class SessionManager {
         }*/
     }
 
-    public User loadSession() {
-        if (!isUserSignedIn())
-            return null;
-        User user = new User();
-        user.setId(prefs.getLong(KEY_ID, 0));
-        user.setEmail(prefs.getString(KEY_EMAIL, null));
-        user.setToken(prefs.getString(KEY_TOKEN, null));
-        return user;
-    }
-
     public void checkSession(final SessionManagerCallback callback) {
+
+        if (Client.getSignedUser() != null) {
+            callback.onValidSession();
+        }
 
         if (!isUserSignedIn()) {
             callback.onInvalidSession(AuthCode.NO_SESSION);
         } else {
 
-            String email = prefs.getString(KEY_EMAIL, "");
-            String password = prefs.getString(KEY_TOKEN, "");
+            Long lastLoginTime = prefs.getLong(KEY_LAST_LOGIN, 0);
+            Long currentTime = System.currentTimeMillis();
+            Long maxTimeDifference = 6L * 60L * 60L * 1000L;
 
-            Client.getAPI().login(email, password).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(retrofit2.Call<User> call, Response<User> response) {
-                    switch (response.code()) {
-                        case 200:
-                            User user = response.body();
-                            storeSession(user);
-                            callback.onValidSession(user);
-                            break;
-                        default:
-                            callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
-                            break;
+            if ((currentTime - lastLoginTime) < maxTimeDifference) {
+
+                // Sono passate meno di 6 ore dall'ultimo controllo, riutilizzo la sessione salvata
+
+                Gson gson = new Gson();
+                User storedUser = gson.fromJson(prefs.getString(KEY_USER, null), User.class);
+                Client.setSignedUser(storedUser);
+                callback.onValidSession();
+
+            } else {
+
+                // Sono passate piu' di 6 ore, controllo la sessione con il server
+
+                String email = prefs.getString(KEY_EMAIL, null);
+                String password = prefs.getString(KEY_TOKEN, null);
+
+                Client.getAPI().login(email, password).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        switch (response.code()) {
+                            case 200:
+                                User user = response.body();
+                                storeSession(user);
+                                Client.setSignedUser(user);
+                                callback.onValidSession();
+                                break;
+                            default:
+                                callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
+                                break;
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(retrofit2.Call<User> call, Throwable t) {
-                    callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
-                }
-            });
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
+                    }
+                });
+
+            }
+
         }
     }
 
@@ -108,12 +130,14 @@ public class SessionManager {
         editor.apply();
 
         // Termina i servizi
-        // TODO context.stopService(new Intent(context, RouteService.class));
+        context.stopService(new Intent(context, RouteService.class));
 
     }
 
-    public boolean isUserSignedIn() {
-        return prefs.getBoolean(IS_LOGIN, false);
+    private boolean isUserSignedIn() {
+        String email = prefs.getString(KEY_EMAIL, null);
+        String token = prefs.getString(KEY_TOKEN, null);
+        return email != null && token != null;
     }
 
     public enum AuthCode {
@@ -121,7 +145,7 @@ public class SessionManager {
     }
 
     public interface SessionManagerCallback {
-        void onValidSession(User account);
+        void onValidSession();
 
         void onInvalidSession(AuthCode code);
     }

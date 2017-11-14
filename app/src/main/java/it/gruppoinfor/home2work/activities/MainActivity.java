@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        setSyncAlarm();
     }
 
     private void initUI() {
@@ -176,17 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
 
-    }
-
-    private void setSyncAlarm() {
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent i = new Intent(this, SyncAlarmReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-        am.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime(),
-                AlarmManager.INTERVAL_HALF_DAY,
-                pi);
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

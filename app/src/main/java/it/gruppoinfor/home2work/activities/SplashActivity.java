@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.User;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -32,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
-        new Handler().postDelayed(()->{
+        new Handler().postDelayed(() -> {
 
             if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, FINE_LOCATION_ACCESS);
@@ -79,12 +78,9 @@ public class SplashActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(SplashActivity.this);
         sessionManager.checkSession(new SessionManager.SessionManagerCallback() {
             @Override
-            public void onValidSession(User user) {
+            public void onValidSession() {
 
-                // Imposto l'utente autenticato nel Client
-                Client.setSignedUser(user);
-
-                if (!user.isConfigured()) {
+                if (!Client.getSignedUser().isConfigured()) {
                     Intent i = new Intent(SplashActivity.this, ConfigurationActivity.class);
                     startActivity(i);
                     finish();

@@ -20,7 +20,9 @@ import it.gruppoinfor.home2work.services.RouteService;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.User;
 
-
+/**
+ * Lanciato all'avvio del dispositivo.
+ */
 public class BootReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -34,8 +36,7 @@ public class BootReceiver extends BroadcastReceiver {
         SessionManager sessionManager = new SessionManager(context);
         sessionManager.checkSession(new SessionManager.SessionManagerCallback() {
             @Override
-            public void onValidSession(User user) {
-                Client.setSignedUser(user);
+            public void onValidSession() {
 
                 // Carica le preferenze
                 UserPrefs.init(context);
