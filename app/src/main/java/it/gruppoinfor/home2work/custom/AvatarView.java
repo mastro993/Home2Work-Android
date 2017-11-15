@@ -100,10 +100,13 @@ public class AvatarView extends RelativeLayout {
 
         animator.start();
 
-        if(karma.getLevel() <= 99)
-            karmaLevel.setTextColor(getLevelColor(karma.getLevel()));
-        else {
-            Shader textShader=new LinearGradient(
+        int levelColor = getLevelColor(karma.getLevel());
+
+        if (karma.getLevel() <= 99) {
+            karmaLevel.setTextColor(levelColor);
+            //karmaDonutProgress.setFinishedStrokeColor(levelColor);
+        } else {
+            Shader textShader = new LinearGradient(
                     0, 0, 0, 60,
                     ContextCompat.getColor(context, R.color.colorAccent),
                     ContextCompat.getColor(context, R.color.colorPrimary),

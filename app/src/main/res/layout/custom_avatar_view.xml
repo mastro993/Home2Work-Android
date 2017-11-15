@@ -10,9 +10,10 @@
         android:layout_height="120dp"
         android:layout_centerInParent="true"
         android:animateLayoutChanges="true"
-        android:elevation="2dp"
+        android:elevation="4dp"
         android:rotation="40"
-        app:donut_finished_color="@color/dark_bg_light_secondary_text"
+        app:donut_progress="50"
+        app:donut_finished_color="@color/dark_bg_light_primary_text"
         app:donut_unfinished_color="#55454545" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -20,7 +21,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
-        android:elevation="2dp"
+        android:elevation="4dp"
         android:src="@drawable/ic_avatar_placeholder"
         android:transitionName="avatar" />
 

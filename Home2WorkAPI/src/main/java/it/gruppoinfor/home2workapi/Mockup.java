@@ -26,10 +26,12 @@ public class Mockup {
 
     private static Long unixTime = System.currentTimeMillis();
     private static Long dayInMillis = 24L * 60L * 60L * 1000L;
+
     private static User user1 = new User(47L, "Mario", "Rossi");
     private static User user2 = new User(48L, "Giovanni", "Bianchi");
     private static User user3 = new User(49L, "Luca", "Esposito");
     private static User user4 = new User(50L, "Paolo", "Verdi");
+
     private static Match match1 = new Match(1L, null, user1, 15.7, stringToDate("8:30"), stringToDate("17:30"), 100, true, false);
     private static Match match2 = new Match(2L, null, user2, 13.2, stringToDate("8:30"), stringToDate("18:00"), 94, true, false);
     private static Match match3 = new Match(3L, null, user3, 12.3, stringToDate("8:20"), stringToDate("18:30"), 83, true, false);
@@ -64,6 +66,7 @@ public class Mockup {
     private static Share share3;
     private static Share share4;
 
+    private static int karmaValue = 100000;
 
     public static void refreshUserMatchesAsync(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<List<Match>>()
@@ -276,8 +279,6 @@ public class Mockup {
                 .create()
                 .start();
     }
-
-    private static int karmaValue = 460;
 
     public static void getUserProfileAsync(AsyncJob.AsyncResultAction<Profile> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<Profile>()

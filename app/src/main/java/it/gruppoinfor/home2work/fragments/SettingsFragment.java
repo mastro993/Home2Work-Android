@@ -2,12 +2,9 @@ package it.gruppoinfor.home2work.fragments;
 
 
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,19 +27,19 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.model.LatLng;
+import com.travijuu.numberpicker.library.NumberPicker;
 
-import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
-import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.SignInActivity;
+import it.gruppoinfor.home2work.utils.Converters;
+import it.gruppoinfor.home2work.utils.SessionManager;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Address;
 import it.gruppoinfor.home2workapi.model.Job;
@@ -164,7 +161,7 @@ public class SettingsFragment extends Fragment {
         trackingSwitch.setChecked(UserPrefs.activityTrackingEnabled);
         trackingSwitch.setOnCheckedChangeListener(getTrackingSwitchCheckedChangeListener());
 
-        if(UserPrefs.syncWithData)
+        if (UserPrefs.syncWithData)
             syncModeSpinner.setSelection(0);
         else
             syncModeSpinner.setSelection(1);
@@ -194,16 +191,16 @@ public class SettingsFragment extends Fragment {
 
     }
 
-    private CompoundButton.OnCheckedChangeListener getTrackingSwitchCheckedChangeListener(){
+    private CompoundButton.OnCheckedChangeListener getTrackingSwitchCheckedChangeListener() {
         return ((compoundButton, b) -> {
-            if(!b){
+            if (!b) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Disattivazione tracking");
                 builder.setMessage("Disattivando il tracking la tua posizione non sarà più registrata, ma Home2Work non potrà più segnalarti match. Disattivare la funzione?");
                 builder.setPositiveButton("Disattiva", ((dialogInterface, i) -> {
                     UserPrefs.activityTrackingEnabled = false;
                     UserPrefs.getManager().setBool(UserPrefs.Keys.ACTIVITY_TRACKING, false);
-                    ((MainActivity)getActivity()).bottomNavigation.setNotification("!", 4);
+                    ((MainActivity) getActivity()).bottomNavigation.setNotification("!", 4);
                 }));
                 builder.setNegativeButton("Annulla", (((dialogInterface, i) -> {
                     trackingSwitch.setChecked(true);
@@ -213,16 +210,16 @@ public class SettingsFragment extends Fragment {
             } else {
                 UserPrefs.activityTrackingEnabled = true;
                 UserPrefs.getManager().setBool(UserPrefs.Keys.ACTIVITY_TRACKING, true);
-                ((MainActivity)getActivity()).bottomNavigation.setNotification("", 4);
+                ((MainActivity) getActivity()).bottomNavigation.setNotification("", 4);
             }
         });
     }
 
-    private AdapterView.OnItemSelectedListener getSyncModeItemSelectedListener(){
+    private AdapterView.OnItemSelectedListener getSyncModeItemSelectedListener() {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i==1){
+                if (i == 1) {
                     UserPrefs.getManager().setBool(UserPrefs.Keys.SYNC_WITH_DATA, false);
                     UserPrefs.syncWithData = false;
                 } else {
@@ -238,7 +235,7 @@ public class SettingsFragment extends Fragment {
         };
     }
 
-    private CompoundButton.OnCheckedChangeListener getNotificationSwitchCheckedChangeListener(){
+    private CompoundButton.OnCheckedChangeListener getNotificationSwitchCheckedChangeListener() {
         return ((compoundButton, b) -> {
             UserPrefs.notificationsEnabled = b;
             UserPrefs.getManager().setBool(UserPrefs.Keys.NOTIFICATIONS, b);
@@ -403,7 +400,7 @@ public class SettingsFragment extends Fragment {
         User signedUser = Client.getSignedUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
-        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
+        /*MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(5)
                 .maxValue(120)
                 .defaultValue(matchPreferences.getMaxTime())
@@ -434,7 +431,40 @@ public class SettingsFragment extends Fragment {
 
                     }
                 })
-                .show();
+                .show();*/
+
+
+        MaterialDialog editMaxTimeDialog = new MaterialDialog.Builder(getContext())
+                .title("Modifica tempo massimo match")
+                .customView(R.layout.dialog_number_picker, false)
+                .positiveText("Salva")
+                .negativeText("Annulla")
+                .onPositive(((dialog, which) -> {
+
+                    NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.number_picker);
+
+                    matchPreferences.setMaxTime(numberPicker.getValue());
+
+                    signedUser.setMatchPreferences(matchPreferences);
+
+                    Client.setSignedUser(signedUser);
+
+                    commitChanges();
+
+                    matchMaxTimeTextView.setText(matchPreferences.getMaxTime() + " minuti");
+
+                }))
+                .build();
+
+        View view = editMaxTimeDialog.getCustomView();
+
+        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.number_picker);
+        numberPicker.setMax(120);
+        numberPicker.setMin(15);
+        numberPicker.setUnit(5);
+        numberPicker.setValue(matchPreferences.getMaxTime());
+
+        editMaxTimeDialog.show();
 
     }
 
@@ -444,7 +474,7 @@ public class SettingsFragment extends Fragment {
         User signedUser = Client.getSignedUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
-        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
+       /* MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(500)
                 .maxValue(5000)
                 .defaultValue(matchPreferences.getMaxDistance())
@@ -475,7 +505,39 @@ public class SettingsFragment extends Fragment {
 
                     }
                 })
-                .show();
+                .show();*/
+
+        MaterialDialog editMaxTimeDialog = new MaterialDialog.Builder(getContext())
+                .title("Distanza massima match")
+                .customView(R.layout.dialog_number_picker, false)
+                .positiveText("Salva")
+                .negativeText("Annulla")
+                .onPositive(((dialog, which) -> {
+
+                    NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.number_picker);
+
+                    matchPreferences.setMaxDistance(numberPicker.getValue());
+
+                    signedUser.setMatchPreferences(matchPreferences);
+
+                    Client.setSignedUser(signedUser);
+
+                    commitChanges();
+
+                    matchMaxDistanceTextView.setText(matchPreferences.getMaxDistance() + " metri");
+
+                }))
+                .build();
+
+        View view = editMaxTimeDialog.getCustomView();
+
+        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.number_picker);
+        numberPicker.setMax(5000);
+        numberPicker.setMin(500);
+        numberPicker.setUnit(100);
+        numberPicker.setValue(matchPreferences.getMaxDistance());
+
+        editMaxTimeDialog.show();
 
 
     }
@@ -486,7 +548,7 @@ public class SettingsFragment extends Fragment {
         User signedUser = Client.getSignedUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
-        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
+/*        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(1)
                 .maxValue(100)
                 .defaultValue(matchPreferences.getMinScore())
@@ -517,7 +579,40 @@ public class SettingsFragment extends Fragment {
 
                     }
                 })
-                .show();
+                .show();*/
+
+
+        MaterialDialog editMaxTimeDialog = new MaterialDialog.Builder(getContext())
+                .title("Punteggio minimo per i match")
+                .customView(R.layout.dialog_number_picker, false)
+                .positiveText("Salva")
+                .negativeText("Annulla")
+                .onPositive(((dialog, which) -> {
+
+                    NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.number_picker);
+
+                    matchPreferences.setMinScore(numberPicker.getValue());
+
+                    signedUser.setMatchPreferences(matchPreferences);
+
+                    Client.setSignedUser(signedUser);
+
+                    commitChanges();
+
+                    matchMinScoreTextView.setText(matchPreferences.getMinScore() + "%");
+
+                }))
+                .build();
+
+        View view = editMaxTimeDialog.getCustomView();
+
+        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.number_picker);
+        numberPicker.setMax(100);
+        numberPicker.setMin(10);
+        numberPicker.setUnit(10);
+        numberPicker.setValue(matchPreferences.getMinScore());
+
+        editMaxTimeDialog.show();
     }
 
     private void commitChanges() {

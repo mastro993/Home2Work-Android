@@ -15,6 +15,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -170,7 +171,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         @BindView(R.id.new_badge_view)
         LinearLayout newBadgeView;
         @BindView(R.id.container)
-        LinearLayout container;
+        RelativeLayout container;
 
         ViewHolder(View view) {
             super(view);

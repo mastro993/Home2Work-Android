@@ -1,5 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke android:width="1dip" android:color="@color/dark_bg_light_secondary_text" />
-    <corners android:radius="10dip"/>
+    <corners android:radius="@dimen/bottom_navigation_notification_radius"/>
     <padding android:left="5dip" android:top="2dip" android:right="5dip" android:bottom="2dip" />
 </shape>

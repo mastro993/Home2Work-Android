@@ -12,12 +12,12 @@
     <color name="window_background">@color/grey_200</color>
 
     <!-- Level colors -->
-    <color name="level_1_9_color">@color/grey_900</color>
-    <color name="level_10_19_color">@color/green_500</color>
-    <color name="level_20_29_color">@color/blue_500</color>
-    <color name="level_30_49_color">@color/purple_500</color>
-    <color name="level_50_69_color">@color/amber_500</color>
-    <color name="level_70_99_color">@color/orange_500</color>
+    <color name="level_1_9_color">@color/blue_grey_800</color>
+    <color name="level_10_19_color">@color/blue_800</color>
+    <color name="level_20_29_color">@color/purple_500</color>
+    <color name="level_30_49_color">@color/red_700</color>
+    <color name="level_50_69_color">@color/orange_700</color>
+    <color name="level_70_99_color">@color/amber_500</color>
 
     <!-- Google colors -->
 
