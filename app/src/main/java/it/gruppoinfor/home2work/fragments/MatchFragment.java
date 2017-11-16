@@ -43,6 +43,8 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
     ViewPager viewPager;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
     private Unbinder unbinder;
@@ -64,7 +66,7 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     private void initUI() {
-        toolbar.setTitle("Match");
+        toolbarTitle.setText("Match");
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
         viewPager.addOnPageChangeListener(this);
