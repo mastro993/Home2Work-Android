@@ -90,8 +90,6 @@ public class BookingActivity extends AppCompatActivity {
     Button startShareButton;
     @BindView(R.id.notes_text)
     TextView notesText;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.linearLayout3)
@@ -103,7 +101,7 @@ public class BookingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_booking);
         ButterKnife.bind(this);
 
-        toolbarTitle.setText("Dettagli prenotazione");
+        setTitle("Dettagli prenotazione");
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());

@@ -99,8 +99,6 @@ public class MatchActivity extends AppCompatActivity {
     TextView departureTimeView;
     @BindView(R.id.karma_points_preview)
     TextView karmaPointsPreview;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.linearLayout2)
@@ -115,7 +113,7 @@ public class MatchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         res = getResources();
 
-        toolbarTitle.setText("Dettagli match");
+        setTitle("Dettagli match");
 
         setSupportActionBar(toolbar);
 

@@ -57,7 +57,6 @@
                     android:textSize="14sp"
                     android:textStyle="bold|italic" />
 
-
             </LinearLayout>
 
             <android.support.v7.widget.Toolbar
@@ -73,8 +72,9 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
-            android:layout_marginTop="-48dp"
+            android:layout_marginTop="-56dp"
             app:layout_anchor="@id/appBar"
+            android:layout_gravity="bottom"
             app:layout_anchorGravity="bottom"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/light_bg_dark_disabled_text"

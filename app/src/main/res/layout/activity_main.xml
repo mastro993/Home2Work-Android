@@ -23,27 +23,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
-            android:background="?attr/colorPrimary"
-            android:contentInsetEnd="96dp"
-            android:contentInsetLeft="96dp"
-            android:contentInsetRight="96dp"
-            android:contentInsetStart="96dp"
-            app:contentInsetEnd="96dp"
-            app:contentInsetLeft="96dp"
-            app:contentInsetRight="96dp"
-            app:contentInsetStart="96dp">
-
-            <TextView
-                android:text="Title"
-                android:id="@+id/toolbar_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
-
-
-        </android.support.v7.widget.Toolbar>
+            android:background="?attr/colorPrimary"/>
 
     </android.support.design.widget.AppBarLayout>
 

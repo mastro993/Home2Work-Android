@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.view_pager)
     AHBottomNavigationViewPager viewPager;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
     private PagerAdapter pagerAdapter;
 
     @Override
@@ -130,13 +128,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void setTitle(int titleId) {
-        toolbarTitle.setText(titleId);
+        //toolbarTitle.setText(titleId);
         super.setTitle(titleId);
     }
 
     @Override
     public void setTitle(CharSequence title) {
-        toolbarTitle.setText(title);
+        //toolbarTitle.setText(title);
         super.setTitle(title);
     }
 

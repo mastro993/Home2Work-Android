@@ -84,8 +84,6 @@ public class RequestActivity extends AppCompatActivity {
     TextView arrivalTimeView;
     @BindView(R.id.departure_time_view)
     TextView departureTimeView;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.linearLayout3)
@@ -103,7 +101,7 @@ public class RequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request);
         ButterKnife.bind(this);
 
-        toolbarTitle.setText("Dettagli richiesta");
+        setTitle("Dettagli richiesta");
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
