@@ -67,8 +67,9 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
                 .apply(requestOptions)
                 .into(holder.hostAvatar);
 
-        holder.distanceView.setText(String.format("%1$s Km condivisi", share.getSharedDistance()));
-        holder.karmaView.setText(String.format("Karma guadagnato: %1$s", share.getKarma()));
+        holder.distanceView.setText(String.format("%1$s Km", share.getSharedDistance()));
+        holder.karmaView.setText(String.format("%1$s punti Karma", share.getKarma()));
+        holder.expView.setText(String.format("%1$s XP", share.getExp()));
 
     }
 
@@ -90,6 +91,8 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
         TextView distanceView;
         @BindView(R.id.karma_view)
         TextView karmaView;
+        @BindView(R.id.exp_view)
+        TextView expView;
         @BindView(R.id.container)
         LinearLayout container;
 

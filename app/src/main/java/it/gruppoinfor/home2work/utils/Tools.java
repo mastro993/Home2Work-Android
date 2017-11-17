@@ -227,4 +227,8 @@ public class Tools {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    public static boolean isBetween(int x, int lower, int upper) {
+        return lower <= x && x <= upper;
+    }
 }

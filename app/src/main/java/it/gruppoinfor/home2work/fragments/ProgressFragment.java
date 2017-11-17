@@ -2,13 +2,18 @@ package it.gruppoinfor.home2work.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +30,7 @@ import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
-import it.gruppoinfor.home2workapi.model.Karma;
+import it.gruppoinfor.home2workapi.model.Profile;
 
 
 public class ProgressFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -45,6 +50,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.avatar_view)
     AvatarView avatarView;
+    @BindView(R.id.rootView)
+    CoordinatorLayout rootView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.appBar)
+    AppBarLayout appBar;
+    @BindView(R.id.collapsingToolbar)
+    CollapsingToolbarLayout collapsingToolbar;
 
 
     public ProgressFragment() {
@@ -61,6 +74,19 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_progress, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+
+
+        appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            if (collapsingToolbar.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbar)) {
+                //hello.animate().alpha(1).setDuration(600);
+                Log.i("WE", "true");
+            } else {
+                //hello.animate().alpha(0).setDuration(600);
+                Log.i("WE", "false");
+            }
+        });
+
+
         initUI();
         refreshData();
         return rootView;
@@ -73,7 +99,8 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         viewPager.addOnPageChangeListener(this);
 
-        nameTextView.setText(Client.getSignedUser().toString());
+        //nameTextView.setText(Client.getSignedUser().toString());
+        toolbar.setTitle(Client.getSignedUser().toString());
         jobTextView.setText(Client.getSignedUser().getJob().getCompany().toString());
 
         avatarView.setAvatarURL(Client.getSignedUser().getAvatarURL());
@@ -124,9 +151,9 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
     private void refreshProfileUI() {
 
-        Karma karma = Client.getUserProfile().getKarma();
+        Profile profile = Client.getUserProfile();
 
-        avatarView.setKarma(karma);
+        avatarView.setExp(profile.getExp(), profile.getExpLevel(), profile.getExpLevelProgress());
 
     }
 
@@ -147,7 +174,6 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
             fragments.add(new Pair<>(new ProgressFragmentAchievements(), "Obiettivi"));
             fragments.add(new Pair<>(new ProgressFragmentShares(), "Condivisioni"));
             fragments.add(new Pair<>(new ProgressFragmentStats(), "Statistiche"));
-
 
         }
 

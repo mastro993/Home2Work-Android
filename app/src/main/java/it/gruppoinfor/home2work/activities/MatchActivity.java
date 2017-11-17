@@ -97,8 +97,10 @@ public class MatchActivity extends AppCompatActivity {
     TextView arrivalTimeView;
     @BindView(R.id.departure_time_view)
     TextView departureTimeView;
-    @BindView(R.id.karma_points_preview)
-    TextView karmaPointsPreview;
+    @BindView(R.id.karma_preview)
+    TextView karmaPreview;
+    @BindView(R.id.exp_preview)
+    TextView expPreview;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.linearLayout2)
@@ -167,8 +169,10 @@ public class MatchActivity extends AppCompatActivity {
         arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(match.getArrivalTime())));
         departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(match.getDepartureTime())));
 
-        int karmaPoints = match.getSharedDistance().intValue() * 10;
-        karmaPointsPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
+        int karmaPoints = match.getSharedDistance().intValue();
+        int exp = (int) (match.getSharedDistance() * 10);
+        karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
+        expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
 
     }
 

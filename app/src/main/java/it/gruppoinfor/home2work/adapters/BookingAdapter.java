@@ -100,16 +100,16 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 
         holder.dateView.setText(WordUtils.capitalize(dateString));
 
-        /*ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
+        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                 holder.statusIcon,
-                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
-                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+                PropertyValuesHolder.ofFloat("scaleX", 0.8f),
+                PropertyValuesHolder.ofFloat("scaleY", 0.8f));
         scaleDown.setDuration(250);
 
         scaleDown.setRepeatCount(1);
         scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
 
-        scaleDown.start();*/
+        scaleDown.start();
 
         /*
         TODO Activity info utente

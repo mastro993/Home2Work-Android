@@ -55,4 +55,9 @@
         <item name="android:windowBackground">@drawable/gradient</item>
     </style>
 
+    <style name="ProgressFragment.UsernameStyle" parent="TextAppearance.AppCompat.Light.SearchResult.Title">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/dark_bg_light_primary_text</item>
+    </style>
+
 </resources>

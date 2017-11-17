@@ -21,9 +21,9 @@ public class Company {
     @SerializedName("website")
     @Expose
     private String website;
-    @SerializedName("karma")
+    @SerializedName("experience")
     @Expose
-    private Karma karma;
+    private Long exp;
 
     public Long getId() {
         return id;
@@ -65,12 +65,12 @@ public class Company {
         this.website = website;
     }
 
-    public Karma getKarma() {
-        return karma;
+    public Long getExperience() {
+        return exp;
     }
 
-    public void setKarma(Karma karma) {
-        this.karma = karma;
+    public void setExperience(Long experience) {
+        this.exp = experience;
     }
 
     @Override

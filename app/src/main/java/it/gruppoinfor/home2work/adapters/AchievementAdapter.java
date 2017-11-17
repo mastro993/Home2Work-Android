@@ -61,14 +61,14 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         holder.achievementDescription.setText(achievement.getDescription());
         holder.progressText.setText(String.format("%1$s/%2$s", achievement.getCurrent(), achievement.getGoal()));
         holder.progressBar.setProgress(achievement.getProgress());
-        holder.karmaText.setText(String.format("+%1$s", achievement.getKarma()));
+        holder.expView.setText(String.format("+%1$s", achievement.getExp()));
 
-        int color = ContextCompat.getColor(activity, R.color.colorAccent);
+        int color = ContextCompat.getColor(activity, R.color.colorPrimary);
 
         if (achievement.getProgress() == 100) {
             holder.unlockDate.setVisibility(View.VISIBLE);
             holder.progressPercentile.setVisibility(View.GONE);
-            holder.karmaText.setTextColor(color);
+            holder.expView.setTextColor(color);
             SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy", Locale.ITALIAN);
             String dateString = dateFormat.format(achievement.getUnlockDate());
             holder.unlockDate.setText(dateString);
@@ -104,8 +104,8 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         MaterialProgressBar progressBar;
         @BindView(R.id.progress_percentile)
         TextView progressPercentile;
-        @BindView(R.id.achievement_karma)
-        TextView karmaText;
+        @BindView(R.id.achievement_exp)
+        TextView expView;
 
         ViewHolder(View view) {
             super(view);

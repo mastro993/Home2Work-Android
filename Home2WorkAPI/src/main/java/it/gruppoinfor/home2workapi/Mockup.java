@@ -12,7 +12,6 @@ import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.BookingInfo;
-import it.gruppoinfor.home2workapi.model.Karma;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.MatchInfo;
 import it.gruppoinfor.home2workapi.model.Profile;
@@ -66,7 +65,8 @@ public class Mockup {
     private static Share share3;
     private static Share share4;
 
-    private static int karmaValue = 100000;
+    private static int karmaValue = 55;
+    private static int expValue = 780;
 
     public static void refreshUserMatchesAsync(AsyncJob.AsyncResultAction<List<Match>> asyncResultAction) {
         new AsyncJob.AsyncJobBuilder<List<Match>>()
@@ -285,21 +285,20 @@ public class Mockup {
                 .doInBackground(() -> {
                     lag();
 
-                    //TODO karmaValue *= 5;
+                    //karmaValue *= 2;
 
-                    Karma karma = new Karma(karmaValue);
                     ProfileStats profileStats = new ProfileStats(new Date(), 132.7, 11, 218.4);
 
-                    achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 100, new Date(), 50.0, 50.0);
-                    achievement2 = new Achievement(2L, "Obiettivo 2", "Descrizione dell'obiettivo", 150, new Date(), 100.0, 77.0);
-                    achievement3 = new Achievement(3L, "Obiettivo 3", "Descrizione dell'obiettivo", 75, new Date(), 1.0, 0.0);
-                    achievement4 = new Achievement(4L, "Obiettivo 4", "Descrizione dell'obiettivo", 200, new Date(), 200.0, 133.0);
-                    achievement5 = new Achievement(5L, "Obiettivo 5", "Descrizione dell'obiettivo", 50, new Date(), 5.0, 0.0);
-                    achievement6 = new Achievement(6L, "Obiettivo 6", "Descrizione dell'obiettivo", 100, new Date(), 70.0, 50.0);
-                    achievement7 = new Achievement(7L, "Obiettivo 7", "Descrizione dell'obiettivo", 150, new Date(), 80.0, 77.0);
-                    achievement8 = new Achievement(8L, "Obiettivo 8", "Descrizione dell'obiettivo", 75, new Date(), 10.0, 0.0);
-                    achievement9 = new Achievement(9L, "Obiettivo 9", "Descrizione dell'obiettivo", 200, new Date(), 500.0, 133.0);
-                    achievement10 = new Achievement(10L, "Obiettivo 10", "Descrizione dell'obiettivo", 50, new Date(), 15.0, 0.0);
+                    achievement1 = new Achievement(1L, "Obiettivo 1", "Descrizione dell'obiettivo", 10, 100, new Date(), 50.0, 50.0);
+                    achievement2 = new Achievement(2L, "Obiettivo 2", "Descrizione dell'obiettivo", 15, 150, new Date(), 100.0, 77.0);
+                    achievement3 = new Achievement(3L, "Obiettivo 3", "Descrizione dell'obiettivo", 70, 700, new Date(), 1.0, 0.0);
+                    achievement4 = new Achievement(4L, "Obiettivo 4", "Descrizione dell'obiettivo", 20, 200, new Date(), 200.0, 133.0);
+                    achievement5 = new Achievement(5L, "Obiettivo 5", "Descrizione dell'obiettivo", 5, 50, new Date(), 5.0, 0.0);
+                    achievement6 = new Achievement(6L, "Obiettivo 6", "Descrizione dell'obiettivo", 10, 100, new Date(), 70.0, 50.0);
+                    achievement7 = new Achievement(7L, "Obiettivo 7", "Descrizione dell'obiettivo", 15, 150, new Date(), 80.0, 77.0);
+                    achievement8 = new Achievement(8L, "Obiettivo 8", "Descrizione dell'obiettivo", 70, 700, new Date(), 10.0, 0.0);
+                    achievement9 = new Achievement(9L, "Obiettivo 9", "Descrizione dell'obiettivo", 20, 200, new Date(), 500.0, 133.0);
+                    achievement10 = new Achievement(10L, "Obiettivo 10", "Descrizione dell'obiettivo", 5, 50, new Date(), 15.0, 0.0);
 
 
                     List<Achievement> achievements = new ArrayList<>();
@@ -314,10 +313,10 @@ public class Mockup {
                     achievements.add(achievement9);
                     achievements.add(achievement10);
 
-                    share1 = new Share(1L, user1, null, 16.4, new Date());
-                    share2 = new Share(2L, user2, null, 16.4, new Date());
-                    share3 = new Share(3L, null, user1, 16.4, new Date());
-                    share4 = new Share(4L, user4, null, 16.4, new Date());
+                    share1 = new Share(1L, user1, null, 16.4, 16, 164, new Date());
+                    share2 = new Share(2L, user2, null, 11.2, 11, 1112, new Date());
+                    share3 = new Share(3L, null, user1, 8.9, 8, 89, new Date());
+                    share4 = new Share(4L, user4, null, 21.5, 21, 215, new Date());
 
                     List<Share> shares = new ArrayList<>();
                     shares.add(share1);
@@ -326,7 +325,7 @@ public class Mockup {
                     shares.add(share4);
 
 
-                    return new Profile(karma, profileStats, achievements, shares);
+                    return new Profile(expValue, karmaValue, profileStats, achievements, shares);
                 })
                 .doWhenFinished(asyncResultAction)
                 .create()

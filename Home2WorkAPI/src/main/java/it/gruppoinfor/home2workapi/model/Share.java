@@ -8,14 +8,16 @@ public class Share {
     private User host;
     private Double sharedDistance;
     private Integer karma;
+    private Integer exp;
     private Date shareDate;
 
-    public Share(Long shareID, User guest, User host, Double sharedDistance, Date shareDate) {
+    public Share(Long shareID, User guest, User host, Double sharedDistance, Integer karma, Integer exp, Date shareDate) {
         this.shareID = shareID;
         this.guest = guest;
         this.host = host;
         this.sharedDistance = sharedDistance;
-        this.karma = Double.valueOf(sharedDistance * 10.0).intValue();
+        this.karma = karma;
+        this.exp = exp;
         this.shareDate = shareDate;
     }
 
@@ -58,6 +60,14 @@ public class Share {
 
     public void setKarma(Integer karma) {
         this.karma = karma;
+    }
+
+    public Integer getExp() {
+        return exp;
+    }
+
+    public void setExp(Integer exp) {
+        this.exp = exp;
     }
 
     public Date getShareDate() {

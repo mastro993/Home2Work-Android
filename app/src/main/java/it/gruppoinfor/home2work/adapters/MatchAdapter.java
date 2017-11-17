@@ -107,8 +107,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                 holder.newBadgeView,
-                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
-                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+                PropertyValuesHolder.ofFloat("scaleX", 0.8f),
+                PropertyValuesHolder.ofFloat("scaleY", 0.8f));
         scaleDown.setDuration(250);
 
         scaleDown.setRepeatCount(1);

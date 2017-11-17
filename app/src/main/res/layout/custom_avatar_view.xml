@@ -12,8 +12,8 @@
         android:animateLayoutChanges="true"
         android:elevation="4dp"
         android:rotation="40"
-        app:donut_progress="50"
         app:donut_finished_color="@color/dark_bg_light_primary_text"
+        app:donut_progress="50"
         app:donut_unfinished_color="#55454545" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -33,19 +33,19 @@
         android:layout_alignRight="@id/karma_donut_progress"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
-        android:background="@drawable/shape_circle"
+        android:background="@drawable/ic_shield_1"
         android:elevation="4dp">
 
         <TextView
             android:id="@+id/karma_level"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:elevation="5dp"
             android:text="0"
             android:textAlignment="center"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp"
+            android:textColor="@color/dark_bg_light_primary_text"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </RelativeLayout>

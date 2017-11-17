@@ -11,6 +11,7 @@ public class Achievement {
     private String name;
     private String description;
     private Integer karma;
+    private Integer exp;
     private Date unlockDate;
     private Double goal;
     private Double current;
@@ -18,11 +19,12 @@ public class Achievement {
     public Achievement() {
     }
 
-    public Achievement(Long achievementID, String name, String description, Integer karma, Date unlockDate, Double goal, Double current) {
+    public Achievement(Long achievementID, String name, String description, Integer karma, Integer exp, Date unlockDate, Double goal, Double current) {
         this.achievementID = achievementID;
         this.name = name;
         this.description = description;
         this.karma = karma;
+        this.exp = exp;
         this.unlockDate = unlockDate;
         this.goal = goal;
         this.current = current;
@@ -58,6 +60,14 @@ public class Achievement {
 
     public void setKarma(Integer karma) {
         this.karma = karma;
+    }
+
+    public Integer getExp() {
+        return exp;
+    }
+
+    public void setExp(Integer exp) {
+        this.exp = exp;
     }
 
     public Date getUnlockDate() {

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -22,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2workapi.model.Karma;
+import it.gruppoinfor.home2work.utils.Tools;
 
 public class AvatarView extends RelativeLayout {
 
@@ -36,10 +37,13 @@ public class AvatarView extends RelativeLayout {
     @BindView(R.id.level_container)
     RelativeLayout levelContainer;
     private String avatarURL;
-    private Karma karma;
     private int levelColor;
     private Drawable levelShape;
     private Context context;
+
+    private Integer exp;
+    private Integer level;
+    private Float progress;
 
 
     public AvatarView(Context context) {
@@ -60,10 +64,6 @@ public class AvatarView extends RelativeLayout {
         initUI();
     }
 
-    public static boolean isBetween(int x, int lower, int upper) {
-        return lower <= x && x <= upper;
-    }
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -77,21 +77,18 @@ public class AvatarView extends RelativeLayout {
 
     }
 
-    public void setKarma(Karma karma) {
+    public void setExp(Integer exp, Integer level, Float progress) {
 
-        DonutProgressAnimation animation = new DonutProgressAnimation(
-                karmaDonutProgress,
-                this.karma == null ? 0 : this.karma.getLevelProgress(),
-                karma.getLevelProgress());
+        DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, this.progress == null ? 0 : this.progress, progress);
 
-        animation.setDuration(this.karma == null ? 500 : 200);
+        animation.setDuration(this.exp == null ? 500 : 200);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
 
         karmaDonutProgress.startAnimation(animation);
 
-        ValueAnimator animator = ValueAnimator.ofInt(this.karma == null ? 0 : this.karma.getLevel(), karma.getLevel());
+        ValueAnimator animator = ValueAnimator.ofInt(this.level == null ? 0 : this.level, level);
 
-        animator.setDuration(this.karma == null ? 500 : 200);
+        animator.setDuration(this.level == null ? 500 : 200);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
 
         animator.addUpdateListener(anim ->
@@ -100,11 +97,11 @@ public class AvatarView extends RelativeLayout {
 
         animator.start();
 
-        int levelColor = getLevelColor(karma.getLevel());
+        int levelColor = getLevelColor(level);
+        Drawable shield = getLevelShield(level);
 
-        if (karma.getLevel() <= 99) {
-            karmaLevel.setTextColor(levelColor);
-            //karmaDonutProgress.setFinishedStrokeColor(levelColor);
+        if (level <= 99) {
+            levelContainer.setBackground(shield);
         } else {
             Shader textShader = new LinearGradient(
                     0, 0, 0, 60,
@@ -112,10 +109,12 @@ public class AvatarView extends RelativeLayout {
                     ContextCompat.getColor(context, R.color.colorPrimary),
                     Shader.TileMode.CLAMP);
             karmaLevel.getPaint().setShader(textShader);
+            shield = ContextCompat.getDrawable(context, R.drawable.ic_shield_8);
+            levelContainer.setBackground(shield);
         }
 
 
-        if (this.karma != null && this.karma.getLevel() < karma.getLevel()) {
+        if (this.exp != null && this.level < level) {
 
             ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                     levelContainer,
@@ -130,24 +129,43 @@ public class AvatarView extends RelativeLayout {
 
         }
 
-        this.karma = karma;
-
+        this.exp = exp;
+        this.level = level;
+        this.progress = progress;
     }
 
     private int getLevelColor(int level) {
-
-        if (isBetween(level, 1, 9))
-            return ContextCompat.getColor(context, R.color.level_1_9_color);
-        else if (isBetween(level, 10, 19))
+        if (Tools.isBetween(level, 1, 4))
+            return ContextCompat.getColor(context, R.color.level_1_4_color);
+        else if (Tools.isBetween(level, 5, 9))
+            return ContextCompat.getColor(context, R.color.level_5_9_color);
+        else if (Tools.isBetween(level, 10, 19))
             return ContextCompat.getColor(context, R.color.level_10_19_color);
-        else if (isBetween(level, 20, 29))
-            return ContextCompat.getColor(context, R.color.level_20_29_color);
-        else if (isBetween(level, 30, 49))
-            return ContextCompat.getColor(context, R.color.level_30_49_color);
-        else if (isBetween(level, 50, 69))
+        else if (Tools.isBetween(level, 20, 34))
+            return ContextCompat.getColor(context, R.color.level_20_34_color);
+        else if (Tools.isBetween(level, 35, 49))
+            return ContextCompat.getColor(context, R.color.level_35_49_color);
+        else if (Tools.isBetween(level, 50, 69))
             return ContextCompat.getColor(context, R.color.level_50_69_color);
         else
             return ContextCompat.getColor(context, R.color.level_70_99_color);
+    }
+
+    private Drawable getLevelShield(int level){
+        if (Tools.isBetween(level, 1, 4))
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_1);
+        else if (Tools.isBetween(level, 5, 9))
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_2);
+        else if (Tools.isBetween(level, 10, 19))
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_3);
+        else if (Tools.isBetween(level, 20, 34))
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_4);
+        else if (Tools.isBetween(level, 35, 49))
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_5);
+        else if (Tools.isBetween(level, 50, 69))
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_6);
+        else
+            return ContextCompat.getDrawable(context, R.drawable.ic_shield_7);
 
     }
 

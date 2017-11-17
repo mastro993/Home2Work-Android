@@ -64,14 +64,21 @@
                 android:id="@+id/distance_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Kilometri condivisi: 999,99"
+                android:text="999,99 Km"
                 android:textColor="@color/light_bg_dark_secondary_text" />
 
             <TextView
                 android:id="@+id/karma_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Karma guadagnato: 500"
+                android:text="500 punti karma"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/exp_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="500 XP"
                 android:textColor="@color/colorAccent" />
 
 
