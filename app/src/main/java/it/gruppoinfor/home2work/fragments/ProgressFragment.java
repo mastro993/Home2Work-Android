@@ -1,6 +1,8 @@
 package it.gruppoinfor.home2work.fragments;
 
 import android.content.Context;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,22 +11,29 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
@@ -58,6 +67,18 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     AppBarLayout appBar;
     @BindView(R.id.collapsingToolbar)
     CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.collapsed_toolbar_layout)
+    RelativeLayout collapsedLayout;
+    @BindView(R.id.collapsed_user_propic)
+    CircleImageView collapsedUserPropic;
+    @BindView(R.id.collapsed_name_text_view)
+    TextView collapsedNameTextView;
+    @BindView(R.id.collapsed_exp_level)
+    TextView collapsedExpLevel;
+    @BindView(R.id.collapsed_level_container)
+    RelativeLayout collapsedLevelContainer;
+
+    private boolean toolbarCollapsed = false;
 
 
     public ProgressFragment() {
@@ -77,12 +98,21 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
 
         appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            if (collapsingToolbar.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbar)) {
-                //hello.animate().alpha(1).setDuration(600);
-                Log.i("WE", "true");
-            } else {
-                //hello.animate().alpha(0).setDuration(600);
-                Log.i("WE", "false");
+            boolean collapsing = collapsingToolbar.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbar);
+            if (collapsing && !toolbarCollapsed) {
+                collapsedLayout.animate().alpha(1).setDuration(300);
+
+                Animation showAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.up_bottom);
+                collapsedLayout.startAnimation(showAnimation);
+
+                toolbarCollapsed = true;
+            } else if (!collapsing && toolbarCollapsed) {
+                collapsedLayout.animate().alpha(0).setDuration(300);
+
+                Animation hideAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.bottom_up);
+                collapsedLayout.startAnimation(hideAnimation);
+
+                toolbarCollapsed = false;
             }
         });
 
@@ -100,10 +130,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         viewPager.addOnPageChangeListener(this);
 
         nameTextView.setText(Client.getSignedUser().toString());
+        collapsedNameTextView.setText(Client.getSignedUser().toString());
         //toolbar.setTitle(Client.getSignedUser().toString());
         jobTextView.setText(Client.getSignedUser().getJob().getCompany().toString());
 
         avatarView.setAvatarURL(Client.getSignedUser().getAvatarURL());
+
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
+        Glide.with(this).load(Client.getSignedUser().getAvatarURL()).apply(requestOptions).into(collapsedUserPropic);
 
 
     }
@@ -154,6 +188,18 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         Profile profile = Client.getUserProfile();
 
         avatarView.setExp(profile.getExp(), profile.getExpLevel(), profile.getExpLevelProgress());
+
+        collapsedLevelContainer.setBackground(avatarView.getShieldIcon());
+        collapsedExpLevel.setText(Integer.toString(avatarView.getLevel()));
+
+        if(avatarView.getLevel() > 99){
+            Shader textShader = new LinearGradient(
+                    0, 0, 0, 60,
+                    ContextCompat.getColor(getContext(), R.color.colorAccent),
+                    ContextCompat.getColor(getContext(), R.color.colorPrimary),
+                    Shader.TileMode.CLAMP);
+            collapsedExpLevel.getPaint().setShader(textShader);
+        }
 
     }
 

@@ -21,7 +21,7 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlwaysCollapsed">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,21 +63,77 @@
             </LinearLayout>
 
             <android.support.v7.widget.Toolbar
+                app:contentInsetStart="0dp"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/action_bar_size"
-                android:layout_marginBottom="@dimen/action_bar_size"
+                android:layout_marginBottom="48dp"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <RelativeLayout
+                    android:id="@+id/collapsed_toolbar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0"
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/collapsed_user_propic"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/collapsed_name_text_view"
+                        android:src="@drawable/ic_avatar_placeholder" />
+
+                    <TextView
+                        android:id="@+id/collapsed_name_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginStart="12dp"
+                        android:text="Nome Cognome"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+                        android:textColor="@color/dark_bg_light_primary_text" />
+
+                    <RelativeLayout
+                        android:id="@+id/collapsed_level_container"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_toRightOf="@id/collapsed_name_text_view"
+                        android:background="@drawable/ic_shield_1">
+
+                        <TextView
+                            android:id="@+id/collapsed_exp_level"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:elevation="5dp"
+                            android:text="0"
+                            android:textAlignment="center"
+                            android:textColor="@color/dark_bg_light_primary_text"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginTop="-56dp"
+            android:layout_marginTop="-48dp"
             app:layout_anchor="@id/appBar"
             app:layout_anchorGravity="bottom"
             app:tabGravity="fill"

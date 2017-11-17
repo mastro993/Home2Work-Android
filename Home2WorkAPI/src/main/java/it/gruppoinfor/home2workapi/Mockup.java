@@ -285,7 +285,7 @@ public class Mockup {
                 .doInBackground(() -> {
                     lag();
 
-                    //karmaValue *= 2;
+                    expValue *= 2;
 
                     ProfileStats profileStats = new ProfileStats(new Date(), 132.7, 11, 218.4);
 

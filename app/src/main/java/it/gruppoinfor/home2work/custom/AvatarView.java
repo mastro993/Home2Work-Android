@@ -32,18 +32,17 @@ public class AvatarView extends RelativeLayout {
     DonutProgress karmaDonutProgress;
     @BindView(R.id.user_propic)
     CircleImageView userPropic;
-    @BindView(R.id.karma_level)
-    TextView karmaLevel;
+    @BindView(R.id.exp_level)
+    TextView expLevel;
     @BindView(R.id.level_container)
     RelativeLayout levelContainer;
-    private String avatarURL;
-    private int levelColor;
-    private Drawable levelShape;
     private Context context;
 
     private Integer exp;
     private Integer level;
     private Float progress;
+
+    private Drawable shieldIcon;
 
 
     public AvatarView(Context context) {
@@ -70,7 +69,6 @@ public class AvatarView extends RelativeLayout {
     }
 
     public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
 
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
         Glide.with(this).load(avatarURL).apply(requestOptions).into(userPropic);
@@ -79,38 +77,51 @@ public class AvatarView extends RelativeLayout {
 
     public void setExp(Integer exp, Integer level, Float progress) {
 
-        DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, this.progress == null ? 0 : this.progress, progress);
+        if(level < 101){
+            DonutProgressAnimation animation = new DonutProgressAnimation(
+                    karmaDonutProgress,
+                    this.progress == null ? 0 : this.progress,
+                    progress);
+            animation.setDuration(this.exp == null ? 500 : 200);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            karmaDonutProgress.startAnimation(animation);
+        } else {
+            DonutProgressAnimation animation = new DonutProgressAnimation(
+                    karmaDonutProgress,
+                    this.progress == null ? 0 : 100,
+                    100);
+            animation.setDuration(this.exp == null ? 500 : 200);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            karmaDonutProgress.startAnimation(animation);
+        }
 
-        animation.setDuration(this.exp == null ? 500 : 200);
-        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        level = Math.min(100, level);
 
-        karmaDonutProgress.startAnimation(animation);
-
-        ValueAnimator animator = ValueAnimator.ofInt(this.level == null ? 0 : this.level, level);
+        ValueAnimator animator = ValueAnimator.ofInt(
+                this.level == null ? 0 : this.level,
+                level);
 
         animator.setDuration(this.level == null ? 500 : 200);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
-
         animator.addUpdateListener(anim ->
-                karmaLevel.setText(anim.getAnimatedValue().toString())
+                expLevel.setText(anim.getAnimatedValue().toString())
         );
-
         animator.start();
 
-        int levelColor = getLevelColor(level);
-        Drawable shield = getLevelShield(level);
+        //int levelColor = getLevelColor(level);
+        shieldIcon = getLevelShield(level);
 
         if (level <= 99) {
-            levelContainer.setBackground(shield);
+            levelContainer.setBackground(shieldIcon);
         } else {
             Shader textShader = new LinearGradient(
                     0, 0, 0, 60,
                     ContextCompat.getColor(context, R.color.colorAccent),
                     ContextCompat.getColor(context, R.color.colorPrimary),
                     Shader.TileMode.CLAMP);
-            karmaLevel.getPaint().setShader(textShader);
-            shield = ContextCompat.getDrawable(context, R.drawable.ic_shield_8);
-            levelContainer.setBackground(shield);
+            expLevel.getPaint().setShader(textShader);
+            shieldIcon = ContextCompat.getDrawable(context, R.drawable.ic_shield_8);
+            levelContainer.setBackground(shieldIcon);
         }
 
 
@@ -174,5 +185,11 @@ public class AvatarView extends RelativeLayout {
         ButterKnife.bind(this, view);
     }
 
+    public Integer getLevel() {
+        return level;
+    }
 
+    public Drawable getShieldIcon() {
+        return shieldIcon;
+    }
 }

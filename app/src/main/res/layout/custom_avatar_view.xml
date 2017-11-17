@@ -37,7 +37,7 @@
         android:elevation="4dp">
 
         <TextView
-            android:id="@+id/karma_level"
+            android:id="@+id/exp_level"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
