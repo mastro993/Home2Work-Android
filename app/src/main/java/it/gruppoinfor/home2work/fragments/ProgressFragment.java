@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -75,8 +76,8 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     TextView collapsedNameTextView;
     @BindView(R.id.collapsed_exp_level)
     TextView collapsedExpLevel;
-    @BindView(R.id.collapsed_level_container)
-    RelativeLayout collapsedLevelContainer;
+    @BindView(R.id.collapsed_level_frame)
+    ImageView collapsedLevelFrame;
 
     private boolean toolbarCollapsed = false;
 
@@ -102,14 +103,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
             if (collapsing && !toolbarCollapsed) {
                 collapsedLayout.animate().alpha(1).setDuration(300);
 
-                Animation showAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.up_bottom);
+                Animation showAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.up_bottom);
                 collapsedLayout.startAnimation(showAnimation);
 
                 toolbarCollapsed = true;
             } else if (!collapsing && toolbarCollapsed) {
                 collapsedLayout.animate().alpha(0).setDuration(300);
 
-                Animation hideAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.bottom_up);
+                Animation hideAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.bottom_up);
                 collapsedLayout.startAnimation(hideAnimation);
 
                 toolbarCollapsed = false;
@@ -189,10 +190,10 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         avatarView.setExp(profile.getExp(), profile.getExpLevel(), profile.getExpLevelProgress());
 
-        collapsedLevelContainer.setBackground(avatarView.getShieldIcon());
+        collapsedLevelFrame.setImageDrawable(avatarView.getShieldIcon());
         collapsedExpLevel.setText(Integer.toString(avatarView.getLevel()));
 
-        if(avatarView.getLevel() > 99){
+        if (avatarView.getLevel() > 99) {
             Shader textShader = new LinearGradient(
                     0, 0, 0, 60,
                     ContextCompat.getColor(getContext(), R.color.colorAccent),

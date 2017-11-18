@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipToPadding="false">
 
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/karma_donut_progress"
@@ -27,14 +28,20 @@
 
     <RelativeLayout
         android:id="@+id/level_container"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignBottom="@id/karma_donut_progress"
         android:layout_alignRight="@id/karma_donut_progress"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/ic_shield_1"
+        android:clipToPadding="false"
         android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/level_frame"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:elevation="4dp"
+            android:src="@drawable/ic_shield_1" />
 
         <TextView
             android:id="@+id/exp_level"
@@ -46,7 +53,7 @@
             android:textAlignment="center"
             android:textColor="@color/dark_bg_light_primary_text"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold|italic" />
 
     </RelativeLayout>
 

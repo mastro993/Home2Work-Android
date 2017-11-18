@@ -7,11 +7,11 @@ import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,6 +34,8 @@ public class AvatarView extends RelativeLayout {
     CircleImageView userPropic;
     @BindView(R.id.exp_level)
     TextView expLevel;
+    @BindView(R.id.level_frame)
+    ImageView levelFrame;
     @BindView(R.id.level_container)
     RelativeLayout levelContainer;
     private Context context;
@@ -77,7 +79,7 @@ public class AvatarView extends RelativeLayout {
 
     public void setExp(Integer exp, Integer level, Float progress) {
 
-        if(level < 101){
+        if (level < 101) {
             DonutProgressAnimation animation = new DonutProgressAnimation(
                     karmaDonutProgress,
                     this.progress == null ? 0 : this.progress,
@@ -111,9 +113,7 @@ public class AvatarView extends RelativeLayout {
         //int levelColor = getLevelColor(level);
         shieldIcon = getLevelShield(level);
 
-        if (level <= 99) {
-            levelContainer.setBackground(shieldIcon);
-        } else {
+        if (level > 99) {
             Shader textShader = new LinearGradient(
                     0, 0, 0, 60,
                     ContextCompat.getColor(context, R.color.colorAccent),
@@ -121,8 +121,10 @@ public class AvatarView extends RelativeLayout {
                     Shader.TileMode.CLAMP);
             expLevel.getPaint().setShader(textShader);
             shieldIcon = ContextCompat.getDrawable(context, R.drawable.ic_shield_8);
-            levelContainer.setBackground(shieldIcon);
+            //levelContainer.setBackground(shieldIcon);
         }
+
+        levelFrame.setImageDrawable(shieldIcon);
 
 
         if (this.exp != null && this.level < level) {
@@ -162,7 +164,7 @@ public class AvatarView extends RelativeLayout {
             return ContextCompat.getColor(context, R.color.level_70_99_color);
     }
 
-    private Drawable getLevelShield(int level){
+    private Drawable getLevelShield(int level) {
         if (Tools.isBetween(level, 1, 4))
             return ContextCompat.getDrawable(context, R.drawable.ic_shield_1);
         else if (Tools.isBetween(level, 5, 9))

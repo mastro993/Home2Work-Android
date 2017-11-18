@@ -1,11 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportHeight="304.624"
-    android:viewportWidth="304.625">
-    <path
-        android:fillColor="@color/level_20_34_color"
-        android:strokeColor="#FFF"
-        android:strokeWidth="4"
-        android:pathData="M302.43,256.4v-152.06c-17.56,-1.92 -31.23,-16.8 -31.23,-34.87s13.67,-32.94 31.23,-34.87V0H2.19v34.6c17.56,1.92 31.23,16.8 31.23,34.87s-13.67,32.94 -31.23,34.87v152.07l150.12,48.22L302.43,256.4z" />
+    android:width="200.000000dp"
+    android:height="200.000000dp"
+    android:viewportHeight="200.000000"
+    android:viewportWidth="200.000000">
+
+    <group
+        android:scaleX="0.100000"
+        android:scaleY="-0.100000"
+        android:translateY="200.000000">
+        <path
+            android:fillColor="@color/amber_400"
+            android:pathData="M917 1774 c-38 -19 -114 -50 -170 -69 -178 -59 -285 -66 -369 -23 l-38 18 0 -192
+c0 -472 97 -856 269 -1062 74 -89 351 -296 396 -296 45 0 322 207 396 296 172 206
+269 590 269 1062 l0 192 -37 -18 c-85 -43 -192 -36 -370 23 -55 19 -133 50 -172 69
+-39 20 -78 36 -88 36 -10 -1 -49 -17 -86 -36z"
+            android:strokeColor="@color/amber_600"
+            android:strokeWidth="12" />
+    </group>
 </vector>
