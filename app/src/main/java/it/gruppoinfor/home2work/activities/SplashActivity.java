@@ -80,15 +80,9 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onValidSession() {
 
-                if (!Client.getSignedUser().isConfigured()) {
-                    Intent i = new Intent(SplashActivity.this, ConfigurationActivity.class);
-                    startActivity(i);
-                    finish();
-                } else {
-                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                    startActivity(i);
-                    finish();
-                }
+                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
 
             }
 

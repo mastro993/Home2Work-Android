@@ -133,7 +133,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         nameTextView.setText(Client.getSignedUser().toString());
         collapsedNameTextView.setText(Client.getSignedUser().toString());
         //toolbar.setTitle(Client.getSignedUser().toString());
-        jobTextView.setText(Client.getSignedUser().getJob().getCompany().toString());
+        //jobTextView.setText(Client.getSignedUser().getJob().getCompany().toString());
 
         avatarView.setAvatarURL(Client.getSignedUser().getAvatarURL());
 

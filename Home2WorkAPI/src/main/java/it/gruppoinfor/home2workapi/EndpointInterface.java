@@ -4,13 +4,13 @@ import java.util.List;
 
 
 import it.gruppoinfor.home2workapi.model.Company;
+import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -21,13 +21,25 @@ import retrofit2.http.Path;
 
 public interface EndpointInterface {
 
-
-    @FormUrlEncoded
-    @POST("user")
+    @POST("user/login")
     Call<User> login(
-            @Field("email") String email,
-            @Field("password") String password
+            @Body Credentials credentials
     );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @GET("user/{id}")
     Call<User> getUser(

@@ -4,48 +4,42 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 import it.gruppoinfor.home2workapi.Client;
 
 
 public class User {
 
-    @SerializedName("id")
+    @SerializedName("UserID")
     @Expose
     private Long id;
-    @SerializedName("email")
+    @SerializedName("Email")
     @Expose
     private String email;
-    @SerializedName("token")
+    @SerializedName("Token")
     @Expose
     private String token;
-    @SerializedName("name")
+    @SerializedName("Name")
     @Expose
     private String name;
-    @SerializedName("surname")
+    @SerializedName("Surname")
     @Expose
     private String surname;
-    @SerializedName("location")
+    @SerializedName("HomeLatLng")
     @Expose
     private LatLng location;
-    @SerializedName("address")
+    @SerializedName("HomeAddress")
     @Expose
     private Address address;
-    @SerializedName("job")
+    @SerializedName("CompanyID")
     @Expose
-    private Job job;
-    @SerializedName("registration_date")
+    private Long companyID;
+    @SerializedName("Regdate")
     @Expose
-    private String registrationDate;
-    @SerializedName("fcm_token")
-    @Expose
-    private String fcmToken;
-    @SerializedName("configured")
-    @Expose
-    private Boolean configured;
-    @SerializedName("match_preferences")
-    @Expose
-    private UserMatchPreferences matchPreferences;
+    private Date registrationDate;
 
+    // TODO solo per mockup
     public User(Long id, String name, String surname) {
         this.id = id;
         this.name = name;
@@ -111,46 +105,21 @@ public class User {
         this.address = address;
     }
 
-    public Job getJob() {
-        return job;
+    public Long getCompanyID() {
+        return companyID;
     }
 
-    public void setJob(Job job) {
-        this.job = job;
+    public void setCompanyID(Long companyID) {
+        this.companyID = companyID;
     }
 
-    public String getRegistrationDate() {
+    public Date getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(String registrationDate) {
+    public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
     }
-
-    public String getFcmToken() {
-        return fcmToken;
-    }
-
-    public void setFcmToken(String fcmToken) {
-        this.fcmToken = fcmToken;
-    }
-
-    public Boolean isConfigured() {
-        return configured;
-    }
-
-    public void setConfigured(Boolean configured) {
-        this.configured = configured;
-    }
-
-    public UserMatchPreferences getMatchPreferences() {
-        return matchPreferences;
-    }
-
-    public void setMatchPreferences(UserMatchPreferences matchPreferences) {
-        this.matchPreferences = matchPreferences;
-    }
-
 
     public String getAvatarURL() {
         return Client.AVATAR_BASE_URL + id + ".jpg";

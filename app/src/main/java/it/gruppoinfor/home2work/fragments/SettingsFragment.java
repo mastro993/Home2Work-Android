@@ -144,19 +144,18 @@ public class SettingsFragment extends Fragment {
 
         homeAddressTextView.setText(signedUser.getAddress().toString());
 
-        Job job = Client.getSignedUser().getJob();
-
+/*        Job job = Client.getSignedUser().getJob();
 
         jobAddressTextView.setText(job.getCompany().getAddress().toString());
 
         jobStartTimeTextView.setText(Converters.timestampToTime(job.getStart(), "HH:mm"));
-        jobEndTimeTextView.setText(Converters.timestampToTime(job.getEnd(), "HH:mm"));
+        jobEndTimeTextView.setText(Converters.timestampToTime(job.getEnd(), "HH:mm"));*/
 
-        UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
+       /* UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
         matchMaxTimeTextView.setText(matchPreferences.getMaxTime() + " minuti");
         matchMinScoreTextView.setText(matchPreferences.getMinScore() + "%");
-        matchMaxDistanceTextView.setText(matchPreferences.getMaxDistance() + " metri");
+        matchMaxDistanceTextView.setText(matchPreferences.getMaxDistance() + " metri");*/
 
         trackingSwitch.setChecked(UserPrefs.activityTrackingEnabled);
         trackingSwitch.setOnCheckedChangeListener(getTrackingSwitchCheckedChangeListener());
@@ -329,7 +328,7 @@ public class SettingsFragment extends Fragment {
 
     }
 
-    @OnClick(R.id.job_start_time_text_view)
+/*    @OnClick(R.id.job_start_time_text_view)
     public void onJobStartTimeTextViewClicked() {
 
         Long timestamp = Client.getSignedUser().getJob().getStart();
@@ -387,20 +386,20 @@ public class SettingsFragment extends Fragment {
 
         mTimePicker.setTitle(R.string.config_job_end_selection);
         mTimePicker.show();
-    }
+    }*/
 
     @OnClick(R.id.job_address_container)
     public void onJobAddressContainerClicked() {
         Toasty.info(getContext(), "Non puoi modificare l'indirizzo di lavoro. Contatta l'amministratore per maggiori informazioni", Toast.LENGTH_LONG).show();
     }
 
-    @OnClick(R.id.match_max_time_container)
+/*    @OnClick(R.id.match_max_time_container)
     public void onMatchMaxTimeContainerClicked() {
 
         User signedUser = Client.getSignedUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
-        /*MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
+        *//*MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(5)
                 .maxValue(120)
                 .defaultValue(matchPreferences.getMaxTime())
@@ -431,7 +430,7 @@ public class SettingsFragment extends Fragment {
 
                     }
                 })
-                .show();*/
+                .show();*//*
 
 
         MaterialDialog editMaxTimeDialog = new MaterialDialog.Builder(getContext())
@@ -474,7 +473,7 @@ public class SettingsFragment extends Fragment {
         User signedUser = Client.getSignedUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
-       /* MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
+       *//* MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(500)
                 .maxValue(5000)
                 .defaultValue(matchPreferences.getMaxDistance())
@@ -505,7 +504,7 @@ public class SettingsFragment extends Fragment {
 
                     }
                 })
-                .show();*/
+                .show();*//*
 
         MaterialDialog editMaxTimeDialog = new MaterialDialog.Builder(getContext())
                 .title("Distanza massima match")
@@ -548,7 +547,7 @@ public class SettingsFragment extends Fragment {
         User signedUser = Client.getSignedUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
-/*        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
+*//*        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
                 .minValue(1)
                 .maxValue(100)
                 .defaultValue(matchPreferences.getMinScore())
@@ -579,7 +578,7 @@ public class SettingsFragment extends Fragment {
 
                     }
                 })
-                .show();*/
+                .show();*//*
 
 
         MaterialDialog editMaxTimeDialog = new MaterialDialog.Builder(getContext())
@@ -613,7 +612,7 @@ public class SettingsFragment extends Fragment {
         numberPicker.setValue(matchPreferences.getMinScore());
 
         editMaxTimeDialog.show();
-    }
+    }*/
 
     private void commitChanges() {
         Client.getAPI().updateUser(Client.getSignedUser()).enqueue(new Callback<User>() {

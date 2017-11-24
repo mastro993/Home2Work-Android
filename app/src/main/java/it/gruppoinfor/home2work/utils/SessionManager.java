@@ -3,11 +3,13 @@ package it.gruppoinfor.home2work.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
 import it.gruppoinfor.home2work.services.RouteService;
 import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,10 +37,8 @@ public class SessionManager {
     }
 
     public void storeSession(final User signedUser) {
-
         Gson gson = new Gson();
 
-        // Salva le informazioni in modo persistente
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_EMAIL, signedUser.getEmail());
         editor.putString(KEY_TOKEN, signedUser.getToken());
@@ -46,23 +46,6 @@ public class SessionManager {
         editor.putString(KEY_USER, gson.toJson(signedUser));
         editor.apply();
 
-        // TODO Controlla il token Firebase Cloud Messaging
-        /* String fcmToken = FirebaseInstanceId.getInstance().getToken();
-
-        if (!account.getFcmToken().equals(fcmToken)) {
-            account.setFcmToken(fcmToken);
-            Client.getAPI().updateUser(account).enqueue(new retrofit2.SessionManagerCallback<Account>() {
-                @Override
-                public void onResponse(Call<Account> call, Response<Account> response) {
-
-                }
-
-                @Override
-                public void onFailure(Call<Account> call, Throwable t) {
-
-                }
-            });
-        }*/
     }
 
     public void checkSession(final SessionManagerCallback callback) {
@@ -95,9 +78,11 @@ public class SessionManager {
                 String email = prefs.getString(KEY_EMAIL, null);
                 String password = prefs.getString(KEY_TOKEN, null);
 
-                Client.getAPI().login(email, password).enqueue(new Callback<User>() {
+                Credentials credentials = new Credentials(email,password);
+
+                Client.getAPI().login(credentials).enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
+                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                         switch (response.code()) {
                             case 200:
                                 User user = response.body();
@@ -112,7 +97,7 @@ public class SessionManager {
                     }
 
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {
+                    public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                         callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
                     }
                 });

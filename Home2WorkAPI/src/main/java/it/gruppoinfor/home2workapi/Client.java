@@ -19,8 +19,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Client {
 
-    private static final String SERVER_URL = "http://federicomastriniunipr.altervista.org/fleetup";
-    public static final String API_BASE = SERVER_URL + "/V2/";
+    private static final String SERVER_URL = "http://home2workapi.azurewebsites.net";
+    public static final String API_BASE = SERVER_URL + "/api/";
     public static final String AVATAR_BASE_URL = SERVER_URL + "/images/avatar/";
     public static final String COMPANIES_BASE_URL = SERVER_URL + "/images/companies/";
     public static final String ACHIEVEMENTS_BASE_URL = SERVER_URL + "/images/achievements/";
@@ -79,7 +79,7 @@ public class Client {
                 .build();
 
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()

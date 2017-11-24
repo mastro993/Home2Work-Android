@@ -148,13 +148,13 @@ public class ConfigurationFragmentJob extends Fragment implements Step {
             return new VerificationError("Devi selezionare un orario di fine");
         }
 
-        Job job = Client.getSignedUser().getJob();
+/*        Job job = Client.getSignedUser().getJob();
 
         job.setStart(Converters.timeToTimestamp(startInput.getText().toString()));
         job.setEnd(Converters.timeToTimestamp(endInput.getText().toString()));
         job.setCompany((Company) companySpinner.getSelectedItem());
 
-        Client.getSignedUser().setJob(job);
+        Client.getSignedUser().setJob(job);*/
 
         return null;
     }
