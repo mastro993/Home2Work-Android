@@ -41,7 +41,10 @@ public interface EndpointInterface {
     @GET("company")
     Call<List<Company>> getCompanies();
 
-
+    @GET("company/{id}")
+    Call<Company> getCompany(
+            @Path("id") Long id
+    );
 
 
 

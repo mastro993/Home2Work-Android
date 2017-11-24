@@ -66,74 +66,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/action_bar_size"
-                android:layout_marginBottom="48dp"
                 app:contentInsetStart="0dp"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-
-                <RelativeLayout
-                    android:id="@+id/collapsed_toolbar_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="0"
-                    android:orientation="horizontal">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/collapsed_user_propic"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@id/collapsed_name_text_view"
-                        android:src="@drawable/ic_avatar_placeholder" />
-
-                    <TextView
-                        android:id="@+id/collapsed_name_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="12dp"
-                        android:text="Nome Cognome"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
-                        android:textColor="@color/dark_bg_light_primary_text" />
-
-                    <RelativeLayout
-                        android:id="@+id/collapsed_level_container"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_alignBottom="@id/karma_donut_progress"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@id/collapsed_name_text_view"
-                        android:clipToPadding="false"
-                        android:elevation="4dp">
-
-                        <ImageView
-                            android:id="@+id/collapsed_level_frame"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_centerInParent="true"
-                            android:elevation="4dp"
-                            android:src="@drawable/ic_shield_1" />
-
-                        <TextView
-                            android:id="@+id/collapsed_exp_level"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:elevation="5dp"
-                            android:text="0"
-                            android:textAlignment="center"
-                            android:textColor="@color/dark_bg_light_primary_text"
-                            android:textSize="12sp"
-                            android:textStyle="bold|italic" />
-
-                    </RelativeLayout>
-
-
-                </RelativeLayout>
-
-            </android.support.v7.widget.Toolbar>
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

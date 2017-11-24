@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.fragments;
 
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,21 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.model.LatLng;
-import com.travijuu.numberpicker.library.NumberPicker;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,9 +38,7 @@ import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Address;
-import it.gruppoinfor.home2workapi.model.Job;
 import it.gruppoinfor.home2workapi.model.User;
-import it.gruppoinfor.home2workapi.model.UserMatchPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,50 +48,22 @@ import retrofit2.Response;
  */
 public class SettingsFragment extends Fragment {
 
-    @BindView(R.id.home_address_text_view)
-    TextView homeAddressTextView;
-    @BindView(R.id.home_address_container)
-    LinearLayout homeAddressContainer;
-    @BindView(R.id.job_address_text_view)
-    TextView jobAddressTextView;
-    @BindView(R.id.job_address_container)
-    LinearLayout jobAddressContainer;
-    @BindView(R.id.job_start_time_text_view)
-    TextView jobStartTimeTextView;
-    @BindView(R.id.job_end_time_text_view)
-    TextView jobEndTimeTextView;
-    @BindView(R.id.job_time_container)
-    RelativeLayout jobTimeContainer;
-    @BindView(R.id.imageView)
-    ImageView imageView;
-    @BindView(R.id.match_max_time_text_view)
-    TextView matchMaxTimeTextView;
-    @BindView(R.id.match_max_time_container)
-    RelativeLayout matchMaxTimeContainer;
-    @BindView(R.id.match_max_distance_text_view)
-    TextView matchMaxDistanceTextView;
-    @BindView(R.id.match_max_distance_container)
-    RelativeLayout matchMaxDistanceContainer;
-    @BindView(R.id.match_min_score_text_view)
-    TextView matchMinScoreTextView;
-    @BindView(R.id.match_min_score_container)
-    RelativeLayout matchMinScoreContainer;
-    @BindView(R.id.notifications_switch)
-    Switch notificationsSwitch;
-    @BindView(R.id.news_notification_switch)
-    Switch newsNotificationSwitch;
-    @BindView(R.id.matches_notification_switch)
-    Switch matchesNotificationSwitch;
-    @BindView(R.id.messages_notification_switch)
-    Switch messagesNotificationSwitch;
+
     @BindView(R.id.tracking_switch)
     Switch trackingSwitch;
-    @BindView(R.id.settings_tracking_container)
-    RelativeLayout settingsTrackingContainer;
     @BindView(R.id.sync_mode_spinner)
     Spinner syncModeSpinner;
     @BindView(R.id.settings_sync_mode_container)
     RelativeLayout settingsSyncModeContainer;
+    @BindView(R.id.notifications_switch)
+    Switch notificationsSwitch;
+    @BindView(R.id.news_notification_switch)
+    CheckBox newsNotificationSwitch;
+    @BindView(R.id.matches_notification_switch)
+    CheckBox matchesNotificationSwitch;
+    @BindView(R.id.messages_notification_switch)
+    CheckBox messagesNotificationSwitch;
+
     private Unbinder unbinder;
 
 
@@ -139,23 +105,6 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initUI() {
-
-        User signedUser = Client.getSignedUser();
-
-        homeAddressTextView.setText(signedUser.getAddress().toString());
-
-/*        Job job = Client.getSignedUser().getJob();
-
-        jobAddressTextView.setText(job.getCompany().getAddress().toString());
-
-        jobStartTimeTextView.setText(Converters.timestampToTime(job.getStart(), "HH:mm"));
-        jobEndTimeTextView.setText(Converters.timestampToTime(job.getEnd(), "HH:mm"));*/
-
-       /* UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
-
-        matchMaxTimeTextView.setText(matchPreferences.getMaxTime() + " minuti");
-        matchMinScoreTextView.setText(matchPreferences.getMinScore() + "%");
-        matchMaxDistanceTextView.setText(matchPreferences.getMaxDistance() + " metri");*/
 
         trackingSwitch.setChecked(UserPrefs.activityTrackingEnabled);
         trackingSwitch.setOnCheckedChangeListener(getTrackingSwitchCheckedChangeListener());
@@ -244,9 +193,8 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    @OnClick(R.id.home_address_container)
+    //@OnClick(R.id.home_address_container)
     public void onHomeAddressContainerClicked() {
-
         MaterialDialog editAddressDialog = new MaterialDialog.Builder(getContext())
                 .title("Modifica indirizzo")
                 .customView(R.layout.dialog_edit_address, false)
@@ -296,12 +244,12 @@ public class SettingsFragment extends Fragment {
 
                             signedUser.setAddress(newAddress);
 
-                            homeAddressTextView.setText(newAddress.toString());
+                            //homeAddressTextView.setText(newAddress.toString());
 
 
                             Client.setSignedUser(signedUser);
 
-                            commitChanges();
+                            //commitChanges();
 
 
                         } else {
@@ -328,67 +276,7 @@ public class SettingsFragment extends Fragment {
 
     }
 
-/*    @OnClick(R.id.job_start_time_text_view)
-    public void onJobStartTimeTextViewClicked() {
-
-        Long timestamp = Client.getSignedUser().getJob().getStart();
-
-        int hour = Integer.parseInt(Converters.timestampToTime(timestamp, "HH"));
-        int minute = Integer.parseInt(Converters.timestampToTime(timestamp, "mm"));
-
-        final TimePickerDialog mTimePicker;
-
-        mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-
-                String formattedMinute = selectedMinute < 10 ? "0" + selectedMinute : String.valueOf(selectedMinute);
-                jobStartTimeTextView.setText(selectedHour + ":" + formattedMinute);
-                Long timestamp = Converters.timeToTimestamp(selectedHour, selectedMinute, 0);
-
-                User signedUser = Client.getSignedUser();
-                signedUser.getJob().setStart(timestamp);
-                Client.setSignedUser(signedUser);
-
-                commitChanges();
-            }
-        }, hour, minute, true);
-
-        mTimePicker.setTitle(R.string.config_job_start_selection);
-        mTimePicker.show();
-
-    }
-
-    @OnClick(R.id.job_end_time_text_view)
-    public void onJobEndTimeTextViewClicked() {
-
-        Long timestamp = Client.getSignedUser().getJob().getEnd();
-
-        int hour = Integer.parseInt(Converters.timestampToTime(timestamp, "HH"));
-        int minute = Integer.parseInt(Converters.timestampToTime(timestamp, "mm"));
-
-        final TimePickerDialog mTimePicker;
-
-        mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                String formattedMinute = selectedMinute < 10 ? "0" + selectedMinute : String.valueOf(selectedMinute);
-                jobEndTimeTextView.setText(selectedHour + ":" + formattedMinute);
-                Long timestamp = Converters.timeToTimestamp(selectedHour, selectedMinute, 0);
-
-                User signedUser = Client.getSignedUser();
-                signedUser.getJob().setEnd(timestamp);
-                Client.setSignedUser(signedUser);
-
-                commitChanges();
-            }
-        }, hour, minute, true);
-
-        mTimePicker.setTitle(R.string.config_job_end_selection);
-        mTimePicker.show();
-    }*/
-
-    @OnClick(R.id.job_address_container)
+    //@OnClick(R.id.job_address_container)
     public void onJobAddressContainerClicked() {
         Toasty.info(getContext(), "Non puoi modificare l'indirizzo di lavoro. Contatta l'amministratore per maggiori informazioni", Toast.LENGTH_LONG).show();
     }
@@ -613,20 +501,6 @@ public class SettingsFragment extends Fragment {
 
         editMaxTimeDialog.show();
     }*/
-
-    private void commitChanges() {
-        Client.getAPI().updateUser(Client.getSignedUser()).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                Toasty.success(getContext(), "Modifiche avvenute con successo").show();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toasty.error(getContext(), "Impossibile apportare modifiche al momento, riprova più tardi").show();
-            }
-        });
-    }
 
     private void logout() {
         SessionManager sessionManager = new SessionManager(getContext());
