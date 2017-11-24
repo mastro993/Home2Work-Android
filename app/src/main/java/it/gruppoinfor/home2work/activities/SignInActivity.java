@@ -96,7 +96,7 @@ public class SignInActivity extends AppCompatActivity {
 
         Client.setSignedUser(user);
 
-        if (user.getName() != null) {
+        if (user.isConfigured()) {
 
             SessionManager sessionManager = new SessionManager(getContext());
             sessionManager.storeSession(user);

@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName;
 public class Address {
 
 
-    @SerializedName("city")
+    @SerializedName("City")
     @Expose
     private String city;
-    @SerializedName("postal_code")
+    @SerializedName("Cap")
     @Expose
     private String postalCode;
-    @SerializedName("address")
+    @SerializedName("AddressLine")
     @Expose
     private String address;
 

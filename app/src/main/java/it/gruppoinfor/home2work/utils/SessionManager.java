@@ -28,7 +28,6 @@ public class SessionManager {
     private final Context context;
     private final String KEY_TOKEN = "token";
     private final String KEY_EMAIL = "email";
-    private final String KEY_LAST_LOGIN = "lastLogin";
     private final String KEY_USER = "user";
 
     public SessionManager(Context context) {
@@ -42,7 +41,6 @@ public class SessionManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_EMAIL, signedUser.getEmail());
         editor.putString(KEY_TOKEN, signedUser.getToken());
-        editor.putLong(KEY_LAST_LOGIN, System.currentTimeMillis());
         editor.putString(KEY_USER, gson.toJson(signedUser));
         editor.apply();
 
@@ -58,51 +56,33 @@ public class SessionManager {
             callback.onInvalidSession(AuthCode.NO_SESSION);
         } else {
 
-            Long lastLoginTime = prefs.getLong(KEY_LAST_LOGIN, 0);
-            Long currentTime = System.currentTimeMillis();
-            Long maxTimeDifference = 6L * 60L * 60L * 1000L;
+            String email = prefs.getString(KEY_EMAIL, null);
+            String password = prefs.getString(KEY_TOKEN, null);
 
-            if ((currentTime - lastLoginTime) < maxTimeDifference) {
+            Credentials credentials = new Credentials(email,password);
 
-                // Sono passate meno di 6 ore dall'ultimo controllo, riutilizzo la sessione salvata
-
-                Gson gson = new Gson();
-                User storedUser = gson.fromJson(prefs.getString(KEY_USER, null), User.class);
-                Client.setSignedUser(storedUser);
-                callback.onValidSession();
-
-            } else {
-
-                // Sono passate piu' di 6 ore, controllo la sessione con il server
-
-                String email = prefs.getString(KEY_EMAIL, null);
-                String password = prefs.getString(KEY_TOKEN, null);
-
-                Credentials credentials = new Credentials(email,password);
-
-                Client.getAPI().login(credentials).enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                        switch (response.code()) {
-                            case 200:
-                                User user = response.body();
-                                storeSession(user);
-                                Client.setSignedUser(user);
-                                callback.onValidSession();
-                                break;
-                            default:
-                                callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
-                                break;
-                        }
+            Client.getAPI().login(credentials).enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                    switch (response.code()) {
+                        case 200:
+                            User user = response.body();
+                            storeSession(user);
+                            Client.setSignedUser(user);
+                            callback.onValidSession();
+                            break;
+                        default:
+                            callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
+                            signOutUser();
+                            break;
                     }
+                }
 
-                    @Override
-                    public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                        callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
-                    }
-                });
-
-            }
+                @Override
+                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                    callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
+                }
+            });
 
         }
     }

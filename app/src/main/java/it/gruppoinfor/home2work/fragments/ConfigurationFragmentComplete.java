@@ -54,6 +54,8 @@ public class ConfigurationFragmentComplete extends Fragment implements BlockingS
     public void onCompleteClicked(final StepperLayout.OnCompleteClickedCallback callback) {
         callback.getStepperLayout().showProgress("Attendi..");
 
+        Client.getSignedUser().setConfigured(true);
+
         Client.getAPI().updateUser(Client.getSignedUser()).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

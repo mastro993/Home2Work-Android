@@ -26,30 +26,34 @@ public interface EndpointInterface {
             @Body Credentials credentials
     );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @GET("user/{id}")
-    Call<User> getUser(
-            @Path("id") Long id
-    );
-
     @PUT("user")
     Call<User> updateUser(
             @Body User user
     );
+
+    @Multipart
+    @POST("user/{id}/avatar")
+    Call<ResponseBody> uploadAvatar(
+            @Path("id") Long userID,
+            @Part MultipartBody.Part file
+    );
+
+    @GET("company")
+    Call<List<Company>> getCompanies();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @POST("user/{id}/location")
@@ -58,15 +62,8 @@ public interface EndpointInterface {
             @Body List<RoutePoint> routePoints
     );
 
-    @Multipart
-    @POST("users/{id}/avatar")
-    Call<ResponseBody> uploadAvatar(
-            @Path("id") Long userID,
-            @Part MultipartBody.Part file
-    );
 
-    @GET("companies")
-    Call<List<Company>> getCompanies();
+
 
 
     /*@GET("users/{id}/matches")

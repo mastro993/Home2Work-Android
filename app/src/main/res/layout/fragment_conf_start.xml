@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/ms_material_button_padding_vertical"
-        android:text="Una breve introduzione ti guiderà nella configurazione dell\'applicazione."
+        android:text="Benvenuto! \n\nUna breve introduzione ti guiderà nella configurazione dell\'applicazione."
         android:textAlignment="center"
         android:textColor="@color/dark_bg_light_primary_text"
         android:textSize="21sp"

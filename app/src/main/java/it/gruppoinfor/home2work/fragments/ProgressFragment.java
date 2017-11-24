@@ -1,8 +1,12 @@
 package it.gruppoinfor.home2work.fragments;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -15,11 +19,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -97,6 +108,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_progress, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
         appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             boolean collapsing = collapsingToolbar.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbar);
@@ -208,6 +220,23 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     public void onDestroyView() {
         unbinder.unbind();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_fragment_settings, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_logout) {
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private class ProgressPagerAdapter extends FragmentStatePagerAdapter {

@@ -38,6 +38,9 @@ public class User {
     @SerializedName("Regdate")
     @Expose
     private Date registrationDate;
+    @SerializedName("Configured")
+    @Expose
+    private Boolean configured;
 
     // TODO solo per mockup
     public User(Long id, String name, String surname) {
@@ -119,6 +122,14 @@ public class User {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public Boolean isConfigured() {
+        return configured;
+    }
+
+    public void setConfigured(Boolean configured) {
+        this.configured = configured;
     }
 
     public String getAvatarURL() {

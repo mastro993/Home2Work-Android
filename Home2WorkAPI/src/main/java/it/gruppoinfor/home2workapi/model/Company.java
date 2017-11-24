@@ -6,24 +6,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class Company {
 
-    @SerializedName("id")
+    @SerializedName("Id")
     @Expose
     private Long id;
-    @SerializedName("name")
+    @SerializedName("Name")
     @Expose
     private String name;
-    @SerializedName("location")
+    @SerializedName("LatLng")
     @Expose
     private LatLng location;
-    @SerializedName("address")
+    @SerializedName("Address")
     @Expose
     private Address address;
-    @SerializedName("website")
-    @Expose
-    private String website;
-    @SerializedName("experience")
-    @Expose
-    private Long exp;
+
 
     public Long getId() {
         return id;
@@ -55,22 +50,6 @@ public class Company {
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public Long getExperience() {
-        return exp;
-    }
-
-    public void setExperience(Long experience) {
-        this.exp = experience;
     }
 
     @Override

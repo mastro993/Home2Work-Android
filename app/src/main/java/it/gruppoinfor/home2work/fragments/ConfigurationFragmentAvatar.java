@@ -33,6 +33,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -140,7 +141,7 @@ public class ConfigurationFragmentAvatar extends Fragment implements BlockingSte
 
             Client.getAPI().uploadAvatar(Client.getSignedUser().getId(), body).enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(retrofit2.Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     callback.getStepperLayout().hideProgress();
                     callback.goToNextStep();
                 }
