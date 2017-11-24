@@ -92,7 +92,6 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
     private boolean toolbarCollapsed = false;
 
-
     public ProgressFragment() {
         // Required empty public constructor
     }
@@ -108,7 +107,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_progress, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
 
         appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             boolean collapsing = collapsingToolbar.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbar);
