@@ -97,6 +97,15 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
 
             }
+
+            @Override
+            public void onError() {
+                Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
+                intent.putExtra(SessionManager.AUTH_CODE, SessionManager.AuthCode.ERROR);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(SplashActivity.this, logo, "logo");
+                startActivity(intent, options.toBundle());
+            }
         });
     }
 

@@ -101,6 +101,9 @@
             android:name="io.fabric.ApiKey"
             android:value="46d1717c516ccf9648149cf19412063e5dace7cf" />
 
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

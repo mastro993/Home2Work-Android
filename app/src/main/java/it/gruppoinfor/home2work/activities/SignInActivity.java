@@ -160,6 +160,8 @@ public class SignInActivity extends AppCompatActivity {
                 Toasty.warning(this, getString(R.string.session_expired), Toast.LENGTH_SHORT, true).show();
             } else if (code == SessionManager.AuthCode.SIGNED_OUT) {
                 Toasty.info(this, getString(R.string.user_logout), Toast.LENGTH_SHORT, true).show();
+            } else if (code == SessionManager.AuthCode.ERROR) {
+                Toasty.error(this, "Errore durante il login", Toast.LENGTH_SHORT, true).show();
             }
         }
 

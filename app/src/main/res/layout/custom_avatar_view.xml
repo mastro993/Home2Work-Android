@@ -17,7 +17,7 @@
         app:donut_progress="50"
         app:donut_unfinished_color="#55454545" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/user_propic"
         android:layout_width="100dp"
         android:layout_height="100dp"

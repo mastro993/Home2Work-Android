@@ -34,7 +34,7 @@ public class BootReceiver extends BroadcastReceiver {
 
         //Controllo se esiste una sessione
         SessionManager sessionManager = new SessionManager(context);
-        sessionManager.checkSession(new SessionManager.SessionManagerCallback() {
+        sessionManager.checkSession(new SessionManager.SessionManagerCallback(){
             @Override
             public void onValidSession() {
 
@@ -80,6 +80,7 @@ public class BootReceiver extends BroadcastReceiver {
                 .setContentText("Per poter utilizzare il servizio devi effettuare l'accesso")
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager =

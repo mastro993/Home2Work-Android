@@ -27,12 +27,6 @@ public class SyncAlarmReceiver extends BroadcastReceiver {
             public void onValidSession() {
                 context.startService(locationIntent);
             }
-
-            @Override
-            public void onInvalidSession(SessionManager.AuthCode code) {
-
-            }
-
         });
 
         /*PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);

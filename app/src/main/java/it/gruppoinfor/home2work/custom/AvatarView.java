@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
@@ -31,7 +33,7 @@ public class AvatarView extends RelativeLayout {
     @BindView(R.id.karma_donut_progress)
     DonutProgress karmaDonutProgress;
     @BindView(R.id.user_propic)
-    CircleImageView userPropic;
+    ImageView userPropic;
     @BindView(R.id.exp_level)
     TextView expLevel;
     @BindView(R.id.level_frame)
@@ -71,10 +73,16 @@ public class AvatarView extends RelativeLayout {
     }
 
     public void setAvatarURL(String avatarURL) {
-
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
-        Glide.with(this).load(avatarURL).apply(requestOptions).into(userPropic);
-
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .circleCrop()
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .dontAnimate();
+        Glide.with(this)
+                .load(avatarURL)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .apply(requestOptions).into(userPropic);
     }
 
     public void setExp(Integer exp, Integer level, Float progress) {

@@ -51,6 +51,7 @@ public class RouteService extends Service {
     private Notification trackingNotification;
     private Location lastKnownLocation;
     private ArrayList<Location> lastLocations = new ArrayList<>();
+
     private GoogleApiClient.ConnectionCallbacks mConnectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(@Nullable Bundle bundle) {

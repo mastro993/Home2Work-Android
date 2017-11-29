@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import it.gruppoinfor.home2work.services.RouteService;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Credentials;
@@ -80,7 +82,7 @@ public class SessionManager {
 
                 @Override
                 public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                    callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
+                    callback.onError();
                 }
             });
 
@@ -106,13 +108,22 @@ public class SessionManager {
     }
 
     public enum AuthCode {
-        EXPIRED_TOKEN, SIGNED_OUT, NO_SESSION
+        EXPIRED_TOKEN, SIGNED_OUT, NO_SESSION, ERROR
     }
 
-    public interface SessionManagerCallback {
-        void onValidSession();
+    public static class SessionManagerCallback {
 
-        void onInvalidSession(AuthCode code);
+        public void onValidSession(){
+            throw new NotImplementedException("onValidSession fired but not implemented");
+        }
+
+        public void onInvalidSession(AuthCode code){
+            throw new NotImplementedException("onInvalidSessions fired but not implemented");
+        }
+
+        public void onError(){
+            throw new NotImplementedException("onError fired but not implemented");
+        }
     }
 
 }

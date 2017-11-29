@@ -46,19 +46,6 @@ public interface EndpointInterface {
             @Path("id") Long id
     );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     @POST("user/{id}/location")
     Call<List<RoutePoint>> uploadRoutePoint(
             @Path("id") Long id,
