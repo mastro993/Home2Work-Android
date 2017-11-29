@@ -1,12 +1,7 @@
 package it.gruppoinfor.home2work.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,9 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.arasthel.asyncjob.AsyncJob;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -35,8 +27,7 @@ import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.MessagesFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
-import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
-import it.gruppoinfor.home2work.services.RouteService;
+import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
@@ -71,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Servizio di localizzazione
         if (UserPrefs.activityTrackingEnabled) {
-            if (!RouteService.isRunning(this)) {
-                Intent locationIntent = new Intent(this, RouteService.class);
+            if (!LocationService.isRunning(this)) {
+                Intent locationIntent = new Intent(this, LocationService.class);
                 startService(locationIntent);
             }
         }

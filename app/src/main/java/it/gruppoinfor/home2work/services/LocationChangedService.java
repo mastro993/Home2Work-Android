@@ -6,13 +6,12 @@ import android.content.Intent;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
-
 import java.util.List;
 
 import it.gruppoinfor.home2work.utils.MyLogger;
 
 
-public class ActivityRecognizedService extends IntentService {
+public class LocationChangedService extends IntentService {
 
     private static final String TAG = "ACTIVITY_RECOGNITION";
     private static boolean isDriving = false;
@@ -20,7 +19,7 @@ public class ActivityRecognizedService extends IntentService {
     private static int stillStatusCounter = 0;
     private final static int MAX_STILL_STATUS_COUNT = 2;
 
-    public ActivityRecognizedService() {
+    public LocationChangedService() {
         super("ActivityRecognizedService");
     }
 

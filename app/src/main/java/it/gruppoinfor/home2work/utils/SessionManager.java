@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 
 import org.apache.commons.lang3.NotImplementedException;
 
-import it.gruppoinfor.home2work.services.RouteService;
+import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.User;
@@ -97,7 +97,7 @@ public class SessionManager {
         editor.apply();
 
         // Termina i servizi
-        context.stopService(new Intent(context, RouteService.class));
+        context.stopService(new Intent(context, LocationService.class));
 
     }
 

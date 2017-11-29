@@ -16,9 +16,7 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.activities.SplashActivity;
-import it.gruppoinfor.home2work.services.RouteService;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.User;
+import it.gruppoinfor.home2work.services.LocationService;
 
 /**
  * Lanciato all'avvio del dispositivo.
@@ -43,7 +41,7 @@ public class BootReceiver extends BroadcastReceiver {
 
                 // Servizio di localizzazione
                 if (UserPrefs.activityTrackingEnabled) {
-                    Intent locationIntent = new Intent(context, RouteService.class);
+                    Intent locationIntent = new Intent(context, LocationService.class);
                     context.startService(locationIntent);
                 } else {
                     showEnableTrackingNotification();
