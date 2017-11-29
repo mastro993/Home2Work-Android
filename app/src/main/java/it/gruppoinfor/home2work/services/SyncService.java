@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.gruppoinfor.home2work.utils.MyLogger;
-import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
-import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,7 +30,6 @@ public class SyncService extends Service {
     private final String TAG = "SYN_SERVICE";
 
     private List<RoutePoint> routePoints = new ArrayList<>();
-
 
     @Override
     public void onCreate() {

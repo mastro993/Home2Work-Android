@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -16,7 +17,7 @@ public class ActivityRecognizedService extends IntentService {
 
     private static final String TAG = "ACTIVITY_RECOGNITION";
     private static boolean isDriving = false;
-    final int ACTIVITY_TRESHOLD = 80; // Valore minimo di affidabilita' per i trigger delle attivita'
+    final int CONFIDENCE_TRESHOLD = 80; // Valore minimo di affidabilita' per i trigger delle attivita'
     private static int stillStatusCounter = 0;
     private final static int MAX_STILL_STATUS_COUNT = 2;
 
@@ -47,9 +48,9 @@ public class ActivityRecognizedService extends IntentService {
     }
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
-
         for (DetectedActivity activity : probableActivities) {
-            if (activity.getConfidence() >= ACTIVITY_TRESHOLD) {
+            Log.d("DETECTED_ACTIVITY", activity.toString());
+            if (activity.getConfidence() >= CONFIDENCE_TRESHOLD) {
                 if (activity.getType() == DetectedActivity.IN_VEHICLE) {
                     if (!isDriving) startDrivingActivity();
                     break;
@@ -88,4 +89,7 @@ public class ActivityRecognizedService extends IntentService {
         isDriving = false;
     }
 
+    public static enum DrivingActivity {
+        STARTED_DRIVING, STOPPED_DRIVING
+    }
 }

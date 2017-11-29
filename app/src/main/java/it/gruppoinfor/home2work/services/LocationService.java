@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.services;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -41,12 +40,8 @@ import static it.gruppoinfor.home2work.App.dbApp;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks {
 
-    private int NOTIFICATION_ID = 1337;
     private String TAG = "LOCATION_SERVICE";
     private boolean isRecording = false;
-    private GoogleApiClient mGoogleApiClient;
-    private Notification serviceNotification;
-    private LocationRequest locationRequest;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -55,16 +50,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
     };
 
-    public static boolean isRunning(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (LocationService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -72,18 +57,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         String channelID = "LOCATION_SERVICE_NOTIFICATION_CHANNEL";
         int notificationIcon = R.drawable.home2work_icon;
 
-        serviceNotification = new NotificationCompat.Builder(this, channelID)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setSmallIcon(notificationIcon)
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                //.setLargeIcon(icon)
-                .setContentTitle("Home2Work")
-                .setContentText("Servizio di localizzazione")
-                .setOngoing(true)
-                .setShowWhen(false)
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener((connectionResult -> {
                     MyLogger.d("GOOGLE_API_CLIENT", "Connessione fallita: " + connectionResult);
@@ -107,7 +81,17 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                     AlarmManager.INTERVAL_HOUR,
                     pi);
 
-            startForeground(NOTIFICATION_ID, serviceNotification);
+            Notification serviceNotification = new NotificationCompat.Builder(this, channelID)
+                    .setPriority(NotificationCompat.PRIORITY_MIN)
+                    .setSmallIcon(notificationIcon)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                    .setContentTitle("Home2Work")
+                    .setContentText("Servizio di localizzazione")
+                    .setOngoing(true)
+                    .setShowWhen(false)
+                    .build();
+
+            startForeground(1337, serviceNotification);
 
         } else {
             MyLogger.i(TAG, "Sessione non presente");
@@ -131,7 +115,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         );
 
         ActivityRecognitionClient activityRecognitionClient = ActivityRecognition.getClient(LocationService.this);
-        Task<Void> task = activityRecognitionClient.requestActivityUpdates(30000, pendingIntent);
+        Task<Void> task = activityRecognitionClient.requestActivityUpdates(15000, pendingIntent);
 
         task.addOnSuccessListener(result -> MyLogger.d(TAG, "activityRecognitionClient avviato con successo"));
 
@@ -147,10 +131,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         super.onStartCommand(intent, flags, startId);
 
         if (ActivityRecognizedService.hasResult(intent)) {
-            DrivingActivity drivingActivity = ActivityRecognizedService.extractResult(intent);
-            if (drivingActivity == DrivingActivity.STARTED_DRIVING && !isRecording) {
+            ActivityRecognizedService.DrivingActivity drivingActivity = ActivityRecognizedService.extractResult(intent);
+            if (drivingActivity == ActivityRecognizedService.DrivingActivity.STARTED_DRIVING && !isRecording) {
                 startLocationRequests();
-            } else if (drivingActivity == DrivingActivity.STOPPED_DRIVING) {
+            } else if (drivingActivity == ActivityRecognizedService.DrivingActivity.STOPPED_DRIVING) {
                 stopLocationRequests();
             }
         }
@@ -165,7 +149,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(this::saveLocation);
 
-            locationRequest = LocationRequest.create();
+            LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             locationRequest.setInterval(60000);
             locationRequest.setFastestInterval(30000);

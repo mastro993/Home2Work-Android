@@ -62,10 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Servizio di localizzazione
         if (UserPrefs.activityTrackingEnabled) {
-            if (!LocationService.isRunning(this)) {
-                Intent locationIntent = new Intent(this, LocationService.class);
-                startService(locationIntent);
-            }
+            Intent locationIntent = new Intent(this, LocationService.class);
+            startService(locationIntent);
         }
 
     }
