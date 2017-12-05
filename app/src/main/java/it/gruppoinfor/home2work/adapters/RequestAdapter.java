@@ -71,13 +71,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         String statusText;
         int icon;
         Drawable bg = ContextCompat.getDrawable(activity, R.drawable.shape_badge_circle);
-        if (bookedMatchItem.getBookingStatus() == BookingStatus.CONFIRMED) {
+        if (bookedMatchItem.getBookingStatus() == 2) {
             color = ContextCompat.getColor(activity, R.color.green_500);
             icon = R.drawable.ic_check;
-        } else if (bookedMatchItem.getBookingStatus() == BookingStatus.PENDING) {
+        } else if (bookedMatchItem.getBookingStatus() == 1) {
             color = ContextCompat.getColor(activity, R.color.amber_500);
             icon = R.drawable.ic_clock;
-        } else if (bookedMatchItem.getBookingStatus() == BookingStatus.REJECTED) {
+        } else if (bookedMatchItem.getBookingStatus() == 0) {
             color = ContextCompat.getColor(activity, R.color.red_500);
             icon = R.drawable.ic_close;
         } else {
@@ -89,8 +89,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         holder.statusIcon.setBackground(bg);
         holder.statusIcon.setImageResource(icon);
 
-        holder.arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(matchItem.getArrivalTime())));
-        holder.departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(matchItem.getDepartureTime())));
+        holder.arrivalTimeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(matchItem.getStartTime())));
+        holder.departureTimeView.setText(String.format(res.getString(R.string.match_item_days), dateToString(matchItem.getEndTime())));
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));

@@ -1,23 +1,31 @@
 package it.gruppoinfor.home2workapi.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 
 public class Booking {
 
+    @SerializedName("BookingID")
+    @Expose
     private Long bookingID;
+    @SerializedName("Match")
+    @Expose
     private Match bookedMatch;
+    @SerializedName("Date")
+    @Expose
     private Date bookedDate;
-    private Date creationDate;
-    private BookingStatus bookingStatus;
+    @SerializedName("Notes")
+    @Expose
+    private String notes;
+    @SerializedName("Status")
+    @Expose
+    private int bookingStatus;
 
-    public Booking(Long bookingID, Match bookedMatch, Date bookedDate, Date creationDate, BookingStatus bookingStatus) {
-        this.bookingID = bookingID;
-        this.bookedMatch = bookedMatch;
-        this.bookedDate = bookedDate;
-        this.creationDate = creationDate;
-        this.bookingStatus = bookingStatus;
+    public Booking() {
     }
 
     public Long getBookingID() {
@@ -32,6 +40,14 @@ public class Booking {
         return bookedMatch;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     public void setBookedMatch(Match bookedMatch) {
         this.bookedMatch = bookedMatch;
     }
@@ -44,11 +60,11 @@ public class Booking {
         this.bookedDate = bookedDate;
     }
 
-    public BookingStatus getBookingStatus() {
+    public int getBookingStatus() {
         return bookingStatus;
     }
 
-    public void setBookingStatus(BookingStatus bookingStatus) {
+    public void setBookingStatus(int bookingStatus) {
         this.bookingStatus = bookingStatus;
     }
 }

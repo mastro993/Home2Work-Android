@@ -34,6 +34,9 @@ import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -123,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         viewPager.addOnPageChangeListener(new MyPageChangeListener());
-
-
     }
 
     @Override
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     long newMatches = matchStream.filter(Match::isNew).count();
 
                     Stream<Booking> requestStream = Client.getUserRequests().stream();
-                    long pendingRequests = requestStream.filter(r -> r.getBookingStatus() == BookingStatus.PENDING).count();
+                    long pendingRequests = requestStream.filter(r -> r.getBookingStatus() == 1).count();
 
                     return newMatches + pendingRequests;
                 })

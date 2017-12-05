@@ -3,8 +3,10 @@ package it.gruppoinfor.home2workapi;
 import java.util.List;
 
 
+import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Credentials;
+import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
@@ -51,14 +53,40 @@ public interface EndpointInterface {
             @Body List<RoutePoint> routePoints
     );
 
-
-
-
-
-    /*@GET("users/{id}/matches")
+    @GET("user/{id}/match")
     Call<List<Match>> getUserMatches(
             @Path("id") Long id
     );
+
+    @GET("match/{id}")
+    Call<Match> getMatch(
+            @Path("id") Long id
+    );
+
+    @GET("match/{id}/hide")
+    Call<Match> hideMatch(
+            @Path("id") Long id
+    );
+
+    @POST("booking")
+    Call<Booking> bookMatch(
+            @Body Booking booking
+    );
+
+    @GET("user/{id}/booking")
+    Call<List<Booking>> getUserBookings(
+            @Path("id") Long id
+    );
+
+    @GET("user/{id}/request")
+    Call<List<Booking>> getUserRequests(
+            @Path("id") Long id
+    );
+
+
+
+
+    /*
 
 
     @FormUrlEncoded

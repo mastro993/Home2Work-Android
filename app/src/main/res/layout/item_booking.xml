@@ -74,6 +74,14 @@
             </RelativeLayout>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="Prenotazione effettua per"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
                 android:id="@+id/date_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,18 +91,11 @@
                 android:textColor="@color/colorAccent" />
 
             <TextView
-                android:id="@+id/arrival_time_view"
+                android:id="@+id/time_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/match_item_arrival_time"
-                android:textColor="@color/light_bg_dark_secondary_text" />
-
-            <TextView
-                android:id="@+id/departure_time_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/match_item_departure_time"
-                android:textColor="@color/light_bg_dark_secondary_text" />
+                android:text="@string/match_item_time"
+                android:textColor="@color/colorAccent" />
 
         </LinearLayout>
 

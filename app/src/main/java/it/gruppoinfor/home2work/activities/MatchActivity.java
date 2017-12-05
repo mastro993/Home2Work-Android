@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
@@ -24,7 +25,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -61,10 +61,12 @@ import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
-import it.gruppoinfor.home2workapi.model.MatchInfo;
+import it.gruppoinfor.home2workapi.model.Match;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
@@ -72,10 +74,11 @@ public class MatchActivity extends AppCompatActivity {
 
     public static final int NEW_BOOKIG_REQUEST = 888;
     public static final int BOOKING_ADDED = 2;
+    public static final int BOOKING_NOT_ADDED = 3;
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
     GoogleMap googleMap;
     Long matchId;
-    MatchInfo match;
+    Match match;
     SupportMapFragment mapFragment;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -93,10 +96,10 @@ public class MatchActivity extends AppCompatActivity {
     TextView nameView;
     @BindView(R.id.distance_view)
     TextView distanceView;
-    @BindView(R.id.arrival_time_view)
-    TextView arrivalTimeView;
-    @BindView(R.id.departure_time_view)
-    TextView departureTimeView;
+    @BindView(R.id.time_view)
+    TextView timeView;
+    @BindView(R.id.days_view)
+    TextView daysView;
     @BindView(R.id.karma_preview)
     TextView karmaPreview;
     @BindView(R.id.exp_preview)
@@ -131,11 +134,18 @@ public class MatchActivity extends AppCompatActivity {
 
         mapFragment.onCreate(savedInstanceState);
 
-        // TODO ottenere info match dal srver
-        Mockup.getMatchInfoAsync(matchId, matchInfo -> {
-            match = matchInfo;
-            initUI();
-            mapFragment.getMapAsync(new MyMapReadyCollback(MatchActivity.this));
+        Client.getAPI().getMatch(matchId).enqueue(new Callback<Match>() {
+            @Override
+            public void onResponse(Call<Match> call, Response<Match> response) {
+                match = response.body();
+                initUI();
+                mapFragment.getMapAsync(new MyMapReadyCallback(MatchActivity.this));
+            }
+
+            @Override
+            public void onFailure(Call<Match> call, Throwable t) {
+                finish();
+            }
         });
 
         matchLoadingView.setVisibility(View.VISIBLE);
@@ -146,6 +156,8 @@ public class MatchActivity extends AppCompatActivity {
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
+
+        Double kmDistance = match.getDistance() / 1000.0;
 
         //scoreProgress.setProgress(Integer.parseInt(match.getScore().toString()));
 
@@ -165,12 +177,19 @@ public class MatchActivity extends AppCompatActivity {
         scoreProgress.setFinishedStrokeColor(color);
         bg.setTint(color);
         scoreText.setBackground(bg);
-        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), match.getSharedDistance().toString()));
-        arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(match.getArrivalTime())));
-        departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(match.getDepartureTime())));
 
-        int karmaPoints = match.getSharedDistance().intValue();
-        int exp = (int) (match.getSharedDistance() * 10);
+        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), df.format(kmDistance)));
+        timeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(match.getStartTime()) + " - " + dateToString(match.getEndTime())));
+
+        ArrayList<String> days = new ArrayList<>();
+        for(int day : match.getWeekdays()){
+            days.add(getResources().getStringArray(R.array.giorni)[day]);
+        }
+
+        daysView.setText(String.format(res.getString(R.string.match_item_days), TextUtils.join(", ", days) ));
+
+        int karmaPoints = kmDistance.intValue();
+        int exp = (int) (kmDistance * 10);
         karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
         expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
 
@@ -216,12 +235,28 @@ public class MatchActivity extends AppCompatActivity {
                     Date date = c.getTime();
 
                     // TODO invio prenotazione al server
-                    Long nextID = Long.parseLong(String.valueOf(Client.getUserBookings().size())) + 1L;
-                    Booking booking = new Booking(nextID, match, date, new Date(), BookingStatus.PENDING);
-                    Client.getUserBookings().add(0, booking);
-                    setResult(BOOKING_ADDED);
-                    finish();
+                    Booking booking = new Booking();
+                    booking.setBookedDate(date);
+                    booking.setBookedMatch(match);
+                    booking.setNotes(notes);
 
+                    Client.getAPI().bookMatch(booking).enqueue(new Callback<Booking>() {
+                        @Override
+                        public void onResponse(Call<Booking> call, Response<Booking> response) {
+                           if(response.code() == 200){
+                               setResult(BOOKING_ADDED);
+                               finish();
+                           } else {
+                               setResult(BOOKING_NOT_ADDED);
+                               finish();
+                           }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Booking> call, Throwable t) {
+                            finish();
+                        }
+                    });
 
                 }))
                 .build();
@@ -241,6 +276,8 @@ public class MatchActivity extends AppCompatActivity {
                 String dateString = dateFormat.format(c.getTime());
                 dateInput.setText(dateString);
             }, mYear, mMonth, mDay);
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 360000 * 240 * 14);
             datePickerDialog.show();
         });
 
@@ -251,11 +288,11 @@ public class MatchActivity extends AppCompatActivity {
     }
 
 
-    private class MyMapReadyCollback implements OnMapReadyCallback {
+    private class MyMapReadyCallback implements OnMapReadyCallback {
 
         Context context;
 
-        MyMapReadyCollback(Context context) {
+        MyMapReadyCallback(Context context) {
             this.context = context;
         }
 

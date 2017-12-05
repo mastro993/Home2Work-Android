@@ -66,8 +66,8 @@
 
     <!-- Match Adapter -->
     <string name="match_item_shared_distance">%1$s km condivisi</string>
-    <string name="match_item_arrival_time">Orario di arrivo: %1$s</string>
-    <string name="match_item_departure_time">Orario di partenza: %1$s</string>
+    <string name="match_item_time">Orari (a/r): %1$s</string>
+    <string name="match_item_days">Giorni: %1$s </string>
     <string name="match_karma_preview">%1$d Karma</string>
     <string name="match_exo_preview">%1$d XP</string>
 

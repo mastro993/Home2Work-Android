@@ -94,7 +94,7 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
 
         Booking booking = Client.getUserBookings().get(position);
 
-        if(booking.getBookingStatus() == BookingStatus.REJECTED){
+        if(booking.getBookingStatus() == 0){
             removeBookingDialog(position);
         } else {
             Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);

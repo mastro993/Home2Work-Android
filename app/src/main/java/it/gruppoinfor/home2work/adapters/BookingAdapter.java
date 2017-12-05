@@ -71,13 +71,13 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         String statusText;
         int icon;
         Drawable bg = ContextCompat.getDrawable(activity, R.drawable.shape_badge_circle);
-        if (bookedMatchItem.getBookingStatus() == BookingStatus.CONFIRMED) {
+        if (bookedMatchItem.getBookingStatus() == 2) {
             color = ContextCompat.getColor(activity, R.color.green_500);
             icon = R.drawable.ic_check;
-        } else if (bookedMatchItem.getBookingStatus() == BookingStatus.PENDING) {
+        } else if (bookedMatchItem.getBookingStatus() == 1) {
             color = ContextCompat.getColor(activity, R.color.amber_500);
             icon = R.drawable.ic_clock;
-        } else if (bookedMatchItem.getBookingStatus() == BookingStatus.REJECTED) {
+        } else if (bookedMatchItem.getBookingStatus() == 0) {
             color = ContextCompat.getColor(activity, R.color.red_500);
             icon = R.drawable.ic_close;
         } else {
@@ -89,8 +89,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         holder.statusIcon.setBackground(bg);
         holder.statusIcon.setImageResource(icon);
 
-        holder.arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(matchItem.getArrivalTime())));
-        holder.departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(matchItem.getDepartureTime())));
+        holder.timeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime())));
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
@@ -157,10 +156,8 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         TextView nameView;
         @BindView(R.id.date_view)
         TextView dateView;
-        @BindView(R.id.arrival_time_view)
-        TextView arrivalTimeView;
-        @BindView(R.id.departure_time_view)
-        TextView departureTimeView;
+        @BindView(R.id.time_view)
+        TextView timeView;
         @BindView(R.id.status_badge_icon)
         ImageView statusIcon;
 

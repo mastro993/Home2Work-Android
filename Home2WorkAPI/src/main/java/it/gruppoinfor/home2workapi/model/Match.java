@@ -1,78 +1,69 @@
 package it.gruppoinfor.home2workapi.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Match {
 
-    @SerializedName("matchID")
+    @SerializedName("MatchID")
     @Expose
     private Long matchID;
-    @SerializedName("guest")
+    @SerializedName("Guest")
     @Expose
     private User guest;
-    @SerializedName("host")
+    @SerializedName("Host")
     @Expose
     private User host;
-    @SerializedName("score")
+    @SerializedName("Weekdays")
+    @Expose
+    private ArrayList<Integer> weekdays;
+    @SerializedName("Score")
     @Expose
     private Integer score;
-    @SerializedName("sharedDistance")
+    @SerializedName("Distance")
     @Expose
-    private Double sharedDistance;
-    @SerializedName("arrivalTime")
+    private Integer distance;
+    @SerializedName("StartLocation")
     @Expose
-    private Date arrivalTime;
-    @SerializedName("departureTime")
+    private LatLng startLocation;
+    @SerializedName("StartTime")
     @Expose
-    private Date departureTime;
-    @SerializedName("new")
+    private Timestamp startTime;
+    @SerializedName("EndLocation")
+    @Expose
+    private LatLng endLocation;
+    @SerializedName("EndTime")
+    @Expose
+    private Timestamp endTime;
+    @SerializedName("New")
     @Expose
     private Boolean _new;
-    @SerializedName("hidden")
+    @SerializedName("Hidden")
     @Expose
     private Boolean hidden;
-
-
-    public Match(Long matchID, User guest, User host, Double sharedDistance, Date arrivalTime, Date departureTime, Integer score, Boolean _new, Boolean hidden) {
-        this.matchID = matchID;
-        this.guest = guest;
-        this.host = host;
-        this.sharedDistance = sharedDistance;
-        this.arrivalTime = arrivalTime;
-        this.departureTime = departureTime;
-        this.score = score;
-        this._new = _new;
-        this.hidden = hidden;
-    }
 
     public Match() {
     }
 
-    public Double getSharedDistance() {
-        return sharedDistance;
-    }
-
-    public void setSharedDistance(Double sharedDistance) {
-        this.sharedDistance = sharedDistance;
-    }
-
-    public Date getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public void setArrivalTime(Date arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
-
-    public Date getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(Date departureTime) {
-        this.departureTime = departureTime;
+    public Match(Long matchID, User guest, User host, ArrayList<Integer> weekdays, Integer score, Integer distance, LatLng startLocation, Timestamp startTime, LatLng endLocation, Timestamp endTime, Boolean _new, Boolean hidden) {
+        this.matchID = matchID;
+        this.guest = guest;
+        this.host = host;
+        this.weekdays = weekdays;
+        this.score = score;
+        this.distance = distance;
+        this.startLocation = startLocation;
+        this.startTime = startTime;
+        this.endLocation = endLocation;
+        this.endTime = endTime;
+        this._new = _new;
+        this.hidden = hidden;
     }
 
     public Long getMatchID() {
@@ -99,12 +90,60 @@ public class Match {
         this.host = host;
     }
 
+    public ArrayList<Integer> getWeekdays() {
+        return weekdays;
+    }
+
+    public void setWeekdays(ArrayList<Integer> weekdays) {
+        this.weekdays = weekdays;
+    }
+
     public Integer getScore() {
         return score;
     }
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public Integer getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Integer distance) {
+        this.distance = distance;
+    }
+
+    public LatLng getStartLocation() {
+        return startLocation;
+    }
+
+    public void setStartLocation(LatLng startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public LatLng getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(LatLng endLocation) {
+        this.endLocation = endLocation;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
     public Boolean isNew() {
@@ -115,7 +154,7 @@ public class Match {
         this._new = _new;
     }
 
-    public Boolean isHidden() {
+    public Boolean getHidden() {
         return hidden;
     }
 

@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -50,9 +49,8 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
-import it.gruppoinfor.home2workapi.model.BookingInfo;
+import it.gruppoinfor.home2workapi.model.Booking;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
@@ -91,7 +89,7 @@ public class RequestActivity extends AppCompatActivity {
 
     private Long bookingId;
     private int position;
-    private BookingInfo booking;
+    private Booking booking;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
 
@@ -117,11 +115,11 @@ public class RequestActivity extends AppCompatActivity {
         mapFragment.onCreate(savedInstanceState);
 
         // TODO ottenere info bookign dal srver
-        Mockup.getRequestInfoAsync(bookingId, bookingInfo -> {
+/*        Mockup.getRequestInfoAsync(bookingId, bookingInfo -> {
             booking = bookingInfo;
             initUI();
-            mapFragment.getMapAsync(new MyMapReadyCollback(this));
-        });
+            mapFragment.getMapAsync(new MyMapReadyCallback(this));
+        });*/
 
         requestLoadingView.setVisibility(View.VISIBLE);
 
@@ -131,7 +129,7 @@ public class RequestActivity extends AppCompatActivity {
         Resources res = getResources();
 
 
-        if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
+        if (booking.getBookingStatus() == 2) {
             startShareButton.setVisibility(View.VISIBLE);
             acceptRequestButton.setVisibility(View.GONE);
             rejectRequestButton.setVisibility(View.GONE);
@@ -141,7 +139,7 @@ public class RequestActivity extends AppCompatActivity {
             rejectRequestButton.setVisibility(View.VISIBLE);
         }
 
-        Converters.latLngToAddress(this, booking.getMatchInfo().getStartLocation(), address -> {
+        Converters.latLngToAddress(this, booking.getBookedMatch().getStartLocation(), address -> {
             String location = address.getAddressLine(0);
             String time = "8:00"; // TODO orario di incontro
 
@@ -164,9 +162,9 @@ public class RequestActivity extends AppCompatActivity {
 
         nameView.setText(booking.getBookedMatch().getGuest().toString());
 
-        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), booking.getBookedMatch().getSharedDistance().toString()));
-        arrivalTimeView.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(booking.getBookedMatch().getArrivalTime())));
-        departureTimeView.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(booking.getBookedMatch().getDepartureTime())));
+        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), booking.getBookedMatch().getDistance().toString()));
+        arrivalTimeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(booking.getBookedMatch().getStartTime())));
+        departureTimeView.setText(String.format(res.getString(R.string.match_item_days), dateToString(booking.getBookedMatch().getEndTime())));
 
     }
 
@@ -198,7 +196,7 @@ public class RequestActivity extends AppCompatActivity {
                 .negativeText("Annulla")
                 .onPositive((dialog, which) -> {
                     // TODO risposta al server
-                    Client.getUserRequests().get(position).setBookingStatus(BookingStatus.CONFIRMED);
+                    Client.getUserRequests().get(position).setBookingStatus(2);
                     setResult(REQUEST_ACCEPTED);
 
                     startShareButton.setVisibility(View.VISIBLE);
@@ -236,8 +234,8 @@ public class RequestActivity extends AppCompatActivity {
 
 
                 List<LatLng> matchWaypoints = new ArrayList<>();
-                matchWaypoints.add(booking.getMatchInfo().getStartLocation());
-                matchWaypoints.add(booking.getMatchInfo().getEndLocation());
+                matchWaypoints.add(booking.getBookedMatch().getStartLocation());
+                matchWaypoints.add(booking.getBookedMatch().getEndLocation());
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
@@ -285,8 +283,8 @@ public class RequestActivity extends AppCompatActivity {
 
             final LatLngBounds latLngBounds = RouteUtils.getRouteBounds(route.getPoints());
 
-            LatLng first = booking.getMatchInfo().getStartLocation();
-            LatLng last = booking.getMatchInfo().getEndLocation();
+            LatLng first = booking.getBookedMatch().getStartLocation();
+            LatLng last = booking.getBookedMatch().getEndLocation();
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))

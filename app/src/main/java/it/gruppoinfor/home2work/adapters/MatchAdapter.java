@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,9 +99,15 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         holder.scoreProgress.setFinishedStrokeColor(color);
         bg.setTint(color);
         holder.scoreText.setBackground(bg);
-        holder.distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), matchItem.getSharedDistance().toString()));
-        holder.arrivalTimeText.setText(String.format(res.getString(R.string.match_item_arrival_time), dateToString(matchItem.getArrivalTime())));
-        holder.departureTimeText.setText(String.format(res.getString(R.string.match_item_departure_time), dateToString(matchItem.getDepartureTime())));
+        holder.distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), df.format(matchItem.getDistance() / 1000.0)));
+        holder.timeText.setText(String.format(res.getString(R.string.match_item_time), dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime())));
+
+        ArrayList<String> days = new ArrayList<>();
+        for(int day : matchItem.getWeekdays()){
+            days.add(activity.getResources().getStringArray(R.array.giorni)[day]);
+        }
+
+        holder.daysText.setText(String.format(res.getString(R.string.match_item_days), TextUtils.join(", ", days) ));
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
@@ -164,10 +171,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         TextView nameView;
         @BindView(R.id.distance_view)
         TextView distanceView;
-        @BindView(R.id.arrival_time_view)
-        TextView arrivalTimeText;
-        @BindView(R.id.departure_time_view)
-        TextView departureTimeText;
+        @BindView(R.id.time_view)
+        TextView timeText;
+        @BindView(R.id.days_view)
+        TextView daysText;
         @BindView(R.id.new_badge_view)
         LinearLayout newBadgeView;
         @BindView(R.id.container)

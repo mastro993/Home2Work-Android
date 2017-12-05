@@ -52,9 +52,8 @@ import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
-import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
-import it.gruppoinfor.home2workapi.model.BookingInfo;
+import it.gruppoinfor.home2workapi.model.Booking;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
@@ -64,7 +63,7 @@ public class BookingActivity extends AppCompatActivity {
 
     GoogleMap googleMap;
     Long bookingId;
-    BookingInfo booking;
+    Booking booking;
     SupportMapFragment mapFragment;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -118,11 +117,11 @@ public class BookingActivity extends AppCompatActivity {
 
 
         // TODO ottenere info bookign dal srver
-        Mockup.getBookingInfoAsync(bookingId, bookingInfo -> {
+        /*Mockup.getBookingInfoAsync(bookingId, bookingInfo -> {
             booking = bookingInfo;
             initUI();
-            mapFragment.getMapAsync(new MyMapReadyCollback(BookingActivity.this));
-        });
+            mapFragment.getMapAsync(new MyMapReadyCallback(BookingActivity.this));
+        });*/
 
 
     }
@@ -130,7 +129,7 @@ public class BookingActivity extends AppCompatActivity {
 
     private void initUI() {
 
-        if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
+        if (booking.getBookingStatus() == 2) {
             startShareButton.setEnabled(true);
             notesText.setText(booking.getNotes());
         } else
@@ -140,7 +139,7 @@ public class BookingActivity extends AppCompatActivity {
             notesText.setVisibility(View.GONE);
         }
 
-        Converters.latLngToAddress(this, booking.getMatchInfo().getStartLocation(), address -> {
+        Converters.latLngToAddress(this, booking.getBookedMatch().getStartLocation(), address -> {
             String location = address.getAddressLine(0);
             String time = "8:00"; // TODO orario di incontro
 
@@ -178,9 +177,12 @@ public class BookingActivity extends AppCompatActivity {
         scoreProgress.setFinishedStrokeColor(color);
         bg.setTint(color);
         scoreText.setBackground(bg);
+
+
+        /* TODO
         distanceView.setText(String.format(getResources().getString(R.string.match_item_shared_distance), booking.getBookedMatch().getSharedDistance().toString()));
         arrivalTimeView.setText(String.format(getResources().getString(R.string.match_item_arrival_time), dateToString(booking.getBookedMatch().getArrivalTime())));
-        departureTimeView.setText(String.format(getResources().getString(R.string.match_item_departure_time), dateToString(booking.getBookedMatch().getDepartureTime())));
+        departureTimeView.setText(String.format(getResources().getString(R.string.match_item_departure_time), dateToString(booking.getBookedMatch().getDepartureTime())));*/
 
 
     }
@@ -213,8 +215,8 @@ public class BookingActivity extends AppCompatActivity {
 
 
                 List<LatLng> matchWaypoints = new ArrayList<>();
-                matchWaypoints.add(booking.getMatchInfo().getStartLocation());
-                matchWaypoints.add(booking.getMatchInfo().getEndLocation());
+                matchWaypoints.add(booking.getBookedMatch().getStartLocation());
+                matchWaypoints.add(booking.getBookedMatch().getEndLocation());
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
@@ -262,8 +264,8 @@ public class BookingActivity extends AppCompatActivity {
 
             final LatLngBounds latLngBounds = RouteUtils.getRouteBounds(route.getPoints());
 
-            LatLng first = booking.getMatchInfo().getStartLocation();
-            LatLng last = booking.getMatchInfo().getEndLocation();
+            LatLng first = booking.getBookedMatch().getStartLocation();
+            LatLng last = booking.getBookedMatch().getEndLocation();
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))

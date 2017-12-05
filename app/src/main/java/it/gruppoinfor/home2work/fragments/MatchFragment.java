@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.arasthel.asyncjob.AsyncJob;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,9 @@ import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MatchFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -106,14 +110,17 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
         swipeRefreshLayout.setRefreshing(true);
         AsyncJob.doInBackground(() -> {
 
-            // TODO fare refresh da web
-            List<Match> matches = Mockup.refreshUserMatches();
-            List<Booking> requests = Mockup.refreshUserRequests();
-            List<Booking> bookings = Mockup.refreshUserBookings();
+            Call<List<Match>> matchesCall = Client.getAPI().getUserMatches(Client.getSignedUser().getId());
+            Call<List<Booking>> bookingsCall = Client.getAPI().getUserBookings(Client.getSignedUser().getId());
+            Call<List<Booking>> requestsCall = Client.getAPI().getUserRequests(Client.getSignedUser().getId());
 
-            Client.setUserMatches(matches);
-            Client.setUserBookedMatches(bookings);
-            Client.setUserRequests(requests);
+            try{
+                Client.setUserMatches(new ArrayList<>(matchesCall.execute().body()));
+                Client.setUserBookedMatches(new ArrayList<>(bookingsCall.execute().body()));
+                Client.setUserRequests(new ArrayList<>(requestsCall.execute().body()));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 
             AsyncJob.doOnMainThread(() -> {
                 swipeRefreshLayout.setRefreshing(false);
@@ -141,9 +148,11 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == MatchActivity.BOOKING_ADDED) {
             // E' stata aggiunta una nuova prenotazione, aggiorno la UI e apro il tab prenotazioni
-            refreshTabs();
+            refreshData();
             viewPager.setCurrentItem(1);
             Toasty.success(getContext(), "Prenotazione effettuata").show();
+        } else if (resultCode == MatchActivity.BOOKING_NOT_ADDED) {
+            Toasty.error(getContext(), "Prenotazione non effettuata").show();
         } else if (resultCode == RequestActivity.REQUEST_REJECTED || resultCode == RequestActivity.REQUEST_ACCEPTED) {
             // E' stata accettata/rifiutata una richiesta, aggiorno la UI e apro il tab richieste
             refreshTabs();

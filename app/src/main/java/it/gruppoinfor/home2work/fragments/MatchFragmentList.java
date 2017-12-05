@@ -29,6 +29,9 @@ import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Match;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
 
@@ -67,7 +70,6 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
         if (matchItem.isNew()) {
             matchItem.setNew(false);
             matchesAdapter.notifyItemChanged(position);
-            setMatchAsViewed(matchItem);
             ((MainActivity)getActivity()).refreshMatchTabBadge();
         }
         showMatchDetails(position);
@@ -89,53 +91,6 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
         });
         popup.show();
         return true;
-    }
-
-    private void setMatchAsViewed(Match match) {
-
-        /*
-        TODO match come visualizzato al server
-        Client.getAPI().editMatch(matchItem).enqueue(new SessionManagerCallback<MatchInfo>() {
-            @Override
-            public void onResponse(Call<MatchInfo> call, Response<MatchInfo> response) {
-                Stream<MatchInfo> matchStream = matches.stream();
-                long newMatches = matchStream.filter(MatchInfo::isNew).count();
-
-                if (newMatches > 0) {
-                    activity.bottomNavigation.setNotification(Long.toString(newMatches), 1);
-                }
-
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<MatchInfo> call, Throwable t) {
-
-            }
-        });*/
-
-    }
-
-    private void setMatchAsHidden(Match matchItem) {
-
-        /*
-        TODO nascondere match newl server
-
-        Client.getAPI().editMatch(matchItem).enqueue(new SessionManagerCallback<MatchInfo>() {
-            @Override
-            public void onResponse(Call<MatchInfo> call, Response<MatchInfo> response) {
-                matches.remove(position);
-                notifyItemRemoved(position);
-                Toasty.success(activity, res.getString(R.string.match_item_hided), Toast.LENGTH_SHORT, true).show();
-            }
-
-            @Override
-            public void onFailure(Call<MatchInfo> call, Throwable t) {
-                Toasty.error(activity, res.getString(R.string.match_item_hide_error)).show();
-                t.printStackTrace();
-
-            }
-        });*/
     }
 
     private void showMatchDetails(int position) {
@@ -165,7 +120,17 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
                 .onPositive((dialog, which) -> {
                     Client.getUserMatches().remove(position);
                     matchesAdapter.remove(position);
-                    setMatchAsHidden(matchItem);
+                    Client.getAPI().hideMatch(matchItem.getMatchID()).enqueue(new Callback<Match>() {
+                        @Override
+                        public void onResponse(Call<Match> call, Response<Match> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Match> call, Throwable t) {
+
+                        }
+                    });
                 })
                 .build();
 
