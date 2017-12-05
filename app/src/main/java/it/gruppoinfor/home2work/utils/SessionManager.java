@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -13,6 +14,7 @@ import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.User;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,6 +47,19 @@ public class SessionManager {
         editor.putString(KEY_TOKEN, signedUser.getToken());
         editor.putString(KEY_USER, gson.toJson(signedUser));
         editor.apply();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Client.getAPI().setFCMToken(signedUser.getId(), token).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
 
     }
 

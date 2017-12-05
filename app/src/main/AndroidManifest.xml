@@ -63,6 +63,11 @@
             android:name=".services.ActivityRecognizedService"
             android:enabled="true"
             android:exported="false" />
+        <service android:name=".services.FirebaseTokenService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".activities.MainActivity"
@@ -104,6 +109,15 @@
         <activity
             android:name=".activities.EditProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".services.MessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

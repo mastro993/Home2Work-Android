@@ -13,6 +13,8 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -82,6 +84,15 @@ public interface EndpointInterface {
     Call<List<Booking>> getUserRequests(
             @Path("id") Long id
     );
+
+    @FormUrlEncoded
+    @POST("user/FCMToken")
+    Call<ResponseBody> setFCMToken(
+            @Field("userId") Long userID,
+            @Field("token") String token
+    );
+
+
 
 
 
