@@ -28,6 +28,7 @@ import it.gruppoinfor.home2work.fragments.MessagesFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
 import it.gruppoinfor.home2work.services.LocationService;
+import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.enums.BookingStatus;
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
             Intent locationIntent = new Intent(this, LocationService.class);
             startService(locationIntent);
         }
+
+       //Intent locationIntent = new Intent(this, SyncService.class);
+        //startService(locationIntent);
 
     }
 

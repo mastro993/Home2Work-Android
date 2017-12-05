@@ -73,6 +73,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
             AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+            // DIO SCANNATO
+
             Intent i = new Intent(this, SyncAlarmReceiver.class);
             PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
             am.setInexactRepeating(
@@ -153,7 +155,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             locationRequest.setInterval(60000);
             locationRequest.setFastestInterval(30000);
-            locationRequest.setSmallestDisplacement(500f);
+            locationRequest.setSmallestDisplacement(1000f);
 
             mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper());
 

@@ -74,7 +74,7 @@ public class SyncService extends Service {
                     public void onResponse(Call<List<RoutePoint>> call, Response<List<RoutePoint>> response) {
                         AsyncJob.doInBackground(()-> dbApp.routePointDAO().deleteAll(Client.getSignedUser().getId()));
 
-                        MyLogger.d(TAG, "Sincronizzazione avvenuta (" + routePointList.size() + " location)");
+                        MyLogger.d(TAG, "Sincronizzazione avvenuta (" + response.body().size() + " location)");
 
                     }
 

@@ -61,7 +61,7 @@ public class MyLogger {
     private static void appendLog(String TAG, String message) {
         if (isExternalStorageAvailable && isExternalStorageWriteable) {
 
-            SimpleDateFormat filenameDateFormat = new SimpleDateFormat("dd_MM_yyyy", Locale.ITALY);
+            SimpleDateFormat filenameDateFormat = new SimpleDateFormat("yyyy_MM_dd", Locale.ITALY);
             String filename = filenameDateFormat.format(new Date());
 
 

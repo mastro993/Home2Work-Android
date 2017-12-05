@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class RoutePoint {
 
-    @SerializedName("location")
+    @SerializedName("latlng")
     @Expose
     private LatLng latLng;
     @SerializedName("timestamp")
