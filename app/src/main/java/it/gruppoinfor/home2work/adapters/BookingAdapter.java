@@ -89,7 +89,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         holder.statusIcon.setBackground(bg);
         holder.statusIcon.setImageResource(icon);
 
-        holder.timeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime())));
+        holder.timeView.setText(dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime()));
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));

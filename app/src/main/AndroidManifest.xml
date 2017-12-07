@@ -90,7 +90,7 @@
             android:theme="@style/AppTheme.ConfigTheme" />
         <activity
             android:name=".activities.MatchActivity"
-            android:label="Informazioni match"
+            android:label="Dettagli match"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.RequestActivity"
@@ -98,7 +98,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.BookingActivity"
-            android:label="Informazioni prenotazione"
+            android:label="Dettagli prenotazione"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MessagesActivity" />
 

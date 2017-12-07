@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.arasthel.asyncjob.AsyncJob;
-import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +30,9 @@ import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.activities.RequestActivity;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class MatchFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -114,11 +110,11 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
             Call<List<Booking>> bookingsCall = Client.getAPI().getUserBookings(Client.getSignedUser().getId());
             Call<List<Booking>> requestsCall = Client.getAPI().getUserRequests(Client.getSignedUser().getId());
 
-            try{
+            try {
                 Client.setUserMatches(new ArrayList<>(matchesCall.execute().body()));
                 Client.setUserBookedMatches(new ArrayList<>(bookingsCall.execute().body()));
                 Client.setUserRequests(new ArrayList<>(requestsCall.execute().body()));
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -146,20 +142,25 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == MatchActivity.BOOKING_ADDED) {
-            // E' stata aggiunta una nuova prenotazione, aggiorno la UI e apro il tab prenotazioni
-            refreshData();
-            viewPager.setCurrentItem(1);
-            Toasty.success(getContext(), "Prenotazione effettuata").show();
-        } else if (resultCode == MatchActivity.BOOKING_NOT_ADDED) {
-            Toasty.error(getContext(), "Prenotazione non effettuata").show();
-        } else if (resultCode == RequestActivity.REQUEST_REJECTED || resultCode == RequestActivity.REQUEST_ACCEPTED) {
-            // E' stata accettata/rifiutata una richiesta, aggiorno la UI e apro il tab richieste
-            refreshTabs();
-            viewPager.setCurrentItem(2);
-            // Aggiorno il counter del badge
-            ((MainActivity) getActivity()).refreshMatchTabBadge();
+
+        switch (resultCode) {
+            case MatchActivity.BOOKING_ADDED:
+                refreshData();
+                viewPager.setCurrentItem(1);
+                Toasty.success(getContext(), "Prenotazione effettuata").show();
+                break;
+            case MatchActivity.BOOKING_NOT_ADDED:
+                Toasty.error(getContext(), "Prenotazione non effettuata").show();
+                break;
+            case RequestActivity.REQUEST_REJECTED:
+            case RequestActivity.REQUEST_ACCEPTED:
+                refreshTabs();
+                viewPager.setCurrentItem(2);
+                // Aggiorno il counter del badge
+                ((MainActivity) getActivity()).refreshMatchTabBadge();
+                break;
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 

@@ -9,7 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
@@ -49,17 +49,24 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
-import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
+import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class BookingActivity extends AppCompatActivity {
 
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
+
+    public static final int BOOKING_REJECTED = 0;
+    public static final int BOOKING_PENDING = 1;
+    public static final int BOOKING_ACCEPTED = 2;
+    public static final int BOOKING_CANCELED = 3;
 
     GoogleMap googleMap;
     Long bookingId;
@@ -75,20 +82,18 @@ public class BookingActivity extends AppCompatActivity {
     TextView scoreText;
     @BindView(R.id.name_view)
     TextView nameView;
-    @BindView(R.id.distance_view)
-    TextView distanceView;
-    @BindView(R.id.arrival_time_view)
+    @BindView(R.id.job_view)
+    TextView jobView;
+    @BindView(R.id.time_view)
     TextView arrivalTimeView;
-    @BindView(R.id.departure_time_view)
-    TextView departureTimeView;
-    @BindView(R.id.meeting_location_and_time)
-    TextView meetingLocation;
+    @BindView(R.id.days_view)
+    TextView daysText;
     @BindView(R.id.booking_loading_view)
     FrameLayout bookingLoadingView;
     @BindView(R.id.start_share_button)
     Button startShareButton;
-    @BindView(R.id.notes_text)
-    TextView notesText;
+    @BindView(R.id.status_text)
+    TextView statusText;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.linearLayout3)
@@ -99,8 +104,6 @@ public class BookingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
         ButterKnife.bind(this);
-
-        setTitle("Dettagli prenotazione");
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -116,12 +119,19 @@ public class BookingActivity extends AppCompatActivity {
         bookingLoadingView.setVisibility(View.VISIBLE);
 
 
-        // TODO ottenere info bookign dal srver
-        /*Mockup.getBookingInfoAsync(bookingId, bookingInfo -> {
-            booking = bookingInfo;
-            initUI();
-            mapFragment.getMapAsync(new MyMapReadyCallback(BookingActivity.this));
-        });*/
+        Client.getAPI().getBooking(bookingId).enqueue(new Callback<Booking>() {
+            @Override
+            public void onResponse(Call<Booking> call, Response<Booking> response) {
+                booking = response.body();
+                initUI();
+                mapFragment.getMapAsync(new MyMapReadyCallback(BookingActivity.this));
+            }
+
+            @Override
+            public void onFailure(Call<Booking> call, Throwable t) {
+
+            }
+        });
 
 
     }
@@ -129,32 +139,8 @@ public class BookingActivity extends AppCompatActivity {
 
     private void initUI() {
 
-        if (booking.getBookingStatus() == 2) {
-            startShareButton.setEnabled(true);
-            notesText.setText(booking.getNotes());
-        } else
-            startShareButton.setEnabled(false);
-
-        if (booking.getNotes().isEmpty()) {
-            notesText.setVisibility(View.GONE);
-        }
-
-        Converters.latLngToAddress(this, booking.getBookedMatch().getStartLocation(), address -> {
-            String location = address.getAddressLine(0);
-            String time = "8:00"; // TODO orario di incontro
-
-            meetingLocation.setText(
-                    Html.fromHtml(
-                            "In <b>" + location + "</b> alle <b>" + time + "</b>"
-                    )
-            );
-        });
-
-
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
-
-        //scoreProgress.setProgress(Integer.parseInt(booking.getBookedMatch().getScore().toString()));
 
         ArcProgressAnimation animation = new ArcProgressAnimation(scoreProgress, 0, booking.getBookedMatch().getScore());
         animation.setDuration(500);
@@ -169,7 +155,9 @@ public class BookingActivity extends AppCompatActivity {
                 .into(userAvatar);
 
         scoreText.setText(String.format(Locale.ITALY, "%1$d%%", booking.getBookedMatch().getScore()));
+
         nameView.setText(booking.getBookedMatch().getHost().toString());
+        jobView.setText(booking.getBookedMatch().getHost().getCompany().toString());
 
         int color = ScoreColorUtility.getScoreColor(this, booking.getBookedMatch().getScore());
         Drawable bg = ContextCompat.getDrawable(this, R.drawable.bg_match_score_percent);
@@ -178,11 +166,33 @@ public class BookingActivity extends AppCompatActivity {
         bg.setTint(color);
         scoreText.setBackground(bg);
 
+        arrivalTimeView.setText(dateToString(booking.getBookedMatch().getStartTime()) + " - " + dateToString(booking.getBookedMatch().getEndTime()));
 
-        /* TODO
-        distanceView.setText(String.format(getResources().getString(R.string.match_item_shared_distance), booking.getBookedMatch().getSharedDistance().toString()));
-        arrivalTimeView.setText(String.format(getResources().getString(R.string.match_item_arrival_time), dateToString(booking.getBookedMatch().getArrivalTime())));
-        departureTimeView.setText(String.format(getResources().getString(R.string.match_item_departure_time), dateToString(booking.getBookedMatch().getDepartureTime())));*/
+        ArrayList<String> days = new ArrayList<>();
+        for (int day : booking.getBookedMatch().getWeekdays()) {
+            days.add(getResources().getStringArray(R.array.giorni)[day]);
+        }
+
+        daysText.setText(TextUtils.join(", ", days));
+
+
+        switch (booking.getBookingStatus()) {
+            case BOOKING_ACCEPTED:
+                startShareButton.setVisibility(View.VISIBLE);
+                statusText.setVisibility(View.GONE);
+                break;
+            case BOOKING_PENDING:
+                statusText.setText("La prenotazione è ancora in attesa di risposta");
+                break;
+            case BOOKING_REJECTED:
+                statusText.setText("La prenotazione non è stata accettata");
+                statusText.setTextColor(ContextCompat.getColor(this, R.color.red_500));
+                break;
+            case BOOKING_CANCELED:
+                statusText.setText("La prenotazione è stata cancellata");
+                statusText.setTextColor(ContextCompat.getColor(this, R.color.red_500));
+                break;
+        }
 
 
     }
@@ -193,11 +203,11 @@ public class BookingActivity extends AppCompatActivity {
         // TODO SCANNER CODICE PER CONDIVISIONE CON ZXING
     }
 
-    private class MyMapReadyCollback implements OnMapReadyCallback {
+    private class MyMapReadyCallback implements OnMapReadyCallback {
 
         Context context;
 
-        MyMapReadyCollback(Context context) {
+        MyMapReadyCallback(Context context) {
             this.context = context;
         }
 

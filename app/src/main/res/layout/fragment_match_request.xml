@@ -10,6 +10,17 @@
         android:padding="@dimen/list_padding"
         android:clipToPadding="false"/>
 
-    <!-- TODO empty view -->
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/empty_view"
+        android:textStyle="italic"
+        android:textSize="16dp"
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:layout_marginBottom="128dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="Nessuna richiesta ricevuta"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

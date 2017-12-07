@@ -4,10 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Match {
 
@@ -47,11 +45,14 @@ public class Match {
     @SerializedName("Hidden")
     @Expose
     private Boolean hidden;
+    @SerializedName("Ongoing")
+    @Expose
+    private Boolean ongoing;
 
     public Match() {
     }
 
-    public Match(Long matchID, User guest, User host, ArrayList<Integer> weekdays, Integer score, Integer distance, LatLng startLocation, Timestamp startTime, LatLng endLocation, Timestamp endTime, Boolean _new, Boolean hidden) {
+    public Match(Long matchID, User guest, User host, ArrayList<Integer> weekdays, Integer score, Integer distance, LatLng startLocation, Timestamp startTime, LatLng endLocation, Timestamp endTime, Boolean _new, Boolean hidden, Boolean ongoing) {
         this.matchID = matchID;
         this.guest = guest;
         this.host = host;
@@ -64,6 +65,15 @@ public class Match {
         this.endTime = endTime;
         this._new = _new;
         this.hidden = hidden;
+        this.ongoing = ongoing;
+    }
+
+    public Boolean isOngoing() {
+        return ongoing;
+    }
+
+    public void setOngoing(Boolean ongoing) {
+        this.ongoing = ongoing;
     }
 
     public Long getMatchID() {

@@ -61,7 +61,6 @@ import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 import retrofit2.Call;
@@ -94,8 +93,8 @@ public class MatchActivity extends AppCompatActivity {
     TextView scoreText;
     @BindView(R.id.name_view)
     TextView nameView;
-    @BindView(R.id.distance_view)
-    TextView distanceView;
+    @BindView(R.id.job_view)
+    TextView jobView;
     @BindView(R.id.time_view)
     TextView timeView;
     @BindView(R.id.days_view)
@@ -108,6 +107,8 @@ public class MatchActivity extends AppCompatActivity {
     LinearLayout container;
     @BindView(R.id.linearLayout2)
     LinearLayout linearLayout2;
+    @BindView(R.id.status_text)
+    TextView statusText;
 
     private Resources res;
 
@@ -118,12 +119,9 @@ public class MatchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         res = getResources();
 
-        setTitle("Dettagli match");
 
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -159,17 +157,14 @@ public class MatchActivity extends AppCompatActivity {
 
         Double kmDistance = match.getDistance() / 1000.0;
 
-        //scoreProgress.setProgress(Integer.parseInt(match.getScore().toString()));
-
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
-
         Glide.with(this)
                 .load(match.getHost().getAvatarURL())
                 .apply(requestOptions)
                 .into(userAvatar);
 
-        //scoreText.setText(String.format(Locale.ITALY, "%1$d%%", match.getScore()));
         nameView.setText(match.getHost().toString());
+        jobView.setText(match.getHost().getCompany().toString());
 
         int color = ScoreColorUtility.getScoreColor(this, match.getScore());
         Drawable bg = ContextCompat.getDrawable(this, R.drawable.bg_match_score_percent);
@@ -178,20 +173,24 @@ public class MatchActivity extends AppCompatActivity {
         bg.setTint(color);
         scoreText.setBackground(bg);
 
-        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), df.format(kmDistance)));
-        timeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(match.getStartTime()) + " - " + dateToString(match.getEndTime())));
+        timeView.setText(dateToString(match.getStartTime()) + " - " + dateToString(match.getEndTime()));
 
         ArrayList<String> days = new ArrayList<>();
-        for(int day : match.getWeekdays()){
+        for (int day : match.getWeekdays()) {
             days.add(getResources().getStringArray(R.array.giorni)[day]);
         }
 
-        daysView.setText(String.format(res.getString(R.string.match_item_days), TextUtils.join(", ", days) ));
+        daysView.setText(TextUtils.join(", ", days));
 
         int karmaPoints = kmDistance.intValue();
         int exp = (int) (kmDistance * 10);
         karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
         expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
+
+        if (match.isOngoing()) {
+            requestShereButton.setVisibility(View.GONE);
+            statusText.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -221,20 +220,19 @@ public class MatchActivity extends AppCompatActivity {
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        MaterialDialog editAddressDialog = new MaterialDialog.Builder(this)
-                .title("Prenota condivisione auto")
+
+        MaterialDialog confirmationDialog = new MaterialDialog.Builder(this)
+                .title("Conferma prenotazione")
                 .customView(R.layout.dialog_new_booking, false)
-                .positiveText("Prenota")
+                .positiveText("Conferma")
                 .negativeText("Annulla")
                 .onPositive(((MaterialDialog dialog, DialogAction which) -> {
 
-                    EditText dateInput = (EditText) dialog.findViewById(R.id.date_input);
                     EditText noteInput = (EditText) dialog.findViewById(R.id.notes_input);
 
                     String notes = noteInput.getText().toString();
                     Date date = c.getTime();
 
-                    // TODO invio prenotazione al server
                     Booking booking = new Booking();
                     booking.setBookedDate(date);
                     booking.setBookedMatch(match);
@@ -243,13 +241,14 @@ public class MatchActivity extends AppCompatActivity {
                     Client.getAPI().bookMatch(booking).enqueue(new Callback<Booking>() {
                         @Override
                         public void onResponse(Call<Booking> call, Response<Booking> response) {
-                           if(response.code() == 200){
-                               setResult(BOOKING_ADDED);
-                               finish();
-                           } else {
-                               setResult(BOOKING_NOT_ADDED);
-                               finish();
-                           }
+
+                            if (response.code() == 200) {
+                                setResult(BOOKING_ADDED);
+                                finish();
+                            } else {
+                                setResult(BOOKING_NOT_ADDED);
+                                finish();
+                            }
                         }
 
                         @Override
@@ -261,29 +260,31 @@ public class MatchActivity extends AppCompatActivity {
                 }))
                 .build();
 
-        TextView dateTitle = (TextView) editAddressDialog.findViewById(R.id.date_title);
-        TextView noteTitle = (TextView) editAddressDialog.findViewById(R.id.notes_title);
-        EditText dateInput = (EditText) editAddressDialog.findViewById(R.id.date_input);
+        TextView dateText = (TextView) confirmationDialog.findViewById(R.id.selected_date_text);
+        TextView noteTitle = (TextView) confirmationDialog.findViewById(R.id.notes_title);
 
 
-        dateTitle.setText(String.format(res.getString(R.string.new_booking_date_title), match.getHost().getName()));
-        noteTitle.setText(String.format(res.getString(R.string.new_booking_notes_title), match.getHost().getName()));
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePicker, year, month, day) -> {
+            c.set(year, month, day);
 
-        dateInput.setOnClickListener(view -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePicker, year, month, day) -> {
-                c.set(year, month, day);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
-                String dateString = dateFormat.format(c.getTime());
-                dateInput.setText(dateString);
-            }, mYear, mMonth, mDay);
-            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 360000 * 240 * 14);
-            datePickerDialog.show();
-        });
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
+            String dateString = dateFormat.format(c.getTime());
+            dateText.setText(dateString);
 
-        dateInput.setFocusable(false);
+            noteTitle.setText(String.format(res.getString(R.string.new_booking_notes_title), match.getHost().getName()));
 
-        editAddressDialog.show();
+            confirmationDialog.show();
+
+
+        }, mYear, mMonth, mDay);
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() + 360000 * 240);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 360000 * 240 * 14);
+
+        datePickerDialog.setTitle("Seleziona la data di prenotazione");
+
+
+        datePickerDialog.show();
 
     }
 

@@ -49,16 +49,18 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class RequestActivity extends AppCompatActivity {
 
     public static final int REQUEST_RESPONSE_CODE = 433;
-    public static final int REQUEST_ACCEPTED = 3;
-    public static final int REQUEST_REJECTED = 4;
+    public static final int REQUEST_ACCEPTED = 23;
+    public static final int REQUEST_REJECTED = 24;
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -70,22 +72,22 @@ public class RequestActivity extends AppCompatActivity {
     Button startShareButton;
     @BindView(R.id.request_loading_view)
     FrameLayout requestLoadingView;
-    @BindView(R.id.meeting_location_and_time)
-    TextView meetingLocationAndTime;
     @BindView(R.id.user_avatar)
     CircleImageView userAvatar;
     @BindView(R.id.name_view)
     TextView nameView;
-    @BindView(R.id.distance_view)
-    TextView distanceView;
-    @BindView(R.id.arrival_time_view)
-    TextView arrivalTimeView;
-    @BindView(R.id.departure_time_view)
-    TextView departureTimeView;
+    @BindView(R.id.job_view)
+    TextView jobView;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.linearLayout3)
     LinearLayout linearLayout3;
+    @BindView(R.id.note_text)
+    TextView noteText;
+    @BindView(R.id.exp_preview)
+    TextView expPreview;
+    @BindView(R.id.karma_preview)
+    TextView karmaPreview;
 
     private Long bookingId;
     private int position;
@@ -114,12 +116,19 @@ public class RequestActivity extends AppCompatActivity {
 
         mapFragment.onCreate(savedInstanceState);
 
-        // TODO ottenere info bookign dal srver
-/*        Mockup.getRequestInfoAsync(bookingId, bookingInfo -> {
-            booking = bookingInfo;
-            initUI();
-            mapFragment.getMapAsync(new MyMapReadyCallback(this));
-        });*/
+        Client.getAPI().getBooking(bookingId).enqueue(new Callback<Booking>() {
+            @Override
+            public void onResponse(Call<Booking> call, Response<Booking> response) {
+                booking = response.body();
+                initUI();
+                mapFragment.getMapAsync(new MyMapReadyCallback(RequestActivity.this));
+            }
+
+            @Override
+            public void onFailure(Call<Booking> call, Throwable t) {
+
+            }
+        });
 
         requestLoadingView.setVisibility(View.VISIBLE);
 
@@ -128,27 +137,20 @@ public class RequestActivity extends AppCompatActivity {
     private void initUI() {
         Resources res = getResources();
 
-
-        if (booking.getBookingStatus() == 2) {
-            startShareButton.setVisibility(View.VISIBLE);
-            acceptRequestButton.setVisibility(View.GONE);
-            rejectRequestButton.setVisibility(View.GONE);
-        } else {
-            startShareButton.setVisibility(View.GONE);
-            acceptRequestButton.setVisibility(View.VISIBLE);
-            rejectRequestButton.setVisibility(View.VISIBLE);
+        switch (booking.getBookingStatus()) {
+            case BookingActivity.BOOKING_PENDING:
+                startShareButton.setVisibility(View.GONE);
+                acceptRequestButton.setVisibility(View.VISIBLE);
+                rejectRequestButton.setVisibility(View.VISIBLE);
+                break;
+            case BookingActivity.BOOKING_ACCEPTED:
+                startShareButton.setVisibility(View.VISIBLE);
+                acceptRequestButton.setVisibility(View.GONE);
+                rejectRequestButton.setVisibility(View.GONE);
+                break;
+            case BookingActivity.BOOKING_CANCELED:
+                break;
         }
-
-        Converters.latLngToAddress(this, booking.getBookedMatch().getStartLocation(), address -> {
-            String location = address.getAddressLine(0);
-            String time = "8:00"; // TODO orario di incontro
-
-            meetingLocationAndTime.setText(
-                    Html.fromHtml(
-                            "In <b>" + location + "</b> alle <b>" + time + "</b>"
-                    )
-            );
-        });
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -161,10 +163,21 @@ public class RequestActivity extends AppCompatActivity {
                 .into(userAvatar);
 
         nameView.setText(booking.getBookedMatch().getGuest().toString());
+        jobView.setText(booking.getBookedMatch().getGuest().getCompany().toString());
 
-        distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), booking.getBookedMatch().getDistance().toString()));
-        arrivalTimeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(booking.getBookedMatch().getStartTime())));
-        departureTimeView.setText(String.format(res.getString(R.string.match_item_days), dateToString(booking.getBookedMatch().getEndTime())));
+        if(booking.getNotes().isEmpty()){
+            noteText.setVisibility(View.GONE);
+        } else {
+            noteText.setText(booking.getNotes());
+            noteText.setSelected(true);
+        }
+
+        Double kmDistance = booking.getBookedMatch().getDistance() / 1000.0;
+
+        int karmaPoints = (int) (kmDistance.intValue() * 1.2);
+        int exp = (int) (kmDistance * 12);
+        karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
+        expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
 
     }
 
@@ -177,10 +190,23 @@ public class RequestActivity extends AppCompatActivity {
                 .positiveText("Rifiuta")
                 .negativeText("Annulla")
                 .onPositive((dialog, which) -> {
-                    // TODO risposta al server
-                    Client.getUserRequests().remove(position);
-                    setResult(REQUEST_REJECTED);
-                    finish();
+
+                    booking.setBookingStatus(BookingActivity.BOOKING_REJECTED);
+
+                    Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
+                        @Override
+                        public void onResponse(Call<Booking> call, Response<Booking> response) {
+                            Client.getUserRequests().remove(position);
+                            setResult(REQUEST_REJECTED);
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Booking> call, Throwable t) {
+
+                        }
+                    });
+
                 })
                 .build();
 
@@ -195,13 +221,24 @@ public class RequestActivity extends AppCompatActivity {
                 .positiveText("Accetta")
                 .negativeText("Annulla")
                 .onPositive((dialog, which) -> {
-                    // TODO risposta al server
-                    Client.getUserRequests().get(position).setBookingStatus(2);
-                    setResult(REQUEST_ACCEPTED);
 
-                    startShareButton.setVisibility(View.VISIBLE);
-                    acceptRequestButton.setVisibility(View.GONE);
-                    rejectRequestButton.setVisibility(View.GONE);
+                    booking.setBookingStatus(BookingActivity.BOOKING_ACCEPTED);
+
+                    Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
+                        @Override
+                        public void onResponse(Call<Booking> call, Response<Booking> response) {
+
+                            Client.getUserRequests().get(position).setBookingStatus(2);
+                            setResult(REQUEST_ACCEPTED);
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Booking> call, Throwable t) {
+
+                        }
+                    });
+
                 })
                 .build();
 
@@ -212,11 +249,11 @@ public class RequestActivity extends AppCompatActivity {
     public void onStartShareButtonClicked() {
     }
 
-    private class MyMapReadyCollback implements OnMapReadyCallback {
+    private class MyMapReadyCallback implements OnMapReadyCallback {
 
         Context context;
 
-        MyMapReadyCollback(Context context) {
+        MyMapReadyCallback(Context context) {
             this.context = context;
         }
 

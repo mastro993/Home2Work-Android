@@ -72,11 +72,21 @@ public interface EndpointInterface {
 
     @POST("booking")
     Call<Booking> bookMatch(
+                    @Body Booking booking
+            );
+
+    @PUT("booking")
+    Call<Booking> editBooking(
             @Body Booking booking
     );
 
     @GET("user/{id}/booking")
     Call<List<Booking>> getUserBookings(
+            @Path("id") Long id
+    );
+
+    @GET("booking/{id}")
+    Call<Booking> getBooking(
             @Path("id") Long id
     );
 

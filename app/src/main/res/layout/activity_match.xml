@@ -21,12 +21,119 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.constraint.ConstraintLayout
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:padding="@dimen/activity_padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_bar_size"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.github.lzyzsd.circleprogress.ArcProgress
+                    android:id="@+id/score_progress"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_margin="7.5dp"
+                    app:arc_finished_color="@color/colorAccent"
+                    app:arc_max="100"
+                    app:arc_progress="70"
+                    app:arc_stroke_width="6dp"
+                    app:arc_unfinished_color="@color/grey_300" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_avatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentStart="true"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_avatar_placeholder"
+                    android:transitionName="avatar" />
+
+                <TextView
+                    android:id="@+id/score_text"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_alignBottom="@+id/score_progress"
+                    android:layout_alignStart="@+id/score_progress"
+                    android:layout_marginStart="18dp"
+                    android:background="@drawable/bg_match_score_percent"
+                    android:gravity="center"
+                    android:text="100%"
+                    android:textColor="@color/dark_bg_light_primary_text"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/name_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Pincopallo Fumagalli"
+                    android:textColor="@color/light_bg_dark_primary_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/job_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="Azienda A"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/time_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8:00 - 18:00"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+                <TextView
+                    android:id="@+id/days_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lun, Mar"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
         <fragment
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
@@ -34,132 +141,37 @@
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/container" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/list_items_padding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <com.github.lzyzsd.circleprogress.ArcProgress
-                        android:id="@+id/score_progress"
-                        android:layout_width="85dp"
-                        android:layout_height="85dp"
-                        android:layout_margin="7.5dp"
-                        app:arc_finished_color="@color/colorAccent"
-                        app:arc_max="100"
-                        app:arc_progress="70"
-                        app:arc_stroke_width="6dp"
-                        app:arc_unfinished_color="@color/grey_300" />
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/user_avatar"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentStart="true"
-                        android:padding="13dp"
-                        android:src="@drawable/ic_avatar_placeholder"
-                        android:transitionName="avatar" />
-
-                    <TextView
-                        android:id="@+id/score_text"
-                        android:layout_width="50dp"
-                        android:layout_height="20dp"
-                        android:layout_alignBottom="@+id/score_progress"
-                        android:layout_alignStart="@+id/score_progress"
-                        android:layout_marginStart="18dp"
-                        android:background="@drawable/bg_match_score_percent"
-                        android:gravity="center"
-                        android:text="100%"
-                        android:textColor="@color/dark_bg_light_primary_text"
-                        android:textStyle="bold" />
-
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/name_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_marginTop="5dp"
-                        android:text="Pincopallo Fumagalli"
-                        android:textColor="@color/light_bg_dark_primary_text"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/distance_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/match_item_shared_distance"
-                        android:textColor="@color/light_bg_dark_secondary_text" />
-
-                    <TextView
-                        android:id="@+id/time_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/match_item_time"
-                        android:textColor="@color/light_bg_dark_secondary_text" />
-
-                    <TextView
-                        android:id="@+id/days_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/match_item_days"
-                        android:textColor="@color/light_bg_dark_secondary_text" />
-
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:layout_marginTop="12dp"
                 android:background="@color/window_background"
                 android:orientation="vertical"
-                android:padding="@dimen/list_items_padding">
+                android:padding="@dimen/activity_padding">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="6dp"
                     android:text="Convidendo questo percorso guadagneresti" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:weightSum="4"
                     android:orientation="horizontal">
 
                     <TextView
@@ -167,7 +179,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="6dp"
                         android:layout_weight="1"
                         android:text="@string/match_karma_preview"
                         android:textAlignment="center"
@@ -180,7 +191,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="6dp"
                         android:layout_weight="1"
                         android:text="@string/match_exo_preview"
                         android:textAlignment="center"
@@ -191,13 +201,27 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/status_text"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="6dp"
+                android:gravity="center"
+                android:lines="2"
+                android:text="C'è già una prenotazione in corso per questo match"
+                android:textColor="@color/light_bg_dark_primary_text"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:visibility="gone" />
+
             <Button
+                android:layout_marginBottom="6dp"
                 android:id="@+id/request_shere_button"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="54dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="12dp"
                 android:text="Prenota"
                 android:visibility="visible" />
 

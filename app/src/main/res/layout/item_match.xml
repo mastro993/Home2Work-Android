@@ -4,25 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/list_items_spacing"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clipToPadding="false">
 
     <RelativeLayout
-        android:clipToPadding="false"
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:clipToPadding="false"
         android:orientation="horizontal"
         android:padding="@dimen/list_items_padding">
-
-        <include
-            android:id="@+id/new_badge_view"
-            layout="@layout/layout_new_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true" />
 
         <RelativeLayout
             android:id="@+id/avatar_container"
@@ -73,49 +66,71 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
             android:layout_marginStart="10dp"
             android:layout_toRightOf="@id/avatar_container"
             android:clipToPadding="false"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/name_view"
+            <LinearLayout
+                android:clipToPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:lines="1"
-                android:layout_marginBottom="6dp"
-                android:text="Gianpiergiorgio  Fumagalletto"
-                android:textColor="@color/light_bg_dark_primary_text"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/name_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:text="Gianpiergiorgio  Fumagalletto"
+                    android:textColor="@color/light_bg_dark_primary_text"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/new_badge"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginTop="3dp"
+                    android:src="@drawable/shape_new_badge"
+                    android:layout_width="12dp"
+                    android:padding="2dp"
+                    android:layout_height="match_parent"
+                    android:shadowColor="@color/colorAccent"
+                    android:shadowDx="20"
+                    android:shadowDy="20"
+                    android:shadowRadius="5"/>
+
+            </LinearLayout>
+
+
 
             <TextView
-                android:id="@+id/distance_view"
+                android:id="@+id/job_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/match_item_shared_distance"
-                android:textColor="@color/light_bg_dark_secondary_text" />
+                android:layout_marginBottom="6dp"
+                android:lines="1"
+                android:text="Azienda A"
+                android:textStyle="italic"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/time_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/match_item_time"
-                android:textColor="@color/light_bg_dark_secondary_text" />
+                android:text="8:00 - 13-00"
+                android:textColor="@color/light_bg_dark_primary_text" />
 
             <TextView
                 android:id="@+id/days_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/match_item_days"
+                android:text="Lun, Mar, Mer"
                 android:textColor="@color/light_bg_dark_secondary_text" />
 
 
         </LinearLayout>
-
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -32,9 +32,9 @@ public class User {
     @SerializedName("HomeAddress")
     @Expose
     private Address address;
-    @SerializedName("CompanyID")
+    @SerializedName("Company")
     @Expose
-    private Long companyID;
+    private Company company;
     @SerializedName("Regdate")
     @Expose
     private Date registrationDate;
@@ -108,12 +108,12 @@ public class User {
         this.address = address;
     }
 
-    public Long getCompanyID() {
-        return companyID;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setCompanyID(Long companyID) {
-        this.companyID = companyID;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public Date getRegistrationDate() {

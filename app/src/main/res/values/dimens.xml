@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="activity_padding">24dp</dimen>
+    <dimen name="activity_padding">12dp</dimen>
     <dimen name="activity_margin">8dp</dimen>
     <dimen name="items_margin">4dp</dimen>
     <dimen name="border_radius">32dp</dimen>

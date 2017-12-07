@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,8 +67,6 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
 
-        //holder.scoreProgress.setProgress(Integer.parseInt(matchItem.getScore().toString()));
-
         ArcProgressAnimation animation = new ArcProgressAnimation(holder.scoreProgress, 0, matchItem.getScore());
         animation.setDuration(500);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -88,8 +87,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
                 .apply(requestOptions)
                 .into(holder.userAvatar);
 
-        //holder.scoreText.setText(String.format(Locale.ITALY, "%1$d%%", matchItem.getScore()));
         holder.nameView.setText(matchItem.getHost().toString());
+        holder.jobView.setText(matchItem.getHost().getCompany().toString());
 
         if (!matchItem.isNew()) holder.newBadgeView.setVisibility(View.GONE);
 
@@ -99,15 +98,14 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         holder.scoreProgress.setFinishedStrokeColor(color);
         bg.setTint(color);
         holder.scoreText.setBackground(bg);
-        holder.distanceView.setText(String.format(res.getString(R.string.match_item_shared_distance), df.format(matchItem.getDistance() / 1000.0)));
-        holder.timeText.setText(String.format(res.getString(R.string.match_item_time), dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime())));
+        holder.timeText.setText(dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime()));
 
         ArrayList<String> days = new ArrayList<>();
         for(int day : matchItem.getWeekdays()){
             days.add(activity.getResources().getStringArray(R.array.giorni)[day]);
         }
 
-        holder.daysText.setText(String.format(res.getString(R.string.match_item_days), TextUtils.join(", ", days) ));
+        holder.daysText.setText(TextUtils.join(", ", days) );
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
@@ -169,14 +167,14 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         TextView scoreText;
         @BindView(R.id.name_view)
         TextView nameView;
-        @BindView(R.id.distance_view)
-        TextView distanceView;
+        @BindView(R.id.job_view)
+        TextView jobView;
         @BindView(R.id.time_view)
         TextView timeText;
         @BindView(R.id.days_view)
         TextView daysText;
-        @BindView(R.id.new_badge_view)
-        LinearLayout newBadgeView;
+        @BindView(R.id.new_badge)
+        ImageView newBadgeView;
         @BindView(R.id.container)
         RelativeLayout container;
 

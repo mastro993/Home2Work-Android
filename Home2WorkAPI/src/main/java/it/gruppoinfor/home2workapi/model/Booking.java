@@ -24,6 +24,12 @@ public class Booking {
     @SerializedName("Status")
     @Expose
     private int bookingStatus;
+    @SerializedName("CreationDate")
+    @Expose
+    private Date creationDate;
+    @SerializedName("Hidden")
+    @Expose
+    private Boolean hidden;
 
     public Booking() {
     }
@@ -66,5 +72,21 @@ public class Booking {
 
     public void setBookingStatus(int bookingStatus) {
         this.bookingStatus = bookingStatus;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +30,8 @@ public class MatchFragmentRequest extends Fragment {
 
     @BindView(R.id.requests_recycler_view)
     RecyclerView requestsRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView emptyView;
     private Unbinder unbinder;
     private RequestAdapter requestAdapter;
 
@@ -45,28 +48,33 @@ public class MatchFragmentRequest extends Fragment {
     }
 
     private void initUI() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requestsRecyclerView.getContext(), layoutManager.getOrientation());
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+        if(Client.getUserRequests().size() == 0){
+            requestsRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requestsRecyclerView.getContext(), layoutManager.getOrientation());
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
-        requestsRecyclerView.setLayoutManager(layoutManager);
-        //requestsRecyclerView.addItemDecoration(dividerItemDecoration);
-        requestsRecyclerView.setLayoutAnimation(animation);
+            requestsRecyclerView.setLayoutManager(layoutManager);
+            //requestsRecyclerView.addItemDecoration(dividerItemDecoration);
+            requestsRecyclerView.setLayoutAnimation(animation);
 
-        requestAdapter = new RequestAdapter(getActivity(), Client.getUserRequests());
-        requestAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
-            @Override
-            public void onItemClick(View view, int position) {
-                showRequestDetails(position);
-            }
+            requestAdapter = new RequestAdapter(getActivity(), Client.getUserRequests());
+            requestAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    showRequestDetails(position);
+                }
 
-            @Override
-            public boolean onLongItemClick(View view, int position) {
-                return false;
-            }
-        });
+                @Override
+                public boolean onLongItemClick(View view, int position) {
+                    return false;
+                }
+            });
 
-        requestsRecyclerView.setAdapter(requestAdapter);
+            requestsRecyclerView.setAdapter(requestAdapter);
+        }
     }
 
     private void showRequestDetails(int position) {

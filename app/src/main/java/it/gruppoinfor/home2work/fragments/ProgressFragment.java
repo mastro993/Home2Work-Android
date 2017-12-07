@@ -137,7 +137,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         });
 
 
-        Client.getAPI().getCompany(Client.getSignedUser().getCompanyID()).enqueue(new Callback<Company>() {
+        Client.getAPI().getCompany(Client.getSignedUser().getCompany().getId()).enqueue(new Callback<Company>() {
             @Override
             public void onResponse(@NonNull Call<Company> call, @NonNull Response<Company> response) {
                 jobTextView.setText(response.body().toString());

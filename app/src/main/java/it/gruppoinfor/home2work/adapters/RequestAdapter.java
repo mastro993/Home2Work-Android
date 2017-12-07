@@ -89,8 +89,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         holder.statusIcon.setBackground(bg);
         holder.statusIcon.setImageResource(icon);
 
-        holder.arrivalTimeView.setText(String.format(res.getString(R.string.match_item_time), dateToString(matchItem.getStartTime())));
-        holder.departureTimeView.setText(String.format(res.getString(R.string.match_item_days), dateToString(matchItem.getEndTime())));
+        holder.timeView.setText(dateToString(matchItem.getStartTime()) + " - " + dateToString(matchItem.getEndTime()));
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
@@ -151,10 +150,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         TextView nameView;
         @BindView(R.id.date_view)
         TextView dateView;
-        @BindView(R.id.arrival_time_view)
-        TextView arrivalTimeView;
-        @BindView(R.id.departure_time_view)
-        TextView departureTimeView;
+        @BindView(R.id.time_view)
+        TextView timeView;
         @BindView(R.id.status_badge_icon)
         ImageView statusIcon;
 

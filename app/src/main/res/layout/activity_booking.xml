@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
-            android:background="?attr/colorPrimary"/>
+            android:background="?attr/colorPrimary" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -24,18 +24,123 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_bar_size"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/activity_padding">
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.github.lzyzsd.circleprogress.ArcProgress
+                    android:id="@+id/score_progress"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_margin="7.5dp"
+                    app:arc_finished_color="@color/colorAccent"
+                    app:arc_max="100"
+                    app:arc_progress="70"
+                    app:arc_stroke_width="6dp"
+                    app:arc_unfinished_color="@color/grey_300" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_avatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentStart="true"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_avatar_placeholder"
+                    android:transitionName="avatar" />
+
+                <TextView
+                    android:id="@+id/score_text"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_alignBottom="@+id/score_progress"
+                    android:layout_alignStart="@+id/score_progress"
+                    android:layout_marginStart="18dp"
+                    android:background="@drawable/bg_match_score_percent"
+                    android:gravity="center"
+                    android:text="100%"
+                    android:textColor="@color/dark_bg_light_primary_text"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/name_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Pincopallo Fumagalli"
+                    android:textColor="@color/light_bg_dark_primary_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/job_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="Azienda A"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/time_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8:00 - 18:00"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+                <TextView
+                    android:id="@+id/days_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Luna, Mar, Mer"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/container" />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -43,150 +148,58 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:orientation="vertical"
-            android:padding="@dimen/list_items_padding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
-                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:orientation="horizontal">
+                android:layout_marginBottom="12dp"
+                android:background="@color/window_background"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_padding">
 
-                <RelativeLayout
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <com.github.lzyzsd.circleprogress.ArcProgress
-                        android:id="@+id/score_progress"
-                        android:layout_width="85dp"
-                        android:layout_height="85dp"
-                        android:layout_margin="7.5dp"
-                        app:arc_finished_color="@color/colorAccent"
-                        app:arc_max="100"
-                        app:arc_progress="70"
-                        app:arc_stroke_width="6dp"
-                        app:arc_unfinished_color="@color/grey_300" />
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/user_avatar"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentStart="true"
-                        android:padding="13dp"
-                        android:src="@drawable/ic_avatar_placeholder"
-                        android:transitionName="avatar" />
-
-                    <TextView
-                        android:id="@+id/score_text"
-                        android:layout_width="50dp"
-                        android:layout_height="20dp"
-                        android:layout_alignBottom="@+id/score_progress"
-                        android:layout_alignStart="@+id/score_progress"
-                        android:layout_marginStart="18dp"
-                        android:background="@drawable/bg_match_score_percent"
-                        android:gravity="center"
-                        android:text="100%"
-                        android:textColor="@color/dark_bg_light_primary_text"
-                        android:textStyle="bold" />
-
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="6dp"
+                    android:text="Prenotazione effettuata per " />
 
-                    <TextView
-                        android:id="@+id/name_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_marginTop="5dp"
-                        android:text="Pincopallo Fumagalli"
-                        android:textColor="@color/light_bg_dark_primary_text"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/distance_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/match_item_shared_distance"
-                        android:textColor="@color/light_bg_dark_secondary_text" />
-
-                    <TextView
-                        android:id="@+id/arrival_time_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/match_item_time"
-                        android:textColor="@color/light_bg_dark_secondary_text" />
-
-                    <TextView
-                        android:id="@+id/departure_time_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/match_item_days"
-                        android:textColor="@color/light_bg_dark_secondary_text" />
-
-
-                </LinearLayout>
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Lunedì, 22 Dicembre 2017 "
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18dp" />
 
             </LinearLayout>
 
             <TextView
-                android:textColor="@color/light_bg_dark_primary_text"
-                android:textSize="16sp"
-                android:id="@+id/notes_text"
+                android:id="@+id/status_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="54dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="6dp"
                 android:gravity="center"
                 android:lines="2"
                 android:text="La prenotazione è ancora in attesa"
-                android:textStyle="italic" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/window_background"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="@dimen/list_items_padding">
-
-                <TextView
-                    android:id="@+id/meeting_location_and_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:lines="2"
-                    android:text="@string/booking_meeting_location_and_time" />
-
-
-            </LinearLayout>
+                android:textColor="@color/light_bg_dark_primary_text"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/start_share_button"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="54dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginBottom="6dp"
                 android:text="Inizia condivisione"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </LinearLayout>
 
