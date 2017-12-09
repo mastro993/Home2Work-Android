@@ -73,8 +73,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
             AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-            // DIO SCANNATO
-
             Intent i = new Intent(this, SyncAlarmReceiver.class);
             PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
             am.setInexactRepeating(

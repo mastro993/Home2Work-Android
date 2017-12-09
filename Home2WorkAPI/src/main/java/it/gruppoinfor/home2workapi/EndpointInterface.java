@@ -1,5 +1,7 @@
 package it.gruppoinfor.home2workapi;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 
@@ -103,18 +105,20 @@ public interface EndpointInterface {
             @Field("token") String token
     );
 
-
+    @FormUrlEncoded
     @POST("share")
     Call<Share> createShare(
-            @Body Share share
+            @Field("bookingId") Long bookingId,
+            @Field("startLocation") String startLocationString
     );
 
     @FormUrlEncoded
     @POST("share/validate")
     Call<Share> validateShare(
             @Field("guestId") Long userID,
-            @Field("code") String code
-    );
+            @Field("code") String code,
+            @Field("latlng")String latLngString
+            );
 
 
 

@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
@@ -22,12 +21,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.github.lzyzsd.circleprogress.ArcProgress;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -109,6 +109,8 @@ public class BookingActivity extends AppCompatActivity {
     LinearLayout linearLayout3;
     @BindView(R.id.boooking_date_view)
     TextView boookingDateView;
+
+    private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,8 +235,8 @@ public class BookingActivity extends AppCompatActivity {
 
     @OnClick(R.id.start_share_button)
     public void startShare() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
         } else {
             IntentIntegrator intentIntegrator = new IntentIntegrator(this);
             intentIntegrator.initiateScan();
@@ -244,7 +246,7 @@ public class BookingActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == CAMERA_PERMISSION_REQUEST_CODE){
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             startShare();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -252,26 +254,39 @@ public class BookingActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if(scanResult != null) {
-           String shareCode = scanResult.getContents();
-           Client.getAPI().validateShare(Client.getSignedUser().getId(), shareCode).enqueue(new Callback<Share>() {
-               @Override
-               public void onResponse(Call<Share> call, Response<Share> response) {
-                   if(response.code() == 200){
-                       // Valida
-                   } else {
-                       // Non valida
-                   }
-               }
+        if (scanResult != null) {
+            validateShare(scanResult.getContents());
 
-               @Override
-               public void onFailure(Call<Share> call, Throwable t) {
-
-               }
-           });
 
         } else
             Toasty.error(this, "QR Code non valido");
+    }
+
+    private void validateShare(String sharecode) {
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                String latlngString = location.getLatitude() + "," + location.getLongitude();
+                Client.getAPI().validateShare(Client.getSignedUser().getId(), sharecode, latlngString).enqueue(new Callback<Share>() {
+                    @Override
+                    public void onResponse(Call<Share> call, Response<Share> response) {
+                        if (response.code() == 200) {
+                            // Valida
+                        } else {
+                            // Non valida
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Share> call, Throwable t) {
+
+                    }
+                });
+            });
+        }
+
+
     }
 
 

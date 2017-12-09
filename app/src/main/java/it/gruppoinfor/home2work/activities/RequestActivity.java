@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,15 +19,13 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -41,7 +38,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.ByteArrayOutputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -285,33 +281,37 @@ public class RequestActivity extends AppCompatActivity {
         ImageView qrCodeImage = (ImageView) qrCodeDialog.findViewById(R.id.qr_code_image_view);
         FrameLayout loadingView = (FrameLayout) qrCodeDialog.findViewById(R.id.loading_view);
 
-        Share share = new Share();
-        share.setBooking(booking);
-
         loadingView.setVisibility(View.VISIBLE);
         qrCodeDialog.show();
 
-        Client.getAPI().createShare(share).enqueue(new Callback<Share>() {
-            @Override
-            public void onResponse(Call<Share> call, Response<Share> response) {
-                try{
-                    Bitmap bitmap = QREncoder.EncodeText(response.body().getCode());
-                    qrCodeImage.setImageBitmap(bitmap);
-                    loadingView.setVisibility(View.INVISIBLE);
-                } catch (Exception e){
-                    qrCodeDialog.hide();
-                    Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
-                }
-            }
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            @Override
-            public void onFailure(Call<Share> call, Throwable t) {
-                qrCodeDialog.hide();
-                Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
-            }
+            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                String latlngString = location.getLatitude() + "," + location.getLongitude();
+                Client.getAPI().createShare(booking.getBookingID(), latlngString).enqueue(new Callback<Share>() {
+                    @Override
+                    public void onResponse(Call<Share> call, Response<Share> response) {
+                        try {
+                            Bitmap bitmap = QREncoder.EncodeText(response.body().getCode());
+                            qrCodeImage.setImageBitmap(bitmap);
+                            loadingView.setVisibility(View.INVISIBLE);
+                        } catch (Exception e) {
+                            qrCodeDialog.hide();
+                            Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
+                        }
+                    }
 
-        });
+                    @Override
+                    public void onFailure(Call<Share> call, Throwable t) {
+                        qrCodeDialog.hide();
+                        Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
+                    }
 
+                });
+            });
+
+        }
 
     }
 
