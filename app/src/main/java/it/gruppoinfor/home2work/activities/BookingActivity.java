@@ -2,14 +2,17 @@ package it.gruppoinfor.home2work.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -35,10 +39,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,6 +61,7 @@ import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
+import it.gruppoinfor.home2workapi.model.Share;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -98,6 +107,8 @@ public class BookingActivity extends AppCompatActivity {
     LinearLayout container;
     @BindView(R.id.linearLayout3)
     LinearLayout linearLayout3;
+    @BindView(R.id.boooking_date_view)
+    TextView boookingDateView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +143,6 @@ public class BookingActivity extends AppCompatActivity {
 
             }
         });
-
 
     }
 
@@ -178,8 +188,7 @@ public class BookingActivity extends AppCompatActivity {
 
         switch (booking.getBookingStatus()) {
             case BOOKING_ACCEPTED:
-                startShareButton.setVisibility(View.VISIBLE);
-                statusText.setVisibility(View.GONE);
+                initSharingView();
                 break;
             case BOOKING_PENDING:
                 statusText.setText("La prenotazione è ancora in attesa di risposta");
@@ -194,14 +203,77 @@ public class BookingActivity extends AppCompatActivity {
                 break;
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
+        String dateString = dateFormat.format(booking.getBookedDate());
+        boookingDateView.setText(dateString);
+
 
     }
+
+    private void initSharingView() {
+
+        startShareButton.setVisibility(View.VISIBLE);
+        statusText.setVisibility(View.GONE);
+
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(booking.getBookedDate().getTime());
+
+        if (Calendar.getInstance().get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
+            startShareButton.setEnabled(true);
+        } else {
+            startShareButton.setEnabled(false);
+        }
+
+        // TODO rimuovere per debug
+        startShareButton.setEnabled(true);
+
+    }
+
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
 
     @OnClick(R.id.start_share_button)
-    public void onViewClicked() {
+    public void startShare() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+            intentIntegrator.initiateScan();
+        }
 
-        // TODO SCANNER CODICE PER CONDIVISIONE CON ZXING
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == CAMERA_PERMISSION_REQUEST_CODE){
+            startShare();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if(scanResult != null) {
+           String shareCode = scanResult.getContents();
+           Client.getAPI().validateShare(Client.getSignedUser().getId(), shareCode).enqueue(new Callback<Share>() {
+               @Override
+               public void onResponse(Call<Share> call, Response<Share> response) {
+                   if(response.code() == 200){
+                       // Valida
+                   } else {
+                       // Non valida
+                   }
+               }
+
+               @Override
+               public void onFailure(Call<Share> call, Throwable t) {
+
+               }
+           });
+
+        } else
+            Toasty.error(this, "QR Code non valido");
+    }
+
 
     private class MyMapReadyCallback implements OnMapReadyCallback {
 
@@ -210,7 +282,6 @@ public class BookingActivity extends AppCompatActivity {
         MyMapReadyCallback(Context context) {
             this.context = context;
         }
-
 
         @Override
         public void onMapReady(final GoogleMap gmap) {

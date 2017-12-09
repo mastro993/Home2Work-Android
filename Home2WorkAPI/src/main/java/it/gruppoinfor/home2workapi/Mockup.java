@@ -89,11 +89,6 @@ public class Mockup {
                     achievements.add(achievement9);
                     achievements.add(achievement10);
 
-                    share1 = new Share(1L, user1, null, 16.4, 16, 164, new Date());
-                    share2 = new Share(2L, user2, null, 11.2, 11, 1112, new Date());
-                    share3 = new Share(3L, null, user1, 8.9, 8, 89, new Date());
-                    share4 = new Share(4L, user4, null, 21.5, 21, 215, new Date());
-
                     List<Share> shares = new ArrayList<>();
                     shares.add(share1);
                     shares.add(share2);

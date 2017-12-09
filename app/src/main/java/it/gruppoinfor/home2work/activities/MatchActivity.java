@@ -103,8 +103,8 @@ public class MatchActivity extends AppCompatActivity {
     TextView karmaPreview;
     @BindView(R.id.exp_preview)
     TextView expPreview;
-    @BindView(R.id.container)
-    LinearLayout container;
+    @BindView(R.id.user_profile_container)
+    LinearLayout userProfileContainer;
     @BindView(R.id.linearLayout2)
     LinearLayout linearLayout2;
     @BindView(R.id.status_text)
@@ -119,19 +119,18 @@ public class MatchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         res = getResources();
 
-
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        matchId = getIntent().getLongExtra("matchID", 0L);
-
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
         mapFragment.onCreate(savedInstanceState);
 
+        matchLoadingView.setVisibility(View.VISIBLE);
+
+        matchId = getIntent().getLongExtra("matchID", 0L);
         Client.getAPI().getMatch(matchId).enqueue(new Callback<Match>() {
             @Override
             public void onResponse(Call<Match> call, Response<Match> response) {
@@ -142,11 +141,10 @@ public class MatchActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Match> call, Throwable t) {
+                Toasty.error(MatchActivity.this, "Impossibile ottenere informazioni match").show();
                 finish();
             }
         });
-
-        matchLoadingView.setVisibility(View.VISIBLE);
 
     }
 
@@ -215,10 +213,12 @@ public class MatchActivity extends AppCompatActivity {
     @OnClick(R.id.request_shere_button)
     void requestShare() {
 
-        final Calendar c = Calendar.getInstance();
+        final Calendar c = Calendar.getInstance(Locale.ITALIAN);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
+        Locale.setDefault(Locale.ITALIAN);
 
 
         MaterialDialog confirmationDialog = new MaterialDialog.Builder(this)
@@ -228,15 +228,11 @@ public class MatchActivity extends AppCompatActivity {
                 .negativeText("Annulla")
                 .onPositive(((MaterialDialog dialog, DialogAction which) -> {
 
-                    EditText noteInput = (EditText) dialog.findViewById(R.id.notes_input);
-
-                    String notes = noteInput.getText().toString();
                     Date date = c.getTime();
 
                     Booking booking = new Booking();
                     booking.setBookedDate(date);
                     booking.setBookedMatch(match);
-                    booking.setNotes(notes);
 
                     Client.getAPI().bookMatch(booking).enqueue(new Callback<Booking>() {
                         @Override
@@ -253,6 +249,7 @@ public class MatchActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Booking> call, Throwable t) {
+                            setResult(BOOKING_NOT_ADDED);
                             finish();
                         }
                     });
@@ -261,31 +258,42 @@ public class MatchActivity extends AppCompatActivity {
                 .build();
 
         TextView dateText = (TextView) confirmationDialog.findViewById(R.id.selected_date_text);
-        TextView noteTitle = (TextView) confirmationDialog.findViewById(R.id.notes_title);
 
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePicker, year, month, day) -> {
             c.set(year, month, day);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
-            String dateString = dateFormat.format(c.getTime());
-            dateText.setText(dateString);
+            int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
-            noteTitle.setText(String.format(res.getString(R.string.new_booking_notes_title), match.getHost().getName()));
+            dayOfWeek = dayOfWeek - 2;
+            if (dayOfWeek == -1) dayOfWeek = 6;
 
-            confirmationDialog.show();
+            if (match.getWeekdays().contains(dayOfWeek)) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
+                String dateString = dateFormat.format(c.getTime());
+                dateText.setText(dateString);
 
+                confirmationDialog.show();
+            } else {
+                Toasty.info(MatchActivity.this, "Questo match non è disponibile il giorno selezionato").show();
+            }
 
         }, mYear, mMonth, mDay);
 
+
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() + 360000 * 240);
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 360000 * 240 * 14);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 360000 * 240 * 21);
 
         datePickerDialog.setTitle("Seleziona la data di prenotazione");
 
 
         datePickerDialog.show();
 
+    }
+
+    @OnClick(R.id.user_profile_container)
+    public void onViewClicked() {
+        // TODO activity profilo utente
     }
 
 

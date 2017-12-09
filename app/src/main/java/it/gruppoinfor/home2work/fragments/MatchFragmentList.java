@@ -3,8 +3,6 @@ package it.gruppoinfor.home2work.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -13,21 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-
-import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Match;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,7 +67,7 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
         if (matchItem.isNew()) {
             matchItem.setNew(false);
             matchesAdapter.notifyItemChanged(position);
-            ((MainActivity)getActivity()).refreshMatchTabBadge();
+            ((MainActivity) getActivity()).refreshMatchTabBadge();
         }
         showMatchDetails(position);
     }
@@ -103,7 +100,7 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
 
     private void showMatchUserProfile(int position) {
         /*
-        TODO Activity info utente
+        TODO Activity profilo utente
         Intent userIntent = new Intent(activity, ShowUserActivity.class);
         User matchedUser = match.getHost();
         userIntent.putExtra("userID", matchedUser.getId());
@@ -118,12 +115,16 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
                 .positiveText(R.string.match_item_hide_dialog_confirm)
                 .negativeText(R.string.match_item_hide_dialog_cancel)
                 .onPositive((dialog, which) -> {
-                    Client.getUserMatches().remove(position);
-                    matchesAdapter.remove(position);
-                    Client.getAPI().hideMatch(matchItem.getMatchID()).enqueue(new Callback<Match>() {
+
+                    matchItem.setHidden(true);
+                    Client.getAPI().editMatch(matchItem).enqueue(new Callback<Match>() {
                         @Override
                         public void onResponse(Call<Match> call, Response<Match> response) {
-
+                            if (response.code() == 200) {
+                                Client.getUserMatches().remove(position);
+                                matchesAdapter.remove(position);
+                                Toasty.success(getContext(), "Match nascosto").show();
+                            }
                         }
 
                         @Override

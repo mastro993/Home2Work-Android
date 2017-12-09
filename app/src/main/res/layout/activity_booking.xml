@@ -168,6 +168,7 @@
                     android:text="Prenotazione effettuata per " />
 
                 <TextView
+                    android:id="@+id/boooking_date_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

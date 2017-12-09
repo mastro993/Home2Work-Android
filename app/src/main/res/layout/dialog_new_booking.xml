@@ -8,6 +8,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="La prenotazioine verrà effettuata per il giorno" />
 
     <TextView
@@ -21,26 +23,5 @@
         android:textColor="@color/colorAccent"
         android:textSize="16dp"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/notes_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/new_booking_notes_title" />
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp">
-
-        <EditText
-            android:id="@+id/notes_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nota (opzionale)"
-            android:inputType="textMultiLine"
-            android:maxLines="5" />
-
-    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

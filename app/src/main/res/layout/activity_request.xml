@@ -88,22 +88,31 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/note_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"
                 android:background="@color/window_background"
-                android:gravity="center"
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:freezesText="true"
-                android:padding="@dimen/activity_padding"
-                android:text="Test"
-                android:focusable="true"
-                android:focusableInTouchMode="true" />
+                android:orientation="vertical"
+                android:padding="@dimen/activity_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="6dp"
+                    android:text="Prenotazione richiesta per " />
+
+                <TextView
+                    android:id="@+id/boooking_date_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Lunedì, 22 Dicembre 2017 "
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

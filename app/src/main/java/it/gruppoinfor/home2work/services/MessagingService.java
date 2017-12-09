@@ -1,39 +1,76 @@
 package it.gruppoinfor.home2work.services;
 
-import android.app.Service;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.IBinder;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import it.gruppoinfor.home2work.utils.MyLogger;
+import java.util.Map;
+
+import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.SplashActivity;
+import it.gruppoinfor.home2workapi.Client;
 
 public class MessagingService extends FirebaseMessagingService {
+
+    private Map<String, String> data;
+    private RemoteMessage.Notification notification;
+    private PendingIntent pendingIntent;
 
     public MessagingService() {
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
-
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        MyLogger.d("MESSAGING_SERVICE", "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            MyLogger.d("MESSAGING_SERVICE", "Message data payload: " + remoteMessage.getData());
-
+            data = remoteMessage.getData();
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            MyLogger.d("MESSAGING_SERVICE", "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            notification = remoteMessage.getNotification();
+            sendNotification();
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+    }
+
+    private void sendNotification() {
+
+        if (Client.getSignedUser() != null) {
+            Intent resultIntent = new Intent(this, MainActivity.class);
+            pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            Intent resultIntent = new Intent(this, SplashActivity.class);
+            pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, "BOOKING_NOTIFICATION_CHANNEL")
+                        .setSmallIcon(R.drawable.home2work_icon)
+                        .setContentTitle(notification.getTitle())
+                        .setContentText(notification.getBody())
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent);
+
+
+        int mNotificationId = 32425;
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("my_channel_01","Canale prenotazioni", NotificationManager.IMPORTANCE_DEFAULT);
+            mNotifyMgr.createNotificationChannel(channel);
+        }
+
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }

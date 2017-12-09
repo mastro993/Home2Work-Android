@@ -28,7 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 
@@ -71,18 +70,23 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         String statusText;
         int icon;
         Drawable bg = ContextCompat.getDrawable(activity, R.drawable.shape_badge_circle);
-        if (bookedMatchItem.getBookingStatus() == 2) {
-            color = ContextCompat.getColor(activity, R.color.green_500);
-            icon = R.drawable.ic_check;
-        } else if (bookedMatchItem.getBookingStatus() == 1) {
-            color = ContextCompat.getColor(activity, R.color.amber_500);
-            icon = R.drawable.ic_clock;
-        } else if (bookedMatchItem.getBookingStatus() == 0) {
-            color = ContextCompat.getColor(activity, R.color.red_500);
-            icon = R.drawable.ic_close;
-        } else {
-            color = ContextCompat.getColor(activity, R.color.red_500);
-            icon = R.drawable.ic_close;
+
+        switch (bookedMatchItem.getBookingStatus()) {
+            case Booking.ACCEPTED:
+                color = ContextCompat.getColor(activity, R.color.green_500);
+                icon = R.drawable.ic_check;
+                holder.statusIcon.setVisibility(View.GONE);
+                break;
+            case Booking.PENDING:
+                color = ContextCompat.getColor(activity, R.color.amber_500);
+                icon = R.drawable.ic_clock;
+                break;
+            case Booking.CANCELED:
+            default:
+                color = ContextCompat.getColor(activity, R.color.red_500);
+                icon = R.drawable.ic_close;
+                break;
+
         }
 
         bg.setTint(color);

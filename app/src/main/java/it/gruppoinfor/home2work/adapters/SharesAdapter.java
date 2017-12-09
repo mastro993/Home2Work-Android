@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,29 +49,40 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Share share = shares.get(position);
 
-        if (share.getGuest() == null) {
-            share.setGuest(Client.getSignedUser());
-            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getHost().toString()));
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        Double kmDistance = share.getBooking().getBookedMatch().getDistance() / 1000.0;
+        int karmaPoints;
+        int exp;
+
+        if (share.getBooking().getBookedMatch().getGuest().getId() == Client.getSignedUser().getId()) {
+            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getBooking().getBookedMatch().getHost().toString()));
+            karmaPoints = kmDistance.intValue();
+            exp = (int) (kmDistance * 10);
         } else {
-            share.setHost(Client.getSignedUser());
-            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getGuest().toString()));
+            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getBooking().getBookedMatch().getGuest().toString()));
+            karmaPoints = (int)(kmDistance.intValue() * 1.2);
+            exp = (int) (kmDistance * 12);
         }
 
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
 
         Glide.with(activity)
-                .load(share.getGuest().getAvatarURL())
+                .load(share.getBooking().getBookedMatch().getGuest().getAvatarURL())
                 .apply(requestOptions)
                 .into(holder.guestAvatar);
 
         Glide.with(activity)
-                .load(share.getHost().getAvatarURL())
+                .load(share.getBooking().getBookedMatch().getHost().getAvatarURL())
                 .apply(requestOptions)
                 .into(holder.hostAvatar);
 
-        holder.distanceView.setText(String.format("%1$s Km", share.getSharedDistance()));
-        holder.karmaView.setText(String.format("%1$s punti Karma", share.getKarma()));
-        holder.expView.setText(String.format("%1$s XP", share.getExp()));
+
+
+        holder.distanceView.setText(String.format("%1$s Km", share.getBooking().getBookedMatch().getDistance()));
+        holder.karmaView.setText(String.format("%1$s punti Karma", karmaPoints));
+        holder.expView.setText(String.format("%1$s XP", exp));
 
     }
 

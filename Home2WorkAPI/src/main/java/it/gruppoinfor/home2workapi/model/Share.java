@@ -1,28 +1,46 @@
 package it.gruppoinfor.home2workapi.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Share {
-    private Long shareID;
-    private User guest;
-    private User host;
-    private Double sharedDistance;
-    private Integer karma;
-    private Integer exp;
-    private Date shareDate;
+    public static final int CREATED = 0;
+    public static final int STARTED = 1;
+    public static final int ONGOING = 3;
+    public static final int COMPLETED = 3;
 
-    public Share(Long shareID, User guest, User host, Double sharedDistance, Integer karma, Integer exp, Date shareDate) {
-        this.shareID = shareID;
-        this.guest = guest;
-        this.host = host;
-        this.sharedDistance = sharedDistance;
-        this.karma = karma;
-        this.exp = exp;
-        this.shareDate = shareDate;
+    @SerializedName("ID")
+    @Expose
+    private Long shareID;
+    @SerializedName("Booking")
+    @Expose
+    private Booking booking;
+    @SerializedName("Code")
+    @Expose
+    private String code;
+    @SerializedName("Status")
+    @Expose
+    private int status;
+    @SerializedName("CreationDate")
+    @Expose
+    private Timestamp creationDate;
+
+    public static int getCREATED() {
+        return CREATED;
+    }
+
+    public static int getSTARTED() {
+        return STARTED;
+    }
+
+    public static int getCOMPLETED() {
+        return COMPLETED;
     }
 
     public Long getShareID() {
-
         return shareID;
     }
 
@@ -30,51 +48,35 @@ public class Share {
         this.shareID = shareID;
     }
 
-    public User getGuest() {
-        return guest;
+    public Booking getBooking() {
+        return booking;
     }
 
-    public void setGuest(User guest) {
-        this.guest = guest;
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
-    public User getHost() {
-        return host;
+    public String getCode() {
+        return code;
     }
 
-    public void setHost(User host) {
-        this.host = host;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public Double getSharedDistance() {
-        return sharedDistance;
+    public int getStatus() {
+        return status;
     }
 
-    public void setSharedDistance(Double sharedDistance) {
-        this.sharedDistance = sharedDistance;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
-    public Integer getKarma() {
-        return karma;
+    public Timestamp getCreationDate() {
+        return creationDate;
     }
 
-    public void setKarma(Integer karma) {
-        this.karma = karma;
-    }
-
-    public Integer getExp() {
-        return exp;
-    }
-
-    public void setExp(Integer exp) {
-        this.exp = exp;
-    }
-
-    public Date getShareDate() {
-        return shareDate;
-    }
-
-    public void setShareDate(Date shareDate) {
-        this.shareDate = shareDate;
+    public void setCreationDate(Timestamp creationDate) {
+        this.creationDate = creationDate;
     }
 }

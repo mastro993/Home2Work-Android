@@ -4,21 +4,27 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -35,10 +41,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,15 +56,14 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.utils.Converters;
+import it.gruppoinfor.home2work.utils.QREncoder;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
+import it.gruppoinfor.home2workapi.model.Share;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class RequestActivity extends AppCompatActivity {
 
@@ -82,12 +91,12 @@ public class RequestActivity extends AppCompatActivity {
     LinearLayout container;
     @BindView(R.id.linearLayout3)
     LinearLayout linearLayout3;
-    @BindView(R.id.note_text)
-    TextView noteText;
     @BindView(R.id.exp_preview)
     TextView expPreview;
     @BindView(R.id.karma_preview)
     TextView karmaPreview;
+    @BindView(R.id.boooking_date_view)
+    TextView boookingDateView;
 
     private Long bookingId;
     private int position;
@@ -109,12 +118,17 @@ public class RequestActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        position = getIntent().getIntExtra("request_position", 0);
-        bookingId = Client.getUserRequests().get(position).getBookingID();
+        if (getIntent().getLongExtra("bookingID", 0) != 0) {
+            bookingId = getIntent().getLongExtra("bookingID", 0);
+        } else {
+            position = getIntent().getIntExtra("request_position", 0);
+            bookingId = Client.getUserRequests().get(position).getBookingID();
+        }
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
         mapFragment.onCreate(savedInstanceState);
+
+        requestLoadingView.setVisibility(View.VISIBLE);
 
         Client.getAPI().getBooking(bookingId).enqueue(new Callback<Booking>() {
             @Override
@@ -130,8 +144,6 @@ public class RequestActivity extends AppCompatActivity {
             }
         });
 
-        requestLoadingView.setVisibility(View.VISIBLE);
-
     }
 
     private void initUI() {
@@ -144,9 +156,7 @@ public class RequestActivity extends AppCompatActivity {
                 rejectRequestButton.setVisibility(View.VISIBLE);
                 break;
             case BookingActivity.BOOKING_ACCEPTED:
-                startShareButton.setVisibility(View.VISIBLE);
-                acceptRequestButton.setVisibility(View.GONE);
-                rejectRequestButton.setVisibility(View.GONE);
+                initSharingView();
                 break;
             case BookingActivity.BOOKING_CANCELED:
                 break;
@@ -165,19 +175,36 @@ public class RequestActivity extends AppCompatActivity {
         nameView.setText(booking.getBookedMatch().getGuest().toString());
         jobView.setText(booking.getBookedMatch().getGuest().getCompany().toString());
 
-        if(booking.getNotes().isEmpty()){
-            noteText.setVisibility(View.GONE);
-        } else {
-            noteText.setText(booking.getNotes());
-            noteText.setSelected(true);
-        }
-
         Double kmDistance = booking.getBookedMatch().getDistance() / 1000.0;
 
         int karmaPoints = (int) (kmDistance.intValue() * 1.2);
         int exp = (int) (kmDistance * 12);
         karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
         expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
+        String dateString = dateFormat.format(booking.getBookedDate());
+        boookingDateView.setText(dateString);
+
+    }
+
+    private void initSharingView() {
+
+        startShareButton.setVisibility(View.VISIBLE);
+        acceptRequestButton.setVisibility(View.GONE);
+        rejectRequestButton.setVisibility(View.GONE);
+
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(booking.getBookedDate().getTime());
+
+        if (Calendar.getInstance().get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
+            startShareButton.setEnabled(true);
+        } else {
+            startShareButton.setEnabled(false);
+        }
+
+        // TODO rimuovere per debug
+        startShareButton.setEnabled(true);
 
     }
 
@@ -247,6 +274,45 @@ public class RequestActivity extends AppCompatActivity {
 
     @OnClick(R.id.start_share_button)
     public void onStartShareButtonClicked() {
+
+        MaterialDialog qrCodeDialog = new MaterialDialog.Builder(this)
+                .title("Inizia condivisione")
+                .customView(R.layout.dialog_share_qr_code, false)
+                .build();
+
+
+        TextView titleView = (TextView) qrCodeDialog.findViewById(R.id.title);
+        ImageView qrCodeImage = (ImageView) qrCodeDialog.findViewById(R.id.qr_code_image_view);
+        FrameLayout loadingView = (FrameLayout) qrCodeDialog.findViewById(R.id.loading_view);
+
+        Share share = new Share();
+        share.setBooking(booking);
+
+        loadingView.setVisibility(View.VISIBLE);
+        qrCodeDialog.show();
+
+        Client.getAPI().createShare(share).enqueue(new Callback<Share>() {
+            @Override
+            public void onResponse(Call<Share> call, Response<Share> response) {
+                try{
+                    Bitmap bitmap = QREncoder.EncodeText(response.body().getCode());
+                    qrCodeImage.setImageBitmap(bitmap);
+                    loadingView.setVisibility(View.INVISIBLE);
+                } catch (Exception e){
+                    qrCodeDialog.hide();
+                    Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Share> call, Throwable t) {
+                qrCodeDialog.hide();
+                Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
+            }
+
+        });
+
+
     }
 
     private class MyMapReadyCallback implements OnMapReadyCallback {

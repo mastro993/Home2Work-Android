@@ -9,6 +9,11 @@ import it.gruppoinfor.home2workapi.enums.BookingStatus;
 
 public class Booking {
 
+    public static final int REJECTED = 0;
+    public static final int PENDING = 1;
+    public static final int ACCEPTED = 2;
+    public static final int CANCELED = 3;
+
     @SerializedName("BookingID")
     @Expose
     private Long bookingID;

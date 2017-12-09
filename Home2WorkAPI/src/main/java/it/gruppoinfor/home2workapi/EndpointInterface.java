@@ -8,6 +8,7 @@ import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
+import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -65,9 +66,9 @@ public interface EndpointInterface {
             @Path("id") Long id
     );
 
-    @GET("match/{id}/hide")
-    Call<Match> hideMatch(
-            @Path("id") Long id
+    @PUT("match")
+    Call<Match> editMatch(
+            @Body Match match
     );
 
     @POST("booking")
@@ -100,6 +101,19 @@ public interface EndpointInterface {
     Call<ResponseBody> setFCMToken(
             @Field("userId") Long userID,
             @Field("token") String token
+    );
+
+
+    @POST("share")
+    Call<Share> createShare(
+            @Body Share share
+    );
+
+    @FormUrlEncoded
+    @POST("share/validate")
+    Call<Share> validateShare(
+            @Field("guestId") Long userID,
+            @Field("code") String code
     );
 
 
