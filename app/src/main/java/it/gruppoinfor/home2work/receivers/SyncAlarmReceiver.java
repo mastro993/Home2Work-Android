@@ -19,21 +19,19 @@ public class SyncAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent locationIntent = new Intent(context, SyncService.class);
+        Intent syncIntent = new Intent(context, SyncService.class);
 
         SessionManager sessionManager = new SessionManager(context);
         sessionManager.checkSession(new SessionManager.SessionManagerCallback() {
             @Override
             public void onValidSession() {
-                context.startService(locationIntent);
+                context.startService(syncIntent);
+            }
+
+            @Override
+            public void onInvalidSession(SessionManager.AuthCode code) {
+                super.onInvalidSession(code);
             }
         });
-
-        /*PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        wl.acquire();
-
-
-        wl.release();*/
     }
 }

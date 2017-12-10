@@ -52,7 +52,7 @@ public class ProgressFragmentAchievements extends Fragment implements ItemClickC
         achievementRecyclerView.setLayoutManager(layoutManager);
         achievementRecyclerView.setLayoutAnimation(animation);
 
-        List<Achievement> achievements = Client.getUserProfile().getAchievements();
+        List<Achievement> achievements = Client.getUserAchivements();
 
         Collections.sort(achievements, (A, B) -> {
             int result = B.getProgress().compareTo(A.getProgress());

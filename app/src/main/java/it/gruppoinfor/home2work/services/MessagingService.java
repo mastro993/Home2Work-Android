@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -15,16 +16,31 @@ import java.util.Map;
 
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.RequestActivity;
 import it.gruppoinfor.home2work.activities.SplashActivity;
 import it.gruppoinfor.home2workapi.Client;
 
 public class MessagingService extends FirebaseMessagingService {
+
+    private static final String TYPE = "TYPE";
+    private static final String SHARE_STARTED = "SHARE_STARTED";
+    private static final String SHARE_ID = "SHARE_ID";
+    private static final String SHARE_BOOKING_ID = "SHARE_BOOKING_ID";
+
+    private LocalBroadcastManager broadcaster;
 
     private Map<String, String> data;
     private RemoteMessage.Notification notification;
     private PendingIntent pendingIntent;
 
     public MessagingService() {
+
+    }
+
+    @Override
+    public void onCreate() {
+        broadcaster = LocalBroadcastManager.getInstance(this);
+        super.onCreate();
     }
 
     @Override
@@ -39,6 +55,16 @@ public class MessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             notification = remoteMessage.getNotification();
             sendNotification();
+        }
+
+        if(data.get(TYPE).equals(SHARE_STARTED)){
+            Long shareId = Long.parseLong(data.get(SHARE_ID));
+            Long bookingId = Long.parseLong(data.get(SHARE_BOOKING_ID));
+
+            Intent intent = new Intent("REQUEST_VALIDATION");
+            intent.putExtra(SHARE_ID, shareId);
+            intent.putExtra(SHARE_BOOKING_ID, bookingId);
+            broadcaster.sendBroadcast(intent);
         }
 
     }

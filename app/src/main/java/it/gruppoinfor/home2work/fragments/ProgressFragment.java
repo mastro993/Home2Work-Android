@@ -3,7 +3,6 @@ package it.gruppoinfor.home2work.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.arasthel.asyncjob.AsyncJob;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -34,12 +35,7 @@ import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
-import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Profile;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class ProgressFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -98,9 +94,9 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         viewPager.addOnPageChangeListener(this);
 
-        nameTextView.setText(Client.getSignedUser().toString());
-
         avatarView.setAvatarURL(Client.getSignedUser().getAvatarURL());
+        nameTextView.setText(Client.getSignedUser().toString());
+        jobTextView.setText(Client.getSignedUser().getCompany().toString());
     }
 
     @Override
@@ -127,26 +123,26 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     private void refreshData() {
         swipeRefreshLayout.setRefreshing(true);
 
+        AsyncJob.doInBackground(() -> {
 
-        // TODO refresh profilo dal server
-        Mockup.getUserProfileAsync(profile -> {
-            swipeRefreshLayout.setRefreshing(false);
-            Client.setUserProfile(profile);
-            refreshProfileUI();
-            refreshTabs();
-        });
+            // TODO Call<List<Share>> matchesCall = Client.getAPI().getUserShares(Client.getSignedUser().getId());
+            // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getSignedUser().getId());
+            // TODO Call<Profile> requestsCall = Client.getAPI().getUserProfile(Client.getSignedUser().getId());
 
-
-        Client.getAPI().getCompany(Client.getSignedUser().getCompany().getId()).enqueue(new Callback<Company>() {
-            @Override
-            public void onResponse(@NonNull Call<Company> call, @NonNull Response<Company> response) {
-                jobTextView.setText(response.body().toString());
+            try {
+                //Client.setUserShares(new ArrayList<>(matchesCall.execute().body()));
+                //Client.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
+                //Client.setUserProfile(new ArrayList<>(requestsCall.execute().body()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            @Override
-            public void onFailure(@NonNull Call<Company> call, @NonNull Throwable t) {
+            AsyncJob.doOnMainThread(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+                refreshTabs();
+                refreshProfileUI();
+            });
 
-            }
         });
     }
 
@@ -159,11 +155,8 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     }
 
     private void refreshProfileUI() {
-
         Profile profile = Client.getUserProfile();
-
-        avatarView.setExp(profile.getExp(), profile.getExpLevel(), profile.getExpLevelProgress());
-
+        // TODO avatarView.setExp(profile.getExp(), profile.getExpLevel(), profile.getExpLevelProgress());
     }
 
     @Override
@@ -195,7 +188,7 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         ProgressPagerAdapter(FragmentManager fm) {
             super(fm);
             fragments = new ArrayList<>();
-            fragments.add(new Pair<>(new ProgressFragmentProfile(), "Profilo"));
+            fragments.add(new Pair<>(new ProgressFragmentDashboard(), "Dashboard"));
             fragments.add(new Pair<>(new ProgressFragmentAchievements(), "Obiettivi"));
             fragments.add(new Pair<>(new ProgressFragmentShares(), "Condivisioni"));
             fragments.add(new Pair<>(new ProgressFragmentStats(), "Statistiche"));

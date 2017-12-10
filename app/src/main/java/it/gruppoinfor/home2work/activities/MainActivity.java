@@ -54,11 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -74,9 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 startService(locationIntent);
             }
         }
-
-       //Intent locationIntent = new Intent(this, SyncService.class);
-        //startService(locationIntent);
 
     }
 
@@ -149,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == BookingActivity.SHARE_STARTED){
+            viewPager.setCurrentItem(2);
+        }
+
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
@@ -158,11 +154,14 @@ public class MainActivity extends AppCompatActivity {
 
         new AsyncJob.AsyncJobBuilder<Long>()
                 .doInBackground(() -> {
-                    Stream<Match> matchStream = Client.getUserMatches().stream();
-                    long newMatches = matchStream.filter(Match::isNew).count();
 
-                    Stream<Booking> requestStream = Client.getUserRequests().stream();
-                    long pendingRequests = requestStream.filter(r -> r.getBookingStatus() == 1).count();
+                    long newMatches = 0, pendingRequests = 0;
+
+                    for(Match match : Client.getUserMatches())
+                        if(match.isNew()) newMatches++;
+
+                    for(Booking request : Client.getUserRequests())
+                        if(request.getBookingStatus() == Booking.PENDING) pendingRequests++;
 
                     return newMatches + pendingRequests;
                 })

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -13,19 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
-import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,8 +37,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,12 +46,10 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
+import it.gruppoinfor.home2work.custom.MatchAvatarView;
 import it.gruppoinfor.home2work.utils.RouteUtils;
-import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Share;
@@ -72,10 +63,7 @@ public class BookingActivity extends AppCompatActivity {
 
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
 
-    public static final int BOOKING_REJECTED = 0;
-    public static final int BOOKING_PENDING = 1;
-    public static final int BOOKING_ACCEPTED = 2;
-    public static final int BOOKING_CANCELED = 3;
+    public static final int SHARE_STARTED = 77;
 
     GoogleMap googleMap;
     Long bookingId;
@@ -83,12 +71,8 @@ public class BookingActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.score_progress)
-    ArcProgress scoreProgress;
-    @BindView(R.id.user_avatar)
-    CircleImageView userAvatar;
-    @BindView(R.id.score_text)
-    TextView scoreText;
+    @BindView(R.id.match_avatar_view)
+    MatchAvatarView matchAvatarView;
     @BindView(R.id.name_view)
     TextView nameView;
     @BindView(R.id.job_view)
@@ -151,55 +135,37 @@ public class BookingActivity extends AppCompatActivity {
 
     private void initUI() {
 
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
-
-        ArcProgressAnimation animation = new ArcProgressAnimation(scoreProgress, 0, booking.getBookedMatch().getScore());
-        animation.setDuration(500);
-        animation.setInterpolator(new AccelerateDecelerateInterpolator());
-        scoreProgress.startAnimation(animation);
-
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
-
-        Glide.with(this)
-                .load(booking.getBookedMatch().getHost().getAvatarURL())
-                .apply(requestOptions)
-                .into(userAvatar);
-
-        scoreText.setText(String.format(Locale.ITALY, "%1$d%%", booking.getBookedMatch().getScore()));
+        matchAvatarView.setAvatarURL(booking.getBookedMatch().getHost().getAvatarURL());
+        matchAvatarView.setScore(booking.getBookedMatch().getScore());
 
         nameView.setText(booking.getBookedMatch().getHost().toString());
         jobView.setText(booking.getBookedMatch().getHost().getCompany().toString());
 
-        int color = ScoreColorUtility.getScoreColor(this, booking.getBookedMatch().getScore());
-        Drawable bg = ContextCompat.getDrawable(this, R.drawable.bg_match_score_percent);
-
-        scoreProgress.setFinishedStrokeColor(color);
-        bg.setTint(color);
-        scoreText.setBackground(bg);
-
-        arrivalTimeView.setText(dateToString(booking.getBookedMatch().getStartTime()) + " - " + dateToString(booking.getBookedMatch().getEndTime()));
+        arrivalTimeView.setText(
+                String.format(
+                        getResources().getString(R.string.match_time),
+                        dateToString(booking.getBookedMatch().getStartTime()),
+                        dateToString(booking.getBookedMatch().getEndTime())
+                )
+        );
 
         ArrayList<String> days = new ArrayList<>();
-        for (int day : booking.getBookedMatch().getWeekdays()) {
-            days.add(getResources().getStringArray(R.array.giorni)[day]);
-        }
-
+        for(int d : booking.getBookedMatch().getWeekdays())
+            days.add(getResources().getStringArray(R.array.giorni)[d]);
         daysText.setText(TextUtils.join(", ", days));
 
-
         switch (booking.getBookingStatus()) {
-            case BOOKING_ACCEPTED:
+            case Booking.ACCEPTED:
                 initSharingView();
                 break;
-            case BOOKING_PENDING:
+            case Booking.PENDING:
                 statusText.setText("La prenotazione è ancora in attesa di risposta");
                 break;
-            case BOOKING_REJECTED:
+            case Booking.REJECTED:
                 statusText.setText("La prenotazione non è stata accettata");
                 statusText.setTextColor(ContextCompat.getColor(this, R.color.red_500));
                 break;
-            case BOOKING_CANCELED:
+            case Booking.CANCELED:
                 statusText.setText("La prenotazione è stata cancellata");
                 statusText.setTextColor(ContextCompat.getColor(this, R.color.red_500));
                 break;
@@ -241,7 +207,6 @@ public class BookingActivity extends AppCompatActivity {
             IntentIntegrator intentIntegrator = new IntentIntegrator(this);
             intentIntegrator.initiateScan();
         }
-
     }
 
     @Override
@@ -271,10 +236,11 @@ public class BookingActivity extends AppCompatActivity {
                 Client.getAPI().validateShare(Client.getSignedUser().getId(), sharecode, latlngString).enqueue(new Callback<Share>() {
                     @Override
                     public void onResponse(Call<Share> call, Response<Share> response) {
-                        if (response.code() == 200) {
-                            // Valida
+                        if (response.code() != 404) {
+                            setResult(BookingActivity.SHARE_STARTED);
+                            finish();
                         } else {
-                            // Non valida
+                            Toasty.error(BookingActivity.this, "Codice non valido").show();
                         }
                     }
 

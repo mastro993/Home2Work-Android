@@ -21,13 +21,13 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:background="@color/white"
-        android:clipToPadding="false"
-        android:padding="@dimen/activity_padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_bar_size"
-        android:orientation="vertical">
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_padding">
 
         <LinearLayout
             android:id="@+id/user_profile_container"
@@ -40,45 +40,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
+            <it.gruppoinfor.home2work.custom.MatchAvatarView
+                android:id="@+id/match_avatar_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/score_progress"
-                    android:layout_width="85dp"
-                    android:layout_height="85dp"
-                    android:layout_margin="7.5dp"
-                    app:arc_finished_color="@color/colorAccent"
-                    app:arc_max="100"
-                    app:arc_progress="70"
-                    app:arc_stroke_width="6dp"
-                    app:arc_unfinished_color="@color/grey_300" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/user_avatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_alignParentStart="true"
-                    android:padding="13dp"
-                    android:src="@drawable/ic_avatar_placeholder"
-                    android:transitionName="avatar" />
-
-                <TextView
-                    android:id="@+id/score_text"
-                    android:layout_width="50dp"
-                    android:layout_height="20dp"
-                    android:layout_alignBottom="@+id/score_progress"
-                    android:layout_alignStart="@+id/score_progress"
-                    android:layout_marginStart="18dp"
-                    android:background="@drawable/bg_match_score_percent"
-                    android:gravity="center"
-                    android:text="100%"
-                    android:textColor="@color/dark_bg_light_primary_text"
-                    android:textStyle="bold" />
-
-
-            </RelativeLayout>
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -132,12 +97,12 @@
         </LinearLayout>
 
         <fragment
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -171,8 +136,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:weightSum="4"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
                     <TextView
                         android:id="@+id/karma_preview"
@@ -216,12 +181,12 @@
                 android:visibility="gone" />
 
             <Button
-                android:layout_marginBottom="6dp"
                 android:id="@+id/request_shere_button"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_gravity="center"
+                android:layout_marginBottom="6dp"
                 android:text="Prenota"
                 android:visibility="visible" />
 

@@ -9,14 +9,12 @@ public class Profile {
     private Integer exp;
     private Integer karma;
     private ProfileStats profileStats;
-    private List<Achievement> achievements = new ArrayList<>();
-    private List<Share> shares = new ArrayList<>();
 
     private Integer expLevel;
     private Integer expToNextLevel;
     private Float expLevelProgress;
 
-    public Profile(Integer exp, Integer karma, ProfileStats profileStats, List<Achievement> achievements, List<Share> shares) {
+    public Profile(Integer exp, Integer karma, ProfileStats profileStats) {
         this.exp = exp;
 
         this.expLevel = ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
@@ -30,24 +28,6 @@ public class Profile {
 
         this.karma = karma;
         this.profileStats = profileStats;
-        this.achievements = achievements;
-        this.shares = shares;
-    }
-
-    public List<Share> getShares() {
-        return shares;
-    }
-
-    public void setShares(List<Share> shares) {
-        this.shares = shares;
-    }
-
-    public List<Achievement> getAchievements() {
-        return achievements;
-    }
-
-    public void setAchievements(List<Achievement> achievements) {
-        this.achievements = achievements;
     }
 
     public Integer getExp() {

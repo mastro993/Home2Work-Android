@@ -13,6 +13,7 @@ public class Booking {
     public static final int PENDING = 1;
     public static final int ACCEPTED = 2;
     public static final int CANCELED = 3;
+    public static final int ONGOING = 4;
 
     @SerializedName("BookingID")
     @Expose

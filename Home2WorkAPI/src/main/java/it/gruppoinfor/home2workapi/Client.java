@@ -12,6 +12,7 @@ import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.Profile;
+import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -29,6 +30,25 @@ public class Client {
     private static List<Match> userMatches = new ArrayList<>();
     private static List<Booking> userBookedMatches = new ArrayList<>();
     private static List<Booking> userRequestedMatches = new ArrayList<>();
+    private static List<Achievement> userAchivements = new ArrayList<>();
+    private static List<Share> userShares = new ArrayList<>();
+
+    public static List<Achievement> getUserAchivements() {
+        return userAchivements;
+    }
+
+    public static void setUserAchivements(List<Achievement> userAchivements) {
+        Client.userAchivements = userAchivements;
+    }
+
+    public static List<Share> getUserShares() {
+        return userShares;
+    }
+
+    public static void setUserShares(List<Share> userShares) {
+        Client.userShares = userShares;
+    }
+
     private static Profile userProfile;
     private static EndpointInterface APIService;
 

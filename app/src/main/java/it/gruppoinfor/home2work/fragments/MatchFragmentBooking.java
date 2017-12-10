@@ -112,7 +112,7 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
         } else {
             Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);
             bookingIntent.putExtra("bookingID", booking.getBookingID());
-            startActivity(bookingIntent);
+            startActivityForResult(bookingIntent, 0);
         }
 
     }
@@ -143,7 +143,7 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
                 .negativeText("Indietro")
                 .onPositive((dialog, which) -> {
                     Booking booking = Client.getUserBookings().get(position);
-                    booking.setBookingStatus(BookingActivity.BOOKING_CANCELED);
+                    booking.setBookingStatus(Booking.CANCELED);
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override
                         public void onResponse(Call<Booking> call, Response<Booking> response) {

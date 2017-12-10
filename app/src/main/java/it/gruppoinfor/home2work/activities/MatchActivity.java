@@ -1,12 +1,10 @@
 package it.gruppoinfor.home2work.activities;
 
 import android.Manifest;
-import android.animation.ValueAnimator;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -14,22 +12,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
-import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -42,8 +35,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,12 +45,10 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.custom.ArcProgressAnimation;
+import it.gruppoinfor.home2work.custom.MatchAvatarView;
 import it.gruppoinfor.home2work.utils.RouteUtils;
-import it.gruppoinfor.home2work.utils.ScoreColorUtility;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
@@ -85,12 +74,8 @@ public class MatchActivity extends AppCompatActivity {
     Button requestShereButton;
     @BindView(R.id.match_loading_view)
     FrameLayout matchLoadingView;
-    @BindView(R.id.score_progress)
-    ArcProgress scoreProgress;
-    @BindView(R.id.user_avatar)
-    CircleImageView userAvatar;
-    @BindView(R.id.score_text)
-    TextView scoreText;
+    @BindView(R.id.match_avatar_view)
+    MatchAvatarView matchAvatarView;
     @BindView(R.id.name_view)
     TextView nameView;
     @BindView(R.id.job_view)
@@ -150,63 +135,36 @@ public class MatchActivity extends AppCompatActivity {
 
     private void initUI() {
 
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
-
-        Double kmDistance = match.getDistance() / 1000.0;
-
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
-        Glide.with(this)
-                .load(match.getHost().getAvatarURL())
-                .apply(requestOptions)
-                .into(userAvatar);
+        matchAvatarView.setAvatarURL(match.getHost().getAvatarURL());
+        matchAvatarView.setScore(match.getScore());
 
         nameView.setText(match.getHost().toString());
         jobView.setText(match.getHost().getCompany().toString());
 
-        int color = ScoreColorUtility.getScoreColor(this, match.getScore());
-        Drawable bg = ContextCompat.getDrawable(this, R.drawable.bg_match_score_percent);
-
-        scoreProgress.setFinishedStrokeColor(color);
-        bg.setTint(color);
-        scoreText.setBackground(bg);
-
-        timeView.setText(dateToString(match.getStartTime()) + " - " + dateToString(match.getEndTime()));
+        timeView.setText(
+                String.format(
+                        getResources().getString(R.string.match_time),
+                        dateToString(match.getStartTime()),
+                        dateToString(match.getEndTime())
+                )
+        );
 
         ArrayList<String> days = new ArrayList<>();
-        for (int day : match.getWeekdays()) {
-            days.add(getResources().getStringArray(R.array.giorni)[day]);
-        }
-
+        for(int d : match.getWeekdays())
+            days.add(getResources().getStringArray(R.array.giorni)[d]);
         daysView.setText(TextUtils.join(", ", days));
 
+        Double kmDistance = match.getDistance() / 1000.0;
         int karmaPoints = kmDistance.intValue();
         int exp = (int) (kmDistance * 10);
         karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
         expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
 
-        if (match.isOngoing()) {
-            requestShereButton.setVisibility(View.GONE);
-            statusText.setVisibility(View.VISIBLE);
-        }
-
     }
 
     private void refreshUI() {
         matchLoadingView.setVisibility(View.GONE);
-
-        ArcProgressAnimation animation = new ArcProgressAnimation(scoreProgress, 0, match.getScore());
-        animation.setDuration(500);
-        animation.setInterpolator(new AccelerateDecelerateInterpolator());
-        scoreProgress.startAnimation(animation);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, match.getScore());
-        animator.setDuration(500);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addUpdateListener(animation1 ->
-                scoreText.setText(String.format(Locale.ITALY, "%1$s%%", animation1.getAnimatedValue().toString()))
-        );
-        animator.start();
+        matchAvatarView.setScore(match.getScore());
     }
 
 

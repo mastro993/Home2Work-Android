@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +28,8 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
 
     @BindView(R.id.shares_recycler_view)
     RecyclerView sharesRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView emptyView;
     private Unbinder unbinder;
     private SharesAdapter sharesAdapter;
 
@@ -45,15 +48,21 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
     }
 
     private void initUI() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+        if (Client.getUserShares().size() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            sharesRecyclerView.setVisibility(View.GONE);
+        } else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
-        sharesRecyclerView.setLayoutManager(layoutManager);
-        sharesRecyclerView.setLayoutAnimation(animation);
+            sharesRecyclerView.setLayoutManager(layoutManager);
+            sharesRecyclerView.setLayoutAnimation(animation);
 
-        sharesAdapter = new SharesAdapter(getActivity(), Client.getUserProfile().getShares());
-        sharesAdapter.setItemClickCallbacks(this);
-        sharesRecyclerView.setAdapter(sharesAdapter);
+            sharesAdapter = new SharesAdapter(getActivity(), Client.getUserShares());
+            sharesAdapter.setItemClickCallbacks(this);
+            sharesRecyclerView.setAdapter(sharesAdapter);
+        }
+
     }
 
     @Override

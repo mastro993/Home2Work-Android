@@ -10,7 +10,7 @@ public class Share {
     public static final int CREATED = 0;
     public static final int STARTED = 1;
     public static final int ONGOING = 3;
-    public static final int COMPLETED = 3;
+    public static final int COMPLETED = 4;
 
     @SerializedName("ID")
     @Expose

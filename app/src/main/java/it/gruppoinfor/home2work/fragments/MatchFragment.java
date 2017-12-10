@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.BookingActivity;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.activities.RequestActivity;
@@ -144,6 +145,9 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (resultCode) {
+            case BookingActivity.SHARE_STARTED:
+                refreshData();
+                break;
             case MatchActivity.BOOKING_ADDED:
                 refreshData();
                 viewPager.setCurrentItem(1);

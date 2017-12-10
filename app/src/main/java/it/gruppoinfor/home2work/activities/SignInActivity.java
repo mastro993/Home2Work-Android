@@ -1,10 +1,8 @@
 package it.gruppoinfor.home2work.activities;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +18,6 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,16 +56,12 @@ public class SignInActivity extends AppCompatActivity {
         signInButton.setEnabled(false);
 
         signInLoading.setVisibility(View.VISIBLE);
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
 
-        Credentials credentials = new Credentials(
-                emailEditText.getText().toString(),
-                passwordEditText.getText().toString()
-        );
-
-        Call<User> call = Client.getAPI().login(credentials);
-        call.enqueue(new Callback<User>() {
+        Client.getAPI().login(email, password).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 switch (response.code()) {
                     case 404:
                         enableLogin();
@@ -85,7 +78,7 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 enableLogin();
                 Toasty.error(getContext(), getString(R.string.server_error), Toast.LENGTH_SHORT, true).show();
             }
@@ -94,12 +87,11 @@ public class SignInActivity extends AppCompatActivity {
 
     private void onLoginSuccess(final User user) {
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        sessionManager.storeSession(user);
         Client.setSignedUser(user);
 
         if (user.isConfigured()) {
-
-            SessionManager sessionManager = new SessionManager(getContext());
-            sessionManager.storeSession(user);
 
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);

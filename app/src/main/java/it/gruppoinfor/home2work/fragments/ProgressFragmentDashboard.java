@@ -12,12 +12,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 
-public class ProgressFragmentProfile extends Fragment {
+public class ProgressFragmentDashboard extends Fragment {
 
 
     private Unbinder unbinder;
 
-    public ProgressFragmentProfile() {
+    public ProgressFragmentDashboard() {
         // Required empty public constructor
     }
 

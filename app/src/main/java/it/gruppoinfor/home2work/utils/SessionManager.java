@@ -12,7 +12,6 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -32,7 +31,6 @@ public class SessionManager {
     private final Context context;
     private final String KEY_TOKEN = "token";
     private final String KEY_EMAIL = "email";
-    private final String KEY_USER = "user";
 
     public SessionManager(Context context) {
         this.context = context;
@@ -40,12 +38,9 @@ public class SessionManager {
     }
 
     public void storeSession(final User signedUser) {
-        Gson gson = new Gson();
-
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_EMAIL, signedUser.getEmail());
         editor.putString(KEY_TOKEN, signedUser.getToken());
-        editor.putString(KEY_USER, gson.toJson(signedUser));
         editor.apply();
 
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -76,9 +71,7 @@ public class SessionManager {
             String email = prefs.getString(KEY_EMAIL, null);
             String password = prefs.getString(KEY_TOKEN, null);
 
-            Credentials credentials = new Credentials(email,password);
-
-            Client.getAPI().login(credentials).enqueue(new Callback<User>() {
+            Client.getAPI().login(email, password).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                     switch (response.code()) {

@@ -1,13 +1,10 @@
 package it.gruppoinfor.home2workapi;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.List;
 
 
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Company;
-import it.gruppoinfor.home2workapi.model.Credentials;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
 import it.gruppoinfor.home2workapi.model.Share;
@@ -27,9 +24,11 @@ import retrofit2.http.Path;
 
 public interface EndpointInterface {
 
+    @FormUrlEncoded
     @POST("user/login")
     Call<User> login(
-            @Body Credentials credentials
+            @Field("email") String email,
+            @Field("password") String password
     );
 
     @PUT("user")

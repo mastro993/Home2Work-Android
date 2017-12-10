@@ -1,13 +1,17 @@
 package it.gruppoinfor.home2work.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -99,6 +103,7 @@ public class RequestActivity extends AppCompatActivity {
     private Booking booking;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
+    private MaterialDialog qrCodeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,19 +147,41 @@ public class RequestActivity extends AppCompatActivity {
 
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            qrCodeDialog.hide();
+            finish();
+            Toasty.success(RequestActivity.this, "Condivisione convalidata").show();
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),  new IntentFilter("REQUEST_VALIDATION")
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onStop();
+    }
+
     private void initUI() {
         Resources res = getResources();
 
         switch (booking.getBookingStatus()) {
-            case BookingActivity.BOOKING_PENDING:
+            case Booking.PENDING:
                 startShareButton.setVisibility(View.GONE);
                 acceptRequestButton.setVisibility(View.VISIBLE);
                 rejectRequestButton.setVisibility(View.VISIBLE);
                 break;
-            case BookingActivity.BOOKING_ACCEPTED:
+            case Booking.ACCEPTED:
                 initSharingView();
                 break;
-            case BookingActivity.BOOKING_CANCELED:
+            case Booking.CANCELED:
                 break;
         }
 
@@ -214,7 +241,7 @@ public class RequestActivity extends AppCompatActivity {
                 .negativeText("Annulla")
                 .onPositive((dialog, which) -> {
 
-                    booking.setBookingStatus(BookingActivity.BOOKING_REJECTED);
+                    booking.setBookingStatus(Booking.REJECTED);
 
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override
@@ -245,7 +272,7 @@ public class RequestActivity extends AppCompatActivity {
                 .negativeText("Annulla")
                 .onPositive((dialog, which) -> {
 
-                    booking.setBookingStatus(BookingActivity.BOOKING_ACCEPTED);
+                    booking.setBookingStatus(Booking.ACCEPTED);
 
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override
@@ -271,13 +298,10 @@ public class RequestActivity extends AppCompatActivity {
     @OnClick(R.id.start_share_button)
     public void onStartShareButtonClicked() {
 
-        MaterialDialog qrCodeDialog = new MaterialDialog.Builder(this)
-                .title("Inizia condivisione")
+        qrCodeDialog = new MaterialDialog.Builder(this)
                 .customView(R.layout.dialog_share_qr_code, false)
                 .build();
 
-
-        TextView titleView = (TextView) qrCodeDialog.findViewById(R.id.title);
         ImageView qrCodeImage = (ImageView) qrCodeDialog.findViewById(R.id.qr_code_image_view);
         FrameLayout loadingView = (FrameLayout) qrCodeDialog.findViewById(R.id.loading_view);
 
@@ -288,7 +312,15 @@ public class RequestActivity extends AppCompatActivity {
 
             FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+
+                if(location == null) {
+                    qrCodeDialog.hide();
+                    Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
+                    return;
+                }
+
                 String latlngString = location.getLatitude() + "," + location.getLongitude();
+
                 Client.getAPI().createShare(booking.getBookingID(), latlngString).enqueue(new Callback<Share>() {
                     @Override
                     public void onResponse(Call<Share> call, Response<Share> response) {
@@ -309,10 +341,16 @@ public class RequestActivity extends AppCompatActivity {
                     }
 
                 });
+
             });
 
         }
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     private class MyMapReadyCallback implements OnMapReadyCallback {

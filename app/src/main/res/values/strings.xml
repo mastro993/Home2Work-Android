@@ -66,6 +66,7 @@
 
     <!-- Match Adapter -->
     <string name="match_item_shared_distance">%1$s km condivisi</string>
+    <string name="match_time">%1$s - %2$s</string>
     <string name="match_karma_preview">%1$d Karma</string>
     <string name="match_exo_preview">%1$d XP</string>
 
@@ -100,8 +101,7 @@
     <string name="company">Azienda</string>
     <string name="home">Casa</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 
 </resources>

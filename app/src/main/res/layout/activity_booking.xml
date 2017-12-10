@@ -38,45 +38,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
+            <it.gruppoinfor.home2work.custom.MatchAvatarView
+                android:id="@+id/match_avatar_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.github.lzyzsd.circleprogress.ArcProgress
-                    android:id="@+id/score_progress"
-                    android:layout_width="85dp"
-                    android:layout_height="85dp"
-                    android:layout_margin="7.5dp"
-                    app:arc_finished_color="@color/colorAccent"
-                    app:arc_max="100"
-                    app:arc_progress="70"
-                    app:arc_stroke_width="6dp"
-                    app:arc_unfinished_color="@color/grey_300" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/user_avatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_alignParentStart="true"
-                    android:padding="13dp"
-                    android:src="@drawable/ic_avatar_placeholder"
-                    android:transitionName="avatar" />
-
-                <TextView
-                    android:id="@+id/score_text"
-                    android:layout_width="50dp"
-                    android:layout_height="20dp"
-                    android:layout_alignBottom="@+id/score_progress"
-                    android:layout_alignStart="@+id/score_progress"
-                    android:layout_marginStart="18dp"
-                    android:background="@drawable/bg_match_score_percent"
-                    android:gravity="center"
-                    android:text="100%"
-                    android:textColor="@color/dark_bg_light_primary_text"
-                    android:textStyle="bold" />
-
-
-            </RelativeLayout>
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:layout_width="match_parent"
