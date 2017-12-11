@@ -83,7 +83,7 @@ public class MatchFragmentRequest extends Fragment {
 
         Intent bookingIntent = new Intent(getActivity(), RequestActivity.class);
         bookingIntent.putExtra("request_position", position);
-        startActivityForResult(bookingIntent, RequestActivity.REQUEST_RESPONSE_CODE);
+        getActivity().startActivityForResult(bookingIntent, RequestActivity.REQUEST_RESPONSE_CODE);
 
     }
 

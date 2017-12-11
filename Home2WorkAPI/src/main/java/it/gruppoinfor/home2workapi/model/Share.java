@@ -8,9 +8,8 @@ import java.util.Date;
 
 public class Share {
     public static final int CREATED = 0;
-    public static final int STARTED = 1;
-    public static final int ONGOING = 3;
-    public static final int COMPLETED = 4;
+    public static final int ONGOING = 1;
+    public static final int COMPLETED = 2;
 
     @SerializedName("ID")
     @Expose
@@ -27,18 +26,6 @@ public class Share {
     @SerializedName("CreationDate")
     @Expose
     private Timestamp creationDate;
-
-    public static int getCREATED() {
-        return CREATED;
-    }
-
-    public static int getSTARTED() {
-        return STARTED;
-    }
-
-    public static int getCOMPLETED() {
-        return COMPLETED;
-    }
 
     public Long getShareID() {
         return shareID;

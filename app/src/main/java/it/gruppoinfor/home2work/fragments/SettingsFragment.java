@@ -503,12 +503,10 @@ public class SettingsFragment extends Fragment {
     }*/
 
     private void logout() {
-        SessionManager sessionManager = new SessionManager(getContext());
-        sessionManager.signOutUser();
+        SessionManager.with(getContext()).signOutUser();
 
         // Avvio Activity di login
         Intent i = new Intent(getContext(), SignInActivity.class);
-        i.putExtra(SessionManager.AUTH_CODE, SessionManager.AuthCode.SIGNED_OUT);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
     }

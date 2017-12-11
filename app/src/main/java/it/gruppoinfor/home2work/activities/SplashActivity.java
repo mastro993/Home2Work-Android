@@ -20,7 +20,7 @@ import it.gruppoinfor.home2workapi.Client;
 public class SplashActivity extends AppCompatActivity {
 
     private final int FINE_LOCATION_ACCESS = 0;
-    private final int SPLASH_TIME = 1000;
+    private final int SPLASH_TIME = 500;
 
     @BindView(R.id.logo_imageview)
     ImageView logo;
@@ -40,6 +40,7 @@ public class SplashActivity extends AppCompatActivity {
             }
 
         }, SPLASH_TIME);
+
     }
 
     @Override
@@ -49,36 +50,33 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startApp() {
-        SessionManager sessionManager = new SessionManager(SplashActivity.this);
-        sessionManager.checkSession(new SessionManager.SessionManagerCallback() {
+        SessionManager.with(this).checkSession(new SessionManager.SessionManagerCallback() {
+
             @Override
-            public void onValidSession() {
-
-                Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
-
+            public void onNoSession() {
+                Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
+                startActivity(intent);
             }
 
             @Override
-            public void onInvalidSession(SessionManager.AuthCode code) {
-                // Se l'utente non ha una sessione valida viene portato alla schermata di login
+            public void onValidSession() {
+                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
 
+            @Override
+            public void onExpiredToken() {
                 Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-                intent.putExtra(SessionManager.AUTH_CODE, code);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(SplashActivity.this, logo, "logo");
-                startActivity(intent, options.toBundle());
-
+                intent.putExtra(SessionManager.AUTH_CODE, SessionManager.EXPIRED_TOKEN);
+                startActivity(intent);
             }
 
             @Override
             public void onError() {
                 Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-                intent.putExtra(SessionManager.AUTH_CODE, SessionManager.AuthCode.ERROR);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(SplashActivity.this, logo, "logo");
-                startActivity(intent, options.toBundle());
+                intent.putExtra(SessionManager.AUTH_CODE, SessionManager.ERROR);
+                startActivity(intent);
             }
         });
     }

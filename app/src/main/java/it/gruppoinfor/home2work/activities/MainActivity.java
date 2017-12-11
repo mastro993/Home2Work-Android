@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         AHBottomNavigationItem settingsTab = new AHBottomNavigationItem(R.string.settings_tab, R.drawable.ic_preferences, R.color.colorAccent);
 
         // Add items
+        bottomNavigation.removeAllItems();
         bottomNavigation.addItem(homeTab);
         bottomNavigation.addItem(matchTab);
         bottomNavigation.addItem(progressTab);
@@ -141,12 +143,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == BookingActivity.SHARE_STARTED){
-            viewPager.setCurrentItem(2);
-        }
-
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
+        }
+
+        if(resultCode == BookingActivity.SHARE_STARTED){
+            initUI();
+            viewPager.setCurrentItem(2);
+            Toasty.success(this, "Condivisione convalidata").show();
         }
     }
 

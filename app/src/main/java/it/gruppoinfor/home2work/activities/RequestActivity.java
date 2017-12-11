@@ -151,8 +151,8 @@ public class RequestActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             qrCodeDialog.hide();
+            RequestActivity.this.setResult(BookingActivity.SHARE_STARTED);
             finish();
-            Toasty.success(RequestActivity.this, "Condivisione convalidata").show();
         }
     };
 
@@ -428,23 +428,23 @@ public class RequestActivity extends AppCompatActivity {
             LatLng last = booking.getBookedMatch().getEndLocation();
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))
-                            .position(first)
-                            .title("Partenza")
-                    //.snippet(getString(R.string.match_start_time, Converters.timestampToTime(start.getTime(), "hh:mm")))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .position(first)
+                    .title("Casa")
             );
             startMarker.showInfoWindow();
 
 
             googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_end))
-                            .position(last)
-                            .title("Arrivo")
-                    //.snippet(getString(R.string.match_end_time, Converters.timestampToTime(finish.getTime(), "hh:mm")))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .position(last)
+                    .title("Lavoro")
             );
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(startMarker.getPosition()));
+            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(startMarker.getPosition()));
+
+
             requestLoadingView.setVisibility(View.GONE);
 
         }

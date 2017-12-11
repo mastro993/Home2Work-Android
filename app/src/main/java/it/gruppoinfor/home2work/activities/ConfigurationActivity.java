@@ -63,14 +63,10 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             builder.setPositiveButton(R.string.config_logout_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-
-                    SessionManager sessionManager = new SessionManager(ConfigurationActivity.this);
-                    sessionManager.signOutUser();
+                    SessionManager.with(ConfigurationActivity.this).signOutUser();
 
                     Intent intent = new Intent(ConfigurationActivity.this, SignInActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(SessionManager.AUTH_CODE, SessionManager.AuthCode.SIGNED_OUT);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                     startActivity(intent);
                     finish();

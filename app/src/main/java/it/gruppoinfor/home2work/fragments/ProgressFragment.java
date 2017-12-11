@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.arasthel.asyncjob.AsyncJob;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +37,8 @@ import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Profile;
+import it.gruppoinfor.home2workapi.model.Share;
+import retrofit2.Call;
 
 
 public class ProgressFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -125,12 +128,12 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         AsyncJob.doInBackground(() -> {
 
-            // TODO Call<List<Share>> matchesCall = Client.getAPI().getUserShares(Client.getSignedUser().getId());
+            Call<List<Share>> sharesCall = Client.getAPI().getUserShares(Client.getSignedUser().getId());
             // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getSignedUser().getId());
             // TODO Call<Profile> requestsCall = Client.getAPI().getUserProfile(Client.getSignedUser().getId());
 
             try {
-                //Client.setUserShares(new ArrayList<>(matchesCall.execute().body()));
+                Client.setUserShares(new ArrayList<>(sharesCall.execute().body()));
                 //Client.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
                 //Client.setUserProfile(new ArrayList<>(requestsCall.execute().body()));
             } catch (Exception e) {
@@ -166,12 +169,10 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     }
 
     private void logout() {
-        SessionManager sessionManager = new SessionManager(getContext());
-        sessionManager.signOutUser();
+        SessionManager.with(getContext()).signOutUser();
 
         // Avvio Activity di login
         Intent i = new Intent(getContext(), SignInActivity.class);
-        i.putExtra(SessionManager.AUTH_CODE, SessionManager.AuthCode.SIGNED_OUT);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
     }

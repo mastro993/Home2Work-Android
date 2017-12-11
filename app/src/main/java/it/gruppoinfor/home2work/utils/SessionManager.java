@@ -6,11 +6,11 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.Gson;
 
 import org.apache.commons.lang3.NotImplementedException;
 
 import it.gruppoinfor.home2work.services.LocationService;
+import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.ResponseBody;
@@ -27,14 +27,21 @@ import retrofit2.Response;
 public class SessionManager {
 
     public static final String AUTH_CODE = "auth_code";
+    public static final int EXPIRED_TOKEN = 0;
+    public static final int ERROR = 1;
+
     private final SharedPreferences prefs;
     private final Context context;
     private final String KEY_TOKEN = "token";
     private final String KEY_EMAIL = "email";
 
-    public SessionManager(Context context) {
+    private SessionManager(Context context) {
         this.context = context;
         prefs = context.getSharedPreferences("it.fleetup.app.session", Context.MODE_PRIVATE);
+    }
+
+    public static SessionManager with(Context context) {
+        return new SessionManager(context);
     }
 
     public void storeSession(final User signedUser) {
@@ -62,51 +69,49 @@ public class SessionManager {
 
         if (Client.getSignedUser() != null) {
             callback.onValidSession();
+            return;
         }
 
         if (!isUserSignedIn()) {
-            callback.onInvalidSession(AuthCode.NO_SESSION);
-        } else {
-
-            String email = prefs.getString(KEY_EMAIL, null);
-            String password = prefs.getString(KEY_TOKEN, null);
-
-            Client.getAPI().login(email, password).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                    switch (response.code()) {
-                        case 200:
-                            User user = response.body();
-                            storeSession(user);
-                            Client.setSignedUser(user);
-                            callback.onValidSession();
-                            break;
-                        default:
-                            callback.onInvalidSession(AuthCode.EXPIRED_TOKEN);
-                            signOutUser();
-                            break;
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                    callback.onError();
-                }
-            });
-
+            callback.onNoSession();
+            return;
         }
+
+        String email = prefs.getString(KEY_EMAIL, null);
+        String password = prefs.getString(KEY_TOKEN, null);
+
+        Client.getAPI().login(email, password).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                switch (response.code()) {
+                    case 200:
+                        User user = response.body();
+                        storeSession(user);
+                        Client.setSignedUser(user);
+                        callback.onValidSession();
+                        break;
+                    default:
+                        callback.onExpiredToken();
+                        signOutUser();
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                callback.onError();
+            }
+
+        });
     }
 
     public void signOutUser() {
-
-        // Elimina tutte le preferenze (com.infor.fleetupht.session)
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
 
-        // Termina i servizi
         context.stopService(new Intent(context, LocationService.class));
-
+        context.stopService(new Intent(context, SyncService.class));
     }
 
     private boolean isUserSignedIn() {
@@ -115,21 +120,21 @@ public class SessionManager {
         return email != null && token != null;
     }
 
-    public enum AuthCode {
-        EXPIRED_TOKEN, SIGNED_OUT, NO_SESSION, ERROR
-    }
-
     public static class SessionManagerCallback {
 
-        public void onValidSession(){
+        public void onNoSession() {
+            throw new NotImplementedException("onNoSession fired but not implemented");
+        }
+
+        public void onValidSession() {
             throw new NotImplementedException("onValidSession fired but not implemented");
         }
 
-        public void onInvalidSession(AuthCode code){
+        public void onExpiredToken() {
             throw new NotImplementedException("onInvalidSessions fired but not implemented");
         }
 
-        public void onError(){
+        public void onError() {
             throw new NotImplementedException("onError fired but not implemented");
         }
     }

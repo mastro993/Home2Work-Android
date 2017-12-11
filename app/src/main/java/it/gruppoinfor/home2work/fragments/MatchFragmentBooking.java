@@ -112,7 +112,7 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
         } else {
             Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);
             bookingIntent.putExtra("bookingID", booking.getBookingID());
-            startActivityForResult(bookingIntent, 0);
+            getActivity().startActivityForResult(bookingIntent, 0);
         }
 
     }

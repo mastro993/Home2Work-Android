@@ -64,7 +64,7 @@ public class ProgressFragmentStats extends Fragment {
 
     private void initUI() {
 
-        profile = Client.getUserProfile();
+/*        profile = Client.getUserProfile();
 
         ProfileStats profileStats = profile.getProfileStats();
         DecimalFormat df = new DecimalFormat("#.##");
@@ -79,7 +79,7 @@ public class ProgressFragmentStats extends Fragment {
         sharesTextView.setText(profileStats.getTotalShares().toString());
         sharedDistanceTextView.setText(df.format(profileStats.getTotalSharedKilometers()));
         savedGasTextView.setText(df.format(profileStats.getTotalGasSaved()));
-        savedEmissionsTextView.setText(df.format(profileStats.getTotalEmissionSaved()));
+        savedEmissionsTextView.setText(df.format(profileStats.getTotalEmissionSaved()));*/
     }
 
 

@@ -30,9 +30,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent arg1) {
         this.context = context;
 
-        //Controllo se esiste una sessione
-        SessionManager sessionManager = new SessionManager(context);
-        sessionManager.checkSession(new SessionManager.SessionManagerCallback(){
+        SessionManager.with(context).checkSession(new SessionManager.SessionManagerCallback(){
             @Override
             public void onValidSession() {
 
@@ -50,8 +48,18 @@ public class BootReceiver extends BroadcastReceiver {
             }
 
             @Override
-            public void onInvalidSession(SessionManager.AuthCode code) {
+            public void onExpiredToken() {
                 showLoginNotification();
+            }
+
+            @Override
+            public void onNoSession() {
+                //...
+            }
+
+            @Override
+            public void onError() {
+                // ...
             }
 
         });

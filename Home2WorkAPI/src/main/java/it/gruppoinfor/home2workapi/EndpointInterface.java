@@ -2,7 +2,6 @@ package it.gruppoinfor.home2workapi;
 
 import java.util.List;
 
-
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Match;
@@ -74,8 +73,8 @@ public interface EndpointInterface {
 
     @POST("booking")
     Call<Booking> bookMatch(
-                    @Body Booking booking
-            );
+            @Body Booking booking
+    );
 
     @PUT("booking")
     Call<Booking> editBooking(
@@ -105,10 +104,17 @@ public interface EndpointInterface {
     );
 
     @FormUrlEncoded
-    @POST("share")
+    @POST("share/new")
     Call<Share> createShare(
             @Field("bookingId") Long bookingId,
-            @Field("startLocation") String startLocationString
+            @Field("location") String startLocationString
+    );
+
+    @FormUrlEncoded
+    @POST("share")
+    Call<Share> getShare(
+            @Field("bookingId") Long bookingId,
+            @Field("location") String startLocationString
     );
 
     @FormUrlEncoded
@@ -116,10 +122,14 @@ public interface EndpointInterface {
     Call<Share> validateShare(
             @Field("guestId") Long userID,
             @Field("code") String code,
-            @Field("latlng")String latLngString
-            );
+            @Field("latlng") String latLngString
+    );
 
 
+    @GET("user/{id}/shares")
+    Call<List<Share>> getUserShares(
+            @Path("id") Long id
+    );
 
 
 

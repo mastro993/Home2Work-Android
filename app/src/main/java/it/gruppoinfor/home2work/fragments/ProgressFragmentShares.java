@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.fragments;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,15 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.SharesAdapter;
+import it.gruppoinfor.home2work.utils.QREncoder;
 import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.Share;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +42,7 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
     TextView emptyView;
     private Unbinder unbinder;
     private SharesAdapter sharesAdapter;
+    private ArrayList<Share> completedShares;
 
     public ProgressFragmentShares() {
         // Required empty public constructor
@@ -48,9 +59,17 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
     }
 
     private void initUI() {
-        if (Client.getUserShares().size() == 0) {
+
+        completedShares = new ArrayList<>();
+        for (Share share : Client.getUserShares())
+            if (share.getStatus() == Share.COMPLETED) completedShares.add(share);
+
+
+        if (completedShares.size() == 0) {
+
             emptyView.setVisibility(View.VISIBLE);
             sharesRecyclerView.setVisibility(View.GONE);
+
         } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
@@ -58,7 +77,7 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
             sharesRecyclerView.setLayoutManager(layoutManager);
             sharesRecyclerView.setLayoutAnimation(animation);
 
-            sharesAdapter = new SharesAdapter(getActivity(), Client.getUserShares());
+            sharesAdapter = new SharesAdapter(getActivity(), completedShares);
             sharesAdapter.setItemClickCallbacks(this);
             sharesRecyclerView.setAdapter(sharesAdapter);
         }
@@ -67,6 +86,7 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
 
     @Override
     public void onItemClick(View view, int position) {
+
 
     }
 

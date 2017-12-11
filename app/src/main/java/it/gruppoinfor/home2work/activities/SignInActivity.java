@@ -87,8 +87,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void onLoginSuccess(final User user) {
 
-        SessionManager sessionManager = new SessionManager(getContext());
-        sessionManager.storeSession(user);
+        SessionManager.with(this).storeSession(user);
         Client.setSignedUser(user);
 
         if (user.isConfigured()) {
@@ -145,16 +144,17 @@ public class SignInActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
-            SessionManager.AuthCode code = (SessionManager.AuthCode) bundle.get(SessionManager.AUTH_CODE);
+        if (bundle != null) {
 
-            if (code == SessionManager.AuthCode.EXPIRED_TOKEN) {
-                Toasty.warning(this, getString(R.string.session_expired), Toast.LENGTH_SHORT, true).show();
-            } else if (code == SessionManager.AuthCode.SIGNED_OUT) {
-                Toasty.info(this, getString(R.string.user_logout), Toast.LENGTH_SHORT, true).show();
-            } else if (code == SessionManager.AuthCode.ERROR) {
-                Toasty.error(this, "Errore durante il login", Toast.LENGTH_SHORT, true).show();
+            switch (bundle.getInt(SessionManager.AUTH_CODE)) {
+                case SessionManager.ERROR:
+                    Toasty.error(this, "Errore durante il login", Toast.LENGTH_SHORT, true).show();
+                    break;
+                case SessionManager.EXPIRED_TOKEN:
+                    Toasty.warning(this, getString(R.string.session_expired), Toast.LENGTH_SHORT, true).show();
+                    break;
             }
+
         }
 
     }

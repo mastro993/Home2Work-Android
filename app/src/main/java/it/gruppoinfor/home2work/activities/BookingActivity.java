@@ -150,7 +150,7 @@ public class BookingActivity extends AppCompatActivity {
         );
 
         ArrayList<String> days = new ArrayList<>();
-        for(int d : booking.getBookedMatch().getWeekdays())
+        for (int d : booking.getBookedMatch().getWeekdays())
             days.add(getResources().getStringArray(R.array.giorni)[d]);
         daysText.setText(TextUtils.join(", ", days));
 
@@ -221,8 +221,6 @@ public class BookingActivity extends AppCompatActivity {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             validateShare(scanResult.getContents());
-
-
         } else
             Toasty.error(this, "QR Code non valido");
     }
@@ -330,23 +328,22 @@ public class BookingActivity extends AppCompatActivity {
             LatLng last = booking.getBookedMatch().getEndLocation();
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))
-                            .position(first)
-                            .title("Partenza")
-                    //.snippet(getString(R.string.match_start_time, Converters.timestampToTime(start.getTime(), "hh:mm")))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .position(first)
+                    .title("Casa")
             );
             startMarker.showInfoWindow();
 
 
             googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_end))
-                            .position(last)
-                            .title("Arrivo")
-                    //.snippet(getString(R.string.match_end_time, Converters.timestampToTime(finish.getTime(), "hh:mm")))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .position(last)
+                    .title("Lavoro")
             );
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(startMarker.getPosition()));
+            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(startMarker.getPosition()));
+
             bookingLoadingView.setVisibility(View.GONE);
 
         }

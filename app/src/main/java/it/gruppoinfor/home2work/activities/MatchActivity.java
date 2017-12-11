@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -95,14 +94,12 @@ public class MatchActivity extends AppCompatActivity {
     @BindView(R.id.status_text)
     TextView statusText;
 
-    private Resources res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         ButterKnife.bind(this);
-        res = getResources();
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -150,15 +147,15 @@ public class MatchActivity extends AppCompatActivity {
         );
 
         ArrayList<String> days = new ArrayList<>();
-        for(int d : match.getWeekdays())
+        for (int d : match.getWeekdays())
             days.add(getResources().getStringArray(R.array.giorni)[d]);
         daysView.setText(TextUtils.join(", ", days));
 
         Double kmDistance = match.getDistance() / 1000.0;
         int karmaPoints = kmDistance.intValue();
         int exp = (int) (kmDistance * 10);
-        karmaPreview.setText(String.format(res.getString(R.string.match_karma_preview), karmaPoints));
-        expPreview.setText(String.format(res.getString(R.string.match_exo_preview), exp));
+        karmaPreview.setText(String.format(getResources().getString(R.string.match_karma_preview), karmaPoints));
+        expPreview.setText(String.format(getResources().getString(R.string.match_exo_preview), exp));
 
     }
 
@@ -333,23 +330,20 @@ public class MatchActivity extends AppCompatActivity {
             // TODO inserire informazioni di partenza ed arrivo
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_start))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                             .position(first)
-                            .title("Partenza")
-                    //.snippet(getString(R.string.match_start_time, Converters.timestampToTime(start.getTime(), "hh:mm")))
+                            .title("Casa")
             );
-            startMarker.showInfoWindow();
 
 
             googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_end))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                             .position(last)
-                            .title("Arrivo")
-                    //.snippet(getString(R.string.match_end_time, Converters.timestampToTime(finish.getTime(), "hh:mm")))
+                            .title("Lavoro")
             );
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(startMarker.getPosition()));
+
             refreshUI();
         }
 
