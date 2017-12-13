@@ -163,7 +163,7 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
                         LatLng latLng = Converters.addressToLatLng(getContext(), addr + ", " + city + " " + CAP);
                         if (latLng != null) {
 
-                            User signedUser = Client.getSignedUser();
+                            User signedUser = Client.User;
 
                             signedUser.setLocation(latLng);
 
@@ -174,12 +174,9 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
 
                             signedUser.setAddress(newAddress);
 
-
-                            Client.setSignedUser(signedUser);
+                            Client.User = signedUser;
 
                             setHomeLocation(latLng);
-
-
 
                         } else {
                             Toasty.warning(getContext(), getString(R.string.config_no_address_found), Toast.LENGTH_LONG).show();
@@ -195,7 +192,7 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
         EditText capInput = view.findViewById(R.id.cap_input);
         EditText addressInput = view.findViewById(R.id.address_input);
 
-        User signedUserr = Client.getSignedUser();
+        User signedUserr = Client.User;
 
         if(signedUserr.getAddress() != null){
             addressInput.setText(signedUserr.getAddress().getAddress());
@@ -260,7 +257,7 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
         if (homeLocation == null)
             return new VerificationError("Devi impostare un indirizzo di casa prima di poter continuare");
 
-        Client.getSignedUser().setLocation(homeLocation);
+        Client.User.setLocation(homeLocation);
 
         return null;
     }

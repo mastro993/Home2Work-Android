@@ -22,7 +22,6 @@ import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,7 +49,6 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.custom.MatchAvatarView;
-import it.gruppoinfor.home2work.utils.GeofenceUtils;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
@@ -133,7 +131,6 @@ public class BookingActivity extends AppCompatActivity {
         });
 
     }
-
 
     private void initUI() {
 
@@ -228,25 +225,16 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void validateShare(long shareId) {
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                 String latlngString = location.getLatitude() + "," + location.getLongitude();
-                Client.getAPI().startShare(shareId, Client.getSignedUser().getId(), latlngString).enqueue(new Callback<Share>() {
+                Client.getAPI().startShare(shareId, Client.User.getId(), latlngString).enqueue(new Callback<Share>() {
                     @Override
                     public void onResponse(Call<Share> call, Response<Share> response) {
                         switch (response.code()) {
                             case 200:
                                 Share share = response.body();
-                                // Ok lo share è andato a buon fine, imposto il geofence per l'arrivo a lavoro.
-                                GeofenceUtils.setupGeofence(
-                                        BookingActivity.this,
-                                        share.getShareID().toString(),
-                                        share.getBooking().getBookedMatch().getEndLocation(),
-                                        Geofence.GEOFENCE_TRANSITION_ENTER
-                                );
-
                                 setResult(BookingActivity.SHARE_STARTED);
                                 finish();
                                 break;
@@ -267,10 +255,9 @@ public class BookingActivity extends AppCompatActivity {
             });
         }
 
-
     }
 
-    private class MyMapReadyCallback implements OnMapReadyCallback {
+    private class MyMapReadyCallback implements OnMapReadyCallback, RoutingListener {
 
         Context context;
 
@@ -296,7 +283,7 @@ public class BookingActivity extends AppCompatActivity {
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
-                        .withListener(new MyRoutingListener(context))
+                        .withListener(this)
                         .waypoints(matchWaypoints)
                         .key(GOOGLE_API_KEY)
                         .build();
@@ -305,15 +292,6 @@ public class BookingActivity extends AppCompatActivity {
 
             }
 
-        }
-    }
-
-    private class MyRoutingListener implements RoutingListener {
-
-        Context context;
-
-        MyRoutingListener(Context context) {
-            this.context = context;
         }
 
         @Override

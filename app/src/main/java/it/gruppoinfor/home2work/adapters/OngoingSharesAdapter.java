@@ -63,7 +63,7 @@ public class OngoingSharesAdapter extends RecyclerView.Adapter<OngoingSharesAdap
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .circleCrop();
 
-        if (share.getBooking().getBookedMatch().getGuest().getId().equals(Client.getSignedUser().getId())) {
+        if (share.getBooking().getBookedMatch().getGuest().getId().equals(Client.User.getId())) {
 
             Glide.with(activity)
                     .load(share.getBooking().getBookedMatch().getHost().getAvatarURL())

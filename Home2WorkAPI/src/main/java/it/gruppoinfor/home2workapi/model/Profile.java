@@ -1,34 +1,20 @@
 package it.gruppoinfor.home2workapi.model;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Profile {
 
+    @SerializedName("Exp")
+    @Expose
     private Integer exp;
+    @SerializedName("Karma")
+    @Expose
     private Integer karma;
-    private ProfileStats profileStats;
-
-    private Integer expLevel;
-    private Integer expToNextLevel;
-    private Float expLevelProgress;
-
-    public Profile(Integer exp, Integer karma, ProfileStats profileStats) {
-        this.exp = exp;
-
-        this.expLevel = ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
-
-        int thisLevelExp = (int) Math.pow(10.0 * (this.expLevel - 1.0), 2.0);
-        int nextLevelExp = (int) Math.pow(10 * this.expLevel, 2.0);
-        this.expToNextLevel =  nextLevelExp - thisLevelExp;
-
-        int expDelta = exp - this.expToNextLevel;
-        this.expLevelProgress = (100.0f / this.expToNextLevel) * expDelta;
-
-        this.karma = karma;
-        this.profileStats = profileStats;
-    }
+    @SerializedName("Stats")
+    @Expose
+    private UserStatistics stats;
 
     public Integer getExp() {
         return exp;
@@ -46,26 +32,29 @@ public class Profile {
         this.karma = karma;
     }
 
-    public ProfileStats getProfileStats() {
-        return profileStats;
+    public UserStatistics getStats() {
+        return stats;
     }
 
-    public void setProfileStats(ProfileStats profileStats) {
-        this.profileStats = profileStats;
+    public void setStats(UserStatistics stats) {
+        this.stats = stats;
     }
 
-    ////////////////
+////////////////
 
 
     public Integer getExpLevel() {
-        return expLevel;
+        return ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
     }
 
     public Integer getExpToNextLevel() {
-        return expToNextLevel;
+        int thisLevelExp = (int) Math.pow(10.0 * (getExpLevel() - 1.0), 2.0);
+        int nextLevelExp = (int) Math.pow(10 * getExpLevel(), 2.0);
+        return nextLevelExp - thisLevelExp;
     }
 
     public Float getExpLevelProgress() {
-        return expLevelProgress;
+        int expDelta = exp - getExpToNextLevel();
+        return (100.0f / getExpToNextLevel()) * expDelta;
     }
 }

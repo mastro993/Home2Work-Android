@@ -16,20 +16,6 @@ public class Achievement {
     private Double goal;
     private Double current;
 
-    public Achievement() {
-    }
-
-    public Achievement(Long achievementID, String name, String description, Integer karma, Integer exp, Date unlockDate, Double goal, Double current) {
-        this.achievementID = achievementID;
-        this.name = name;
-        this.description = description;
-        this.karma = karma;
-        this.exp = exp;
-        this.unlockDate = unlockDate;
-        this.goal = goal;
-        this.current = current;
-    }
-
     public Long getAchievementID() {
         return achievementID;
     }

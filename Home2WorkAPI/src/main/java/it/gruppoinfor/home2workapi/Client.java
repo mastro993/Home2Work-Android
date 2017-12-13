@@ -5,14 +5,8 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Nullable;
 
-import it.gruppoinfor.home2workapi.model.Achievement;
-import it.gruppoinfor.home2workapi.model.Booking;
-import it.gruppoinfor.home2workapi.model.Match;
-import it.gruppoinfor.home2workapi.model.Profile;
-import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -26,74 +20,11 @@ public class Client {
     public static final String COMPANIES_BASE_URL = SERVER_URL + "/images/companies/";
     public static final String ACHIEVEMENTS_BASE_URL = SERVER_URL + "/images/achievements/";
 
-    private static User signedUser;
-    private static List<Match> userMatches = new ArrayList<>();
-    private static List<Booking> userBookedMatches = new ArrayList<>();
-    private static List<Booking> userRequestedMatches = new ArrayList<>();
-    private static List<Achievement> userAchivements = new ArrayList<>();
-    private static List<Share> userShares = new ArrayList<>();
-
-    public static List<Achievement> getUserAchivements() {
-        return userAchivements;
-    }
-
-    public static void setUserAchivements(List<Achievement> userAchivements) {
-        Client.userAchivements = userAchivements;
-    }
-
-    public static List<Share> getUserShares() {
-        return userShares;
-    }
-
-    public static void setUserShares(List<Share> userShares) {
-        Client.userShares = userShares;
-    }
-
-    private static Profile userProfile;
+    @Nullable
+    public static User User;
     private static EndpointInterface APIService;
 
-    public static User getSignedUser() {
-        return signedUser;
-    }
-
-    public static void setSignedUser(User signedUser) {
-        Client.signedUser = signedUser;
-    }
-
-    public static List<Match> getUserMatches() {
-        return userMatches;
-    }
-
-    public static void setUserMatches(List<Match> userMatches) {
-        Client.userMatches = userMatches;
-    }
-
-    public static List<Booking> getUserBookings() {
-        return userBookedMatches;
-    }
-
-    public static List<Booking> getUserRequests() {
-        return userRequestedMatches;
-    }
-
-    public static void setUserRequests(List<Booking> userRequestedMatches) {
-        Client.userRequestedMatches = userRequestedMatches;
-    }
-
-    public static Profile getUserProfile() {
-        return userProfile;
-    }
-
-    public static void setUserProfile(Profile userProfile) {
-        Client.userProfile = userProfile;
-    }
-
-    public static void setUserBookedMatches(List<Booking> userBookedMatches) {
-        Client.userBookedMatches = userBookedMatches;
-    }
-
     public static void init() {
-
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new StethoInterceptor())
                 .build();

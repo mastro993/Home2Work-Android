@@ -18,7 +18,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,15 +29,10 @@ import it.gruppoinfor.home2work.fragments.MessagesFragment;
 import it.gruppoinfor.home2work.fragments.ProgressFragment;
 import it.gruppoinfor.home2work.fragments.SettingsFragment;
 import it.gruppoinfor.home2work.services.LocationService;
-import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         if (UserPrefs.activityTrackingEnabled) {
             Intent locationIntent = new Intent(this, LocationService.class);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-               startForegroundService(locationIntent);
-            } else{
+                startForegroundService(locationIntent);
+            } else {
                 startService(locationIntent);
             }
         }
@@ -147,42 +141,15 @@ public class MainActivity extends AppCompatActivity {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
 
-        if(resultCode == BookingActivity.SHARE_STARTED){
+        if (resultCode == BookingActivity.SHARE_STARTED) {
             Toasty.success(this, "Condivisione convalidata").show();
             viewPager.setCurrentItem(2);
             initUI();
         }
     }
 
-    public void refreshMatchTabBadge() {
-
-        new AsyncJob.AsyncJobBuilder<Long>()
-                .doInBackground(() -> {
-
-                    long newMatches = 0, pendingRequests = 0;
-
-                    for(Match match : Client.getUserMatches())
-                        if(match.isNew()) newMatches++;
-
-                    for(Booking request : Client.getUserRequests())
-                        if(request.getBookingStatus() == Booking.PENDING) pendingRequests++;
-
-                    return newMatches + pendingRequests;
-                })
-                .doWhenFinished(new AsyncJob.AsyncResultAction<Long>() {
-                    @Override
-                    public void onResult(Long badgeNumber) {
-                        if (badgeNumber > 0) {
-                            bottomNavigation.setNotification(Long.toString(badgeNumber), 1);
-                        } else {
-                            bottomNavigation.setNotification("", 1);
-                        }
-                    }
-                })
-                .create()
-                .start();
-
-
+    public void setBadge(int itemPosition, String title) {
+        bottomNavigation.setNotification(title, itemPosition);
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

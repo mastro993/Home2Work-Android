@@ -101,7 +101,6 @@ public class RequestActivity extends AppCompatActivity {
     TextView boookingDateView;
 
     private Long bookingId;
-    private int position;
     private Booking booking;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
@@ -113,20 +112,13 @@ public class RequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request);
         ButterKnife.bind(this);
 
-        setTitle("Dettagli richiesta");
-
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        if (getIntent().getLongExtra("bookingID", 0) != 0) {
-            bookingId = getIntent().getLongExtra("bookingID", 0);
-        } else {
-            position = getIntent().getIntExtra("request_position", 0);
-            bookingId = Client.getUserRequests().get(position).getBookingID();
-        }
+        bookingId = getIntent().getLongExtra("bookingID", 0);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.onCreate(savedInstanceState);
@@ -247,7 +239,6 @@ public class RequestActivity extends AppCompatActivity {
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override
                         public void onResponse(Call<Booking> call, Response<Booking> response) {
-                            Client.getUserRequests().remove(position);
                             setResult(REQUEST_REJECTED);
                             finish();
                         }
@@ -278,8 +269,6 @@ public class RequestActivity extends AppCompatActivity {
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override
                         public void onResponse(Call<Booking> call, Response<Booking> response) {
-
-                            Client.getUserRequests().get(position).setBookingStatus(2);
                             setResult(REQUEST_ACCEPTED);
                             finish();
                         }

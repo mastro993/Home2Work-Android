@@ -4,7 +4,6 @@ package it.gruppoinfor.home2work.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,8 +20,6 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.RequestActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.RequestAdapter;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
 import it.gruppoinfor.home2workapi.model.Booking;
 
 
@@ -48,10 +45,10 @@ public class MatchFragmentRequest extends Fragment {
     }
 
     private void initUI() {
-        if(Client.getUserRequests().size() == 0){
+        if (MatchFragment.RequestList.size() == 0) {
             requestsRecyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requestsRecyclerView.getContext(), layoutManager.getOrientation());
             LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
@@ -60,7 +57,7 @@ public class MatchFragmentRequest extends Fragment {
             //requestsRecyclerView.addItemDecoration(dividerItemDecoration);
             requestsRecyclerView.setLayoutAnimation(animation);
 
-            requestAdapter = new RequestAdapter(getActivity(), Client.getUserRequests());
+            requestAdapter = new RequestAdapter(getActivity(), MatchFragment.RequestList);
             requestAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
                 @Override
                 public void onItemClick(View view, int position) {
@@ -79,10 +76,10 @@ public class MatchFragmentRequest extends Fragment {
 
     private void showRequestDetails(int position) {
 
-        Booking booking = Client.getUserRequests().get(position);
+        Booking booking = MatchFragment.RequestList.get(position);
 
         Intent bookingIntent = new Intent(getActivity(), RequestActivity.class);
-        bookingIntent.putExtra("request_position", position);
+        bookingIntent.putExtra("bookingID", booking.getBookingID());
         getActivity().startActivityForResult(bookingIntent, RequestActivity.REQUEST_RESPONSE_CODE);
 
     }

@@ -56,7 +56,7 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
         int karmaPoints;
         int exp;
 
-        if (share.getBooking().getBookedMatch().getGuest().getId() == Client.getSignedUser().getId()) {
+        if (share.getBooking().getBookedMatch().getGuest().getId() == Client.User.getId()) {
             holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getBooking().getBookedMatch().getHost().toString()));
             karmaPoints = kmDistance.intValue();
             exp = (int) (kmDistance * 10);

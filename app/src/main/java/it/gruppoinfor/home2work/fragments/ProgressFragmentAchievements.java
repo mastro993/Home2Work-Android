@@ -10,10 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.TextView;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,14 +20,14 @@ import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.AchievementAdapter;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Achievement;
 
 // TODO dialog informazioni obiettivo
 public class ProgressFragmentAchievements extends Fragment implements ItemClickCallbacks {
 
     @BindView(R.id.achievement_recycler_view)
     RecyclerView achievementRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView emptyView;
     private Unbinder unbinder;
     private AchievementAdapter achievementAdapter;
 
@@ -46,31 +45,40 @@ public class ProgressFragmentAchievements extends Fragment implements ItemClickC
     }
 
     private void initUI() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
-        achievementRecyclerView.setLayoutManager(layoutManager);
-        achievementRecyclerView.setLayoutAnimation(animation);
+        if (ProgressFragment.AchievementList.size() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            achievementRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            achievementRecyclerView.setVisibility(View.VISIBLE);
 
-        List<Achievement> achievements = Client.getUserAchivements();
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
-        Collections.sort(achievements, (A, B) -> {
-            int result = B.getProgress().compareTo(A.getProgress());
+            achievementRecyclerView.setLayoutManager(layoutManager);
+            achievementRecyclerView.setLayoutAnimation(animation);
 
-            if (result == 0) {
-                result = A.getUnlockDate().compareTo(B.getUnlockDate());
-            }
+            Collections.sort(ProgressFragment.AchievementList, (A, B) -> {
+                int result = B.getProgress().compareTo(A.getProgress());
 
-            if (result == 0) {
-                result = A.getName().compareTo(B.getName());
-            }
+                if (result == 0) {
+                    result = A.getUnlockDate().compareTo(B.getUnlockDate());
+                }
 
-            return result;
-        });
+                if (result == 0) {
+                    result = A.getName().compareTo(B.getName());
+                }
 
-        achievementAdapter = new AchievementAdapter(getActivity(), achievements);
-        achievementAdapter.setItemClickCallbacks(this);
-        achievementRecyclerView.setAdapter(achievementAdapter);
+                return result;
+            });
+
+            achievementAdapter = new AchievementAdapter(getActivity(), ProgressFragment.AchievementList);
+            achievementAdapter.setItemClickCallbacks(this);
+            achievementRecyclerView.setAdapter(achievementAdapter);
+        }
+
+
     }
 
     @Override

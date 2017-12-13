@@ -25,8 +25,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
-import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.Client;
 import okhttp3.MediaType;
@@ -135,11 +135,11 @@ public class ConfigurationFragmentAvatar extends Fragment implements BlockingSte
 
             RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-            String filename = Client.getSignedUser().getId() + ".jpg";
+            String filename = Client.User.getId() + ".jpg";
 
             MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-            Client.getAPI().uploadAvatar(Client.getSignedUser().getId(), body).enqueue(new Callback<ResponseBody>() {
+            Client.getAPI().uploadAvatar(Client.User.getId(), body).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     callback.getStepperLayout().hideProgress();

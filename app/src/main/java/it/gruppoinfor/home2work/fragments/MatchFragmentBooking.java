@@ -3,8 +3,6 @@ package it.gruppoinfor.home2work.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -19,18 +17,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.BookingActivity;
-import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.BookingAdapter;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.Mockup;
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
 import it.gruppoinfor.home2workapi.model.Booking;
-import it.gruppoinfor.home2workapi.model.Match;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,11 +50,10 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
     }
 
     private void initUI() {
-
-        if(Client.getUserBookings().size() == 0){
+        if (MatchFragment.BookingList.size() == 0) {
             bookingsRecyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
-        } else{
+        } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(bookingsRecyclerView.getContext(), layoutManager.getOrientation());
             LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
@@ -70,11 +62,11 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
             //bookingsRecyclerView.addItemDecoration(dividerItemDecoration);
             bookingsRecyclerView.setLayoutAnimation(animation);
 
-            bookingAdapter = new BookingAdapter(getActivity(), Client.getUserBookings());
+            bookingAdapter = new BookingAdapter(getActivity(), MatchFragment.BookingList);
             bookingAdapter.setItemClickCallbacks(this);
             bookingsRecyclerView.setAdapter(bookingAdapter);
-        }
 
+        }
     }
 
     @Override
@@ -104,25 +96,15 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
     }
 
     private void showBookingDetails(int position) {
+        Booking booking = MatchFragment.BookingList.get(position);
 
-        Booking booking = Client.getUserBookings().get(position);
-
-        if(booking.getBookingStatus() == 0){
+        if (booking.getBookingStatus() == 0) {
             removeBookingDialog(position);
         } else {
             Intent bookingIntent = new Intent(getActivity(), BookingActivity.class);
             bookingIntent.putExtra("bookingID", booking.getBookingID());
             getActivity().startActivityForResult(bookingIntent, 0);
         }
-
-    }
-
-    private void showMatchDetails(int position) {
-        Match match = Client.getUserMatches().get(position);
-
-        Intent matchIntent = new Intent(getContext(), MatchActivity.class);
-        matchIntent.putExtra("matchID", match.getMatchID());
-        startActivity(matchIntent);
 
     }
 
@@ -142,15 +124,17 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
                 .positiveText("Conferma annullamento")
                 .negativeText("Indietro")
                 .onPositive((dialog, which) -> {
-                    Booking booking = Client.getUserBookings().get(position);
+                    Booking booking = MatchFragment.BookingList.get(position);
                     booking.setBookingStatus(Booking.CANCELED);
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override
                         public void onResponse(Call<Booking> call, Response<Booking> response) {
-                           if(response.code() == 200){
-                               Client.getUserBookings().remove(position);
-                               bookingAdapter.remove(position);
-                           }
+                            if (response.code() == 200) {
+                                MatchFragment.BookingList.remove(position);
+                                bookingAdapter.remove(position);
+                                bookingAdapter.notifyItemRemoved(position);
+                                initUI();
+                            }
                         }
 
                         @Override
@@ -170,7 +154,7 @@ public class MatchFragmentBooking extends Fragment implements ItemClickCallbacks
                 .content("Questa prenotazione, purtroppo, non è stata accettata.")
                 .positiveText("Rimuovi")
                 .onPositive((dialog, which) -> {
-                    Booking booking = Client.getUserBookings().get(position);
+                    Booking booking = MatchFragment.BookingList.get(position);
                     booking.setHidden(true);
                     Client.getAPI().editBooking(booking).enqueue(new Callback<Booking>() {
                         @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
@@ -40,6 +41,11 @@ public interface EndpointInterface {
     Call<ResponseBody> uploadAvatar(
             @Path("id") Long userID,
             @Part MultipartBody.Part file
+    );
+
+    @GET("user/{id}/profile")
+    Call<Profile> getUserProfile(
+            @Path("id") Long userID
     );
 
     @GET("company")
@@ -125,6 +131,15 @@ public interface EndpointInterface {
 
     @FormUrlEncoded
     @POST("share/{id}/complete")
+    Call<Share> updateShare(
+            @Path("id") Long shareId,
+            @Field("guestId") Long guestId,
+            @Field("latlng") String latLngString,
+            @Field("status") int status
+    );
+
+    @FormUrlEncoded
+    @POST("share/{id}/complete")
     Call<Share> completeShare(
             @Path("id") Long shareId,
             @Field("guestId") Long guestId,
@@ -133,6 +148,11 @@ public interface EndpointInterface {
 
     @GET("share/{id}")
     Call<Share> getShare(
+            @Path("id") Long id
+    );
+
+    @GET("user/{id}/ongoingShare")
+    Call<Share> getUserOngoingShare(
             @Path("id") Long id
     );
 

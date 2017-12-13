@@ -7,8 +7,6 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2workapi.Client;
@@ -67,7 +65,7 @@ public class SessionManager {
 
     public void checkSession(final SessionManagerCallback callback) {
 
-        if (Client.getSignedUser() != null) {
+        if (Client.User != null) {
             callback.onValidSession();
             return;
         }
@@ -87,7 +85,7 @@ public class SessionManager {
                     case 200:
                         User user = response.body();
                         storeSession(user);
-                        Client.setSignedUser(user);
+                        Client.User = user;
                         callback.onValidSession();
                         break;
                     default:
@@ -123,19 +121,19 @@ public class SessionManager {
     public static class SessionManagerCallback {
 
         public void onNoSession() {
-            throw new NotImplementedException("onNoSession fired but not implemented");
+            MyLogger.v("SessionManager", "onNoSession fired but not implemented");
         }
 
         public void onValidSession() {
-            throw new NotImplementedException("onValidSession fired but not implemented");
+            MyLogger.v("SessionManager", "onValidSession fired but not implemented");
         }
 
         public void onExpiredToken() {
-            throw new NotImplementedException("onInvalidSessions fired but not implemented");
+            MyLogger.v("SessionManager", "onInvalidSessions fired but not implemented");
         }
 
         public void onError() {
-            throw new NotImplementedException("onError fired but not implemented");
+            MyLogger.v("SessionManager", "onError fired but not implemented");
         }
     }
 

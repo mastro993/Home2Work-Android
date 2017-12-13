@@ -13,9 +13,10 @@ import com.arasthel.asyncjob.AsyncJob;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.gruppoinfor.home2work.utils.MyLogger;
-import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
+import it.gruppoinfor.home2work.utils.MyLogger;
+import it.gruppoinfor.home2work.utils.SessionManager;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.RoutePoint;
 import retrofit2.Call;
@@ -27,7 +28,7 @@ import static it.gruppoinfor.home2work.App.dbApp;
 
 public class SyncService extends Service {
 
-    private final String TAG = "SYN_SERVICE";
+    private final String TAG = "SYNC_SERVICE";
 
     private List<RoutePoint> routePoints = new ArrayList<>();
 
@@ -35,19 +36,23 @@ public class SyncService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        if(!UserPrefs.isInited())
+        if (!UserPrefs.isInited())
             UserPrefs.init(this);
 
-        if (getConnectivityType(this) == ConnectivityManager.TYPE_WIFI || UserPrefs.syncWithData) {
-            sync();
-        }
+        SessionManager.with(this).checkSession(new SessionManager.SessionManagerCallback() {
+            @Override
+            public void onValidSession() {
+                if (getConnectivityType(SyncService.this) == ConnectivityManager.TYPE_WIFI || UserPrefs.syncWithData) {
+                    sync();
+                }
+            }
+        });
 
     }
 
     public void sync() {
-        MyLogger.i(TAG, "Servizio avviato");
-        AsyncJob.doInBackground(()->{
-            for(RoutePointEntity routePointEntity : dbApp.routePointDAO().getAllUserPoints(Client.getSignedUser().getId())){
+        AsyncJob.doInBackground(() -> {
+            for (RoutePointEntity routePointEntity : dbApp.routePointDAO().getAllUserPoints(Client.User.getId())) {
 
                 RoutePoint routePoint = new RoutePoint();
                 routePoint.setLatLng(routePointEntity.getLatLng());
@@ -56,7 +61,7 @@ public class SyncService extends Service {
 
             }
 
-            if(routePoints.size() > 0){
+            if (routePoints.size() > 0) {
                 MyLogger.i(TAG, "Sono presenti " + routePoints.size() + " location");
                 syncRoutePoints(routePoints);
             }
@@ -68,14 +73,16 @@ public class SyncService extends Service {
     private void syncRoutePoints(final List<RoutePoint> routePointList) {
         MyLogger.i(TAG, "Avvio sincronizzazione");
 
-        Client.getAPI().uploadRoutePoint(Client.getSignedUser().getId(), routePointList)
+        Client.getAPI().uploadRoutePoint(Client.User.getId(), routePointList)
                 .enqueue(new Callback<List<RoutePoint>>() {
                     @Override
                     public void onResponse(Call<List<RoutePoint>> call, Response<List<RoutePoint>> response) {
-                        AsyncJob.doInBackground(()-> dbApp.routePointDAO().deleteAll(Client.getSignedUser().getId()));
-
-                        MyLogger.d(TAG, "Sincronizzazione avvenuta (" + response.body().size() + " location)");
-
+                        if (response.code() == 200) {
+                            MyLogger.d(TAG, "Sincronizzazione avvenuta (" + response.body().size() + " location)");
+                            AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(Client.User.getId()));
+                        } else {
+                            MyLogger.d(TAG, "Sincronizzazione fallita. " + call.toString());
+                        }
                     }
 
                     @Override

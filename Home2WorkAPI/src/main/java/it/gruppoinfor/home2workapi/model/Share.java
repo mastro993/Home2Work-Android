@@ -4,14 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class Share {
-    public static final int CREATED = 0;
-    public static final int TOJOB = 1;
-    public static final int ARRIVED = 2;
-    public static final int TOHOME = 3;
-    public static final int COMPLETED = 4;
+    public static final int CREATED = 0; // Creata ma non avviata
+    public static final int TOJOB = 1; // Avvita e spostamento verso lavoro
+    public static final int ARRIVED = 2; // Arrivato a lavoro, fermo
+    public static final int TOHOME = 3; // Avviata e spostamento verso casa
+    public static final int COMPLETED = 4; // Arrivato a casa, ultimata
 
     @SerializedName("ID")
     @Expose

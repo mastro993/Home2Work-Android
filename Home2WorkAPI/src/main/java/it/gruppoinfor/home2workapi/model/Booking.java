@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-import it.gruppoinfor.home2workapi.enums.BookingStatus;
-
 public class Booking {
 
     public static final int REJECTED = 0;

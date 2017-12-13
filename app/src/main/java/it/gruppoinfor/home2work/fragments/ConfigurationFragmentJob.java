@@ -80,7 +80,7 @@ public class ConfigurationFragmentJob extends Fragment implements Step {
             return new VerificationError("Devi selezionare un azienda prima di poter continuare");
 
 
-        Client.getSignedUser().getCompany().setId(
+        Client.User.getCompany().setId(
                 ((Company) companySpinner.getSelectedItem()).getId()
         );
 

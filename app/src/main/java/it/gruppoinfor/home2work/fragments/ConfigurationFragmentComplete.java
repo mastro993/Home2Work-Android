@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.stepstone.stepper.BlockingStep;
 import com.stepstone.stepper.StepperLayout;
 import com.stepstone.stepper.VerificationError;
@@ -54,9 +53,9 @@ public class ConfigurationFragmentComplete extends Fragment implements BlockingS
     public void onCompleteClicked(final StepperLayout.OnCompleteClickedCallback callback) {
         callback.getStepperLayout().showProgress("Attendi..");
 
-        Client.getSignedUser().setConfigured(true);
+        Client.User.setConfigured(true);
 
-        Client.getAPI().updateUser(Client.getSignedUser()).enqueue(new Callback<User>() {
+        Client.getAPI().updateUser(Client.User).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 callback.getStepperLayout().hideProgress();

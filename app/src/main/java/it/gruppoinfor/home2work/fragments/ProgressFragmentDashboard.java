@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +20,6 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.OngoingSharesAdapter;
 import it.gruppoinfor.home2work.dialogs.OngoingShareInfoDialog;
-import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Share;
 
 public class ProgressFragmentDashboard extends Fragment {
@@ -54,7 +52,7 @@ public class ProgressFragmentDashboard extends Fragment {
 
     private void initOngoingSharesList() {
         ongoingShares = new ArrayList<>();
-        for (Share s : Client.getUserShares())
+        for (Share s : ProgressFragment.ShareList)
             if (s.getStatus() != Share.COMPLETED) ongoingShares.add(s);
 
         if (ongoingShares.size() != 0) {

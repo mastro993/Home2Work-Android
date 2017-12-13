@@ -8,7 +8,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.math.RoundingMode;
@@ -21,24 +20,15 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Profile;
-import it.gruppoinfor.home2workapi.model.ProfileStats;
+import it.gruppoinfor.home2workapi.model.UserStatistics;
 
 
 public class ProgressFragmentStats extends Fragment {
 
-    Profile profile;
-    ProfileStats profileStats;
     Resources res;
     Unbinder unbinder;
     @BindView(R.id.regdate_text_view)
     TextView regdateTextView;
-    @BindView(R.id.distance_text_view)
-    TextView distanceTextView;
-    @BindView(R.id.gas_text_view)
-    TextView gasTextView;
-    @BindView(R.id.emissions_text_view)
-    TextView emissionsTextView;
     @BindView(R.id.shares_text_view)
     TextView sharesTextView;
     @BindView(R.id.shared_distance_text_view)
@@ -64,22 +54,18 @@ public class ProgressFragmentStats extends Fragment {
 
     private void initUI() {
 
-/*        profile = Client.getUserProfile();
+        UserStatistics statistics = ProgressFragment.Profile.getStats();
 
-        ProfileStats profileStats = profile.getProfileStats();
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
-        String dateString = dateFormat.format(profileStats.getRegDate());
+        String dateString = dateFormat.format(Client.User.getRegistrationDate());
 
         regdateTextView.setText(dateString);
-        distanceTextView.setText(df.format(profileStats.getTotalKilometers()));
-        gasTextView.setText(df.format(profileStats.getTotalGas()));
-        emissionsTextView.setText(df.format(profileStats.getTotalEmissions()));
-        sharesTextView.setText(profileStats.getTotalShares().toString());
-        sharedDistanceTextView.setText(df.format(profileStats.getTotalSharedKilometers()));
-        savedGasTextView.setText(df.format(profileStats.getTotalGasSaved()));
-        savedEmissionsTextView.setText(df.format(profileStats.getTotalEmissionSaved()));*/
+        sharesTextView.setText(statistics.getShares().toString());
+        sharedDistanceTextView.setText(df.format(statistics.getSharedKilometers()));
+        savedGasTextView.setText(df.format(statistics.getGasSaved()));
+        savedEmissionsTextView.setText(df.format(statistics.getEmissionSaved()));
     }
 
 

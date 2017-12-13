@@ -36,6 +36,7 @@ import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.Share;
 import retrofit2.Call;
@@ -69,6 +70,11 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     @BindView(R.id.edit_profile_button)
     ImageButton editProfileButton;
 
+    protected static Profile Profile;
+    protected static List<Share> ShareList = new ArrayList<>();
+    protected static List<Achievement> AchievementList = new ArrayList<>();
+    // protected Statistics statistics;
+
 
     public ProgressFragment() {
         // Required empty public constructor
@@ -91,15 +97,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     }
 
     private void initUI() {
-
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         viewPager.addOnPageChangeListener(this);
 
-        avatarView.setAvatarURL(Client.getSignedUser().getAvatarURL());
-        nameTextView.setText(Client.getSignedUser().toString());
-        jobTextView.setText(Client.getSignedUser().getCompany().toString());
+        avatarView.setAvatarURL(Client.User.getAvatarURL());
+        nameTextView.setText(Client.User.toString());
+        jobTextView.setText(Client.User.getCompany().toString());
     }
 
     @Override
@@ -128,14 +133,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         AsyncJob.doInBackground(() -> {
 
-            Call<List<Share>> sharesCall = Client.getAPI().getUserShares(Client.getSignedUser().getId());
-            // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getSignedUser().getId());
-            // TODO Call<Profile> requestsCall = Client.getAPI().getUserProfile(Client.getSignedUser().getId());
+            Call<List<Share>> sharesCall = Client.getAPI().getUserShares(Client.User.getId());
+            // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getUser().getId());
+            Call<Profile> profileCall = Client.getAPI().getUserProfile(Client.User.getId());
 
             try {
-                Client.setUserShares(new ArrayList<>(sharesCall.execute().body()));
+                ShareList = new ArrayList<>(sharesCall.execute().body());
                 //Client.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
-                //Client.setUserProfile(new ArrayList<>(requestsCall.execute().body()));
+                Profile = profileCall.execute().body();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -158,8 +163,9 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     }
 
     private void refreshProfileUI() {
-        Profile profile = Client.getUserProfile();
-        // TODO avatarView.setExp(profile.getExp(), profile.getExpLevel(), profile.getExpLevelProgress());
+        // TODO UI profilo
+        //  Profile Profile = Client.getUserProfile();
+        avatarView.setExp(Profile.getExp(), Profile.getExpLevel(), Profile.getExpLevelProgress());
     }
 
     @Override

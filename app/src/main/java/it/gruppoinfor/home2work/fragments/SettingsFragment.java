@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -27,7 +26,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
@@ -39,9 +37,6 @@ import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Address;
 import it.gruppoinfor.home2workapi.model.User;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -233,7 +228,7 @@ public class SettingsFragment extends Fragment {
                         LatLng latLng = Converters.addressToLatLng(getContext(), addr + ", " + city + " " + CAP);
                         if (latLng != null) {
 
-                            User signedUser = Client.getSignedUser();
+                            User signedUser = Client.User;
 
                             signedUser.setLocation(latLng);
 
@@ -247,7 +242,7 @@ public class SettingsFragment extends Fragment {
                             //homeAddressTextView.setText(newAddress.toString());
 
 
-                            Client.setSignedUser(signedUser);
+                            Client.User = signedUser;
 
                             //commitChanges();
 
@@ -266,7 +261,7 @@ public class SettingsFragment extends Fragment {
         EditText capInput = view.findViewById(R.id.cap_input);
         EditText addressInput = view.findViewById(R.id.address_input);
 
-        User signedUserr = Client.getSignedUser();
+        User signedUserr = Client.User;
 
         addressInput.setText(signedUserr.getAddress().getAddress());
         capInput.setText(signedUserr.getAddress().getPostalCode());
@@ -284,7 +279,7 @@ public class SettingsFragment extends Fragment {
 /*    @OnClick(R.id.match_max_time_container)
     public void onMatchMaxTimeContainerClicked() {
 
-        User signedUser = Client.getSignedUser();
+        User signedUser = Client.getUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
         *//*MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
@@ -310,7 +305,7 @@ public class SettingsFragment extends Fragment {
 
                         signedUser.setMatchPreferences(matchPreferences);
 
-                        Client.setSignedUser(signedUser);
+                        Client.setUser(signedUser);
 
                         commitChanges();
 
@@ -334,7 +329,7 @@ public class SettingsFragment extends Fragment {
 
                     signedUser.setMatchPreferences(matchPreferences);
 
-                    Client.setSignedUser(signedUser);
+                    Client.setUser(signedUser);
 
                     commitChanges();
 
@@ -358,7 +353,7 @@ public class SettingsFragment extends Fragment {
     @OnClick(R.id.match_max_distance_container)
     public void onMatchMaxDistanceContainerClicked() {
 
-        User signedUser = Client.getSignedUser();
+        User signedUser = Client.getUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
        *//* MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
@@ -384,7 +379,7 @@ public class SettingsFragment extends Fragment {
 
                         signedUser.setMatchPreferences(matchPreferences);
 
-                        Client.setSignedUser(signedUser);
+                        Client.setUser(signedUser);
 
                         commitChanges();
 
@@ -407,7 +402,7 @@ public class SettingsFragment extends Fragment {
 
                     signedUser.setMatchPreferences(matchPreferences);
 
-                    Client.setSignedUser(signedUser);
+                    Client.setUser(signedUser);
 
                     commitChanges();
 
@@ -432,7 +427,7 @@ public class SettingsFragment extends Fragment {
     @OnClick(R.id.match_min_score_container)
     public void onMatchMinScoreContainerClicked() {
 
-        User signedUser = Client.getSignedUser();
+        User signedUser = Client.getUser();
         UserMatchPreferences matchPreferences = signedUser.getMatchPreferences();
 
 *//*        MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(getContext())
@@ -458,7 +453,7 @@ public class SettingsFragment extends Fragment {
 
                         signedUser.setMatchPreferences(matchPreferences);
 
-                        Client.setSignedUser(signedUser);
+                        Client.setUser(signedUser);
 
                         commitChanges();
 
@@ -482,7 +477,7 @@ public class SettingsFragment extends Fragment {
 
                     signedUser.setMatchPreferences(matchPreferences);
 
-                    Client.setSignedUser(signedUser);
+                    Client.setUser(signedUser);
 
                     commitChanges();
 

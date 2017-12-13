@@ -46,8 +46,8 @@ public class ConfigurationFragmentName extends Fragment implements Step {
             return new VerificationError("Cognome non valido");
         }
 
-        Client.getSignedUser().setName(nameInput.getText().toString().trim());
-        Client.getSignedUser().setSurname(surnameInput.getText().toString().trim());
+        Client.User.setName(nameInput.getText().toString().trim());
+        Client.User.setSurname(surnameInput.getText().toString().trim());
 
         return null;
     }

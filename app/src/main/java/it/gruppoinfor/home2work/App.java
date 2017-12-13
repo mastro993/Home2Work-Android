@@ -20,10 +20,6 @@ public class App extends Application {
     public static DBApp dbApp;
     private static App instance;
 
-    public static App getInstance() {
-        return instance;
-    }
-
     public static Context getContext() {
         return instance;
     }

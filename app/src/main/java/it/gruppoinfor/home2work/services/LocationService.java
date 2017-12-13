@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
+import it.gruppoinfor.home2work.utils.GeofenceUtils;
 import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.Client;
@@ -66,9 +67,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 .addApi(LocationServices.API)
                 .build();
 
-        if (Client.getSignedUser() != null) {
+        if (Client.User != null) {
 
-            MyLogger.i(TAG, "Utente collegato: " + Client.getSignedUser().getEmail());
+            MyLogger.i(TAG, "Utente collegato: " + Client.User.getEmail());
             mGoogleApiClient.connect();
 
             AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -92,6 +93,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                     .build();
 
             startForeground(1337, serviceNotification);
+
+            // Registro le geofences per i trigger delle condivisioni
+            GeofenceUtils.setupGeofences(this);
 
         } else {
             MyLogger.i(TAG, "Sessione non presente");
@@ -142,7 +146,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         return Service.START_STICKY;
     }
 
-
     private void startLocationRequests() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             MyLogger.d(TAG, "Avvio tracking utente");
@@ -179,7 +182,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         routePointEntity.setLatLng(latLng);
         routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
-        routePointEntity.setUserId(Client.getSignedUser().getId());
+        routePointEntity.setUserId(Client.User.getId());
 
         AsyncJob.doInBackground(() -> {
             dbApp.routePointDAO().insert(routePointEntity);

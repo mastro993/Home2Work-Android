@@ -1,16 +1,9 @@
 package it.gruppoinfor.home2workapi;
 
-import com.arasthel.asyncjob.AsyncJob;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Booking;
-import it.gruppoinfor.home2workapi.model.Profile;
-import it.gruppoinfor.home2workapi.model.ProfileStats;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 

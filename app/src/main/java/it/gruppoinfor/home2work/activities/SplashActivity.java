@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
 

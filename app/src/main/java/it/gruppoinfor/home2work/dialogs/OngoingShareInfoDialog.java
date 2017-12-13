@@ -36,8 +36,8 @@ public class OngoingShareInfoDialog extends AlertDialog.Builder {
     TextView expPreview;
     @BindView(R.id.share_status_view)
     ShareStatusView shareStatusView;
-    @BindView(R.id.status_text)
-    TextView statusText;
+    @BindView(R.id.status_text_view)
+    TextView statusTextView;
 
     public OngoingShareInfoDialog(Context context, Share share) {
         super(context);
@@ -47,10 +47,25 @@ public class OngoingShareInfoDialog extends AlertDialog.Builder {
 
         shareStatusView.setStatus(share.getStatus());
 
+        switch (share.getStatus()) {
+            case Share.TOJOB:
+                statusTextView.setText("In viaggio verso luogo di lavoro");
+                break;
+            case Share.ARRIVED:
+                statusTextView.setText("Arrivato a lavoro");
+                break;
+            case Share.TOHOME:
+                statusTextView.setText("In viaggio verso casa");
+                break;
+            case Share.COMPLETED:
+                statusTextView.setText("Completato");
+                break;
+        }
+
         User user;
         boolean ishost;
 
-        if (share.getBooking().getBookedMatch().getGuest().getId() == Client.getSignedUser().getId()) {
+        if (share.getBooking().getBookedMatch().getGuest().getId() == Client.User.getId()) {
             user = share.getBooking().getBookedMatch().getHost();
             ishost = false;
         } else {

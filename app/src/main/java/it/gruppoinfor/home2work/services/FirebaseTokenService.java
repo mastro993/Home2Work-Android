@@ -18,7 +18,7 @@ public class FirebaseTokenService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         //sendRegistrationToServer(refreshedToken);
-        Client.getAPI().setFCMToken(Client.getSignedUser().getId(), refreshedToken);
+        Client.getAPI().setFCMToken(Client.User.getId(), refreshedToken);
     }
 
 

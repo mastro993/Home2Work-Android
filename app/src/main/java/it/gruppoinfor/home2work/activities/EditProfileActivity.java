@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
@@ -23,7 +22,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
@@ -72,7 +70,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .circleCrop()
                 .placeholder(R.drawable.ic_avatar_placeholder);
         Glide.with(this)
-                .load(Client.getSignedUser().getAvatarURL())
+                .load(Client.User.getAvatarURL())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
                 .into(avatarView);
@@ -106,11 +104,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-                String filename = Client.getSignedUser().getId() + ".jpg";
+                String filename = Client.User.getId() + ".jpg";
 
                 MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-                Client.getAPI().uploadAvatar(Client.getSignedUser().getId(), body).enqueue(new Callback<ResponseBody>() {
+                Client.getAPI().uploadAvatar(Client.User.getId(), body).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if(response.code() == 201){

@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.fragments;
 
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,23 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.SharesAdapter;
-import it.gruppoinfor.home2work.utils.QREncoder;
-import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Share;
 
 /**
@@ -61,7 +53,7 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
     private void initUI() {
 
         completedShares = new ArrayList<>();
-        for (Share share : Client.getUserShares())
+        for (Share share : ProgressFragment.ShareList)
             if (share.getStatus() == Share.COMPLETED) completedShares.add(share);
 
 

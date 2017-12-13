@@ -88,7 +88,7 @@ public class SignInActivity extends AppCompatActivity {
     private void onLoginSuccess(final User user) {
 
         SessionManager.with(this).storeSession(user);
-        Client.setSignedUser(user);
+        Client.User = user;
 
         if (user.isConfigured()) {
 

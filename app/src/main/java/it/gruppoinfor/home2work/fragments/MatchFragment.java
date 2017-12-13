@@ -38,6 +38,8 @@ import retrofit2.Call;
 
 public class MatchFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
+    private Unbinder unbinder;
+
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
@@ -48,9 +50,10 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
     TextView toolbarTitle;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    private Unbinder unbinder;
-    private MatchPagerAdapter pagerAdapter;
-    private int currentPage = 0;
+
+    protected static List<Match> MatchList = new ArrayList<>();
+    protected static List<Booking> BookingList = new ArrayList<>();
+    protected static List<Booking> RequestList = new ArrayList<>();
 
     public MatchFragment() {
         // Required empty public constructor
@@ -61,7 +64,6 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
         View rootView = inflater.inflate(R.layout.fragment_match, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
-        refreshTabs();
         refreshData();
         return rootView;
     }
@@ -94,44 +96,52 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
         }
     }
 
-    private void refreshTabs() {
-        currentPage = viewPager.getCurrentItem();
-        pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(currentPage);
-    }
-
     private void refreshData() {
         swipeRefreshLayout.setRefreshing(true);
         AsyncJob.doInBackground(() -> {
 
-            Call<List<Match>> matchesCall = Client.getAPI().getUserMatches(Client.getSignedUser().getId());
-            Call<List<Booking>> bookingsCall = Client.getAPI().getUserBookings(Client.getSignedUser().getId());
-            Call<List<Booking>> requestsCall = Client.getAPI().getUserRequests(Client.getSignedUser().getId());
+            Call<List<Match>> matchesCall = Client.getAPI().getUserMatches(Client.User.getId());
+            Call<List<Booking>> bookingsCall = Client.getAPI().getUserBookings(Client.User.getId());
+            Call<List<Booking>> requestsCall = Client.getAPI().getUserRequests(Client.User.getId());
 
             try {
-                Client.setUserMatches(new ArrayList<>(matchesCall.execute().body()));
-                Client.setUserBookedMatches(new ArrayList<>(bookingsCall.execute().body()));
-                Client.setUserRequests(new ArrayList<>(requestsCall.execute().body()));
+                MatchList = new ArrayList<>(matchesCall.execute().body());
+                BookingList = new ArrayList<>(bookingsCall.execute().body());
+                RequestList = new ArrayList<>(requestsCall.execute().body());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             AsyncJob.doOnMainThread(() -> {
                 swipeRefreshLayout.setRefreshing(false);
-
-                // Faccio il refresh della UI con i dati
                 refreshTabs();
-
-                // Aggiorno il counter del badge
-                ((MainActivity) getActivity()).refreshMatchTabBadge();
-
+                refreshBadgeCounter();
             });
-
         });
+    }
 
+    private void refreshTabs() {
+        int currentPage = viewPager.getCurrentItem();
+        MatchPagerAdapter pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(3);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(currentPage);
+    }
+
+
+    protected void refreshBadgeCounter() {
+        long newMatches = 0, pendingRequests = 0;
+
+        for (Match match : MatchList)
+            if (match.isNew()) newMatches++;
+
+        for (Booking request : RequestList)
+            if (request.getBookingStatus() == Booking.PENDING) pendingRequests++;
+
+        Long badgeCounter = newMatches + pendingRequests;
+
+        ((MainActivity) getActivity()).setBadge(1, badgeCounter > 0 ? badgeCounter.toString() : "");
 
     }
 
@@ -158,10 +168,9 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
                 break;
             case RequestActivity.REQUEST_REJECTED:
             case RequestActivity.REQUEST_ACCEPTED:
-                refreshTabs();
+                refreshData();
                 viewPager.setCurrentItem(2);
-                // Aggiorno il counter del badge
-                ((MainActivity) getActivity()).refreshMatchTabBadge();
+                refreshBadgeCounter();
                 break;
         }
 

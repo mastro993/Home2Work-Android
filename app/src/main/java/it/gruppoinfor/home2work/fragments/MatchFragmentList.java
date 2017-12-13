@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -20,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
@@ -56,18 +54,18 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
         matchesRecyclerView.setLayoutManager(layoutManager);
         matchesRecyclerView.setLayoutAnimation(animation);
 
-        matchesAdapter = new MatchAdapter(getActivity(), Client.getUserMatches());
+        matchesAdapter = new MatchAdapter(getActivity(), MatchFragment.MatchList);
         matchesAdapter.setItemClickCallbacks(this);
         matchesRecyclerView.setAdapter(matchesAdapter);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Match matchItem = Client.getUserMatches().get(position);
+        Match matchItem = MatchFragment.MatchList.get(position);
         if (matchItem.isNew()) {
             matchItem.setNew(false);
             matchesAdapter.notifyItemChanged(position);
-            ((MainActivity) getActivity()).refreshMatchTabBadge();
+            ((MatchFragment) getParentFragment()).refreshBadgeCounter();
         }
         showMatchDetails(position);
     }
@@ -91,7 +89,7 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
     }
 
     private void showMatchDetails(int position) {
-        Match match = Client.getUserMatches().get(position);
+        Match match = MatchFragment.MatchList.get(position);
 
         Intent matchIntent = new Intent(getContext(), MatchActivity.class);
         matchIntent.putExtra("matchID", match.getMatchID());
@@ -108,7 +106,7 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
     }
 
     private void showHideMatchDialog(int position) {
-        Match matchItem = Client.getUserMatches().get(position);
+        Match matchItem = MatchFragment.MatchList.get(position);
         MaterialDialog hideDialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.match_item_hide_dialog_title)
                 .content(R.string.match_item_hide_dialog_content)
@@ -121,7 +119,7 @@ public class MatchFragmentList extends Fragment implements ItemClickCallbacks {
                         @Override
                         public void onResponse(Call<Match> call, Response<Match> response) {
                             if (response.code() == 200) {
-                                Client.getUserMatches().remove(position);
+                                MatchFragment.MatchList.remove(position);
                                 matchesAdapter.remove(position);
                                 Toasty.success(getContext(), "Match nascosto").show();
                             }
