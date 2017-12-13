@@ -103,34 +103,38 @@ public interface EndpointInterface {
             @Field("token") String token
     );
 
-    @FormUrlEncoded
-    @POST("share/new")
-    Call<Share> createShare(
-            @Field("bookingId") Long bookingId,
-            @Field("location") String startLocationString
-    );
-
-    @FormUrlEncoded
-    @POST("share")
-    Call<Share> getShare(
-            @Field("bookingId") Long bookingId,
-            @Field("location") String startLocationString
-    );
-
-    @FormUrlEncoded
-    @POST("share/validate")
-    Call<Share> validateShare(
-            @Field("guestId") Long userID,
-            @Field("code") String code,
-            @Field("latlng") String latLngString
-    );
-
-
     @GET("user/{id}/shares")
     Call<List<Share>> getUserShares(
             @Path("id") Long id
     );
 
+    @FormUrlEncoded
+    @POST("share/new")
+    Call<Share> newShare(
+            @Field("bookingId") Long bookingId,
+            @Field("location") String startLocationString
+    );
+
+    @FormUrlEncoded
+    @POST("share/{id}/start")
+    Call<Share> startShare(
+            @Path("id") Long shareId,
+            @Field("guestId") Long guestId,
+            @Field("latlng") String latLngString
+    );
+
+    @FormUrlEncoded
+    @POST("share/{id}/complete")
+    Call<Share> completeShare(
+            @Path("id") Long shareId,
+            @Field("guestId") Long guestId,
+            @Field("latlng") String latLngString
+    );
+
+    @GET("share/{id}")
+    Call<Share> getShare(
+            @Path("id") Long id
+    );
 
 
 

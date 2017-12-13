@@ -8,8 +8,10 @@ import java.util.Date;
 
 public class Share {
     public static final int CREATED = 0;
-    public static final int ONGOING = 1;
-    public static final int COMPLETED = 2;
+    public static final int TOJOB = 1;
+    public static final int ARRIVED = 2;
+    public static final int TOHOME = 3;
+    public static final int COMPLETED = 4;
 
     @SerializedName("ID")
     @Expose
@@ -17,15 +19,12 @@ public class Share {
     @SerializedName("Booking")
     @Expose
     private Booking booking;
-    @SerializedName("Code")
-    @Expose
-    private String code;
-    @SerializedName("Status")
-    @Expose
-    private int status;
     @SerializedName("CreationDate")
     @Expose
     private Timestamp creationDate;
+    @SerializedName("Status")
+    @Expose
+    private int status;
 
     public Long getShareID() {
         return shareID;
@@ -41,14 +40,6 @@ public class Share {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public int getStatus() {

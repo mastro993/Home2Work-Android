@@ -49,6 +49,7 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.custom.MatchAvatarView;
+import it.gruppoinfor.home2work.utils.GeofenceUtils;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Booking;
@@ -220,31 +221,43 @@ public class BookingActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
-            validateShare(scanResult.getContents());
+            validateShare(Long.parseLong(scanResult.getContents()));
         } else
             Toasty.error(this, "QR Code non valido");
     }
 
-    private void validateShare(String sharecode) {
+    private void validateShare(long shareId) {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                 String latlngString = location.getLatitude() + "," + location.getLongitude();
-                Client.getAPI().validateShare(Client.getSignedUser().getId(), sharecode, latlngString).enqueue(new Callback<Share>() {
+                Client.getAPI().startShare(shareId, Client.getSignedUser().getId(), latlngString).enqueue(new Callback<Share>() {
                     @Override
                     public void onResponse(Call<Share> call, Response<Share> response) {
-                        if (response.code() != 404) {
-                            setResult(BookingActivity.SHARE_STARTED);
-                            finish();
-                        } else {
-                            Toasty.error(BookingActivity.this, "Codice non valido").show();
+                        switch (response.code()) {
+                            case 200:
+                                setResult(BookingActivity.SHARE_STARTED);
+                                Share share = response.body();
+                                GeofenceUtils.setupGeofence(
+                                        BookingActivity.this,
+                                        share.getShareID().toString(),
+                                        share.getBooking().getBookedMatch().getEndLocation()
+                                );
+                                finish();
+                                break;
+                            case 404:
+                                Toasty.error(BookingActivity.this, "Codice non valido").show();
+                                break;
+                            case 403:
+                                Toasty.error(BookingActivity.this, "Non puoi avviare questa condivisione al momento").show();
+                                break;
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Share> call, Throwable t) {
-
+                        Toasty.error(BookingActivity.this, "Non puoi avviare questa condivisione al momento").show();
                     }
                 });
             });
@@ -252,7 +265,6 @@ public class BookingActivity extends AppCompatActivity {
 
 
     }
-
 
     private class MyMapReadyCallback implements OnMapReadyCallback {
 

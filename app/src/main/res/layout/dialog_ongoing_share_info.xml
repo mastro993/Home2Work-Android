@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:padding="12dp">
 
     <LinearLayout
         android:id="@+id/container"
@@ -13,8 +13,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:orientation="horizontal"
-        android:padding="@dimen/list_items_padding">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/user_avatar"
@@ -52,22 +51,28 @@
 
         </LinearLayout>
 
-
     </LinearLayout>
+
+    <it.gruppoinfor.home2work.custom.ShareStatusView
+        android:id="@+id/share_status_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
         android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
         android:background="@color/window_background"
         android:orientation="vertical"
         android:padding="@dimen/activity_padding">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginBottom="6dp"
             android:text="Una volta completata la condivisione riceverai" />
 
@@ -103,33 +108,7 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/status_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="6dp"
-        android:gravity="center"
-        android:lines="2"
-        android:padding="@dimen/activity_padding"
-        android:text="Non puoi ancora completare questa condivisione"
-        android:textColor="@color/light_bg_dark_primary_text"
-        android:textSize="16sp"
-        android:textStyle="italic"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/request_shere_button"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="6dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Completa"
-        android:visibility="visible" />
 
 </LinearLayout>

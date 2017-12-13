@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.fragments;
 
-
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,21 +11,16 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.OngoingSharesAdapter;
-import it.gruppoinfor.home2work.adapters.SharesAdapter;
-import it.gruppoinfor.home2work.utils.QREncoder;
+import it.gruppoinfor.home2work.dialogs.OngoingShareInfoDialog;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Share;
 
@@ -37,6 +31,7 @@ public class ProgressFragmentDashboard extends Fragment {
     RecyclerView ongoingSharesList;
     private Unbinder unbinder;
     private OngoingSharesAdapter ongoingSharesAdapter;
+    private ArrayList<Share> ongoingShares;
 
     public ProgressFragmentDashboard() {
         // Required empty public constructor
@@ -57,12 +52,12 @@ public class ProgressFragmentDashboard extends Fragment {
 
     }
 
-    private void initOngoingSharesList(){
-        ArrayList<Share> ongoingShares = new ArrayList<>();
-        for(Share s : Client.getUserShares())
-            if(s.getStatus() == Share.ONGOING) ongoingShares.add(s);
+    private void initOngoingSharesList() {
+        ongoingShares = new ArrayList<>();
+        for (Share s : Client.getUserShares())
+            if (s.getStatus() != Share.COMPLETED) ongoingShares.add(s);
 
-        if(ongoingShares.size() != 0){
+        if (ongoingShares.size() != 0) {
             ongoingSharesList.setVisibility(View.VISIBLE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -72,42 +67,25 @@ public class ProgressFragmentDashboard extends Fragment {
             ongoingSharesList.setLayoutAnimation(animation);
 
             ongoingSharesAdapter = new OngoingSharesAdapter(getActivity(), ongoingShares);
-            ongoingSharesAdapter.setItemClickCallbacks(new ItemClickCallbacks() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    MaterialDialog qrCodeDialog = new MaterialDialog.Builder(getContext())
-                            .customView(R.layout.dialog_share_qr_code, false)
-                            .build();
-
-                    ImageView qrCodeImage = (ImageView) qrCodeDialog.findViewById(R.id.qr_code_image_view);
-                    FrameLayout loadingView = (FrameLayout) qrCodeDialog.findViewById(R.id.loading_view);
-
-                    try {
-                        Bitmap bitmap = QREncoder.EncodeText(ongoingShares.get(position).getCode());
-                        qrCodeImage.setImageBitmap(bitmap);
-                        loadingView.setVisibility(View.INVISIBLE);
-                    } catch (Exception e) {
-                        Toasty.error(getContext(), "Impossibile ottenere QR Code al momento").show();
-                        e.printStackTrace();
-                    }
-
-                    MaterialDialog shareInfoDialog = new MaterialDialog.Builder(getContext())
-                            .customView(R.layout.dialog_ongoing_share_details, false)
-                            .build();
-
-                    shareInfoDialog.show();
-                }
-
-                @Override
-                public boolean onLongItemClick(View view, int position) {
-                    return false;
-                }
-            });
+            ongoingSharesAdapter.setItemClickCallbacks(ongoingSharesClickCallbacks);
             ongoingSharesList.setAdapter(ongoingSharesAdapter);
         } else {
             ongoingSharesList.setVisibility(View.GONE);
         }
     }
+
+    private ItemClickCallbacks ongoingSharesClickCallbacks = new ItemClickCallbacks() {
+        @Override
+        public void onItemClick(View view, int position) {
+            Share share = ongoingShares.get(position);
+            new OngoingShareInfoDialog(getActivity(), share).show();
+        }
+
+        @Override
+        public boolean onLongItemClick(View view, int position) {
+            return false;
+        }
+    };
 
     @Override
     public void onDestroyView() {

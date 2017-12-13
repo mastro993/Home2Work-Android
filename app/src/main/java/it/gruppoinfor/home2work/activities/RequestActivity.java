@@ -56,6 +56,8 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.services.MessagingService;
+import it.gruppoinfor.home2work.utils.GeofenceUtils;
 import it.gruppoinfor.home2work.utils.QREncoder;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.Client;
@@ -152,6 +154,11 @@ public class RequestActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             qrCodeDialog.hide();
             RequestActivity.this.setResult(BookingActivity.SHARE_STARTED);
+            GeofenceUtils.setupGeofence(
+                    RequestActivity.this,
+                    intent.getStringExtra(MessagingService.SHARE_ID),
+                    booking.getBookedMatch().getEndLocation()
+            );
             finish();
         }
     };
@@ -159,7 +166,7 @@ public class RequestActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),  new IntentFilter("REQUEST_VALIDATION")
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver), new IntentFilter("REQUEST_SHARE_START")
         );
     }
 
@@ -230,7 +237,6 @@ public class RequestActivity extends AppCompatActivity {
         startShareButton.setEnabled(true);
 
     }
-
 
     @OnClick(R.id.reject_request_button)
     public void onRejectRequestButtonClicked() {
@@ -313,7 +319,7 @@ public class RequestActivity extends AppCompatActivity {
             FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
 
-                if(location == null) {
+                if (location == null) {
                     qrCodeDialog.hide();
                     Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
                     return;
@@ -321,11 +327,11 @@ public class RequestActivity extends AppCompatActivity {
 
                 String latlngString = location.getLatitude() + "," + location.getLongitude();
 
-                Client.getAPI().createShare(booking.getBookingID(), latlngString).enqueue(new Callback<Share>() {
+                Client.getAPI().newShare(booking.getBookingID(), latlngString).enqueue(new Callback<Share>() {
                     @Override
                     public void onResponse(Call<Share> call, Response<Share> response) {
                         try {
-                            Bitmap bitmap = QREncoder.EncodeText(response.body().getCode());
+                            Bitmap bitmap = QREncoder.EncodeText(response.body().getShareID().toString());
                             qrCodeImage.setImageBitmap(bitmap);
                             loadingView.setVisibility(View.INVISIBLE);
                         } catch (Exception e) {
@@ -337,7 +343,7 @@ public class RequestActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<Share> call, Throwable t) {
                         qrCodeDialog.hide();
-                        Toasty.error(RequestActivity.this, "Impossibile ottenere QR Code al momento").show();
+                        Toasty.error(RequestActivity.this, "Impossibile avviare la condivisione al momento").show();
                     }
 
                 });

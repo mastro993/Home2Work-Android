@@ -142,6 +142,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         return Service.START_STICKY;
     }
 
+
     private void startLocationRequests() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             MyLogger.d(TAG, "Avvio tracking utente");

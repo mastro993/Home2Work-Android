@@ -9,18 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2work.activities.SplashActivity;
 import it.gruppoinfor.home2work.services.LocationService;
+import it.gruppoinfor.home2work.utils.SessionManager;
+import it.gruppoinfor.home2work.utils.UserPrefs;
 
-/**
- * Lanciato all'avvio del dispositivo.
- */
 public class BootReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -29,42 +27,44 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent arg1) {
         this.context = context;
-
-        SessionManager.with(context).checkSession(new SessionManager.SessionManagerCallback(){
-            @Override
-            public void onValidSession() {
-
-                // Carica le preferenze
-                UserPrefs.init(context);
-
-                // Servizio di localizzazione
-                if (UserPrefs.activityTrackingEnabled) {
-                    Intent locationIntent = new Intent(context, LocationService.class);
-                    context.startService(locationIntent);
-                } else {
-                    showEnableTrackingNotification();
-                }
-
-            }
-
-            @Override
-            public void onExpiredToken() {
-                showLoginNotification();
-            }
-
-            @Override
-            public void onNoSession() {
-                //...
-            }
-
-            @Override
-            public void onError() {
-                // ...
-            }
-
-        });
-
+        SessionManager.with(context).checkSession(sessionManagerCallback);
     }
+
+    private SessionManager.SessionManagerCallback sessionManagerCallback = new SessionManager.SessionManagerCallback() {
+        @Override
+        public void onValidSession() {
+
+            // Carica le preferenze
+            UserPrefs.init(context);
+
+            // Servizio di localizzazione
+            if (UserPrefs.activityTrackingEnabled) {
+                Intent locationIntent = new Intent(context, LocationService.class);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(locationIntent);
+                } else {
+                    context.startService(locationIntent);
+                }
+            } else {
+                showEnableTrackingNotification();
+            }
+        }
+
+        @Override
+        public void onExpiredToken() {
+            showLoginNotification();
+        }
+
+        @Override
+        public void onNoSession() {
+            //...
+        }
+
+        @Override
+        public void onError() {
+            // ...
+        }
+    };
 
     private void showLoginNotification() {
         Intent intent = new Intent(context, SplashActivity.class);

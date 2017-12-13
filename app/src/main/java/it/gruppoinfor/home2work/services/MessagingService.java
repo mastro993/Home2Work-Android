@@ -23,9 +23,12 @@ import it.gruppoinfor.home2workapi.Client;
 public class MessagingService extends FirebaseMessagingService {
 
     private static final String TYPE = "TYPE";
-    private static final String SHARE_STARTED = "SHARE_STARTED";
-    private static final String SHARE_ID = "SHARE_ID";
-    private static final String SHARE_BOOKING_ID = "SHARE_BOOKING_ID";
+    private static final String SHARE_TOJOB = "SHARE_TOJOB";
+    private static final String SHARE_TOHOME = "SHARE_TOHOME";
+    private static final String SHARE_ARRIVED = "SHARE_ARRIVED";
+    private static final String SHARE_COMPLETED = "SHARE_COMPLETED";
+    public static final String SHARE_ID = "SHARE_ID";
+    public static final String SHARE_BOOKING_ID = "SHARE_BOOKING_ID";
 
     private LocalBroadcastManager broadcaster;
 
@@ -48,7 +51,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            data = remoteMessage.getData();
+            processData(remoteMessage.getData());
         }
 
         // Check if message contains a notification payload.
@@ -57,16 +60,20 @@ public class MessagingService extends FirebaseMessagingService {
             sendNotification();
         }
 
-        if(data.get(TYPE).equals(SHARE_STARTED)){
-            Long shareId = Long.parseLong(data.get(SHARE_ID));
-            Long bookingId = Long.parseLong(data.get(SHARE_BOOKING_ID));
+    }
 
-            Intent intent = new Intent("REQUEST_VALIDATION");
-            intent.putExtra(SHARE_ID, shareId);
-            intent.putExtra(SHARE_BOOKING_ID, bookingId);
-            broadcaster.sendBroadcast(intent);
+    private void processData(Map<String, String> data){
+        if(data.get(TYPE) != null){
+            if(data.get(TYPE).equals(SHARE_TOJOB)){
+                Long shareId = Long.parseLong(data.get(SHARE_ID));
+                Long bookingId = Long.parseLong(data.get(SHARE_BOOKING_ID));
+
+                Intent intent = new Intent("REQUEST_SHARE_START");
+                intent.putExtra(SHARE_ID, shareId);
+                intent.putExtra(SHARE_BOOKING_ID, bookingId);
+                broadcaster.sendBroadcast(intent);
+            }
         }
-
     }
 
     private void sendNotification() {

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_grey_box"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <ProgressBar
+            android:id="@+id/to_job_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:progress="100" />
+
+        <ProgressBar
+            android:id="@+id/to_home_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:progress="0" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/from_home"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/shape_icons_ongoing_share"
+        android:padding="2dp"
+        android:src="@drawable/ic_home_white" />
+
+    <ImageView
+        android:id="@+id/to_job"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_centerInParent="true"
+        android:alpha="0.5"
+        android:background="@drawable/shape_icons_ongoing_share"
+        android:padding="3dp"
+        android:src="@drawable/ic_factory_white" />
+
+    <ImageView
+        android:id="@+id/to_home"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentEnd="true"
+        android:alpha="0.5"
+        android:background="@drawable/shape_icons_ongoing_share"
+        android:padding="2dp"
+        android:src="@drawable/ic_home_white" />
+
+
+</RelativeLayout>

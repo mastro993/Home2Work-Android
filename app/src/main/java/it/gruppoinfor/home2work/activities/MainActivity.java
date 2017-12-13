@@ -148,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(resultCode == BookingActivity.SHARE_STARTED){
-            initUI();
-            viewPager.setCurrentItem(2);
             Toasty.success(this, "Condivisione convalidata").show();
+            viewPager.setCurrentItem(2);
+            initUI();
         }
     }
 
