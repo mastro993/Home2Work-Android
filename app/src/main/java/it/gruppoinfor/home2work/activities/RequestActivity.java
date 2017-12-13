@@ -154,11 +154,6 @@ public class RequestActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             qrCodeDialog.hide();
             RequestActivity.this.setResult(BookingActivity.SHARE_STARTED);
-            GeofenceUtils.setupGeofence(
-                    RequestActivity.this,
-                    intent.getStringExtra(MessagingService.SHARE_ID),
-                    booking.getBookedMatch().getEndLocation()
-            );
             finish();
         }
     };

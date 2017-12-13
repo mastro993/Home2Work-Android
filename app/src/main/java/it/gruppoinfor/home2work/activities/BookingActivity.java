@@ -22,6 +22,7 @@ import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -237,13 +238,16 @@ public class BookingActivity extends AppCompatActivity {
                     public void onResponse(Call<Share> call, Response<Share> response) {
                         switch (response.code()) {
                             case 200:
-                                setResult(BookingActivity.SHARE_STARTED);
                                 Share share = response.body();
+                                // Ok lo share è andato a buon fine, imposto il geofence per l'arrivo a lavoro.
                                 GeofenceUtils.setupGeofence(
                                         BookingActivity.this,
                                         share.getShareID().toString(),
-                                        share.getBooking().getBookedMatch().getEndLocation()
+                                        share.getBooking().getBookedMatch().getEndLocation(),
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
                                 );
+
+                                setResult(BookingActivity.SHARE_STARTED);
                                 finish();
                                 break;
                             case 404:

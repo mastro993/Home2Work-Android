@@ -16,14 +16,16 @@ import it.gruppoinfor.home2work.services.GeofenceTransitionsIntentService;
 
 public class GeofenceUtils {
 
-    public static void setupGeofence(Context context, String ID, LatLng latLng) {
+    private static final float GEOFENCE_RADIUS = 1000f;
+
+    public static void setupGeofence(Context context, String ID, LatLng latLng, int transitionTypes) {
         GeofencingClient mGeofencingClient = LocationServices.getGeofencingClient(context);
 
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(ID)
-                .setCircularRegion(latLng.latitude, latLng.longitude, 1000)
+                .setCircularRegion(latLng.latitude, latLng.longitude, GEOFENCE_RADIUS)
                 .setExpirationDuration(TimeUnit.HOURS.toMillis(12))
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setTransitionTypes(transitionTypes)
                 .build();
 
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
