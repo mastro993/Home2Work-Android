@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import com.arasthel.asyncjob.AsyncJob;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import it.gruppoinfor.home2work.database.RoutePointEntity;
@@ -56,7 +57,7 @@ public class SyncService extends Service {
 
                 Location location = new Location();
                 location.setLatLng(routePointEntity.getLatLng());
-                location.setTime(routePointEntity.getTimestamp());
+                location.setDate(new Date(routePointEntity.getTimestamp() * 1000));
                 locations.add(location);
 
             }
@@ -81,13 +82,13 @@ public class SyncService extends Service {
                             MyLogger.d(TAG, "Sincronizzazione avvenuta (" + response.body().size() + " location)");
                             AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(Client.User.getId()));
                         } else {
-                            MyLogger.d(TAG, "Sincronizzazione fallita. " + call.toString());
+                            MyLogger.d(TAG, "Sincronizzazione fallita Errore Server. " + call.toString());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<List<Location>> call, Throwable t) {
-                        MyLogger.e(TAG, "Sincronizzazione fallita. " + call.toString(), t);
+                        MyLogger.e(TAG, "Sincronizzazione fallita. Errore Client " + call.toString(), t);
                     }
 
                 });

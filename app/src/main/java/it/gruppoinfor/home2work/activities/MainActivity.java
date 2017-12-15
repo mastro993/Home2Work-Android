@@ -25,6 +25,7 @@ import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.ProfileFragment;
 import it.gruppoinfor.home2work.services.LocationService;
+import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             }
         }
 
+        startService(new Intent(this, SyncService.class));
     }
 
     private void initUI() {

@@ -7,7 +7,6 @@ import android.arch.persistence.room.TypeConverters;
 import it.gruppoinfor.home2work.utils.LatLngConverter;
 
 
-
 @Database(entities = {RoutePointEntity.class}, version = 3)
 @TypeConverters({LatLngConverter.class})
 public abstract class DBApp extends RoomDatabase {

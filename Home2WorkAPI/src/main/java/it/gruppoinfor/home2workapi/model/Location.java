@@ -4,6 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 
 public class Location {
 
@@ -12,7 +14,7 @@ public class Location {
     private LatLng latLng;
     @SerializedName("timestamp")
     @Expose
-    private Long time;
+    private Date date;
 
     public LatLng getLatLng() {
         return latLng;
@@ -22,14 +24,11 @@ public class Location {
         this.latLng = latLng;
     }
 
-    public Long getTime() {
-        return time;
+    public Date getDate() {
+        return date;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
+    public void setDate(Date date) {
+        this.date = date;
     }
-
-
-
 }
