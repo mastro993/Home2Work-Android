@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -56,6 +57,8 @@ public class MatchActivity extends AppCompatActivity {
     private static final String GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I";
     @BindView(R.id.score_text)
     TextView scoreText;
+    @BindView(R.id.home_view)
+    TextView homeView;
     private GoogleMap googleMap;
     private Match match;
 
@@ -128,6 +131,7 @@ public class MatchActivity extends AppCompatActivity {
 
         nameView.setText(match.getHost().toString());
         jobView.setText(match.getHost().getCompany().toString());
+        homeView.setText("Da " + match.getHost().getAddress().getCity());
 
         /*timeView.setText(
                 String.format(

@@ -85,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener getTrackingSwitchCheckedChangeListener() {
         return ((compoundButton, b) -> {
             if (!b) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Disattivazione tracking");
                 builder.setMessage("Disattivando il tracking la tua posizione non sarà più registrata, ma Home2Work non potrà più segnalarti match. Disattivare la funzione?");
                 builder.setPositiveButton("Disattiva", ((dialogInterface, i) -> {

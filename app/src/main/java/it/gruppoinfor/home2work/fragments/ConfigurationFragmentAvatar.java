@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.stepstone.stepper.BlockingStep;
 import com.stepstone.stepper.StepperLayout;
@@ -23,7 +24,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
@@ -44,7 +44,7 @@ public class ConfigurationFragmentAvatar extends Fragment implements BlockingSte
     private final int PHOTO_INTENT = 0;
 
     @BindView(R.id.propicView)
-    CircleImageView propicView;
+    ImageView propicView;
 
     private Bitmap propic;
     private boolean uploaded = false;

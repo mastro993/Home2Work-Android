@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -90,6 +89,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         holder.nameView.setText(match.getHost().toString());
         holder.jobView.setText(match.getHost().getCompany().toString());
+        holder.homeView.setText("Da " + match.getHost().getAddress().getCity());
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
@@ -154,6 +154,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         TextView nameView;
         @BindView(R.id.job_view)
         TextView jobView;
+        @BindView(R.id.home_view)
+        TextView homeView;
         @BindView(R.id.new_badge)
         ImageView newBadgeView;
         @BindView(R.id.container)

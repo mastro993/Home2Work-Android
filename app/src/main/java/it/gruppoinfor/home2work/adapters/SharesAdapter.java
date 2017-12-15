@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2workapi.Client;
@@ -95,9 +95,9 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.guest_avatar)
-        CircleImageView guestAvatar;
+        ImageView guestAvatar;
         @BindView(R.id.host_avatar)
-        CircleImageView hostAvatar;
+        ImageView hostAvatar;
         @BindView(R.id.name_info_view)
         TextView nameInfoView;
         @BindView(R.id.distance_view)
