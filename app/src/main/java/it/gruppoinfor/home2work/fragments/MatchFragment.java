@@ -1,22 +1,24 @@
 package it.gruppoinfor.home2work.fragments;
 
-
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
-import android.util.Pair;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
-import com.arasthel.asyncjob.AsyncJob;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,34 +28,27 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.BookingActivity;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
-import it.gruppoinfor.home2work.activities.RequestActivity;
+import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
+import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Match;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class MatchFragment extends Fragment implements ItemClickCallbacks {
 
-public class MatchFragment extends Fragment implements ViewPager.OnPageChangeListener {
-
-    private Unbinder unbinder;
-
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
+    @BindView(R.id.matches_recycler_view)
+    RecyclerView matchesRecyclerView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    private Unbinder unbinder;
+    private MatchAdapter matchesAdapter;
+    private MainActivity activity;
 
-    protected static List<Match> MatchList = new ArrayList<>();
-    protected static List<Booking> BookingList = new ArrayList<>();
-    protected static List<Booking> RequestList = new ArrayList<>();
+    private List<Match> matchList = new ArrayList<>();
 
     public MatchFragment() {
         // Required empty public constructor
@@ -63,86 +58,71 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_match, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        setHasOptionsMenu(true);
         initUI();
         refreshData();
         return rootView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        activity = (MainActivity) context;
+        super.onAttach(context);
+    }
+
     private void initUI() {
-        toolbarTitle.setText("Match");
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
-        viewPager.addOnPageChangeListener(this);
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    private void refreshList() {
 
-    }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchesRecyclerView.getContext(), layoutManager.getOrientation());
 
-    @Override
-    public void onPageSelected(int position) {
+        matchesRecyclerView.setLayoutManager(layoutManager);
+        matchesRecyclerView.setLayoutAnimation(animation);
+        //matchesRecyclerView.addItemDecoration(dividerItemDecoration);
 
-    }
+        matchesAdapter = new MatchAdapter(getActivity(), matchList);
+        matchesAdapter.notifyDataSetChanged();
+        matchesRecyclerView.setAdapter(matchesAdapter);
+        matchesAdapter.setItemClickCallbacks(this);
 
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        toggleRefreshing(state == ViewPager.SCROLL_STATE_IDLE);
-    }
-
-    public void toggleRefreshing(boolean enabled) {
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(enabled);
-        }
+        refreshBadgeCounter();
     }
 
     private void refreshData() {
         swipeRefreshLayout.setRefreshing(true);
-        AsyncJob.doInBackground(() -> {
 
-            Call<List<Match>> matchesCall = Client.getAPI().getUserMatches(Client.User.getId());
-            Call<List<Booking>> bookingsCall = Client.getAPI().getUserBookings(Client.User.getId());
-            Call<List<Booking>> requestsCall = Client.getAPI().getUserRequests(Client.User.getId());
-
-            try {
-                MatchList = new ArrayList<>(matchesCall.execute().body());
-                BookingList = new ArrayList<>(bookingsCall.execute().body());
-                RequestList = new ArrayList<>(requestsCall.execute().body());
-            } catch (Exception e) {
-                e.printStackTrace();
+        Client.getAPI().getMatches(Client.User.getId()).enqueue(new Callback<List<Match>>() {
+            @Override
+            public void onResponse(Call<List<Match>> call, Response<List<Match>> response) {
+                if (response.code() == 200) {
+                    matchList = response.body();
+                    refreshList();
+                } else {
+                    Toasty.error(activity, "Impossibile ottenere i match").show();
+                }
+                swipeRefreshLayout.setRefreshing(false);
             }
 
-            AsyncJob.doOnMainThread(() -> {
+            @Override
+            public void onFailure(Call<List<Match>> call, Throwable t) {
+                Toasty.error(activity, "Impossibile ottenere i match").show();
                 swipeRefreshLayout.setRefreshing(false);
-                refreshTabs();
-                refreshBadgeCounter();
-            });
+            }
         });
     }
 
-    private void refreshTabs() {
-        int currentPage = viewPager.getCurrentItem();
-        MatchPagerAdapter pagerAdapter = new MatchPagerAdapter(getChildFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(currentPage);
-    }
-
-
     protected void refreshBadgeCounter() {
-        long newMatches = 0, pendingRequests = 0;
+        Integer newMatches = 0;
 
-        for (Match match : MatchList)
+        for (Match match : matchList)
             if (match.isNew()) newMatches++;
 
-        for (Booking request : RequestList)
-            if (request.getBookingStatus() == Booking.PENDING) pendingRequests++;
-
-        Long badgeCounter = newMatches + pendingRequests;
-
-        ((MainActivity) getActivity()).setBadge(1, badgeCounter > 0 ? badgeCounter.toString() : "");
-
+        activity.setBadge(1, newMatches > 0 ? newMatches.toString() : "");
     }
 
     @Override
@@ -151,62 +131,98 @@ public class MatchFragment extends Fragment implements ViewPager.OnPageChangeLis
         unbinder.unbind();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    private void showMatchDetails(int position) {
+        Match match = matchList.get(position);
 
-        switch (resultCode) {
-            case BookingActivity.SHARE_STARTED:
-                refreshData();
-                break;
-            case MatchActivity.BOOKING_ADDED:
-                refreshData();
-                viewPager.setCurrentItem(1);
-                Toasty.success(getContext(), "Prenotazione effettuata").show();
-                break;
-            case MatchActivity.BOOKING_NOT_ADDED:
-                Toasty.error(getContext(), "Prenotazione non effettuata").show();
-                break;
-            case RequestActivity.REQUEST_REJECTED:
-            case RequestActivity.REQUEST_ACCEPTED:
-                refreshData();
-                viewPager.setCurrentItem(2);
-                refreshBadgeCounter();
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
+        Intent matchIntent = new Intent(getContext(), MatchActivity.class);
+        matchIntent.putExtra("matchID", match.getMatchID());
+        startActivity(matchIntent);
     }
 
-    private class MatchPagerAdapter extends FragmentStatePagerAdapter {
+    private void showMatchUserProfile(int position) {
+        /*
+        TODO Activity profilo utente
+        Intent userIntent = new Intent(activity, ShowUserActivity.class);
+        User matchedUser = match.getHost();
+        userIntent.putExtra("userID", matchedUser.getId());
+        activity.startActivity(userIntent);*/
+    }
 
-        private ArrayList<Pair<Fragment, String>> fragments;
-
-        MatchPagerAdapter(FragmentManager fm) {
-            super(fm);
-            fragments = new ArrayList<>();
-            fragments.add(new Pair<>(new MatchFragmentList(), "Disponibili"));
-            fragments.add(new Pair<>(new MatchFragmentBooking(), "Prenotati"));
-            fragments.add(new Pair<>(new MatchFragmentRequest(), "Richieste"));
+    @Override
+    public void onItemClick(View view, int position) {
+        Match matchItem = matchList.get(position);
+        if (matchItem.isNew()) {
+            matchItem.setNew(false);
+            matchesAdapter.notifyItemChanged(position);
+            refreshBadgeCounter();
         }
+        showMatchDetails(position);
+    }
 
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position).first;
+    @Override
+    public boolean onLongItemClick(View view, int position) {
+        PopupMenu popup = new PopupMenu(getActivity(), view);
+        popup.getMenuInflater().inflate(R.menu.menu_match_item, popup.getMenu());
+        popup.setOnMenuItemClickListener((item) -> {
+            switch (item.getItemId()) {
+                case R.id.action_show_user_profile:
+                    showMatchUserProfile(position);
+                    break;
+                case R.id.action_hide_match:
+                    showHideMatchDialog(position);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        });
+        popup.show();
+        return true;
+    }
+
+    private void showHideMatchDialog(int position) {
+        Match matchItem = matchList.get(position);
+        MaterialDialog hideDialog = new MaterialDialog.Builder(activity)
+                .title(R.string.match_item_hide_dialog_title)
+                .content(R.string.match_item_hide_dialog_content)
+                .positiveText(R.string.match_item_hide_dialog_confirm)
+                .negativeText(R.string.match_item_hide_dialog_cancel)
+                .onPositive((dialog, which) -> {
+
+                    matchItem.setHidden(true);
+                    Client.getAPI().editMatch(matchItem).enqueue(new Callback<Match>() {
+                        @Override
+                        public void onResponse(Call<Match> call, Response<Match> response) {
+                            if (response.code() == 200) {
+                                matchList.remove(position);
+                                matchesAdapter.remove(position);
+                                Toasty.success(activity, "Match nascosto").show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Match> call, Throwable t) {
+
+                        }
+                    });
+                })
+                .build();
+
+        hideDialog.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_fragment_match, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // TODO sort e filter match
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return fragments.get(position).second;
-        }
-
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-
     }
 
 

@@ -1,95 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/list_items_spacing"
     android:background="@color/white"
-    android:clipToPadding="false">
+    tools:ignore="ContentDescription">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:padding="@dimen/list_items_padding">
+        android:focusable="true">
 
-        <it.gruppoinfor.home2work.custom.MatchAvatarView
-            android:id="@+id/match_avatar_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/new_badge"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:elevation="4dp"
+            android:src="@drawable/shape_new_badge"
+            app:layout_constraintStart_toStartOf="@+id/user_avatar"
+            app:layout_constraintTop_toTopOf="@+id/user_avatar" />
+
+        <ImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:elevation="2dp"
+            android:src="@drawable/ic_avatar_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:layout_toRightOf="@id/match_avatar_view"
-            android:clipToPadding="false"
-            android:orientation="vertical">
+            android:layout_marginStart="72dp"
+            android:layout_toRightOf="@id/user_avatar"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/name_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/name_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:text="Gianpiergiorgio  Fumagalletto"
-                    android:textColor="@color/light_bg_dark_primary_text"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/new_badge"
-                    android:layout_width="12dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginTop="3dp"
-                    android:padding="2dp"
-                    android:shadowColor="@color/colorAccent"
-                    android:shadowDx="20"
-                    android:shadowDy="20"
-                    android:shadowRadius="5"
-                    android:src="@drawable/shape_new_badge" />
-
-            </LinearLayout>
-
+                android:lines="1"
+                android:text="Annamaria Della Ragione"
+                android:textColor="@color/light_bg_dark_primary_text"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/job_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
                 android:lines="1"
                 android:text="Azienda A"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp"
-                android:textStyle="italic" />
-
-            <TextView
-                android:id="@+id/time_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8:00 - 13-00"
-                android:textColor="@color/light_bg_dark_primary_text" />
-
-            <TextView
-                android:id="@+id/days_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lun, Mar, Mer"
-                android:textColor="@color/light_bg_dark_secondary_text" />
-
+                android:textColor="@color/colorAccent" />
 
         </LinearLayout>
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical"
+            android:text="100%"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            layout="@layout/horizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
 

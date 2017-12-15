@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -7,6 +8,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
+
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
@@ -105,8 +107,5 @@ dependencies {
     compile 'com.google.zxing:core:3.3.0'
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
 }
-
-
-
 
 apply plugin: 'com.google.gms.google-services'

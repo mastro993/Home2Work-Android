@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -39,8 +39,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private final int PHOTO_INTENT = 0;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
     @BindView(R.id.avatar_view)
     ImageView avatarView;
     private Bitmap propic;
@@ -51,16 +50,19 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         ButterKnife.bind(this);
-
-        setTitle("Modifica profilo");
-
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initUI();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initUI() {
@@ -111,11 +113,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 Client.getAPI().uploadAvatar(Client.User.getId(), body).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.code() == 201){
+                        if (response.code() == 201) {
                             initUI();
                             Toasty.success(EditProfileActivity.this, "Immagine modificata con successo").show();
-                        }
-                        else
+                        } else
                             Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
                     }
 
@@ -124,7 +125,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
                     }
                 });
-
 
 
             } catch (Exception e) {

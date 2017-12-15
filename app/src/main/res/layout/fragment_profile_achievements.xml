@@ -3,15 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="it.gruppoinfor.home2work.fragments.ProgressFragmentAchievements">
+    tools:context="it.gruppoinfor.home2work.fragments.ProfileFragmentAchievements">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/shares_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:padding="@dimen/list_padding"
-        android:visibility="visible" />
+        android:id="@+id/achievement_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/empty_view"
@@ -21,7 +20,7 @@
         android:layout_marginBottom="128dp"
         android:layout_marginTop="64dp"
         android:gravity="center_horizontal"
-        android:text="Nessuna condivisione effettuata"
+        android:text="Nessun obiettivo disponibile"
         android:textColor="@color/light_bg_dark_secondary_text"
         android:textSize="16dp"
         android:textStyle="italic"

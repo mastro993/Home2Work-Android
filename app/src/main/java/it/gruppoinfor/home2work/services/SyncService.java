@@ -18,7 +18,7 @@ import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.RoutePoint;
+import it.gruppoinfor.home2workapi.model.Location;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +30,7 @@ public class SyncService extends Service {
 
     private final String TAG = "SYNC_SERVICE";
 
-    private List<RoutePoint> routePoints = new ArrayList<>();
+    private List<Location> locations = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -54,29 +54,29 @@ public class SyncService extends Service {
         AsyncJob.doInBackground(() -> {
             for (RoutePointEntity routePointEntity : dbApp.routePointDAO().getAllUserPoints(Client.User.getId())) {
 
-                RoutePoint routePoint = new RoutePoint();
-                routePoint.setLatLng(routePointEntity.getLatLng());
-                routePoint.setTime(routePointEntity.getTimestamp());
-                routePoints.add(routePoint);
+                Location location = new Location();
+                location.setLatLng(routePointEntity.getLatLng());
+                location.setTime(routePointEntity.getTimestamp());
+                locations.add(location);
 
             }
 
-            if (routePoints.size() > 0) {
-                MyLogger.i(TAG, "Sono presenti " + routePoints.size() + " location");
-                syncRoutePoints(routePoints);
+            if (locations.size() > 0) {
+                MyLogger.i(TAG, "Sono presenti " + locations.size() + " location");
+                syncRoutePoints(locations);
             }
 
         });
 
     }
 
-    private void syncRoutePoints(final List<RoutePoint> routePointList) {
+    private void syncRoutePoints(final List<Location> locationList) {
         MyLogger.i(TAG, "Avvio sincronizzazione");
 
-        Client.getAPI().uploadRoutePoint(Client.User.getId(), routePointList)
-                .enqueue(new Callback<List<RoutePoint>>() {
+        Client.getAPI().uploadLocations(Client.User.getId(), locationList)
+                .enqueue(new Callback<List<Location>>() {
                     @Override
-                    public void onResponse(Call<List<RoutePoint>> call, Response<List<RoutePoint>> response) {
+                    public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
                         if (response.code() == 200) {
                             MyLogger.d(TAG, "Sincronizzazione avvenuta (" + response.body().size() + " location)");
                             AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(Client.User.getId()));
@@ -86,7 +86,7 @@ public class SyncService extends Service {
                     }
 
                     @Override
-                    public void onFailure(Call<List<RoutePoint>> call, Throwable t) {
+                    public void onFailure(Call<List<Location>> call, Throwable t) {
                         MyLogger.e(TAG, "Sincronizzazione fallita. " + call.toString(), t);
                     }
 

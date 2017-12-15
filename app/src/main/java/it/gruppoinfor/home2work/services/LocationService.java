@@ -32,7 +32,6 @@ import com.google.android.gms.tasks.Task;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
-import it.gruppoinfor.home2work.utils.GeofenceUtils;
 import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.Client;
@@ -93,9 +92,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                     .build();
 
             startForeground(1337, serviceNotification);
-
-            // Registro le geofences per i trigger delle condivisioni
-            GeofenceUtils.setupGeofences(this);
 
         } else {
             MyLogger.i(TAG, "Sessione non presente");

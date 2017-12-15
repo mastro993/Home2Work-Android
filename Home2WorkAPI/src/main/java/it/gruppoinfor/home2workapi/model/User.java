@@ -42,16 +42,6 @@ public class User {
     @Expose
     private Boolean configured;
 
-    // TODO solo per mockup
-    public User(Long id, String name, String surname) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-    }
-
-    public User() {
-    }
-
     public Long getId() {
         return id;
     }

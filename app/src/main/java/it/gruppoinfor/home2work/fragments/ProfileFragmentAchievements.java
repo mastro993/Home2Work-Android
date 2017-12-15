@@ -12,39 +12,33 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.adapters.AchievementAdapter;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
-import it.gruppoinfor.home2work.adapters.SharesAdapter;
-import it.gruppoinfor.home2workapi.model.Share;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ProgressFragmentShares extends Fragment implements ItemClickCallbacks {
+// TODO dialog informazioni obiettivo
+public class ProfileFragmentAchievements extends Fragment implements ItemClickCallbacks {
 
-
-    @BindView(R.id.shares_recycler_view)
-    RecyclerView sharesRecyclerView;
+    @BindView(R.id.achievement_recycler_view)
+    RecyclerView achievementRecyclerView;
     @BindView(R.id.empty_view)
     TextView emptyView;
     private Unbinder unbinder;
-    private SharesAdapter sharesAdapter;
-    private ArrayList<Share> completedShares;
+    private AchievementAdapter achievementAdapter;
 
-    public ProgressFragmentShares() {
+    public ProfileFragmentAchievements() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_progress_shares, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_profile_achievements, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initUI();
         return rootView;
@@ -52,33 +46,43 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
 
     private void initUI() {
 
-        completedShares = new ArrayList<>();
-        for (Share share : ProgressFragment.ShareList)
-            if (share.getStatus() == Share.COMPLETED) completedShares.add(share);
-
-
-        if (completedShares.size() == 0) {
-
+        if (ProfileFragment.AchievementList.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
-            sharesRecyclerView.setVisibility(View.GONE);
-
+            achievementRecyclerView.setVisibility(View.GONE);
         } else {
+            emptyView.setVisibility(View.GONE);
+            achievementRecyclerView.setVisibility(View.VISIBLE);
+
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
 
-            sharesRecyclerView.setLayoutManager(layoutManager);
-            sharesRecyclerView.setLayoutAnimation(animation);
+            achievementRecyclerView.setLayoutManager(layoutManager);
+            achievementRecyclerView.setLayoutAnimation(animation);
 
-            sharesAdapter = new SharesAdapter(getActivity(), completedShares);
-            sharesAdapter.setItemClickCallbacks(this);
-            sharesRecyclerView.setAdapter(sharesAdapter);
+            Collections.sort(ProfileFragment.AchievementList, (A, B) -> {
+                int result = B.getProgress().compareTo(A.getProgress());
+
+                if (result == 0) {
+                    result = A.getUnlockDate().compareTo(B.getUnlockDate());
+                }
+
+                if (result == 0) {
+                    result = A.getName().compareTo(B.getName());
+                }
+
+                return result;
+            });
+
+            achievementAdapter = new AchievementAdapter(getActivity(), ProfileFragment.AchievementList);
+            achievementAdapter.setItemClickCallbacks(this);
+            achievementRecyclerView.setAdapter(achievementAdapter);
         }
+
 
     }
 
     @Override
     public void onItemClick(View view, int position) {
-
 
     }
 
@@ -92,5 +96,4 @@ public class ProgressFragmentShares extends Fragment implements ItemClickCallbac
         unbinder.unbind();
         super.onDestroyView();
     }
-
 }

@@ -4,44 +4,25 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.github.lzyzsd.circleprogress.ArcProgress
+    <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/score_progress"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="7.5dp"
-        app:arc_finished_color="@color/colorPrimaryDark"
-        app:arc_max="100"
-        app:arc_progress="70"
-        app:arc_stroke_width="6dp"
-        app:arc_unfinished_color="@color/grey_300" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:rotation="90"
+        app:donut_finished_color="@color/colorPrimary"
+        app:donut_max="100"
+        app:donut_progress="70"
+        app:donut_text_color="#00000000"
+        app:donut_unfinished_color="@color/grey_300" />
 
     <ImageView
         android:id="@+id/user_avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:contentDescription="Immagine profilo utente"
-        android:padding="13dp"
-        android:src="@drawable/ic_avatar_placeholder"
-        android:transitionName="avatar" />
-
-    <TextView
-        android:id="@+id/score_text"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/score_progress"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-2dp"
-        android:background="@drawable/bg_match_score_percent"
-        android:gravity="center"
-        android:paddingBottom="3dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingTop="1dp"
-        android:text="100%"
-        android:textColor="@color/dark_bg_light_primary_text"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        android:padding="8dp"
+        android:src="@drawable/ic_avatar_placeholder" />
 
 </RelativeLayout>

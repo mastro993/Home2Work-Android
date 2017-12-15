@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.infor.fleetupht.view.ProfileActivity">
     <item
-        android:id="@+id/show_booked_match_profile"
+        android:id="@+id/action_show_user_profile"
         android:orderInCategory="100"
-        android:title="Visualizza profilo utente" />
+        android:title="Nascondi" />
     <item
-        android:id="@+id/delete_booked_match"
+        android:id="@+id/action_hide_match"
         android:orderInCategory="100"
-        android:title="Annulla prenotazione" />
+        android:title="Nascondi" />
 </menu>

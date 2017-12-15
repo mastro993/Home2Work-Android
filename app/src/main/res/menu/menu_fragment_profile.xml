@@ -3,16 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.infor.fleetupht.view.ProfileActivity">
     <item
-        android:id="@+id/action_ranks"
-        android:icon="@drawable/ic_message"
-        android:title="Classifiche"
+        android:id="@+id/action_edit_profile"
+        android:title="Modifica profilo"
         app:actionLayout="@layout/layout_message_icon"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_spend_points"
-        android:icon="@drawable/ic_message"
-        android:title="Spendi punti"
+        android:id="@+id/action_settings"
+        android:title="Impostazioni"
+        app:actionLayout="@layout/layout_message_icon"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_logout"
+        android:title="Esci"
         app:actionLayout="@layout/layout_message_icon"
         app:showAsAction="never" />
 

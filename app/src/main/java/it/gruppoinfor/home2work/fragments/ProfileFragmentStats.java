@@ -23,7 +23,7 @@ import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.UserStatistics;
 
 
-public class ProgressFragmentStats extends Fragment {
+public class ProfileFragmentStats extends Fragment {
 
     Resources res;
     Unbinder unbinder;
@@ -38,14 +38,14 @@ public class ProgressFragmentStats extends Fragment {
     @BindView(R.id.saved_emissions_text_view)
     TextView savedEmissionsTextView;
 
-    public ProgressFragmentStats() {
+    public ProfileFragmentStats() {
         // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        NestedScrollView root = (NestedScrollView) inflater.inflate(R.layout.fragment_progress_stats, container, false);
+        NestedScrollView root = (NestedScrollView) inflater.inflate(R.layout.fragment_profile_stats, container, false);
         unbinder = ButterKnife.bind(this, root);
         res = getResources();
         initUI();
@@ -54,7 +54,7 @@ public class ProgressFragmentStats extends Fragment {
 
     private void initUI() {
 
-        UserStatistics statistics = ProgressFragment.Profile.getStats();
+        UserStatistics statistics = ProfileFragment.Profile.getStats();
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);

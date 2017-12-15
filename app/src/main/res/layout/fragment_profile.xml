@@ -26,16 +26,15 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/action_bar_size"
+                android:layout_height="?attr/actionBarSize"
                 app:contentInsetStart="0dp"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:layout_collapseMode="pin" />
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/action_bar_size">
+                android:paddingBottom="?attr/actionBarSize">
 
                 <it.gruppoinfor.home2work.custom.AvatarView
                     android:id="@+id/avatar_view"
@@ -80,14 +79,14 @@
                     app:layout_constraintTop_toBottomOf="@id/name_text_view" />
 
                 <ImageButton
-                    android:id="@+id/edit_profile_button"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:id="@+id/profile_options_button"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_margin="12dp"
-                    android:src="@drawable/ic_pencil"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_dots"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

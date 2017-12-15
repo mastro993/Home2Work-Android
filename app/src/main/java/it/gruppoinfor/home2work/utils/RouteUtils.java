@@ -6,19 +6,19 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.gruppoinfor.home2workapi.model.RoutePoint;
+import it.gruppoinfor.home2workapi.model.Location;
 
 
 public class RouteUtils {
 
 
-    public static ArrayList<LatLng> getWayPoints(List<RoutePoint> points, final int max) {
+    public static ArrayList<LatLng> getWayPoints(List<Location> points, final int max) {
 
         ArrayList<LatLng> locations = new ArrayList<>();
         ArrayList<LatLng> waypoints = new ArrayList<>();
 
         // Trasformo in array di LatLng
-        for (RoutePoint point : points)
+        for (Location point : points)
             locations.add(point.getLatLng());
 
         LatLng start = locations.get(0); // Inizio percorso

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/action_bar_size">
+    android:paddingBottom="?attr/actionBarSize">
 
     <it.gruppoinfor.home2work.custom.AvatarView
         android:id="@+id/avatar_view"

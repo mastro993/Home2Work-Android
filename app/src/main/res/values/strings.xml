@@ -4,10 +4,8 @@
 
     <!-- MainActivity -->
     <string name="home_tab">Home</string>
-    <string name="match_tab">Match</string>
-    <string name="progress_tab">Progresso</string>
-    <string name="messages_tab">Messaggi</string>
-    <string name="settings_tab">Preferenze</string>
+    <string name="match_tab">Matches</string>
+    <string name="progress_tab">Profilo</string>
 
     <!-- SignInActivity  -->
     <string name="activity_signin_sign_in">Accedi</string>

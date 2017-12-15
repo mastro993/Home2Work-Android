@@ -41,10 +41,8 @@ public class Address {
         this.address = address;
     }
 
-    public String toString(){
+    public String toString() {
         return this.address + ", " + this.postalCode + ", " + this.city;
     }
-
-
-
+    
 }

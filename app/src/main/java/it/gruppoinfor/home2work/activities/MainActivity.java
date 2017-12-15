@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.arasthel.asyncjob.AsyncJob;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
@@ -21,22 +20,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
-import it.gruppoinfor.home2work.fragments.MessagesFragment;
-import it.gruppoinfor.home2work.fragments.ProgressFragment;
-import it.gruppoinfor.home2work.fragments.SettingsFragment;
+import it.gruppoinfor.home2work.fragments.ProfileFragment;
 import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Booking;
-import it.gruppoinfor.home2workapi.model.Match;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
-    private final int START_POSITION = 2;
     @BindView(R.id.bottom_navigation)
 
 
@@ -45,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.view_pager)
     AHBottomNavigationViewPager viewPager;
-    private PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +44,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
+
         initUI();
 
-        // Servizio di localizzazione
         if (UserPrefs.activityTrackingEnabled) {
             Intent locationIntent = new Intent(this, LocationService.class);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -68,41 +63,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
-        }
 
-        // Create items
+        // Navigation
         AHBottomNavigationItem homeTab = new AHBottomNavigationItem(R.string.home_tab, R.drawable.ic_home, R.color.colorPrimaryDark);
         AHBottomNavigationItem matchTab = new AHBottomNavigationItem(R.string.match_tab, R.drawable.ic_match, R.color.colorPrimary);
-        AHBottomNavigationItem progressTab = new AHBottomNavigationItem(R.string.progress_tab, R.drawable.ic_star_circle, R.color.light_blue_300);
-        AHBottomNavigationItem notificationTab = new AHBottomNavigationItem(R.string.messages_tab, R.drawable.ic_mail, R.color.light_blue_500);
-        AHBottomNavigationItem settingsTab = new AHBottomNavigationItem(R.string.settings_tab, R.drawable.ic_preferences, R.color.colorAccent);
+        AHBottomNavigationItem progressTab = new AHBottomNavigationItem(R.string.progress_tab, R.drawable.ic_user, R.color.light_blue_300);
 
-        // Add items
         bottomNavigation.removeAllItems();
         bottomNavigation.addItem(homeTab);
         bottomNavigation.addItem(matchTab);
         bottomNavigation.addItem(progressTab);
-        bottomNavigation.addItem(notificationTab);
-        bottomNavigation.addItem(settingsTab);
 
-        // Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(false);
-
-        // Change colors
         bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.colorPrimary));
         bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.grey_400));
         bottomNavigation.setForceTint(true);
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_HIDE);
 
-        // Set current item programmatically
-        bottomNavigation.setCurrentItem(START_POSITION);
-        setTitle(bottomNavigation.getItem(START_POSITION).getTitle(this));
-
-        // Customize notification (title, background, typeface)
         bottomNavigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
+
+        bottomNavigation.setBehaviorTranslationEnabled(false);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
 
         bottomNavigation.setOnTabSelectedListener(((position, wasSelected) -> {
             viewPager.setCurrentItem(position, false);
@@ -110,42 +89,23 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }));
 
+        // View Pager
         viewPager.setOffscreenPageLimit(4);
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(this);
 
         // Setup iniziale
-        viewPager.setCurrentItem(START_POSITION);
-        getSupportActionBar().hide();
-
-        viewPager.addOnPageChangeListener(new MyPageChangeListener());
-    }
-
-    @Override
-    public void setTitle(int titleId) {
-        //toolbarTitle.setText(titleId);
-        super.setTitle(titleId);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        //toolbarTitle.setText(title);
-        super.setTitle(title);
+        bottomNavigation.setCurrentItem(0);
+        setTitle(bottomNavigation.getItem(0).getTitle(this));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
-
-        if (resultCode == BookingActivity.SHARE_STARTED) {
-            Toasty.success(this, "Condivisione convalidata").show();
-            viewPager.setCurrentItem(2);
-            initUI();
-        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void setBadge(int itemPosition, String title) {
@@ -161,9 +121,7 @@ public class MainActivity extends AppCompatActivity {
             fragments = new ArrayList<>();
             fragments.add(new HomeFragment());
             fragments.add(new MatchFragment());
-            fragments.add(new ProgressFragment());
-            fragments.add(new MessagesFragment());
-            fragments.add(new SettingsFragment());
+            fragments.add(new ProfileFragment());
         }
 
         @Override
@@ -179,23 +137,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        }
+    }
 
-        @Override
-        public void onPageSelected(int position) {
-            if (position == 2 || position == 1)
-                getSupportActionBar().hide();
-            else
-                getSupportActionBar().show();
-        }
+    @Override
+    public void onPageSelected(int position) {
+        if (position == 2)
+            getSupportActionBar().hide();
+        else
+            getSupportActionBar().show();
+    }
 
-        @Override
-        public void onPageScrollStateChanged(int state) {
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
-        }
     }
 }

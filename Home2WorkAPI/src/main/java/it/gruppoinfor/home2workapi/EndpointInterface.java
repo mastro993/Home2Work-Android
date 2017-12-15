@@ -2,12 +2,10 @@ package it.gruppoinfor.home2workapi;
 
 import java.util.List;
 
-import it.gruppoinfor.home2workapi.model.Booking;
 import it.gruppoinfor.home2workapi.model.Company;
+import it.gruppoinfor.home2workapi.model.Location;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.Profile;
-import it.gruppoinfor.home2workapi.model.RoutePoint;
-import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -57,13 +55,13 @@ public interface EndpointInterface {
     );
 
     @POST("user/{id}/location")
-    Call<List<RoutePoint>> uploadRoutePoint(
+    Call<List<Location>> uploadLocations(
             @Path("id") Long id,
-            @Body List<RoutePoint> routePoints
+            @Body List<Location> locations
     );
 
     @GET("user/{id}/match")
-    Call<List<Match>> getUserMatches(
+    Call<List<Match>> getMatches(
             @Path("id") Long id
     );
 
@@ -77,85 +75,12 @@ public interface EndpointInterface {
             @Body Match match
     );
 
-    @POST("booking")
-    Call<Booking> bookMatch(
-            @Body Booking booking
-    );
-
-    @PUT("booking")
-    Call<Booking> editBooking(
-            @Body Booking booking
-    );
-
-    @GET("user/{id}/booking")
-    Call<List<Booking>> getUserBookings(
-            @Path("id") Long id
-    );
-
-    @GET("booking/{id}")
-    Call<Booking> getBooking(
-            @Path("id") Long id
-    );
-
-    @GET("user/{id}/request")
-    Call<List<Booking>> getUserRequests(
-            @Path("id") Long id
-    );
-
     @FormUrlEncoded
     @POST("user/FCMToken")
     Call<ResponseBody> setFCMToken(
             @Field("userId") Long userID,
             @Field("token") String token
     );
-
-    @GET("user/{id}/shares")
-    Call<List<Share>> getUserShares(
-            @Path("id") Long id
-    );
-
-    @FormUrlEncoded
-    @POST("share/new")
-    Call<Share> newShare(
-            @Field("bookingId") Long bookingId,
-            @Field("location") String startLocationString
-    );
-
-    @FormUrlEncoded
-    @POST("share/{id}/start")
-    Call<Share> startShare(
-            @Path("id") Long shareId,
-            @Field("guestId") Long guestId,
-            @Field("latlng") String latLngString
-    );
-
-    @FormUrlEncoded
-    @POST("share/{id}/complete")
-    Call<Share> updateShare(
-            @Path("id") Long shareId,
-            @Field("guestId") Long guestId,
-            @Field("latlng") String latLngString,
-            @Field("status") int status
-    );
-
-    @FormUrlEncoded
-    @POST("share/{id}/complete")
-    Call<Share> completeShare(
-            @Path("id") Long shareId,
-            @Field("guestId") Long guestId,
-            @Field("latlng") String latLngString
-    );
-
-    @GET("share/{id}")
-    Call<Share> getShare(
-            @Path("id") Long id
-    );
-
-    @GET("user/{id}/ongoingShare")
-    Call<Share> getUserOngoingShare(
-            @Path("id") Long id
-    );
-
 
 
     /*

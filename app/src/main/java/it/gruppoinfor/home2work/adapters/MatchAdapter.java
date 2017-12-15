@@ -2,16 +2,24 @@ package it.gruppoinfor.home2work.adapters;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.custom.MatchAvatarView;
 import it.gruppoinfor.home2workapi.model.Match;
-
-import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
 
@@ -63,25 +68,28 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
             scaleDown.start();
         }
 
-        holder.matchAvatarView.setAvatarURL(match.getHost().getAvatarURL());
-        holder.matchAvatarView.setScore(match.getScore());
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .circleCrop()
+                .placeholder(R.drawable.ic_avatar_placeholder);
+
+        Glide.with(activity)
+                .load(match.getHost().getAvatarURL())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .apply(requestOptions)
+                .into(holder.userAvatar);
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, match.getScore());
+        animator.setDuration(500);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addUpdateListener(valueAnimator -> holder.scoreText.setText(valueAnimator.getAnimatedValue() + "%"));
+        animator.start();
+
+        int color = getScoreColor(match.getScore());
+        holder.scoreText.setTextColor(color);
 
         holder.nameView.setText(match.getHost().toString());
         holder.jobView.setText(match.getHost().getCompany().toString());
-
-        holder.timeText.setText(
-                String.format(
-                        activity.getResources().getString(R.string.match_time),
-                        dateToString(match.getStartTime()),
-                        dateToString(match.getEndTime())
-                )
-        );
-
-        ArrayList<String> days = new ArrayList<>();
-
-        for(int d : match.getWeekdays())
-            days.add(activity.getResources().getStringArray(R.array.giorni)[d]);
-        holder.daysText.setText(TextUtils.join(", ", days));
 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
@@ -107,6 +115,20 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     }
 
+    private int getScoreColor(int score) {
+        if (score < 60) {
+            return ContextCompat.getColor(activity, R.color.red_500);
+        } else if (score < 70) {
+            return ContextCompat.getColor(activity, R.color.orange_600);
+        } else if (score < 80) {
+            return ContextCompat.getColor(activity, R.color.amber_400);
+        } else if (score < 90) {
+            return ContextCompat.getColor(activity, R.color.light_green_500);
+        } else {
+            return ContextCompat.getColor(activity, R.color.green_500);
+        }
+    }
+
     public void remove(int position) {
         matches.remove(position);
         notifyItemRemoved(position);
@@ -124,20 +146,18 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.match_avatar_view)
-        MatchAvatarView matchAvatarView;
+        @BindView(R.id.user_avatar)
+        ImageView userAvatar;
+        @BindView(R.id.score_text)
+        TextView scoreText;
         @BindView(R.id.name_view)
         TextView nameView;
         @BindView(R.id.job_view)
         TextView jobView;
-        @BindView(R.id.time_view)
-        TextView timeText;
-        @BindView(R.id.days_view)
-        TextView daysText;
         @BindView(R.id.new_badge)
         ImageView newBadgeView;
         @BindView(R.id.container)
-        RelativeLayout container;
+        ConstraintLayout container;
 
         ViewHolder(View view) {
             super(view);

@@ -12,9 +12,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -32,17 +36,17 @@ import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.EditProfileActivity;
 import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.SettingsActivity;
 import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Profile;
-import it.gruppoinfor.home2workapi.model.Share;
 import retrofit2.Call;
 
 
-public class ProgressFragment extends Fragment implements ViewPager.OnPageChangeListener {
+public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     Unbinder unbinder;
     MainActivity activity;
@@ -67,16 +71,14 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
     AppBarLayout appBar;
     @BindView(R.id.collapsingToolbar)
     CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.edit_profile_button)
-    ImageButton editProfileButton;
 
     protected static Profile Profile;
-    protected static List<Share> ShareList = new ArrayList<>();
+    //protected static List<Share> ShareList = new ArrayList<>();
     protected static List<Achievement> AchievementList = new ArrayList<>();
     // protected Statistics statistics;
 
 
-    public ProgressFragment() {
+    public ProfileFragment() {
         // Required empty public constructor
     }
 
@@ -88,9 +90,9 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_progress, container, false);
+        CoordinatorLayout rootView = (CoordinatorLayout) inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-
+        setHasOptionsMenu(true);
         initUI();
         refreshData();
         return rootView;
@@ -133,12 +135,12 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
 
         AsyncJob.doInBackground(() -> {
 
-            Call<List<Share>> sharesCall = Client.getAPI().getUserShares(Client.User.getId());
+            // TODO Call<List<Share>> sharesCall = Client.getAPI().getUserShares(Client.User.getId());
             // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getUser().getId());
             Call<Profile> profileCall = Client.getAPI().getUserProfile(Client.User.getId());
 
             try {
-                ShareList = new ArrayList<>(sharesCall.execute().body());
+                //ShareList = new ArrayList<>(sharesCall.execute().body());
                 //Client.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
                 Profile = profileCall.execute().body();
             } catch (Exception e) {
@@ -183,9 +185,36 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         startActivity(i);
     }
 
-    @OnClick(R.id.edit_profile_button)
+    @OnClick(R.id.profile_options_button)
     public void onViewClicked() {
-        startActivity(new Intent(getActivity(), EditProfileActivity.class));
+        getActivity().openOptionsMenu();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_fragment_profile, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit_profile:
+                startActivity(new Intent(getActivity(), EditProfileActivity.class));
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            case R.id.action_logout:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.logout_dialog_title);
+                builder.setMessage(R.string.logout_dialog_content);
+                builder.setPositiveButton(R.string.logout_dialog_confirm, ((dialogInterface, i) -> logout()));
+                builder.setNegativeButton(R.string.logout_dialog_cancel, null);
+                builder.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private class ProgressPagerAdapter extends FragmentStatePagerAdapter {
@@ -195,10 +224,10 @@ public class ProgressFragment extends Fragment implements ViewPager.OnPageChange
         ProgressPagerAdapter(FragmentManager fm) {
             super(fm);
             fragments = new ArrayList<>();
-            fragments.add(new Pair<>(new ProgressFragmentDashboard(), "Dashboard"));
-            fragments.add(new Pair<>(new ProgressFragmentAchievements(), "Obiettivi"));
-            fragments.add(new Pair<>(new ProgressFragmentShares(), "Condivisioni"));
-            fragments.add(new Pair<>(new ProgressFragmentStats(), "Statistiche"));
+            fragments.add(new Pair<>(new ProfileFragmentDashboard(), "Dashboard"));
+            fragments.add(new Pair<>(new ProfileFragmentAchievements(), "Obiettivi"));
+            fragments.add(new Pair<>(new ProfileFragmentShares(), "Condivisioni"));
+            fragments.add(new Pair<>(new ProfileFragmentStats(), "Statistiche"));
 
         }
 
