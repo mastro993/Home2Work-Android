@@ -299,10 +299,10 @@
     <color name="white">#FFFFFF</color>
 
     <!--Light Background Dark Text-->
-    <color name="light_bg_dark_primary_text">#DD000000</color>
-    <color name="light_bg_dark_secondary_text">#A0000000</color>
-    <color name="light_bg_dark_disabled_text">#35000000</color>
-    <color name="light_bg_dark_hint_text">#61000000</color>
+    <color name="light_bg_dark_primary_text">#DD101010</color>
+    <color name="light_bg_dark_secondary_text">#B3101010</color>
+    <color name="light_bg_dark_disabled_text">#35101010</color>
+    <color name="light_bg_dark_hint_text">#61101010</color>
 
     <!--Dark Background Light Text-->
     <color name="dark_bg_light_primary_text">#DDFFFFFF</color>

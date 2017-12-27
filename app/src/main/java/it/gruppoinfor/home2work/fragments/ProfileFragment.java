@@ -16,14 +16,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.arasthel.asyncjob.AsyncJob;
 
 import java.util.ArrayList;
@@ -43,6 +41,7 @@ import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Profile;
+import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 
 
@@ -73,7 +72,6 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
     CollapsingToolbarLayout collapsingToolbar;
 
     protected static Profile Profile;
-    //protected static List<Share> ShareList = new ArrayList<>();
     protected static List<Achievement> AchievementList = new ArrayList<>();
     // protected Statistics statistics;
 
@@ -135,14 +133,12 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
         AsyncJob.doInBackground(() -> {
 
-            // TODO Call<List<Share>> sharesCall = Client.getAPI().getUserShares(Client.User.getId());
             // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getUser().getId());
-            Call<Profile> profileCall = Client.getAPI().getUserProfile(Client.User.getId());
+            Call<User> userCall = Client.getAPI().getUser(Client.User.getId());
 
             try {
-                //ShareList = new ArrayList<>(sharesCall.execute().body());
                 //Client.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
-                Profile = profileCall.execute().body();
+                Client.User = userCall.execute().body();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -167,7 +163,7 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
     private void refreshProfileUI() {
         // TODO UI profilo
         //  Profile Profile = Client.getUserProfile();
-        avatarView.setExp(Profile.getExp(), Profile.getExpLevel(), Profile.getExpLevelProgress());
+        avatarView.setExp(Client.User.getExp());
     }
 
     @Override
@@ -187,34 +183,33 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
     @OnClick(R.id.profile_options_button)
     public void onViewClicked() {
-        getActivity().openOptionsMenu();
-    }
+        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .customView(R.layout.dialog_profile_fragment_options, false)
+                .show();
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment_profile, menu);
-    }
+        Button editProfileButton = (Button) materialDialog.findViewById(R.id.edit_profile_button);
+        Button settingsButton = (Button) materialDialog.findViewById(R.id.settings_button);
+        Button logoutbutton = (Button) materialDialog.findViewById(R.id.logout_button);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_edit_profile:
-                startActivity(new Intent(getActivity(), EditProfileActivity.class));
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            case R.id.action_logout:
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.logout_dialog_title);
-                builder.setMessage(R.string.logout_dialog_content);
-                builder.setPositiveButton(R.string.logout_dialog_confirm, ((dialogInterface, i) -> logout()));
-                builder.setNegativeButton(R.string.logout_dialog_cancel, null);
-                builder.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        editProfileButton.setOnClickListener(view -> {
+            materialDialog.dismiss();
+            startActivity(new Intent(getActivity(), EditProfileActivity.class));
+        });
+
+        settingsButton.setOnClickListener(view -> {
+            materialDialog.dismiss();
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
+        });
+
+        logoutbutton.setOnClickListener(view -> {
+            materialDialog.dismiss();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.logout_dialog_title);
+            builder.setMessage(R.string.logout_dialog_content);
+            builder.setPositiveButton(R.string.logout_dialog_confirm, ((dialogInterface, i) -> logout()));
+            builder.setNegativeButton(R.string.logout_dialog_cancel, null);
+            builder.show();
+        });
     }
 
     private class ProgressPagerAdapter extends FragmentStatePagerAdapter {
@@ -226,7 +221,6 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
             fragments = new ArrayList<>();
             fragments.add(new Pair<>(new ProfileFragmentDashboard(), "Dashboard"));
             fragments.add(new Pair<>(new ProfileFragmentAchievements(), "Obiettivi"));
-            fragments.add(new Pair<>(new ProfileFragmentShares(), "Condivisioni"));
             fragments.add(new Pair<>(new ProfileFragmentStats(), "Statistiche"));
 
         }
@@ -250,6 +244,8 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
 
     }
+
+
 }
 
 

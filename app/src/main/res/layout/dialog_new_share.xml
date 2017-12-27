@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/join_share_button"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:drawablePadding="24dp"
+        android:drawableStart="@drawable/ic_qrcode_scan"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Unisciti ad una condivisione"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/light_bg_dark_primary_text" />
+
+    <include layout="@layout/horizontal_divider" />
+
+    <Button
+        android:id="@+id/new_share_button"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:drawablePadding="24dp"
+        android:drawableStart="@drawable/ic_car_connected"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Crea nuova condivisione"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/light_bg_dark_primary_text" />
+
+</LinearLayout>

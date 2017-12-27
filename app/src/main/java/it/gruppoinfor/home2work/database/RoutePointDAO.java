@@ -19,10 +19,7 @@ public interface RoutePointDAO {
     RoutePointEntity getByID(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(RoutePointEntity routePointEntity);
-
-    @Delete
-    void delete(RoutePointEntity routePointEntity);
+    void insert(RoutePointEntity routePointEntity);
 
     @Query("DELETE FROM routePoint WHERE userId = :userId")
     void deleteAll(long userId);

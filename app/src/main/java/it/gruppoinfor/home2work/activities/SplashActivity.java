@@ -50,6 +50,17 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == FINE_LOCATION_ACCESS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                startApp();
+            else
+                finish();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     private void startApp() {
         SessionManager.with(this).checkSession(new SessionManager.SessionManagerCallback() {
 
@@ -82,15 +93,6 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == FINE_LOCATION_ACCESS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                startApp();
-            else
-                finish();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+
 
 }

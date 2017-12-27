@@ -20,7 +20,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -182,7 +181,6 @@ public class MatchActivity extends AppCompatActivity {
         userIntent.putExtra("userID", matchedUser.getId());
         activity.startActivity(userIntent);*/
     }
-
 
     private class MyMapReadyCallback implements OnMapReadyCallback, RoutingListener {
 

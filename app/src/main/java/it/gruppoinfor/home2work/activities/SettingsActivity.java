@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 
-import static it.gruppoinfor.home2work.App.getContext;
 
 public class SettingsActivity extends AppCompatActivity {
 

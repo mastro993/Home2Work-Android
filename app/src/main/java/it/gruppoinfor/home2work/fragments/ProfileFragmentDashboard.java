@@ -12,15 +12,11 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
-import it.gruppoinfor.home2work.adapters.OngoingSharesAdapter;
-import it.gruppoinfor.home2work.dialogs.OngoingShareInfoDialog;
 import it.gruppoinfor.home2workapi.model.Share;
 
 public class ProfileFragmentDashboard extends Fragment {
 
     private Unbinder unbinder;
-    private OngoingSharesAdapter ongoingSharesAdapter;
     private ArrayList<Share> ongoingShares;
 
     public ProfileFragmentDashboard() {
@@ -40,19 +36,6 @@ public class ProfileFragmentDashboard extends Fragment {
     private void initUI() {
 
     }
-
-    private ItemClickCallbacks ongoingSharesClickCallbacks = new ItemClickCallbacks() {
-        @Override
-        public void onItemClick(View view, int position) {
-            Share share = ongoingShares.get(position);
-            new OngoingShareInfoDialog(getActivity(), share).show();
-        }
-
-        @Override
-        public boolean onLongItemClick(View view, int position) {
-            return false;
-        }
-    };
 
     @Override
     public void onDestroyView() {

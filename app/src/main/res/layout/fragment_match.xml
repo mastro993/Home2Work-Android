@@ -5,12 +5,32 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/matches_recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:elevation="@dimen/cardview_default_elevation"
-        android:visibility="visible" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/no_matches_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="Non ci sono ancora abbastanza dati per trovare match. Abbiamo però rilevato persone nelle vicinanze che lavorano dove te. Prova a contattarle!"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/matches_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:elevation="@dimen/cardview_default_elevation"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

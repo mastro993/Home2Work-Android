@@ -39,11 +39,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private final int PHOTO_INTENT = 0;
 
-
     @BindView(R.id.avatar_view)
     ImageView avatarView;
     private Bitmap propic;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,29 +61,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void initUI() {
-        RequestOptions requestOptions = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .circleCrop()
-                .placeholder(R.drawable.ic_avatar_placeholder);
-        Glide.with(this)
-                .load(Client.User.getAvatarURL())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .apply(requestOptions)
-                .into(avatarView);
-    }
-
-
-    @OnClick(R.id.change_avatar_button)
-    public void onViewClicked() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-        } else {
-            selectImageIntent();
-        }
     }
 
     @Override
@@ -130,6 +105,28 @@ public class EditProfileActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void initUI() {
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .circleCrop()
+                .placeholder(R.drawable.ic_avatar_placeholder);
+        Glide.with(this)
+                .load(Client.User.getAvatarURL())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .apply(requestOptions)
+                .into(avatarView);
+    }
+
+    @OnClick(R.id.change_avatar_button)
+    public void onViewClicked() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        } else {
+            selectImageIntent();
         }
     }
 

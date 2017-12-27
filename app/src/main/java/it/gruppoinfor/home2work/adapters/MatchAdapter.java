@@ -94,6 +94,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
 
+        if (match.getScore() == 0) holder.scoreText.setVisibility(View.INVISIBLE);
+
         /*
         TODO Activity info utente
         holder.userAvatar.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +115,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
             }
         });*/
 
+    }
+
+    @Override
+    public int getItemCount() {
+        return matches.size();
     }
 
     private int getScoreColor(int score) {
@@ -139,10 +146,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         this.itemClickCallbacks = itemClickCallbacks;
     }
 
-    @Override
-    public int getItemCount() {
-        return matches.size();
-    }
+
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {

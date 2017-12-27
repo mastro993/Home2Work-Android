@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -44,6 +44,8 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
     RecyclerView matchesRecyclerView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.no_matches_view)
+    TextView noMatchesView;
     private Unbinder unbinder;
     private MatchAdapter matchesAdapter;
     private MainActivity activity;
@@ -76,6 +78,14 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
     }
 
     private void refreshList() {
+
+        boolean noMatches = false;
+        for (Match match : matchList) {
+            if (match.getScore() == 0) noMatches = true;
+        }
+
+        if (noMatches) noMatchesView.setVisibility(View.VISIBLE);
+        else noMatchesView.setVisibility(View.GONE);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
@@ -150,33 +160,39 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
 
     @Override
     public void onItemClick(View view, int position) {
-        Match matchItem = matchList.get(position);
-        if (matchItem.isNew()) {
-            matchItem.setNew(false);
-            matchesAdapter.notifyItemChanged(position);
-            refreshBadgeCounter();
+        Match match = matchList.get(position);
+        if (match.getScore() == 0) {
+            showMatchUserProfile(position);
+        } else {
+            if (match.isNew()) {
+                match.setNew(false);
+                matchesAdapter.notifyItemChanged(position);
+                refreshBadgeCounter();
+            }
+            showMatchDetails(position);
         }
-        showMatchDetails(position);
+
     }
 
     @Override
     public boolean onLongItemClick(View view, int position) {
-        PopupMenu popup = new PopupMenu(getActivity(), view);
-        popup.getMenuInflater().inflate(R.menu.menu_match_item, popup.getMenu());
-        popup.setOnMenuItemClickListener((item) -> {
-            switch (item.getItemId()) {
-                case R.id.action_show_user_profile:
-                    showMatchUserProfile(position);
-                    break;
-                case R.id.action_hide_match:
-                    showHideMatchDialog(position);
-                    break;
-                default:
-                    break;
-            }
-            return true;
+        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .customView(R.layout.dialog_match_item_options, false)
+                .show();
+
+        Button showUserProfileButton = (Button) materialDialog.findViewById(R.id.show_user_profile_button);
+        Button hideMatchButton = (Button) materialDialog.findViewById(R.id.hide_match_button);
+
+        showUserProfileButton.setOnClickListener(view1 -> {
+            materialDialog.dismiss();
+            showMatchUserProfile(position);
         });
-        popup.show();
+
+        hideMatchButton.setOnClickListener(view12 -> {
+            materialDialog.dismiss();
+            showHideMatchDialog(position);
+        });
+
         return true;
     }
 

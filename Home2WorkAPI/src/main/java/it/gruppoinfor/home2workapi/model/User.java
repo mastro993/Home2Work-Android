@@ -14,33 +14,60 @@ public class User {
     @SerializedName("UserID")
     @Expose
     private Long id;
+
     @SerializedName("Email")
     @Expose
     private String email;
+
     @SerializedName("Token")
     @Expose
     private String token;
+
     @SerializedName("Name")
     @Expose
     private String name;
+
     @SerializedName("Surname")
     @Expose
     private String surname;
+
     @SerializedName("HomeLatLng")
     @Expose
     private LatLng location;
+
     @SerializedName("HomeAddress")
     @Expose
     private Address address;
+
     @SerializedName("Company")
     @Expose
     private Company company;
+
+    @SerializedName("Exp")
+    @Expose
+    private Long exp;
+
     @SerializedName("Regdate")
     @Expose
     private Date registrationDate;
+
     @SerializedName("Configured")
     @Expose
     private Boolean configured;
+
+    @SerializedName("Facebook")
+    @Expose
+    private String facebook;
+    @SerializedName("Twitter")
+    @Expose
+    private String twitter;
+    @SerializedName("Telegram")
+    @Expose
+    private String telegram;
+    @SerializedName("Linkedin")
+    @Expose
+    private String linkedin;
+
 
     public Long getId() {
         return id;
@@ -121,6 +148,48 @@ public class User {
     public void setConfigured(Boolean configured) {
         this.configured = configured;
     }
+
+    public Long getExp() {
+        return exp;
+    }
+
+    public void setExp(Long exp) {
+        this.exp = exp;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getTelegram() {
+        return telegram;
+    }
+
+    public void setTelegram(String telegram) {
+        this.telegram = telegram;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
+
+////////////////
 
     public String getAvatarURL() {
         return Client.AVATAR_BASE_URL + id + ".jpg";

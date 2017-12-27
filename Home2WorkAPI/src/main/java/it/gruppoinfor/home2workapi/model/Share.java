@@ -4,41 +4,40 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class Share {
-    public static final int CREATED = 0; // Creata ma non avviata
-    public static final int TOJOB = 1; // Avvita e spostamento verso lavoro
-    public static final int ARRIVED = 2; // Arrivato a lavoro, fermo
-    public static final int TOHOME = 3; // Avviata e spostamento verso casa
-    public static final int COMPLETED = 4; // Arrivato a casa, ultimata
 
-    @SerializedName("ID")
+    @SerializedName("Id")
     @Expose
-    private Long shareID;
-    @SerializedName("Booking")
+    private Long id;
+    @SerializedName("Host")
     @Expose
-    private Booking booking;
-    @SerializedName("CreationDate")
-    @Expose
-    private Timestamp creationDate;
+    private User host;
     @SerializedName("Status")
     @Expose
     private int status;
+    @SerializedName("Date")
+    @Expose
+    private Timestamp date;
+    @SerializedName("Guests")
+    @Expose
+    private ArrayList<ShareGuest> guests = new ArrayList<>();
 
-    public Long getShareID() {
-        return shareID;
+    public Long getId() {
+        return id;
     }
 
-    public void setShareID(Long shareID) {
-        this.shareID = shareID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Booking getBooking() {
-        return booking;
+    public User getHost() {
+        return host;
     }
 
-    public void setBooking(Booking booking) {
-        this.booking = booking;
+    public void setHost(User host) {
+        this.host = host;
     }
 
     public int getStatus() {
@@ -49,11 +48,19 @@ public class Share {
         this.status = status;
     }
 
-    public Timestamp getCreationDate() {
-        return creationDate;
+    public Timestamp getDate() {
+        return date;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
-        this.creationDate = creationDate;
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public ArrayList<ShareGuest> getGuests() {
+        return guests;
+    }
+
+    public void setGuests(ArrayList<ShareGuest> guests) {
+        this.guests = guests;
     }
 }

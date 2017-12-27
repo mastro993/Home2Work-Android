@@ -50,12 +50,7 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_qr_code) {
-            // TODO configurazione con QR code
-        } else if (id == R.id.action_nfc) {
-            // TODO configurazione con NFC
-        } else if (id == R.id.action_logout) {
+        if (id == R.id.action_logout) {
             AlertDialog.Builder builder =
                     new AlertDialog.Builder(this);
             builder.setTitle(R.string.config_logout);

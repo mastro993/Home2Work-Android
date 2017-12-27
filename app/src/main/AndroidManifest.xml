@@ -25,7 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -58,37 +57,6 @@
             android:exported="true"
             tools:ignore="ExportedReceiver" />
 
-        <activity
-            android:name=".activities.SplashActivity"
-            android:theme="@style/AppTheme.SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.SignInActivity"
-            android:theme="@style/AppTheme.SignInTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
-        <activity
-            android:name=".activities.ConfigurationActivity"
-            android:theme="@style/AppTheme.ConfigTheme" />
-        <activity
-            android:name=".activities.MatchActivity"
-            android:label="Dettagli match" />
-        <activity
-            android:name=".activities.EditProfileActivity"
-            android:label="Modifica profilo" />
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="Impostazioni" />
-
-
         <service
             android:name=".services.LocationService"
             android:enabled="true"
@@ -108,7 +76,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".services.MessagingService"
             android:enabled="true"
@@ -119,7 +86,57 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".activities.SplashActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SignInActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.SignInTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name=".activities.ConfigurationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.ConfigTheme" />
+        <activity
+            android:name=".activities.MatchActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="Dettagli match"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="Modifica profilo"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="Impostazioni"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ShareActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="Info condivisione"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation" />
     </application>
 
 </manifest>

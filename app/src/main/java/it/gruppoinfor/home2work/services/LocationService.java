@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.arasthel.asyncjob.AsyncJob;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,10 +30,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 
+import java.util.concurrent.TimeUnit;
+
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
-import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.Client;
 
@@ -40,7 +42,8 @@ import static it.gruppoinfor.home2work.App.dbApp;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks {
 
-    private String TAG = "LOCATION_SERVICE";
+    private static final String TAG = LocationService.class.getSimpleName();
+
     private boolean isRecording = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback = new LocationCallback() {
@@ -60,7 +63,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener((connectionResult -> {
-                    MyLogger.d("GOOGLE_API_CLIENT", "Connessione fallita: " + connectionResult);
+                    Log.e(TAG, "Connessione fallita: " + connectionResult);
                 }))
                 .addApi(ActivityRecognition.API)
                 .addApi(LocationServices.API)
@@ -68,7 +71,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         if (Client.User != null) {
 
-            MyLogger.i(TAG, "Utente collegato: " + Client.User.getEmail());
             mGoogleApiClient.connect();
 
             AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -94,15 +96,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             startForeground(1337, serviceNotification);
 
         } else {
-            MyLogger.i(TAG, "Sessione non presente");
+            Log.i(TAG, "Sessione non presente");
         }
 
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        MyLogger.d(TAG, "Connessione Google Client avvenuta");
-
         Intent intent = new Intent(
                 LocationService.this,
                 ActivityRecognizedService.class
@@ -117,13 +117,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         ActivityRecognitionClient activityRecognitionClient = ActivityRecognition.getClient(LocationService.this);
         Task<Void> task = activityRecognitionClient.requestActivityUpdates(15000, pendingIntent);
 
-        task.addOnSuccessListener(result -> MyLogger.d(TAG, "activityRecognitionClient avviato con successo"));
+        task.addOnSuccessListener(result -> Log.d(TAG, "activityRecognitionClient avviato con successo"));
 
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        MyLogger.w(TAG, "onConnectionSuspended: " + i);
+        Log.w(TAG, "onConnectionSuspended: " + i);
     }
 
     @Override
@@ -144,15 +144,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private void startLocationRequests() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            MyLogger.d(TAG, "Avvio tracking utente");
 
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(this::saveLocation);
 
             LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(60000);
-            locationRequest.setFastestInterval(30000);
+            locationRequest.setInterval(TimeUnit.MINUTES.toMillis(2));
+            locationRequest.setFastestInterval(TimeUnit.MINUTES.toMillis(1));
             locationRequest.setSmallestDisplacement(1000f);
 
             mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper());
@@ -162,7 +161,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void stopLocationRequests() {
-        MyLogger.d(TAG, "Arresto tracking utente");
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationClient.getLastLocation().addOnSuccessListener(this::saveLocation);
@@ -180,10 +178,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
         routePointEntity.setUserId(Client.User.getId());
 
-        AsyncJob.doInBackground(() -> {
-            dbApp.routePointDAO().insert(routePointEntity);
-            MyLogger.d(TAG, "Posizione aggiunta:" + routePointEntity.getLatLng().toString());
-        });
+        AsyncJob.doInBackground(() -> dbApp.routePointDAO().insert(routePointEntity));
     }
 
     @Override

@@ -121,12 +121,6 @@ public class Tools {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-
-    public static Date getCurrentDate() {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
-        return cal.getTime();
-    }
-
     public static long getCurrentTimestamp() {
         return System.currentTimeMillis() / 1000L;
     }
@@ -149,83 +143,6 @@ public class Tools {
         loc2.setLongitude(b.longitude);
 
         return a.distanceTo(loc2);
-    }
-
-
-    //method to get the right URL to use in the intent
-    public static String getFacebookPageURL(Context context, String pageID, String pageUrl) {
-        PackageManager packageManager = context.getPackageManager();
-        try {
-            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
-            if (versionCode >= 3002850) { //newer versions of fb app
-                return "fb://facewebmodal/f?href=" + pageUrl;
-            } else { //older versions of fb app
-                return "fb://page/" + pageID;
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            return pageUrl; //normal web url
-        }
-    }
-
-    public static Date datetimeToDate(String datetime) {
-        try {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ITALY);
-            return format.parse(datetime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String getRealPathFromURI(Context context, Uri contentURI) {
-        String result;
-        Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
-    }
-
-    public static Intent getOpenFacebookIntent(Context context, String username) {
-
-        Uri uri = Uri.parse("http://fb.me/" + username);
-        try {
-            PackageManager pm = context.getPackageManager();
-            ApplicationInfo applicationInfo = pm.getApplicationInfo("com.facebook.katana", 0);
-            if (applicationInfo.enabled) {
-                // http://stackoverflow.com/a/24547437/1048340
-                uri = Uri.parse("fb://facewebmodal/f?href=" + "http://fb.me/" + username);
-            }
-        } catch (PackageManager.NameNotFoundException ignored) {
-        }
-        return new Intent(Intent.ACTION_VIEW, uri);
-    }
-
-    public static Intent getOpenTwitterIntent(Context context, String username) {
-
-        try {
-            context.getPackageManager().getPackageInfo("com.twitter.android", 0);
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=" + username));
-        } catch (Exception e) {
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + username));
-        }
-    }
-
-
-    public static void removeKeyboard(Activity activity) {
-
-        View view = activity.getCurrentFocus();
-
-        if (view != null) {
-            // Chiude la tastiera se presente
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 
     public static boolean isBetween(int x, int lower, int upper) {

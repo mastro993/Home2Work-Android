@@ -54,7 +54,7 @@ public class ProfileFragmentStats extends Fragment {
 
     private void initUI() {
 
-        UserStatistics statistics = ProfileFragment.Profile.getStats();
+        /*UserStatistics statistics = ProfileFragment.Profile.getStats();
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -65,7 +65,7 @@ public class ProfileFragmentStats extends Fragment {
         sharesTextView.setText(statistics.getShares().toString());
         sharedDistanceTextView.setText(df.format(statistics.getSharedKilometers()));
         savedGasTextView.setText(df.format(statistics.getGasSaved()));
-        savedEmissionsTextView.setText(df.format(statistics.getEmissionSaved()));
+        savedEmissionsTextView.setText(df.format(statistics.getEmissionSaved()));*/
     }
 
 

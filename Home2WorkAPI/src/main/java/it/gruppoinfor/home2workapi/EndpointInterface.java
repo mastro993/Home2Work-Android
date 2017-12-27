@@ -5,7 +5,7 @@ import java.util.List;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Location;
 import it.gruppoinfor.home2workapi.model.Match;
-import it.gruppoinfor.home2workapi.model.Profile;
+import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -26,7 +26,8 @@ public interface EndpointInterface {
     @POST("user/login")
     Call<User> login(
             @Field("email") String email,
-            @Field("password") String password
+            @Field("password") String password,
+            @Field("token") boolean tokenMode
     );
 
     @PUT("user")
@@ -34,16 +35,16 @@ public interface EndpointInterface {
             @Body User user
     );
 
+    @GET("user/{id}")
+    Call<User> getUser(
+            @Path("id") Long id
+    );
+
     @Multipart
     @POST("user/{id}/avatar")
     Call<ResponseBody> uploadAvatar(
             @Path("id") Long userID,
             @Part MultipartBody.Part file
-    );
-
-    @GET("user/{id}/profile")
-    Call<Profile> getUserProfile(
-            @Path("id") Long userID
     );
 
     @GET("company")
@@ -82,91 +83,24 @@ public interface EndpointInterface {
             @Field("token") String token
     );
 
-
-    /*
-
+    @GET("user/{id}/shares")
+    Call<List<Share>> getShares(
+            @Path("id") Long userId
+    );
 
     @FormUrlEncoded
-    @POST("users/{id}/follow/{profileId}")
-    Call<List<Long>> followUser(
-            @Path("id") Long id,
-            @Path("profileId") Long profileId,
-            @Field("follow") Boolean follow
+    @POST("share/new")
+    Call<Share> createShare(
+            @Field("hostId") Long hostId
     );
 
-    @GET("users/{id}/achievements")
-    Call<List<Achievement>> getUserAchievements(
-            @Path("id") Long id
+    @FormUrlEncoded
+    @POST("share/{shareId}/join")
+    Call<ResponseBody> joinShare(
+            @Path("shareId") Long shareId,
+            @Field("guestId") Long guestId,
+            @Field("location") String locationString
     );
-
-
-    @GET("users/{id}/matches/with/{matchUserId}")
-    Call<List<MatchInfo>> getUserMatchesWith(
-            @Path("id") Long id,
-            @Path("matchUserId") Long matchedUserId
-    );
-
-    *//*
-    @GET("users/{id}/notifications")
-    Call<List<Notification>> getUserNotification(
-            @Path("id") Long id
-    );
-    *//*
-
-    @GET("users/{id}/avatar")
-    Call<ResponseBody> getAvatar(
-            @Path("id") Long id
-    );
-
-    @Multipart
-    @POST("users/{id}/avatar")
-    Call<ResponseBody> uploadAvatar(
-            @Path("id") Long userID,
-            @Part MultipartBody.Part file
-    );
-
-    @GET("companies/{id}")
-    Call<Company> getCompany(
-            @Path("id") Long companyID
-    );
-
-    @GET("companies/{id}/ranks")
-    Call<List<User>> getCompanyRanks(
-            @Path("id") Long id
-    );
-
-    @GET("matches/{id}")
-    Call<MatchInfo> getMatch(
-            @Path("id") Long id
-    );
-
-    @PUT("matches")
-    Call<MatchInfo> editMatch(
-            @Body MatchInfo match
-    );
-
-
-    @GET("achievements")
-    Call<List<Achievement>> getAchievements(
-            String sort
-    );
-
-    @GET("achievements/{id}")
-    Call<Achievement> getAchievement(
-            @Path("id") Long achievementId
-    );
-
-    *//*
-    @GET("notifications")
-    Call<List<Notification>> getNotifications(
-            String sort
-    );
-
-    @GET("notifications/{id}")
-    Call<Notification> getNotification(
-            @Path("id") Long achievementId
-    );
-    */
 
 
 }

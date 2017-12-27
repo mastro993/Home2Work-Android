@@ -11,40 +11,6 @@ import it.gruppoinfor.home2workapi.model.Location;
 
 public class RouteUtils {
 
-
-    public static ArrayList<LatLng> getWayPoints(List<Location> points, final int max) {
-
-        ArrayList<LatLng> locations = new ArrayList<>();
-        ArrayList<LatLng> waypoints = new ArrayList<>();
-
-        // Trasformo in array di LatLng
-        for (Location point : points)
-            locations.add(point.getLatLng());
-
-        LatLng start = locations.get(0); // Inizio percorso
-        LatLng end = locations.get(points.size() - 1); // Fine percorso
-
-        int step = getStep(locations.size(), max);
-
-        waypoints.add(start);
-        for (int i = step + 1; i < locations.size() - (step + 1); i += step) {
-            waypoints.add(locations.get(i));
-        }
-        waypoints.add(end);
-
-        return waypoints;
-
-    }
-
-    private static int getStep(final int size, final int MAX) {
-
-        int step = size / MAX;
-        int rest = size % MAX;
-
-        return rest > 0 ? step + 1 : step;
-
-    }
-
     public static LatLngBounds getRouteBounds(List<LatLng> locations) {
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();

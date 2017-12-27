@@ -31,15 +31,6 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
     private ArrayList<Achievement> achievements;
     private ItemClickCallbacks itemClickCallbacks;
 
-    public AchievementAdapter(Activity activity, List<Achievement> values) {
-        this.activity = (MainActivity) activity;
-        this.achievements = new ArrayList<>(values);
-    }
-
-    public void setItemClickCallbacks(ItemClickCallbacks itemClickCallbacks) {
-        this.itemClickCallbacks = itemClickCallbacks;
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_achievement, parent, false);
@@ -80,12 +71,19 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
 
     }
 
-
     @Override
     public int getItemCount() {
         return achievements.size();
     }
 
+    public AchievementAdapter(Activity activity, List<Achievement> values) {
+        this.activity = (MainActivity) activity;
+        this.achievements = new ArrayList<>(values);
+    }
+
+    public void setItemClickCallbacks(ItemClickCallbacks itemClickCallbacks) {
+        this.itemClickCallbacks = itemClickCallbacks;
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.achievement_icon)

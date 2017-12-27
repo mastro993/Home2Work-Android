@@ -24,6 +24,7 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.fragments.HomeFragment;
 import it.gruppoinfor.home2work.fragments.MatchFragment;
 import it.gruppoinfor.home2work.fragments.ProfileFragment;
+import it.gruppoinfor.home2work.fragments.SharesFragment;
 import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2work.utils.UserPrefs;
@@ -64,17 +65,45 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         startService(new Intent(this, SyncService.class));
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (position == 3)
+            getSupportActionBar().hide();
+        else
+            getSupportActionBar().show();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
     private void initUI() {
 
         // Navigation
         AHBottomNavigationItem homeTab = new AHBottomNavigationItem(R.string.home_tab, R.drawable.ic_home, R.color.colorPrimaryDark);
         AHBottomNavigationItem matchTab = new AHBottomNavigationItem(R.string.match_tab, R.drawable.ic_match, R.color.colorPrimary);
-        AHBottomNavigationItem progressTab = new AHBottomNavigationItem(R.string.progress_tab, R.drawable.ic_user, R.color.light_blue_300);
+        AHBottomNavigationItem sharesTab = new AHBottomNavigationItem(R.string.shares_tab, R.drawable.ic_car_side, R.color.light_blue_300);
+        AHBottomNavigationItem profileTab = new AHBottomNavigationItem(R.string.profile_tab, R.drawable.ic_user, R.color.colorAccent);
 
         bottomNavigation.removeAllItems();
         bottomNavigation.addItem(homeTab);
         bottomNavigation.addItem(matchTab);
-        bottomNavigation.addItem(progressTab);
+        bottomNavigation.addItem(sharesTab);
+        bottomNavigation.addItem(profileTab);
 
         bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.colorPrimary));
         bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.grey_400));
@@ -83,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         bottomNavigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500));
 
         bottomNavigation.setBehaviorTranslationEnabled(false);
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 
         bottomNavigation.setOnTabSelectedListener(((position, wasSelected) -> {
             viewPager.setCurrentItem(position, false);
@@ -102,14 +131,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         setTitle(bottomNavigation.getItem(0).getTitle(this));
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            fragment.onActivityResult(requestCode, resultCode, data);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     public void setBadge(int itemPosition, String title) {
         bottomNavigation.setNotification(title, itemPosition);
     }
@@ -123,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             fragments = new ArrayList<>();
             fragments.add(new HomeFragment());
             fragments.add(new MatchFragment());
+            fragments.add(new SharesFragment());
             fragments.add(new ProfileFragment());
         }
 
@@ -139,21 +161,5 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        if (position == 2)
-            getSupportActionBar().hide();
-        else
-            getSupportActionBar().show();
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 }

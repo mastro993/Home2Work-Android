@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.arasthel.asyncjob.AsyncJob;
 
@@ -15,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 import it.gruppoinfor.home2work.database.RoutePointEntity;
-import it.gruppoinfor.home2work.utils.MyLogger;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.Client;
@@ -62,33 +62,25 @@ public class SyncService extends Service {
 
             }
 
-            if (locations.size() > 0) {
-                MyLogger.i(TAG, "Sono presenti " + locations.size() + " location");
-                syncRoutePoints(locations);
-            }
+            if (locations.size() > 0) syncRoutePoints(locations);
 
         });
 
     }
 
     private void syncRoutePoints(final List<Location> locationList) {
-        MyLogger.i(TAG, "Avvio sincronizzazione");
 
         Client.getAPI().uploadLocations(Client.User.getId(), locationList)
                 .enqueue(new Callback<List<Location>>() {
                     @Override
                     public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
-                        if (response.code() == 200) {
-                            MyLogger.d(TAG, "Sincronizzazione avvenuta (" + response.body().size() + " location)");
+                        if (response.code() == 200)
                             AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(Client.User.getId()));
-                        } else {
-                            MyLogger.d(TAG, "Sincronizzazione fallita Errore Server. " + call.toString());
-                        }
                     }
 
                     @Override
                     public void onFailure(Call<List<Location>> call, Throwable t) {
-                        MyLogger.e(TAG, "Sincronizzazione fallita. Errore Client " + call.toString(), t);
+                        Log.e(TAG, "Sincronizzazione fallita. Errore Client " + call.toString(), t);
                     }
 
                 });
@@ -111,12 +103,6 @@ public class SyncService extends Service {
                 return false;
         }
         return true;
-    }
-
-    @Override
-    public void onDestroy() {
-        MyLogger.i(TAG, "Servizio arrestato");
-        super.onDestroy();
     }
 
     @Nullable

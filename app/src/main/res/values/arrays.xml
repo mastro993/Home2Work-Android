@@ -16,4 +16,11 @@
         <item>Dom</item>
     </string-array>
 
+    <string-array name="match_popup">
+        <item>Mostra profilo utente</item>
+        <item>Nascondi match</item>
+    </string-array>
+
+
+
 </resources>

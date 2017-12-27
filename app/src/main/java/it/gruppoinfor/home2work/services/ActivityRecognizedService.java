@@ -7,10 +7,7 @@ import android.util.Log;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
-
 import java.util.List;
-
-import it.gruppoinfor.home2work.utils.MyLogger;
 
 
 public class ActivityRecognizedService extends IntentService {
@@ -38,18 +35,14 @@ public class ActivityRecognizedService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (ActivityRecognitionResult.hasResult(intent)) {
-            try {
-                ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-                handleDetectedActivities(result.getProbableActivities());
-            } catch (Exception e) {
-                MyLogger.e(TAG, null, e);
-            }
+            ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
+            handleDetectedActivities(result.getProbableActivities());
         }
     }
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         for (DetectedActivity activity : probableActivities) {
-            Log.d("DETECTED_ACTIVITY", activity.toString());
+            //Log.d("DETECTED_ACTIVITY", activity.toString());
             if (activity.getConfidence() >= CONFIDENCE_TRESHOLD) {
                 if (activity.getType() == DetectedActivity.IN_VEHICLE) {
                     if (!isDriving) startDrivingActivity();
@@ -76,7 +69,7 @@ public class ActivityRecognizedService extends IntentService {
         Intent intent = new Intent(this, LocationService.class);
         intent.putExtra(DrivingActivity.class.getSimpleName(), DrivingActivity.STARTED_DRIVING);
         startService(intent);
-        MyLogger.d(TAG, "Auto rilevata");
+        Log.d(TAG, "Auto rilevata");
         isDriving = true;
     }
 
@@ -85,7 +78,7 @@ public class ActivityRecognizedService extends IntentService {
         Intent intent = new Intent(this, LocationService.class);
         intent.putExtra(DrivingActivity.class.getSimpleName(), DrivingActivity.STOPPED_DRIVING);
         startService(intent);
-        MyLogger.d(TAG, "Auto non rilevata");
+        Log.d(TAG, "Auto non rilevata");
         isDriving = false;
     }
 

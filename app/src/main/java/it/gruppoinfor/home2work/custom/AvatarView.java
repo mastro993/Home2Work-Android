@@ -14,11 +14,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
@@ -39,7 +41,7 @@ public class AvatarView extends RelativeLayout {
     RelativeLayout levelContainer;
     private Context context;
 
-    private Integer exp;
+    private Long exp;
     private Integer level;
     private Float progress;
     private Drawable shieldIcon;
@@ -80,7 +82,14 @@ public class AvatarView extends RelativeLayout {
                 .apply(requestOptions).into(userPropic);
     }
 
-    public void setExp(Integer exp, Integer level, Float progress) {
+    public void setExp(Long exp) {
+
+        int level = ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
+        int thisLevelExp = (int) Math.pow(10.0 * (level - 1.0), 2.0);
+        int nextLevelExp = (int) Math.pow(10 * level, 2.0);
+        int toNextLevelExp = nextLevelExp - thisLevelExp;
+        long expDelta = exp - toNextLevelExp;
+        float progress = (100.0f / toNextLevelExp) * expDelta;
 
         if (level < 101) {
             DonutProgressAnimation animation = new DonutProgressAnimation(

@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -20,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Company;
 import retrofit2.Callback;
@@ -63,12 +63,8 @@ public class ConfigurationFragmentJob extends Fragment implements Step {
     }
 
     private void initCompaniesSpinner() {
-        // TODO custom spinner
-        ArrayAdapter spinnerArrayAdapter = new ArrayAdapter(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                companies);
-        companySpinner.setAdapter(spinnerArrayAdapter);
+        CompanySpinnerAdapter companySpinnerAdapter = new CompanySpinnerAdapter(getActivity(), companies);
+        companySpinner.setAdapter(companySpinnerAdapter);
         loadingView.setVisibility(View.GONE);
     }
 
@@ -79,10 +75,7 @@ public class ConfigurationFragmentJob extends Fragment implements Step {
         if (companySpinner.getSelectedItem().toString().equals(getString(R.string.company)))
             return new VerificationError("Devi selezionare un azienda prima di poter continuare");
 
-
-        Client.User.getCompany().setId(
-                ((Company) companySpinner.getSelectedItem()).getId()
-        );
+        Client.User.setCompany((Company) companySpinner.getSelectedItem());
 
         return null;
     }

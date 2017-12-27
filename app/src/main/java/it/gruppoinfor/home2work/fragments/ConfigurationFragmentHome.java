@@ -32,8 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
-import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2workapi.Client;
 import it.gruppoinfor.home2workapi.model.Address;
 import it.gruppoinfor.home2workapi.model.User;
@@ -126,7 +126,6 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
     @OnClick(R.id.setAddressButton)
     void setAddress() {
         MaterialDialog editAddressDialog = new MaterialDialog.Builder(getContext())
-                .title("Modifica indirizzo")
                 .customView(R.layout.dialog_edit_address, false)
                 .positiveText("Salva")
                 .negativeText("Annulla")
@@ -163,18 +162,13 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
                         LatLng latLng = Converters.addressToLatLng(getContext(), addr + ", " + city + " " + CAP);
                         if (latLng != null) {
 
-                            User signedUser = Client.User;
-
-                            signedUser.setLocation(latLng);
-
                             Address newAddress = new Address();
                             newAddress.setCity(city);
                             newAddress.setAddress(addr);
                             newAddress.setPostalCode(CAP);
 
-                            signedUser.setAddress(newAddress);
-
-                            Client.User = signedUser;
+                            Client.User.setLocation(latLng);
+                            Client.User.setAddress(newAddress);
 
                             setHomeLocation(latLng);
 
@@ -194,12 +188,11 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
 
         User signedUserr = Client.User;
 
-        if(signedUserr.getAddress() != null){
+        if (signedUserr.getAddress() != null) {
             addressInput.setText(signedUserr.getAddress().getAddress());
             capInput.setText(signedUserr.getAddress().getPostalCode());
             cityInput.setText(signedUserr.getAddress().getCity());
         }
-
 
 
         editAddressDialog.show();

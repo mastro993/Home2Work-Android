@@ -105,7 +105,7 @@
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/light_bg_dark_disabled_text"
             app:tabIndicatorHeight="3dp"
-            app:tabMode="scrollable" />
+            app:tabMode="fixed" />
 
     </android.support.design.widget.AppBarLayout>
 

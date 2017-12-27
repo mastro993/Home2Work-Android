@@ -40,21 +40,5 @@ public class Profile {
         this.stats = stats;
     }
 
-////////////////
 
-
-    public Integer getExpLevel() {
-        return ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
-    }
-
-    public Integer getExpToNextLevel() {
-        int thisLevelExp = (int) Math.pow(10.0 * (getExpLevel() - 1.0), 2.0);
-        int nextLevelExp = (int) Math.pow(10 * getExpLevel(), 2.0);
-        return nextLevelExp - thisLevelExp;
-    }
-
-    public Float getExpLevelProgress() {
-        int expDelta = exp - getExpToNextLevel();
-        return (100.0f / getExpToNextLevel()) * expDelta;
-    }
 }

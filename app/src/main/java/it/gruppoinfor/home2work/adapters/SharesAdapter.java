@@ -47,7 +47,7 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Share share = shares.get(position);
+        /*final Share share = shares.get(position);
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -82,10 +82,9 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
 
         holder.distanceView.setText(String.format("%1$s Km", share.getBooking().getBookedMatch().getDistance()));
         holder.karmaView.setText(String.format("%1$s punti Karma", karmaPoints));
-        holder.expView.setText(String.format("%1$s XP", exp));
+        holder.expView.setText(String.format("%1$s XP", exp));*/
 
     }
-
 
     @Override
     public int getItemCount() {

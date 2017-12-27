@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:padding="@dimen/activity_padding"
+    android:padding="16dp"
     tools:ignore="ContentDescription">
 
     <ImageView
@@ -69,22 +69,6 @@
         </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/activity_padding"
-            android:backgroundTint="@color/dark_bg_light_primary_text"
-            android:text="@string/activity_signin_sign_in"
-            android:textColor="@color/colorAccent"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toTopOf="@+id/lost_password_button"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
-            app:layout_constraintVertical_bias="0.2" />
-
-        <Button
             android:id="@+id/lost_password_button"
             style="@android:style/Widget.Material.Button.Borderless.Small"
             android:layout_width="match_parent"
@@ -93,11 +77,26 @@
             android:text="Password dimenticata"
             android:textAllCaps="false"
             android:textColor="@color/dark_bg_light_primary_text"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/dark_bg_light_primary_text"
+        android:text="@string/activity_signin_sign_in"
+        android:textColor="@color/colorAccent"
+        android:textSize="18dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/sign_in_loading"
@@ -107,8 +106,6 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:alpha="0.8"
-        android:visibility="gone"
         app:indicatorColor="@color/dark_bg_light_primary_text"
         app:indicatorName="BallPulseIndicator"
         app:layout_constraintBottom_toBottomOf="parent"

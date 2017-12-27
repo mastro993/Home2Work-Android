@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -42,14 +43,14 @@ public class SessionManager {
         return new SessionManager(context);
     }
 
-    public void storeSession(final User signedUser) {
+    public void storeSession() {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_EMAIL, signedUser.getEmail());
-        editor.putString(KEY_TOKEN, signedUser.getToken());
+        editor.putString(KEY_EMAIL, Client.User.getEmail());
+        editor.putString(KEY_TOKEN, Client.User.getToken());
         editor.apply();
 
         String token = FirebaseInstanceId.getInstance().getToken();
-        Client.getAPI().setFCMToken(signedUser.getId(), token).enqueue(new Callback<ResponseBody>() {
+        Client.getAPI().setFCMToken(Client.User.getId(), token).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
@@ -78,14 +79,13 @@ public class SessionManager {
         String email = prefs.getString(KEY_EMAIL, null);
         String password = prefs.getString(KEY_TOKEN, null);
 
-        Client.getAPI().login(email, password).enqueue(new Callback<User>() {
+        Client.getAPI().login(email, password, true).enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 switch (response.code()) {
                     case 200:
-                        User user = response.body();
-                        storeSession(user);
-                        Client.User = user;
+                        Client.User = response.body();
+                        storeSession();
                         callback.onValidSession();
                         break;
                     default:
@@ -121,19 +121,19 @@ public class SessionManager {
     public static class SessionManagerCallback {
 
         public void onNoSession() {
-            MyLogger.v("SessionManager", "onNoSession fired but not implemented");
+            Log.d("SessionManager", "onNoSession fired but not implemented");
         }
 
         public void onValidSession() {
-            MyLogger.v("SessionManager", "onValidSession fired but not implemented");
+            Log.d("SessionManager", "onValidSession fired but not implemented");
         }
 
         public void onExpiredToken() {
-            MyLogger.v("SessionManager", "onInvalidSessions fired but not implemented");
+            Log.d("SessionManager", "onInvalidSessions fired but not implemented");
         }
 
         public void onError() {
-            MyLogger.v("SessionManager", "onError fired but not implemented");
+            Log.d("SessionManager", "onError fired but not implemented");
         }
     }
 
