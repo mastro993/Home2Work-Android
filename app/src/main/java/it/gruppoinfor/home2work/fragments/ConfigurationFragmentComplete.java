@@ -13,7 +13,7 @@ import com.stepstone.stepper.VerificationError;
 
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,9 +53,9 @@ public class ConfigurationFragmentComplete extends Fragment implements BlockingS
     public void onCompleteClicked(final StepperLayout.OnCompleteClickedCallback callback) {
         callback.getStepperLayout().showProgress("Attendi..");
 
-        Client.User.setConfigured(true);
+        Home2WorkClient.User.setConfigured(true);
 
-        Client.getAPI().updateUser(Client.User).enqueue(new Callback<User>() {
+        Home2WorkClient.getAPI().updateUser(Home2WorkClient.User).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 callback.getStepperLayout().hideProgress();

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Company;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,7 +44,7 @@ public class ConfigurationFragmentJob extends Fragment implements Step {
 
         calendar = Calendar.getInstance();
 
-        Client.getAPI().getCompanies().enqueue(new Callback<List<Company>>() {
+        Home2WorkClient.getAPI().getCompanies().enqueue(new Callback<List<Company>>() {
             @Override
             public void onResponse(retrofit2.Call<List<Company>> call, Response<List<Company>> response) {
                 companies = response.body();
@@ -75,7 +75,7 @@ public class ConfigurationFragmentJob extends Fragment implements Step {
         if (companySpinner.getSelectedItem().toString().equals(getString(R.string.company)))
             return new VerificationError("Devi selezionare un azienda prima di poter continuare");
 
-        Client.User.setCompany((Company) companySpinner.getSelectedItem());
+        Home2WorkClient.User.setCompany((Company) companySpinner.getSelectedItem());
 
         return null;
     }

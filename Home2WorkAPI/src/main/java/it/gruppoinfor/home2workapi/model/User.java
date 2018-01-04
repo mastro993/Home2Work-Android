@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 
 public class User {
@@ -192,7 +192,7 @@ public class User {
 ////////////////
 
     public String getAvatarURL() {
-        return Client.AVATAR_BASE_URL + id + ".jpg";
+        return Home2WorkClient.AVATAR_BASE_URL + id + ".jpg";
     }
 
     private String getFormattedName() {
@@ -202,5 +202,10 @@ public class User {
     @Override
     public String toString() {
         return getFormattedName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User && id.equals(((User) obj).getId());
     }
 }

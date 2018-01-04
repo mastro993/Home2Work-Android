@@ -13,11 +13,6 @@ import com.stepstone.stepper.VerificationError;
 
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.User;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ConfigurationFragmentSocial extends Fragment implements BlockingStep {
 

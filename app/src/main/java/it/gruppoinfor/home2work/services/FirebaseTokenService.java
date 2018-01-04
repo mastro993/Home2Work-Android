@@ -5,7 +5,7 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 public class FirebaseTokenService extends FirebaseInstanceIdService {
 
@@ -21,7 +21,7 @@ public class FirebaseTokenService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         //sendRegistrationToServer(refreshedToken);
-        Client.getAPI().setFCMToken(Client.User.getId(), refreshedToken);
+        Home2WorkClient.getAPI().setFCMToken(Home2WorkClient.User.getId(), refreshedToken);
     }
 
 

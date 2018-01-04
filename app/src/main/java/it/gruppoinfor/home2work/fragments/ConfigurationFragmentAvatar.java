@@ -28,7 +28,7 @@ import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -135,11 +135,11 @@ public class ConfigurationFragmentAvatar extends Fragment implements BlockingSte
 
             RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-            String filename = Client.User.getId() + ".jpg";
+            String filename = Home2WorkClient.User.getId() + ".jpg";
 
             MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-            Client.getAPI().uploadAvatar(Client.User.getId(), body).enqueue(new Callback<ResponseBody>() {
+            Home2WorkClient.getAPI().uploadAvatar(Home2WorkClient.User.getId(), body).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     callback.getStepperLayout().hideProgress();

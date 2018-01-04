@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.math.RoundingMode;
@@ -21,18 +21,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2work.utils.DateFormatUtils;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Share;
+import it.gruppoinfor.home2workapi.model.ShareGuest;
 
-public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder> {
+public class SharesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
 
     private MainActivity activity;
     private ArrayList<Share> shares;
     private ItemClickCallbacks itemClickCallbacks;
 
+    private DecimalFormat mDf;
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+
     public SharesAdapter(Activity activity, List<Share> values) {
         this.activity = (MainActivity) activity;
         this.shares = new ArrayList<>(values);
+        mDf = new DecimalFormat("#.##");
+        mDf.setRoundingMode(RoundingMode.CEILING);
     }
 
     public void setItemClickCallbacks(ItemClickCallbacks itemClickCallbacks) {
@@ -40,50 +50,77 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share, parent, false);
-        return new ViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_HEADER) {
+            View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share_header, parent, false);
+            return new HeaderViewHolder(layoutView);
+        } else if (viewType == TYPE_ITEM) {
+            View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share, parent, false);
+            return new ItemViewHolder(layoutView);
+        }
+        throw new RuntimeException("No match for " + viewType + ".");
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        /*final Share share = shares.get(position);
+    public void onBindViewHolder(final RecyclerView.ViewHolder h, final int position) {
+        if (h instanceof ItemViewHolder) {
+            ItemViewHolder holder = (ItemViewHolder) h;
+            final Share share = shares.get(position);
 
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
+            RequestOptions requestOptions = new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_avatar_placeholder);
 
-        Double kmDistance = share.getBooking().getBookedMatch().getDistance() / 1000.0;
-        int karmaPoints;
-        int exp;
+            Glide.with(activity)
+                    .load(share.getHost().getAvatarURL())
+                    .apply(requestOptions)
+                    .into(holder.hostAvatarView);
 
-        if (share.getBooking().getBookedMatch().getGuest().getId() == Client.User.getId()) {
-            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getBooking().getBookedMatch().getHost().toString()));
-            karmaPoints = kmDistance.intValue();
-            exp = (int) (kmDistance * 10);
-        } else {
-            holder.nameInfoView.setText(String.format("Condivisione con %1$s", share.getBooking().getBookedMatch().getGuest().toString()));
-            karmaPoints = (int)(kmDistance.intValue() * 1.2);
-            exp = (int) (kmDistance * 12);
+            holder.dateView.setText(DateFormatUtils.formatDate(share.getDate()));
+            holder.hostNameView.setText(share.getHost().toString());
+
+            int guestSize = share.getGuests().size();
+
+            holder.guestsView.setText(guestSize + " passeggeri");
+
+            if (share.getHost().equals(Home2WorkClient.User)) {
+
+                int totalMt = 0;
+                for (ShareGuest shareguest : share.getGuests()) {
+                    totalMt += shareguest.getDistance();
+                }
+
+                Double totalKm = totalMt / 1000.0;
+                holder.distanceView.setText(mDf.format(totalKm / 1000.0) + " Km");
+                holder.xpView.setText(totalKm.intValue() * 10 + " Xp");
+
+            } else {
+                for (ShareGuest shareGuest : share.getGuests()) {
+                    if (shareGuest.getGuest().equals(Home2WorkClient.User)) {
+                        Double totalKm = shareGuest.getDistance() / 1000.0;
+                        holder.distanceView.setText(mDf.format(totalKm / 1000.0) + " Km");
+                        holder.xpView.setText(totalKm.intValue() * 10 + " Xp");
+                    }
+                }
+            }
+
+            if (position == shares.size() - 1) holder.divider.setVisibility(View.GONE);
+
         }
 
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_avatar_placeholder).dontAnimate();
 
-        Glide.with(activity)
-                .load(share.getBooking().getBookedMatch().getGuest().getAvatarURL())
-                .apply(requestOptions)
-                .into(holder.guestAvatar);
+    }
 
-        Glide.with(activity)
-                .load(share.getBooking().getBookedMatch().getHost().getAvatarURL())
-                .apply(requestOptions)
-                .into(holder.hostAvatar);
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
+        return TYPE_ITEM;
+    }
 
-
-
-        holder.distanceView.setText(String.format("%1$s Km", share.getBooking().getBookedMatch().getDistance()));
-        holder.karmaView.setText(String.format("%1$s punti Karma", karmaPoints));
-        holder.expView.setText(String.format("%1$s XP", exp));*/
-
+    private boolean isPositionHeader(int position) {
+        return position == 0;
     }
 
     @Override
@@ -91,24 +128,31 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
         return shares.size();
     }
 
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.guest_avatar)
-        ImageView guestAvatar;
-        @BindView(R.id.host_avatar)
-        ImageView hostAvatar;
-        @BindView(R.id.name_info_view)
-        TextView nameInfoView;
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.host_avatar_view)
+        ImageView hostAvatarView;
+        @BindView(R.id.host_name_view)
+        TextView hostNameView;
+        @BindView(R.id.date_view)
+        TextView dateView;
+        @BindView(R.id.guests_view)
+        TextView guestsView;
         @BindView(R.id.distance_view)
         TextView distanceView;
-        @BindView(R.id.karma_view)
-        TextView karmaView;
-        @BindView(R.id.exp_view)
-        TextView expView;
-        @BindView(R.id.container)
-        LinearLayout container;
+        @BindView(R.id.xp_view)
+        TextView xpView;
+        @BindView(R.id.divider)
+        View divider;
 
-        ViewHolder(View view) {
+        ItemViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
+
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        HeaderViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }

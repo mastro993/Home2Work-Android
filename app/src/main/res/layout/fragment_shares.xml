@@ -1,7 +1,7 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="it.gruppoinfor.home2work.fragments.HomeFragment">
@@ -24,7 +24,7 @@
                 android:layout_marginTop="64dp"
                 android:gravity="center_horizontal"
                 android:padding="16dp"
-                android:text="Non hai ancora effettuato nessuna condivisione"
+                android:text="Non hai ancora completato nessuna condivisione"
                 android:textColor="@color/light_bg_dark_secondary_text"
                 android:textSize="16dp"
                 android:textStyle="italic"
@@ -36,6 +36,7 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:elevation="@dimen/cardview_default_elevation"
+                android:paddingBottom="48dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@+id/ongoing_share_layout"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,16 +55,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <RelativeLayout
+        <include
             android:id="@+id/ongoing_share_layout"
+            layout="@layout/item_share_ongoing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-        </RelativeLayout>
+        </include>
 
     </FrameLayout>
 

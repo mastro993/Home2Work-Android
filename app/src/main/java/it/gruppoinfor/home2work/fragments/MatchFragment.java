@@ -32,7 +32,7 @@ import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Match;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,6 +87,8 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
         if (noMatches) noMatchesView.setVisibility(View.VISIBLE);
         else noMatchesView.setVisibility(View.GONE);
 
+        matchList.add(0, new Match());
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
         //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(matchesRecyclerView.getContext(), layoutManager.getOrientation());
@@ -99,18 +101,17 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
         matchesAdapter.notifyDataSetChanged();
         matchesRecyclerView.setAdapter(matchesAdapter);
         matchesAdapter.setItemClickCallbacks(this);
-
-        refreshBadgeCounter();
     }
 
     private void refreshData() {
         swipeRefreshLayout.setRefreshing(true);
 
-        Client.getAPI().getMatches(Client.User.getId()).enqueue(new Callback<List<Match>>() {
+        Home2WorkClient.getAPI().getMatches(Home2WorkClient.User.getId()).enqueue(new Callback<List<Match>>() {
             @Override
             public void onResponse(Call<List<Match>> call, Response<List<Match>> response) {
                 if (response.code() == 200) {
                     matchList = response.body();
+                    refreshBadgeCounter();
                     refreshList();
                 } else {
                     Toasty.error(activity, "Impossibile ottenere i match").show();
@@ -206,7 +207,7 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
                 .onPositive((dialog, which) -> {
 
                     matchItem.setHidden(true);
-                    Client.getAPI().editMatch(matchItem).enqueue(new Callback<Match>() {
+                    Home2WorkClient.getAPI().editMatch(matchItem).enqueue(new Callback<Match>() {
                         @Override
                         public void onResponse(Call<Match> call, Response<Match> response) {
                             if (response.code() == 200) {

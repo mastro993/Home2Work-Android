@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -29,72 +28,83 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2workapi.model.Match;
 
-public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
+public class MatchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ItemClickCallbacks itemClickCallbacks;
     private MainActivity activity;
     private ArrayList<Match> matches;
-    private Resources res;
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
 
     public MatchAdapter(Activity activity, List<Match> values) {
         this.activity = (MainActivity) activity;
         this.matches = new ArrayList<>(values);
-        this.res = activity.getResources();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_match, parent, false);
-        return new ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Match match = matches.get(position);
-
-        if (!match.isNew()) {
-            holder.newBadgeView.setVisibility(View.GONE);
-        } else {
-            ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
-                    holder.newBadgeView,
-                    PropertyValuesHolder.ofFloat("scaleX", 0.5f),
-                    PropertyValuesHolder.ofFloat("scaleY", 0.5f));
-            scaleDown.setDuration(250);
-
-            scaleDown.setRepeatCount(1);
-            scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
-
-            scaleDown.start();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_HEADER) {
+            View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_match_header, parent, false);
+            return new HeaderViewHolder(layoutView);
+        } else if (viewType == TYPE_ITEM) {
+            View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_match, parent, false);
+            return new ItemViewHolder(layoutView);
         }
+        throw new RuntimeException("No match for " + viewType + ".");
+    }
 
-        RequestOptions requestOptions = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .circleCrop()
-                .placeholder(R.drawable.ic_avatar_placeholder);
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder h, final int position) {
+        if (h instanceof ItemViewHolder) {
+            ItemViewHolder holder = (ItemViewHolder) h;
+            final Match match = matches.get(position);
 
-        Glide.with(activity)
-                .load(match.getHost().getAvatarURL())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .apply(requestOptions)
-                .into(holder.userAvatar);
+            if (!match.isNew()) {
+                holder.newBadgeView.setVisibility(View.GONE);
+            } else {
+                ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
+                        holder.newBadgeView,
+                        PropertyValuesHolder.ofFloat("scaleX", 0.5f),
+                        PropertyValuesHolder.ofFloat("scaleY", 0.5f));
+                scaleDown.setDuration(250);
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, match.getScore());
-        animator.setDuration(500);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addUpdateListener(valueAnimator -> holder.scoreText.setText(valueAnimator.getAnimatedValue() + "%"));
-        animator.start();
+                scaleDown.setRepeatCount(1);
+                scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
 
-        int color = getScoreColor(match.getScore());
-        holder.scoreText.setTextColor(color);
+                scaleDown.start();
+            }
 
-        holder.nameView.setText(match.getHost().toString());
-        holder.jobView.setText(match.getHost().getCompany().toString());
-        holder.homeView.setText("Da " + match.getHost().getAddress().getCity());
+            RequestOptions requestOptions = new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_avatar_placeholder);
 
-        holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
-        holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
+            Glide.with(activity)
+                    .load(match.getHost().getAvatarURL())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .apply(requestOptions)
+                    .into(holder.userAvatar);
 
-        if (match.getScore() == 0) holder.scoreText.setVisibility(View.INVISIBLE);
+            ValueAnimator animator = ValueAnimator.ofInt(0, match.getScore());
+            animator.setDuration(500);
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.addUpdateListener(valueAnimator -> holder.scoreText.setText(valueAnimator.getAnimatedValue() + "%"));
+            animator.start();
+
+            int color = getScoreColor(match.getScore());
+            holder.scoreText.setTextColor(color);
+
+            holder.nameView.setText(match.getHost().toString());
+            holder.jobView.setText(match.getHost().getCompany().toString());
+            holder.homeView.setText("Da " + match.getHost().getAddress().getCity());
+
+            holder.container.setOnClickListener((v) -> itemClickCallbacks.onItemClick(v, position));
+            holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
+
+            if (match.getScore() == 0) holder.scoreText.setVisibility(View.INVISIBLE);
+
+            if (position == matches.size() - 1) holder.divider.setVisibility(View.GONE);
 
         /*
         TODO Activity info utente
@@ -114,7 +124,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
             }
         });*/
-
+        }
     }
 
     @Override
@@ -146,10 +156,18 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         this.itemClickCallbacks = itemClickCallbacks;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
+        return TYPE_ITEM;
+    }
 
+    private boolean isPositionHeader(int position) {
+        return position == 0;
+    }
 
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.user_avatar)
         ImageView userAvatar;
         @BindView(R.id.score_text)
@@ -164,8 +182,18 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         ImageView newBadgeView;
         @BindView(R.id.container)
         ConstraintLayout container;
+        @BindView(R.id.divider)
+        View divider;
 
-        ViewHolder(View view) {
+        ItemViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
+
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        HeaderViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }

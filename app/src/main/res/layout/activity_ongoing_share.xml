@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context="it.gruppoinfor.home2work.activities.ShareActivity">
+    tools:context="it.gruppoinfor.home2work.activities.OngoingShareActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

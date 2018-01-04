@@ -43,13 +43,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.RouteUtils;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Match;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MatchActivity extends AppCompatActivity {
 
@@ -58,9 +57,6 @@ public class MatchActivity extends AppCompatActivity {
     TextView scoreText;
     @BindView(R.id.home_view)
     TextView homeView;
-    private GoogleMap googleMap;
-    private Match match;
-
     SupportMapFragment mapFragment;
     @BindView(R.id.match_loading_view)
     FrameLayout matchLoadingView;
@@ -72,7 +68,8 @@ public class MatchActivity extends AppCompatActivity {
     TextView jobView;
     @BindView(R.id.profile_container)
     ConstraintLayout userProfileContainer;
-
+    private GoogleMap googleMap;
+    private Match match;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,20 +84,20 @@ public class MatchActivity extends AppCompatActivity {
         matchLoadingView.setVisibility(View.VISIBLE);
 
         Long matchId = getIntent().getLongExtra("matchID", 0L);
-        Client.getAPI().getMatch(matchId).enqueue(new Callback<Match>() {
-            @Override
-            public void onResponse(Call<Match> call, Response<Match> response) {
-                match = response.body();
-                initUI();
-                mapFragment.getMapAsync(new MyMapReadyCallback(MatchActivity.this));
-            }
 
-            @Override
-            public void onFailure(Call<Match> call, Throwable t) {
-                Toasty.error(MatchActivity.this, "Impossibile ottenere informazioni match").show();
-                finish();
-            }
-        });
+        Home2WorkClient home2WorkClient = new Home2WorkClient();
+
+        home2WorkClient.API.getMatch(matchId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(matchResponse -> {
+                    match = matchResponse.body();
+                    initUI();
+                    mapFragment.getMapAsync(new MyMapReadyCallback(MatchActivity.this));
+                }, throwable -> {
+                    Toasty.error(MatchActivity.this, "Impossibile ottenere informazioni match").show();
+                    finish();
+                });
 
     }
 

@@ -3,6 +3,8 @@ package it.gruppoinfor.home2work.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.jetbrains.annotations.Contract;
+
 /**
  * Created by Federico on 01/03/2017.
  * <p>
@@ -11,28 +13,31 @@ import android.content.SharedPreferences;
 
 public class UserPrefs {
 
-    // Notifiche
+    // Chiavi
+    public static String NOTIFICATIONS = "notifications";
+    public static String NEWS_NOTIFICATIONS = "news_notifications";
+    public static String MSG_NOTIFICATIONS = "message_notifications";
+    public static String MATCHES_NOTIFICATIONS = "matches_notifications";
+    public static String ACTIVITY_TRACKING = "activity_tracking";
+    public static String SYNC_WITH_DATA = "sync_with_data";
+    public static String LAST_SYNC = "last_sync";
+
     public static boolean notificationsEnabled;
     public static boolean newsNotificationsEnabled;
     public static boolean messagesNotificationsEnabled;
     public static boolean matchesNotificationsEnabled;
-
-    // Tracking
     public static boolean activityTrackingEnabled;
-
-    // Sync
     public static boolean syncWithData;
     public static String lastSync;
 
-    // METHODS
     private static Manager manager;
-    private static boolean inited;
-    public static void init(Context context){
+
+    public static void init(Context context) {
         manager = new Manager(context);
-        inited = true;
     }
 
-    public static Manager getManager(){
+    @Contract(pure = true)
+    public static Manager getManager() {
         return manager;
     }
 
@@ -41,19 +46,19 @@ public class UserPrefs {
         private final String PREFS_KEY = "it.fleetup.app.preferences";
         private SharedPreferences prefs;
 
-        public Manager(Context context){
+        Manager(Context context) {
             prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
             loadPrefs();
         }
 
-        public void loadPrefs() {
-            notificationsEnabled = prefs.getBoolean(Keys.NOTIFICATIONS, true);
-            newsNotificationsEnabled = prefs.getBoolean(Keys.NEWS_NOTIFICATIONS, true);
-            messagesNotificationsEnabled = prefs.getBoolean(Keys.MSG_NOTIFICATIONS, true);
-            matchesNotificationsEnabled = prefs.getBoolean(Keys.MATCHES_NOTIFICATIONS, true);
-            activityTrackingEnabled = prefs.getBoolean(Keys.ACTIVITY_TRACKING, true);
-            syncWithData = prefs.getBoolean(Keys.SYNC_WITH_DATA, false);
-            lastSync = prefs.getString(Keys.LAST_SYNC, "Mai");
+        void loadPrefs() {
+            notificationsEnabled = prefs.getBoolean(NOTIFICATIONS, true);
+            newsNotificationsEnabled = prefs.getBoolean(NEWS_NOTIFICATIONS, true);
+            messagesNotificationsEnabled = prefs.getBoolean(MSG_NOTIFICATIONS, true);
+            matchesNotificationsEnabled = prefs.getBoolean(MATCHES_NOTIFICATIONS, true);
+            activityTrackingEnabled = prefs.getBoolean(ACTIVITY_TRACKING, true);
+            syncWithData = prefs.getBoolean(SYNC_WITH_DATA, false);
+            lastSync = prefs.getString(LAST_SYNC, "Mai");
         }
 
         public void setBool(String key, boolean state) {
@@ -80,19 +85,5 @@ public class UserPrefs {
             editor.apply();
         }
 
-    }
-
-    public static class Keys {
-        public static String NOTIFICATIONS = "notifications";
-        public static String NEWS_NOTIFICATIONS = "news_notifications";
-        public static String MSG_NOTIFICATIONS = "message_notifications";
-        public static String MATCHES_NOTIFICATIONS = "matches_notifications";
-        public static String ACTIVITY_TRACKING = "activity_tracking";
-        public static String SYNC_WITH_DATA = "sync_with_data";
-        public static String LAST_SYNC = "last_sync";
-    }
-
-    public static boolean isInited() {
-        return inited;
     }
 }

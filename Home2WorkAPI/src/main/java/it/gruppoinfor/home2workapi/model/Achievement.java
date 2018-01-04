@@ -2,7 +2,7 @@ package it.gruppoinfor.home2workapi.model;
 
 import java.util.Date;
 
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 
 public class Achievement {
@@ -85,6 +85,6 @@ public class Achievement {
     }
 
     public String getIconURL() {
-        return Client.ACHIEVEMENTS_BASE_URL + achievementID + ".jpg";
+        return Home2WorkClient.ACHIEVEMENTS_BASE_URL + achievementID + ".jpg";
     }
 }

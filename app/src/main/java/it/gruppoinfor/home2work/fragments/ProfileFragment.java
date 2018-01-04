@@ -38,7 +38,7 @@ import it.gruppoinfor.home2work.activities.SettingsActivity;
 import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.User;
@@ -102,9 +102,9 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
         viewPager.addOnPageChangeListener(this);
 
-        avatarView.setAvatarURL(Client.User.getAvatarURL());
-        nameTextView.setText(Client.User.toString());
-        jobTextView.setText(Client.User.getCompany().toString());
+        avatarView.setAvatarURL(Home2WorkClient.User.getAvatarURL());
+        nameTextView.setText(Home2WorkClient.User.toString());
+        jobTextView.setText(Home2WorkClient.User.getCompany().toString());
     }
 
     @Override
@@ -133,12 +133,12 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
         AsyncJob.doInBackground(() -> {
 
-            // TODO Call<List<Achievement>> bookingsCall = Client.getAPI().getUserAchievements(Client.getUser().getId());
-            Call<User> userCall = Client.getAPI().getUser(Client.User.getId());
+            // TODO Call<List<Achievement>> bookingsCall = Home2WorkClient.getAPI().getUserAchievements(Home2WorkClient.getUser().getId());
+            Call<User> userCall = Home2WorkClient.getAPI().getUser(Home2WorkClient.User.getId());
 
             try {
-                //Client.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
-                Client.User = userCall.execute().body();
+                //Home2WorkClient.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
+                Home2WorkClient.User = userCall.execute().body();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -162,8 +162,8 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
     private void refreshProfileUI() {
         // TODO UI profilo
-        //  Profile Profile = Client.getUserProfile();
-        avatarView.setExp(Client.User.getExp());
+        //  Profile Profile = Home2WorkClient.getUserProfile();
+        avatarView.setExp(Home2WorkClient.User.getExp());
     }
 
     @Override

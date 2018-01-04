@@ -23,17 +23,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -81,30 +79,36 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-                String filename = Client.User.getId() + ".jpg";
+                String filename = Home2WorkClient.User.getId() + ".jpg";
 
                 MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-                Client.getAPI().uploadAvatar(Client.User.getId(), body).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.code() == 201) {
-                            initUI();
-                            Toasty.success(EditProfileActivity.this, "Immagine modificata con successo").show();
-                        } else
-                            Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
-                    }
+                Home2WorkClient home2WorkClient = new Home2WorkClient();
 
-                    @Override
-                    public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                        Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
-                    }
-                });
+                home2WorkClient.API.uploadAvatar(Home2WorkClient.User.getId(), body)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(responseBody -> {
+                            if (responseBody.code() == 201) {
+                                initUI();
+                                Toasty.success(EditProfileActivity.this, "Immagine modificata con successo").show();
+                            } else
+                                Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
+                        }, throwable -> Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show());
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @OnClick(R.id.change_avatar_button)
+    public void onViewClicked() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        } else {
+            selectImageIntent();
         }
     }
 
@@ -115,19 +119,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 .circleCrop()
                 .placeholder(R.drawable.ic_avatar_placeholder);
         Glide.with(this)
-                .load(Client.User.getAvatarURL())
+                .load(Home2WorkClient.User.getAvatarURL())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
                 .into(avatarView);
-    }
-
-    @OnClick(R.id.change_avatar_button)
-    public void onViewClicked() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-        } else {
-            selectImageIntent();
-        }
     }
 
     private void selectImageIntent() {

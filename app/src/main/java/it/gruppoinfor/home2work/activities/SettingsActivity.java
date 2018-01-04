@@ -70,13 +70,13 @@ public class SettingsActivity extends AppCompatActivity {
         newsNotificationSwitch.setChecked(UserPrefs.newsNotificationsEnabled);
         newsNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.newsNotificationsEnabled = b;
-            UserPrefs.getManager().setBool(UserPrefs.Keys.NEWS_NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.NEWS_NOTIFICATIONS, b);
         }));
 
         matchesNotificationSwitch.setChecked(UserPrefs.matchesNotificationsEnabled);
         matchesNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.matchesNotificationsEnabled = b;
-            UserPrefs.getManager().setBool(UserPrefs.Keys.MATCHES_NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.MATCHES_NOTIFICATIONS, b);
         }));
 
     }
@@ -89,7 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setMessage("Disattivando il tracking la tua posizione non sarà più registrata, ma Home2Work non potrà più segnalarti match. Disattivare la funzione?");
                 builder.setPositiveButton("Disattiva", ((dialogInterface, i) -> {
                     UserPrefs.activityTrackingEnabled = false;
-                    UserPrefs.getManager().setBool(UserPrefs.Keys.ACTIVITY_TRACKING, false);
+                    UserPrefs.getManager().setBool(UserPrefs.ACTIVITY_TRACKING, false);
                     // TODO bottomNavigation.setNotification("!", 4);
                 }));
                 builder.setNegativeButton("Annulla", (((dialogInterface, i) -> {
@@ -99,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             } else {
                 UserPrefs.activityTrackingEnabled = true;
-                UserPrefs.getManager().setBool(UserPrefs.Keys.ACTIVITY_TRACKING, true);
+                UserPrefs.getManager().setBool(UserPrefs.ACTIVITY_TRACKING, true);
                 // TODO bottomNavigation.setNotification("", 4);
             }
         });
@@ -110,10 +110,10 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == 1) {
-                    UserPrefs.getManager().setBool(UserPrefs.Keys.SYNC_WITH_DATA, false);
+                    UserPrefs.getManager().setBool(UserPrefs.SYNC_WITH_DATA, false);
                     UserPrefs.syncWithData = false;
                 } else {
-                    UserPrefs.getManager().setBool(UserPrefs.Keys.SYNC_WITH_DATA, true);
+                    UserPrefs.getManager().setBool(UserPrefs.SYNC_WITH_DATA, true);
                     UserPrefs.syncWithData = true;
                 }
             }
@@ -128,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener getNotificationSwitchCheckedChangeListener() {
         return ((compoundButton, b) -> {
             UserPrefs.notificationsEnabled = b;
-            UserPrefs.getManager().setBool(UserPrefs.Keys.NOTIFICATIONS, b);
+            UserPrefs.getManager().setBool(UserPrefs.NOTIFICATIONS, b);
             newsNotificationSwitch.setEnabled(b);
             matchesNotificationSwitch.setEnabled(b);
         });

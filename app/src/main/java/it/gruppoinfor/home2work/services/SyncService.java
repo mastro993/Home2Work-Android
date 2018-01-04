@@ -18,7 +18,7 @@ import java.util.List;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Location;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,7 +53,7 @@ public class SyncService extends Service {
 
     public void sync() {
         AsyncJob.doInBackground(() -> {
-            for (RoutePointEntity routePointEntity : dbApp.routePointDAO().getAllUserPoints(Client.User.getId())) {
+            for (RoutePointEntity routePointEntity : dbApp.routePointDAO().getAllUserPoints(Home2WorkClient.User.getId())) {
 
                 Location location = new Location();
                 location.setLatLng(routePointEntity.getLatLng());
@@ -70,17 +70,17 @@ public class SyncService extends Service {
 
     private void syncRoutePoints(final List<Location> locationList) {
 
-        Client.getAPI().uploadLocations(Client.User.getId(), locationList)
+        Home2WorkClient.getAPI().uploadLocations(Home2WorkClient.User.getId(), locationList)
                 .enqueue(new Callback<List<Location>>() {
                     @Override
                     public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
                         if (response.code() == 200)
-                            AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(Client.User.getId()));
+                            AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(Home2WorkClient.User.getId()));
                     }
 
                     @Override
                     public void onFailure(Call<List<Location>> call, Throwable t) {
-                        Log.e(TAG, "Sincronizzazione fallita. Errore Client " + call.toString(), t);
+                        Log.e(TAG, "Sincronizzazione fallita. Errore Home2WorkClient " + call.toString(), t);
                     }
 
                 });

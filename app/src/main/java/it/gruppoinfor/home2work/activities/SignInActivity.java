@@ -14,13 +14,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.User;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -74,38 +72,38 @@ public class SignInActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        Client.getAPI().login(email, password, false).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                switch (response.code()) {
-                    case 404:
-                        enableLogin();
-                        Toasty.error(SignInActivity.this, getString(R.string.login_failed), Toast.LENGTH_SHORT, true).show();
-                        break;
-                    case 200:
-                        Client.User = response.body();
-                        onLoginSuccess();
-                        break;
-                    default:
-                        enableLogin();
-                        Toasty.error(SignInActivity.this, getString(R.string.server_error), Toast.LENGTH_SHORT, true).show();
-                        break;
-                }
-            }
+        Home2WorkClient home2WorkClient = new Home2WorkClient();
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                enableLogin();
-                Toasty.error(SignInActivity.this, getString(R.string.server_error), Toast.LENGTH_SHORT, true).show();
-            }
-        });
+        home2WorkClient.API.login(email, password, true)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userResponse -> {
+                    switch (userResponse.code()) {
+                        case 404:
+                            enableLogin();
+                            Toasty.error(SignInActivity.this, getString(R.string.login_failed), Toast.LENGTH_SHORT, true).show();
+                            break;
+                        case 200:
+                            Home2WorkClient.User = userResponse.body();
+                            onLoginSuccess();
+                            break;
+                        default:
+                            enableLogin();
+                            Toasty.error(SignInActivity.this, getString(R.string.server_error), Toast.LENGTH_SHORT, true).show();
+                            break;
+                    }
+                }, throwable -> {
+                    enableLogin();
+                    Toasty.error(SignInActivity.this, getString(R.string.server_error), Toast.LENGTH_SHORT, true).show();
+                });
+
     }
 
     private void onLoginSuccess() {
 
-        SessionManager.with(this).storeSession();
+        new SessionManager(this).storeSession();
 
-        if (Client.User.isConfigured()) {
+        if (Home2WorkClient.User.isConfigured()) {
 
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);

@@ -10,19 +10,19 @@ import javax.annotation.Nullable;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Client {
+public class Home2WorkClient {
 
     public static final String AVATAR_BASE_URL = "http://home2workapi.azurewebsites.net/images/avatar/";
     public static final String COMPANIES_BASE_URL = "http://home2workapi.azurewebsites.net/images/companies/";
     public static final String ACHIEVEMENTS_BASE_URL = "http://home2workapi.azurewebsites.net/images/achievements/";
 
-    @Nullable
     public static User User;
-    private static EndpointInterface APIService;
+    public EndpointInterface API;
 
-    public static void init() {
+    public Home2WorkClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new StethoInterceptor())
                 .build();
@@ -35,21 +35,10 @@ public class Client {
                 .baseUrl("http://home2workapi.azurewebsites.net/api/")
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
-        APIService = retrofit.create(EndpointInterface.class);
-    }
-
-    public static EndpointInterface getAPI() throws APINotInitializedException {
-        if (APIService == null)
-            throw new APINotInitializedException();
-        return APIService;
-    }
-
-    public static class APINotInitializedException extends RuntimeException {
-        APINotInitializedException() {
-            super("Client non inizializzato");
-        }
+        API = retrofit.create(EndpointInterface.class);
     }
 
 }

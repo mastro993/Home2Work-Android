@@ -30,16 +30,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.services.MessagingService;
 import it.gruppoinfor.home2work.utils.QREncoder;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Share;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class ShareActivity extends AppCompatActivity {
+public class OngoingShareActivity extends AppCompatActivity {
 
     @BindView(R.id.loading_view)
     FrameLayout loadingView;
@@ -52,28 +51,37 @@ public class ShareActivity extends AppCompatActivity {
     @BindView(R.id.empty_view)
     TextView emptyView;
 
+    private Home2WorkClient mHome2WorkClient;
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO messaggio ricevuto ricarico gli ospiti
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_share);
+        setContentView(R.layout.activity_ongoing_share);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         loadingView.setVisibility(View.VISIBLE);
 
-        Client.getAPI().createShare(Client.User.getId()).enqueue(new Callback<Share>() {
-            @Override
-            public void onResponse(Call<Share> call, Response<Share> response) {
-                share = response.body();
-                initUI();
-            }
+        Intent intent = getIntent();
+        Long shareId = intent.getLongExtra("SHARE_ID", 0L);
 
-            @Override
-            public void onFailure(Call<Share> call, Throwable t) {
-                finish();
-                Toasty.error(ShareActivity.this, "Impossibile ottenere informazioni della condivisione al momento").show();
-            }
-        });
+        mHome2WorkClient = new Home2WorkClient();
+        mHome2WorkClient.API.getShare(shareId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(shareResponse -> {
+                    share = shareResponse.body();
+                    initUI();
+                }, throwable -> {
+                    finish();
+                    Toasty.error(OngoingShareActivity.this, "Impossibile ottenere informazioni della condivisione al momento").show();
+                });
 
     }
 
@@ -122,32 +130,29 @@ public class ShareActivity extends AppCompatActivity {
 
                 if (location == null) {
                     qrCodeDialog.hide();
-                    Toasty.error(ShareActivity.this, "Impossibile ottenere QR Code al momento").show();
+                    Toasty.error(OngoingShareActivity.this, "Impossibile ottenere QR Code al momento").show();
                     return;
                 }
 
                 String latlngString = location.getLatitude() + "," + location.getLongitude();
 
-                Client.getAPI().createShare(Client.User.getId()).enqueue(new Callback<Share>() {
-                    @Override
-                    public void onResponse(Call<Share> call, Response<Share> response) {
-                        try {
-                            Bitmap bitmap = QREncoder.EncodeText(share.getId() + "," + latlngString);
-                            qrCodeImage.setImageBitmap(bitmap);
-                            loadingView.setVisibility(View.INVISIBLE);
-                        } catch (Exception e) {
+                mHome2WorkClient.API.createShare(Home2WorkClient.User.getId())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(shareResponse -> {
+                            try {
+                                Bitmap bitmap = QREncoder.EncodeText(share.getId() + "," + latlngString);
+                                qrCodeImage.setImageBitmap(bitmap);
+                                loadingView.setVisibility(View.INVISIBLE);
+                            } catch (Exception e) {
+                                qrCodeDialog.hide();
+                                Toasty.error(OngoingShareActivity.this, "Impossibile ottenere QR Code al momento").show();
+                            }
+                        }, throwable -> {
                             qrCodeDialog.hide();
-                            Toasty.error(ShareActivity.this, "Impossibile ottenere QR Code al momento").show();
-                        }
-                    }
+                            Toasty.error(OngoingShareActivity.this, "Impossibile avviare la condivisione al momento").show();
+                        });
 
-                    @Override
-                    public void onFailure(Call<Share> call, Throwable t) {
-                        qrCodeDialog.hide();
-                        Toasty.error(ShareActivity.this, "Impossibile avviare la condivisione al momento").show();
-                    }
-
-                });
 
             });
 
@@ -178,11 +183,4 @@ public class ShareActivity extends AppCompatActivity {
         }
 
     }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // TODO messaggio ricevuto ricarico gli ospiti
-        }
-    };
 }

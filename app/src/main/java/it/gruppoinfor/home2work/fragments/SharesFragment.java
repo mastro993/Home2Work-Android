@@ -11,18 +11,25 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -30,7 +37,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -39,13 +45,12 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.ShareActivity;
-import it.gruppoinfor.home2work.adapters.AchievementAdapter;
-import it.gruppoinfor.home2work.adapters.MatchAdapter;
+import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.OngoingShareActivity;
+import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.SharesAdapter;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Share;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -55,20 +60,31 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SharesFragment extends Fragment {
+public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
 
     @BindView(R.id.shares_recycler_view)
     RecyclerView sharesRecyclerView;
     @BindView(R.id.ongoing_share_layout)
-    RelativeLayout ongoingShareLayout;
+    CardView ongoingShareLayout;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-    @BindView(R.id.container)
-    SwipeRefreshLayout container;
+
     @BindView(R.id.empty_view)
     TextView emptyView;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.ongoing_share_host_avatar_view)
+    ImageView ongoingShareHostAvatarView;
+    @BindView(R.id.ongoing_share_host_name_view)
+    TextView ongoingShareHostNameView;
+    @BindView(R.id.ongoing_share_guests_view)
+    TextView ongoingShareGuestsView;
+    @BindView(R.id.ongoin_share_title)
+    TextView ongoinShareTitle;
+    @BindView(R.id.ongoin_share_container)
+    LinearLayout ongoinShareContainer;
     private Unbinder unbinder;
 
     private List<Share> mShareList = new ArrayList<>();
@@ -84,6 +100,10 @@ public class SharesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_shares, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
+
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+
         refreshData();
         return rootView;
     }
@@ -115,9 +135,9 @@ public class SharesFragment extends Fragment {
     }
 
     private void refreshData() {
-        container.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(true);
 
-        Client.getAPI().getShares(Client.User.getId()).enqueue(new Callback<List<Share>>() {
+        Home2WorkClient.getAPI().getShares(Home2WorkClient.User.getId()).enqueue(new Callback<List<Share>>() {
             @Override
             public void onResponse(Call<List<Share>> call, Response<List<Share>> response) {
                 if (response.code() == 200) {
@@ -135,12 +155,27 @@ public class SharesFragment extends Fragment {
     }
 
     private void initUI() {
-        container.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
+        fab.setVisibility(View.VISIBLE);
+        ongoingShareLayout.setVisibility(View.GONE);
 
-        if (ProfileFragment.AchievementList.size() == 0) {
+        for (Share share : mShareList) {
+            if (share.getStatus() == Share.CREATED) {
+                fab.setVisibility(View.GONE);
+                ongoingShareLayout.setVisibility(View.VISIBLE);
+                mShareList.remove(share);
+                initOngoinView(share);
+                break;
+            }
+        }
+
+        if (mShareList.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
             sharesRecyclerView.setVisibility(View.GONE);
         } else {
+
+            mShareList.add(0, new Share());
+
             emptyView.setVisibility(View.GONE);
             sharesRecyclerView.setVisibility(View.VISIBLE);
 
@@ -151,11 +186,39 @@ public class SharesFragment extends Fragment {
             sharesRecyclerView.setLayoutAnimation(animation);
 
             mSharesAdapter = new SharesAdapter(getActivity(), mShareList);
-            //mSharesAdapter.setItemClickCallbacks(this);
+            mSharesAdapter.setItemClickCallbacks(this);
             sharesRecyclerView.setAdapter(mSharesAdapter);
         }
     }
 
+    public void initOngoinView(Share share) {
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .circleCrop()
+                .placeholder(R.drawable.ic_avatar_placeholder);
+
+        Glide.with(getActivity())
+                .load(share.getHost().getAvatarURL())
+                .apply(requestOptions)
+                .into(ongoingShareHostAvatarView);
+
+        ongoingShareHostNameView.setText(share.getHost().toString());
+
+        int guestSize = share.getGuests().size();
+
+        ongoingShareGuestsView.setText(guestSize + " passeggeri");
+
+        ((MainActivity) getActivity()).setBadge(2, "In corso");
+
+        Animation blink = AnimationUtils.loadAnimation(getActivity(), R.anim.blink);
+        ongoinShareTitle.startAnimation(blink);
+
+        ongoinShareContainer.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
+            intent.putExtra("SHARE_ID", share.getId());
+            getActivity().startActivity(intent);
+        });
+    }
 
     public void joinShare() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
@@ -186,7 +249,7 @@ public class SharesFragment extends Fragment {
 
                 String locationString = guestLocation.getLatitude() + "," + guestLocation.getLongitude();
 
-                Client.getAPI().joinShare(shareID, Client.User.getId(), locationString).enqueue(new Callback<ResponseBody>() {
+                Home2WorkClient.getAPI().joinShare(shareID, Home2WorkClient.User.getId(), locationString).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
@@ -216,7 +279,7 @@ public class SharesFragment extends Fragment {
 
         newShareButton.setOnClickListener(view -> {
             materialDialog.dismiss();
-            startActivity(new Intent(getActivity(), ShareActivity.class));
+            createShare();
         });
 
         joinShareButton.setOnClickListener(view -> {
@@ -224,6 +287,68 @@ public class SharesFragment extends Fragment {
             joinShare();
         });
 
+    }
 
+    private void createShare() {
+        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .title("Nuova condivisione")
+                .content("Creazione di una condivisione in corso.")
+                .contentGravity(GravityEnum.CENTER)
+                .progress(false, 150, true)
+                .show();
+
+
+        Home2WorkClient.getAPI().createShare(Home2WorkClient.User.getId()).enqueue(new Callback<Share>() {
+            @Override
+            public void onResponse(Call<Share> call, Response<Share> response) {
+                materialDialog.dismiss();
+                if (response.code() == 200) {
+                    fab.setVisibility(View.GONE);
+                    mShareList.add(0, response.body());
+                    mSharesAdapter.notifyDataSetChanged();
+                    Toasty.success(getContext(), "Condivisione creata con successo").show();
+                } else {
+                    Toasty.error(getContext(), "Impossibile creare nuova condivisione").show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Share> call, Throwable t) {
+                Toasty.error(getContext(), "Impossibile creare nuova condivisione").show();
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        // TODO share click
+        /*Share share = mShareList.get(position);
+        Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
+        intent.putExtra("SHARE_ID", share.getId());
+        getActivity().startActivity(intent);*/
+    }
+
+    @Override
+    public boolean onLongItemClick(View view, int position) {
+        // TODO share long click
+        /*MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .customView(R.layout.dialog_match_item_options, false)
+                .show();
+
+        Button showUserProfileButton = (Button) materialDialog.findViewById(R.id.show_user_profile_button);
+        Button hideMatchButton = (Button) materialDialog.findViewById(R.id.hide_match_button);
+
+        showUserProfileButton.setOnClickListener(view1 -> {
+            materialDialog.dismiss();
+            showMatchUserProfile(position);
+        });
+
+        hideMatchButton.setOnClickListener(view12 -> {
+            materialDialog.dismiss();
+            showHideMatchDialog(position);
+        });*/
+
+        return true;
     }
 }

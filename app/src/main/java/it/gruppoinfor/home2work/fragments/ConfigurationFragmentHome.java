@@ -34,7 +34,7 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Address;
 import it.gruppoinfor.home2workapi.model.User;
 
@@ -167,8 +167,8 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
                             newAddress.setAddress(addr);
                             newAddress.setPostalCode(CAP);
 
-                            Client.User.setLocation(latLng);
-                            Client.User.setAddress(newAddress);
+                            Home2WorkClient.User.setLocation(latLng);
+                            Home2WorkClient.User.setAddress(newAddress);
 
                             setHomeLocation(latLng);
 
@@ -186,7 +186,7 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
         EditText capInput = view.findViewById(R.id.cap_input);
         EditText addressInput = view.findViewById(R.id.address_input);
 
-        User signedUserr = Client.User;
+        User signedUserr = Home2WorkClient.User;
 
         if (signedUserr.getAddress() != null) {
             addressInput.setText(signedUserr.getAddress().getAddress());
@@ -250,7 +250,7 @@ public class ConfigurationFragmentHome extends Fragment implements Step, OnMapRe
         if (homeLocation == null)
             return new VerificationError("Devi impostare un indirizzo di casa prima di poter continuare");
 
-        Client.User.setLocation(homeLocation);
+        Home2WorkClient.User.setLocation(homeLocation);
 
         return null;
     }

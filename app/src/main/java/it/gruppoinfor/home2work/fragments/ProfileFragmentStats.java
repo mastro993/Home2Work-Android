@@ -10,17 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.UserStatistics;
 
 
 public class ProfileFragmentStats extends Fragment {
@@ -59,7 +52,7 @@ public class ProfileFragmentStats extends Fragment {
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
-        String dateString = dateFormat.format(Client.User.getRegistrationDate());
+        String dateString = dateFormat.format(Home2WorkClient.User.getRegistrationDate());
 
         regdateTextView.setText(dateString);
         sharesTextView.setText(statistics.getShares().toString());

@@ -36,7 +36,7 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2workapi.Client;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 import static it.gruppoinfor.home2work.App.dbApp;
 
@@ -69,7 +69,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 .addApi(LocationServices.API)
                 .build();
 
-        if (Client.User != null) {
+        if (Home2WorkClient.User != null) {
 
             mGoogleApiClient.connect();
 
@@ -176,7 +176,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         routePointEntity.setLatLng(latLng);
         routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
-        routePointEntity.setUserId(Client.User.getId());
+        routePointEntity.setUserId(Home2WorkClient.User.getId());
 
         AsyncJob.doInBackground(() -> dbApp.routePointDAO().insert(routePointEntity));
     }

@@ -8,6 +8,10 @@ import java.util.ArrayList;
 
 public class Share {
 
+    public static final int CREATED = 0;
+    public static final int COMPLETED = 1;
+    public static final int CANCELED = 2;
+
     @SerializedName("Id")
     @Expose
     private Long id;

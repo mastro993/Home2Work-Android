@@ -3,86 +3,117 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/list_items_spacing"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:elevation="@dimen/cardview_default_elevation"
+    app:cardCornerRadius="0dp">
 
-    <LinearLayout
-        android:id="@+id/container"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
-        android:padding="@dimen/list_items_padding">
+        android:padding="16dp">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/guest_avatar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginLeft="-65dp"
-                android:layout_toRightOf="@id/host_avatar"
-                android:padding="13dp"
-                android:src="@drawable/ic_avatar_placeholder"
-                android:transitionName="avatar" />
-
-            <ImageView
-                android:id="@+id/host_avatar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:padding="13dp"
-                android:src="@drawable/ic_avatar_placeholder"
-                android:transitionName="avatar" />
-
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/host_avatar_view"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:elevation="2dp"
+            android:src="@drawable/ic_avatar_placeholder"
+            android:transitionName="avatar" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@id/host_avatar_view"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/name_info_view"
+                android:id="@+id/host_name_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="4dp"
-                android:ellipsize="marquee"
-                android:text="Condivisione con Tizio Caio"
+                android:layout_marginTop="-2dp"
+                android:text="Giovanni Rossetti"
                 android:textColor="@color/light_bg_dark_primary_text"
-                android:textSize="16dp"
-                android:textStyle="bold" />
+                android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/distance_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="999,99 Km"
-                android:textColor="@color/light_bg_dark_secondary_text" />
+                android:id="@+id/date_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="23/01/2017"
+                android:textColor="@color/light_bg_dark_secondary_text"
+                android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/karma_view"
+            <LinearLayout
+                android:id="@+id/share_info_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="500 punti karma"
-                android:textColor="@color/colorPrimary" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/host_avatar_view"
+                android:visibility="visible"
+                android:weightSum="10">
 
-            <TextView
-                android:id="@+id/exp_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="500 XP"
-                android:textColor="@color/colorAccent" />
+                <TextView
+                    android:id="@+id/guests_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_toStartOf="@id/distance_view"
+                    android:layout_weight="1"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/ic_guests"
+                    android:gravity="center_vertical"
+                    android:text="X ospiti"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/distance_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_toStartOf="@id/xp_view"
+                    android:layout_weight="1"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/ic_road_stright"
+                    android:gravity="center_vertical"
+                    android:text="XXX Km"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/xp_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_star_accent"
+                    android:gravity="center_vertical"
+                    android:text="XX Exp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
 
 
         </LinearLayout>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
+    <include
+        android:id="@+id/divider"
+        layout="@layout/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom" />
 
 </android.support.v7.widget.CardView>
+
 

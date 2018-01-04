@@ -3,14 +3,11 @@ package it.gruppoinfor.home2work;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
-import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
 
-import io.fabric.sdk.android.Fabric;
 import it.gruppoinfor.home2work.database.DBApp;
 import it.gruppoinfor.home2work.utils.UserPrefs;
-import it.gruppoinfor.home2workapi.Client;
 
 
 public class App extends Application {
@@ -28,9 +25,6 @@ public class App extends Application {
         }
         LeakCanary.install(this);
 
-        // Inizializzazione di Fabric per il Crash Reporting
-        Fabric.with(this, new Crashlytics());
-
         // Inizializzazione Stetho
         Stetho.InitializerBuilder initializerBuilder = Stetho.newInitializerBuilder(this);
         // Abilito gli strumenti di sviluppo di chrome
@@ -39,12 +33,6 @@ public class App extends Application {
         initializerBuilder.enableDumpapp(Stetho.defaultDumperPluginsProvider(this));
         Stetho.Initializer initializer = initializerBuilder.build();
         Stetho.initialize(initializer);
-
-        // Inizializzazione preferenze utente
-        UserPrefs.init(this);
-
-        // Inizializzazione Client API
-        Client.init();
 
         // Inizializzazione Room
         dbApp = Room.databaseBuilder(getApplicationContext(), DBApp.class, "home2work")

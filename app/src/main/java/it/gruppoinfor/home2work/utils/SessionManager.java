@@ -1,21 +1,13 @@
 package it.gruppoinfor.home2work.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import it.gruppoinfor.home2work.services.LocationService;
-import it.gruppoinfor.home2work.services.SyncService;
-import it.gruppoinfor.home2workapi.Client;
-import it.gruppoinfor.home2workapi.model.User;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 
 /**
@@ -25,48 +17,39 @@ import retrofit2.Response;
 
 public class SessionManager {
 
-    public static final String AUTH_CODE = "auth_code";
     public static final int EXPIRED_TOKEN = 0;
     public static final int ERROR = 1;
-
+    public static final String AUTH_CODE = "auth_code";
+    private static final String PREFS_SESSION = "it.fleetup.app.session";
     private final SharedPreferences prefs;
-    private final Context context;
     private final String KEY_TOKEN = "token";
     private final String KEY_EMAIL = "email";
+    private Home2WorkClient home2WorkClient;
 
-    private SessionManager(Context context) {
-        this.context = context;
-        prefs = context.getSharedPreferences("it.fleetup.app.session", Context.MODE_PRIVATE);
-    }
-
-    public static SessionManager with(Context context) {
-        return new SessionManager(context);
+    public SessionManager(Context context) {
+        home2WorkClient = new Home2WorkClient();
+        prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE);
     }
 
     public void storeSession() {
+
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_EMAIL, Client.User.getEmail());
-        editor.putString(KEY_TOKEN, Client.User.getToken());
+        editor.putString(KEY_EMAIL, Home2WorkClient.User.getEmail());
+        editor.putString(KEY_TOKEN, Home2WorkClient.User.getToken());
         editor.apply();
 
         String token = FirebaseInstanceId.getInstance().getToken();
-        Client.getAPI().setFCMToken(Client.User.getId(), token).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+        home2WorkClient.API
+                .setFCMToken(Home2WorkClient.User.getId(), token)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
 
     }
 
     public void checkSession(final SessionManagerCallback callback) {
 
-        if (Client.User != null) {
+        if (Home2WorkClient.User != null) {
             callback.onValidSession();
             return;
         }
@@ -79,37 +62,29 @@ public class SessionManager {
         String email = prefs.getString(KEY_EMAIL, null);
         String password = prefs.getString(KEY_TOKEN, null);
 
-        Client.getAPI().login(email, password, true).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                switch (response.code()) {
-                    case 200:
-                        Client.User = response.body();
-                        storeSession();
-                        callback.onValidSession();
-                        break;
-                    default:
-                        callback.onExpiredToken();
-                        signOutUser();
-                        break;
-                }
-            }
+        home2WorkClient.API.login(email, password, true)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userResponse -> {
+                    switch (userResponse.code()) {
+                        case 200:
+                            Home2WorkClient.User = userResponse.body();
+                            storeSession();
+                            callback.onValidSession();
+                            break;
+                        default:
+                            callback.onExpiredToken();
+                            signOutUser();
+                            break;
+                    }
+                }, throwable -> callback.onError());
 
-            @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                callback.onError();
-            }
-
-        });
     }
 
     public void signOutUser() {
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
-
-        context.stopService(new Intent(context, LocationService.class));
-        context.stopService(new Intent(context, SyncService.class));
     }
 
     private boolean isUserSignedIn() {
@@ -118,23 +93,15 @@ public class SessionManager {
         return email != null && token != null;
     }
 
-    public static class SessionManagerCallback {
+    public interface SessionManagerCallback {
 
-        public void onNoSession() {
-            Log.d("SessionManager", "onNoSession fired but not implemented");
-        }
+        void onNoSession();
 
-        public void onValidSession() {
-            Log.d("SessionManager", "onValidSession fired but not implemented");
-        }
+        void onValidSession();
 
-        public void onExpiredToken() {
-            Log.d("SessionManager", "onInvalidSessions fired but not implemented");
-        }
+        void onExpiredToken();
 
-        public void onError() {
-            Log.d("SessionManager", "onError fired but not implemented");
-        }
+        void onError();
     }
 
 }

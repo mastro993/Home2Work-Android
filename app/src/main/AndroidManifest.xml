@@ -129,7 +129,7 @@
             android:label="Impostazioni"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ShareActivity"
+            android:name=".activities.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Info condivisione"
             android:screenOrientation="portrait" />

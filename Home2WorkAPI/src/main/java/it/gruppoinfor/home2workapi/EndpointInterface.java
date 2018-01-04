@@ -2,6 +2,7 @@ package it.gruppoinfor.home2workapi;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Location;
 import it.gruppoinfor.home2workapi.model.Match;
@@ -9,7 +10,7 @@ import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -24,79 +25,84 @@ public interface EndpointInterface {
 
     @FormUrlEncoded
     @POST("user/login")
-    Call<User> login(
+    Observable<Response<User>> login(
             @Field("email") String email,
             @Field("password") String password,
             @Field("token") boolean tokenMode
     );
 
     @PUT("user")
-    Call<User> updateUser(
+    Observable<Response<User>> updateUser(
             @Body User user
     );
 
     @GET("user/{id}")
-    Call<User> getUser(
+    Observable<Response<User>> getUser(
             @Path("id") Long id
     );
 
     @Multipart
     @POST("user/{id}/avatar")
-    Call<ResponseBody> uploadAvatar(
+    Observable<Response<ResponseBody>> uploadAvatar(
             @Path("id") Long userID,
             @Part MultipartBody.Part file
     );
 
     @GET("company")
-    Call<List<Company>> getCompanies();
+    Observable<Response<List<Company>>> getCompanies();
 
     @GET("company/{id}")
-    Call<Company> getCompany(
+    Observable<Response<Company>> getCompany(
             @Path("id") Long id
     );
 
     @POST("user/{id}/location")
-    Call<List<Location>> uploadLocations(
+    Observable<Response<List<Location>>> uploadLocations(
             @Path("id") Long id,
             @Body List<Location> locations
     );
 
     @GET("user/{id}/match")
-    Call<List<Match>> getMatches(
+    Observable<Response<List<Match>>> getMatches(
             @Path("id") Long id
     );
 
     @GET("match/{id}")
-    Call<Match> getMatch(
+    Observable<Response<Match>> getMatch(
             @Path("id") Long id
     );
 
     @PUT("match")
-    Call<Match> editMatch(
+    Observable<Response<Match>> editMatch(
             @Body Match match
     );
 
     @FormUrlEncoded
     @POST("user/FCMToken")
-    Call<ResponseBody> setFCMToken(
+    Observable<Response<ResponseBody>> setFCMToken(
             @Field("userId") Long userID,
             @Field("token") String token
     );
 
     @GET("user/{id}/shares")
-    Call<List<Share>> getShares(
+    Observable<Response<List<Share>>> getShares(
             @Path("id") Long userId
+    );
+
+    @GET("share/{id}")
+    Observable<Response<Share>> getShare(
+            @Path("id") Long shareId
     );
 
     @FormUrlEncoded
     @POST("share/new")
-    Call<Share> createShare(
+    Observable<Response<Share>> createShare(
             @Field("hostId") Long hostId
     );
 
     @FormUrlEncoded
     @POST("share/{shareId}/join")
-    Call<ResponseBody> joinShare(
+    Observable<Response<ResponseBody>> joinShare(
             @Path("shareId") Long shareId,
             @Field("guestId") Long guestId,
             @Field("location") String locationString
