@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.utils.DateFormatUtils;
@@ -26,7 +27,7 @@ import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.ShareGuest;
 
-public class SharesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder> {
 
 
     private MainActivity activity;
@@ -34,9 +35,6 @@ public class SharesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ItemClickCallbacks itemClickCallbacks;
 
     private DecimalFormat mDf;
-
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
 
     public SharesAdapter(Activity activity, List<Share> values) {
         this.activity = (MainActivity) activity;
@@ -50,77 +48,54 @@ public class SharesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_HEADER) {
-            View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share_header, parent, false);
-            return new HeaderViewHolder(layoutView);
-        } else if (viewType == TYPE_ITEM) {
-            View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share, parent, false);
-            return new ItemViewHolder(layoutView);
-        }
-        throw new RuntimeException("No match for " + viewType + ".");
+    public SharesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_share, parent, false);
+        return new SharesAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder h, final int position) {
-        if (h instanceof ItemViewHolder) {
-            ItemViewHolder holder = (ItemViewHolder) h;
-            final Share share = shares.get(position);
+    public void onBindViewHolder(final SharesAdapter.ViewHolder holder, final int position) {
+        final Share share = shares.get(position);
 
-            RequestOptions requestOptions = new RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_avatar_placeholder);
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .circleCrop()
+                .placeholder(R.drawable.ic_avatar_placeholder);
 
-            Glide.with(activity)
-                    .load(share.getHost().getAvatarURL())
-                    .apply(requestOptions)
-                    .into(holder.hostAvatarView);
+        Glide.with(activity)
+                .load(share.getHost().getAvatarURL())
+                .apply(requestOptions)
+                .into(holder.hostAvatarView);
 
-            holder.dateView.setText(DateFormatUtils.formatDate(share.getDate()));
-            holder.hostNameView.setText(share.getHost().toString());
+        holder.dateView.setText(DateFormatUtils.formatDate(share.getDate()));
+        holder.hostNameView.setText(share.getHost().toString());
 
-            int guestSize = share.getGuests().size();
+        int guestSize = share.getGuests().size();
 
-            holder.guestsView.setText(guestSize + " passeggeri");
+        holder.guestsView.setText(guestSize + " passeggeri");
 
-            if (share.getHost().equals(Home2WorkClient.User)) {
+        if (share.getHost().equals(App.home2WorkClient.getUser())) {
 
-                int totalMt = 0;
-                for (ShareGuest shareguest : share.getGuests()) {
-                    totalMt += shareguest.getDistance();
-                }
-
-                Double totalKm = totalMt / 1000.0;
-                holder.distanceView.setText(mDf.format(totalKm / 1000.0) + " Km");
-                holder.xpView.setText(totalKm.intValue() * 10 + " Xp");
-
-            } else {
-                for (ShareGuest shareGuest : share.getGuests()) {
-                    if (shareGuest.getGuest().equals(Home2WorkClient.User)) {
-                        Double totalKm = shareGuest.getDistance() / 1000.0;
-                        holder.distanceView.setText(mDf.format(totalKm / 1000.0) + " Km");
-                        holder.xpView.setText(totalKm.intValue() * 10 + " Xp");
-                    }
-                }
+            int totalMt = 0;
+            for (ShareGuest shareguest : share.getGuests()) {
+                totalMt += shareguest.getDistance();
             }
 
-            if (position == shares.size() - 1) holder.divider.setVisibility(View.GONE);
+            Double totalKm = totalMt / 1000.0;
+            holder.distanceView.setText(mDf.format(totalKm / 1000.0) + " Km");
+            holder.xpView.setText(totalKm.intValue() * 10 + " Xp");
 
+        } else {
+            for (ShareGuest shareGuest : share.getGuests()) {
+                if (shareGuest.getGuest().equals(App.home2WorkClient.getUser())) {
+                    Double totalKm = shareGuest.getDistance() / 1000.0;
+                    holder.distanceView.setText(mDf.format(totalKm / 1000.0) + " Km");
+                    holder.xpView.setText(totalKm.intValue() * 10 + " Xp");
+                }
+            }
         }
 
-
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isPositionHeader(position))
-            return TYPE_HEADER;
-        return TYPE_ITEM;
-    }
-
-    private boolean isPositionHeader(int position) {
-        return position == 0;
+        if (position == shares.size() - 1) holder.divider.setVisibility(View.GONE);
     }
 
     @Override
@@ -128,7 +103,7 @@ public class SharesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return shares.size();
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.host_avatar_view)
         ImageView hostAvatarView;
         @BindView(R.id.host_name_view)
@@ -144,17 +119,10 @@ public class SharesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @BindView(R.id.divider)
         View divider;
 
-        ItemViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
     }
 
-    static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        HeaderViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-        }
-    }
 }

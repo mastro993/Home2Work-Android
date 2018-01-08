@@ -5,32 +5,49 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/no_matches_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:text="Non ci sono ancora abbastanza dati per trovare match. Abbiamo però rilevato persone nelle vicinanze che lavorano dove te. Prova a contattarle!"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            android:visibility="gone" />
+            android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/matches_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingBottom="48dp"
-            android:visibility="visible" />
+            <TextView
+                android:id="@+id/match_list_header"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:text="Disponibili"
+                android:textColor="@color/light_bg_dark_secondary_text" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/no_matches_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:text="Non ci sono ancora abbastanza dati per trovare match. Abbiamo però rilevato persone nelle vicinanze che lavorano dove te. Prova a contattarle!"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/matches_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="48dp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.v4.widget.SwipeRefreshLayout>

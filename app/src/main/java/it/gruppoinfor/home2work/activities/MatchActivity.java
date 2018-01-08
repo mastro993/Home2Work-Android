@@ -3,17 +3,20 @@ package it.gruppoinfor.home2work.activities;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,7 +33,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,12 +45,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.RouteUtils;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
+import it.gruppoinfor.home2workapi.model.LatLng;
 import it.gruppoinfor.home2workapi.model.Match;
+
+import static it.gruppoinfor.home2work.utils.Converters.dateToString;
 
 public class MatchActivity extends AppCompatActivity {
 
@@ -68,6 +70,8 @@ public class MatchActivity extends AppCompatActivity {
     TextView jobView;
     @BindView(R.id.profile_container)
     ConstraintLayout userProfileContainer;
+    @BindView(R.id.timetable)
+    LinearLayout timetable;
     private GoogleMap googleMap;
     private Match match;
 
@@ -83,21 +87,16 @@ public class MatchActivity extends AppCompatActivity {
 
         matchLoadingView.setVisibility(View.VISIBLE);
 
-        Long matchId = getIntent().getLongExtra("matchID", 0L);
+        mapFragment.getMapAsync(new MyMapReadyCallback(this));
 
-        Home2WorkClient home2WorkClient = new Home2WorkClient();
-
-        home2WorkClient.API.getMatch(matchId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(matchResponse -> {
-                    match = matchResponse.body();
-                    initUI();
-                    mapFragment.getMapAsync(new MyMapReadyCallback(MatchActivity.this));
-                }, throwable -> {
-                    Toasty.error(MatchActivity.this, "Impossibile ottenere informazioni match").show();
-                    finish();
-                });
+        Intent intent = getIntent();
+        if (intent.hasExtra("match")) {
+            match = (Match) intent.getSerializableExtra("match");
+            initUI();
+        } else {
+            Toasty.error(this, "Impossibile visualizzare informazioni match").show();
+            finish();
+        }
 
     }
 
@@ -110,6 +109,16 @@ public class MatchActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.profile_container)
+    public void onViewClicked() {
+        /*
+        TODO Activity profilo utente
+        Intent userIntent = new Intent(activity, ShowUserActivity.class);
+        User matchedUser = match.getHost();
+        userIntent.putExtra("userID", matchedUser.getId());
+        activity.startActivity(userIntent);*/
     }
 
     private void initUI() {
@@ -127,9 +136,13 @@ public class MatchActivity extends AppCompatActivity {
 
         nameView.setText(match.getHost().toString());
         jobView.setText(match.getHost().getCompany().toString());
-        homeView.setText("Da " + match.getHost().getAddress().getCity());
+        homeView.setText(match.getHost().getAddress().getCity());
 
-        /*timeView.setText(
+        View view = this.getLayoutInflater().inflate(R.layout.item_timetable, null);
+        TextView timeText = (TextView) view.findViewById(R.id.timetable_time);
+        TextView weekdaysText = (TextView) view.findViewById(R.id.timetable_weekdays);
+
+        timeText.setText(
                 String.format(
                         getResources().getString(R.string.match_time),
                         dateToString(match.getStartTime()),
@@ -140,7 +153,9 @@ public class MatchActivity extends AppCompatActivity {
         ArrayList<String> days = new ArrayList<>();
         for (int d : match.getWeekdays())
             days.add(getResources().getStringArray(R.array.giorni)[d]);
-        daysView.setText(TextUtils.join(", ", days));*/
+        weekdaysText.setText(TextUtils.join(", ", days));
+
+        timetable.addView(view);
     }
 
     private int getScoreColor(int score) {
@@ -169,16 +184,6 @@ public class MatchActivity extends AppCompatActivity {
         scoreText.setTextColor(color);
     }
 
-    @OnClick(R.id.profile_container)
-    public void onViewClicked() {
-        /*
-        TODO Activity profilo utente
-        Intent userIntent = new Intent(activity, ShowUserActivity.class);
-        User matchedUser = match.getHost();
-        userIntent.putExtra("userID", matchedUser.getId());
-        activity.startActivity(userIntent);*/
-    }
-
     private class MyMapReadyCallback implements OnMapReadyCallback, RoutingListener {
 
         Context context;
@@ -186,7 +191,6 @@ public class MatchActivity extends AppCompatActivity {
         MyMapReadyCallback(Context context) {
             this.context = context;
         }
-
 
         @Override
         public void onMapReady(final GoogleMap gmap) {
@@ -196,9 +200,9 @@ public class MatchActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 MapsInitializer.initialize(context);
 
-                List<LatLng> matchWaypoints = new ArrayList<>();
-                matchWaypoints.add(match.getStartLocation());
-                matchWaypoints.add(match.getEndLocation());
+                List<com.google.android.gms.maps.model.LatLng> matchWaypoints = new ArrayList<>();
+                matchWaypoints.add(match.getStartLocation().toLatLng());
+                matchWaypoints.add(match.getEndLocation().toLatLng());
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
@@ -242,14 +246,14 @@ public class MatchActivity extends AppCompatActivity {
 
             final Marker startMarker = googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    .position(first)
+                    .position(first.toLatLng())
                     .title("Casa")
             );
 
 
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    .position(last)
+                    .position(last.toLatLng())
                     .title("Lavoro")
             );
 
@@ -258,12 +262,10 @@ public class MatchActivity extends AppCompatActivity {
             refreshUI();
         }
 
-
         @Override
         public void onRoutingCancelled() {
 
         }
     }
-
 
 }

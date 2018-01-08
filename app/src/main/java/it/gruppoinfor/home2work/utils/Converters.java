@@ -10,7 +10,6 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 
 import com.arasthel.asyncjob.AsyncJob;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import it.gruppoinfor.home2workapi.model.LatLng;
 
 /**
  * Created by Federico on 04/02/2017.
@@ -126,8 +127,8 @@ public class Converters {
                     if (latLng == null) {
                         return null;
                     } else {
-                        Double latitude = latLng.latitude;
-                        Double longitude = latLng.longitude;
+                        Double latitude = latLng.getLat();
+                        Double longitude = latLng.getLng();
 
                         try {
                             Geocoder geocoder = new Geocoder(context, Locale.ITALY);

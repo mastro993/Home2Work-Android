@@ -30,12 +30,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.services.MessagingService;
 import it.gruppoinfor.home2work.utils.QREncoder;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Share;
 
 public class OngoingShareActivity extends AppCompatActivity {
@@ -51,7 +49,6 @@ public class OngoingShareActivity extends AppCompatActivity {
     @BindView(R.id.empty_view)
     TextView emptyView;
 
-    private Home2WorkClient mHome2WorkClient;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -64,24 +61,16 @@ public class OngoingShareActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ongoing_share);
         ButterKnife.bind(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         loadingView.setVisibility(View.VISIBLE);
 
         Intent intent = getIntent();
         Long shareId = intent.getLongExtra("SHARE_ID", 0L);
 
-        mHome2WorkClient = new Home2WorkClient();
-        mHome2WorkClient.API.getShare(shareId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(shareResponse -> {
-                    share = shareResponse.body();
-                    initUI();
-                }, throwable -> {
-                    finish();
-                    Toasty.error(OngoingShareActivity.this, "Impossibile ottenere informazioni della condivisione al momento").show();
-                });
+        // TODO passare share
 
     }
 
@@ -136,24 +125,19 @@ public class OngoingShareActivity extends AppCompatActivity {
 
                 String latlngString = location.getLatitude() + "," + location.getLongitude();
 
-                mHome2WorkClient.API.createShare(Home2WorkClient.User.getId())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(shareResponse -> {
-                            try {
-                                Bitmap bitmap = QREncoder.EncodeText(share.getId() + "," + latlngString);
-                                qrCodeImage.setImageBitmap(bitmap);
-                                loadingView.setVisibility(View.INVISIBLE);
-                            } catch (Exception e) {
-                                qrCodeDialog.hide();
-                                Toasty.error(OngoingShareActivity.this, "Impossibile ottenere QR Code al momento").show();
-                            }
-                        }, throwable -> {
-                            qrCodeDialog.hide();
-                            Toasty.error(OngoingShareActivity.this, "Impossibile avviare la condivisione al momento").show();
-                        });
-
-
+                App.home2WorkClient.createShare(share -> {
+                    try {
+                        Bitmap bitmap = QREncoder.EncodeText(share.getId() + "," + latlngString);
+                        qrCodeImage.setImageBitmap(bitmap);
+                        loadingView.setVisibility(View.INVISIBLE);
+                    } catch (Exception e) {
+                        qrCodeDialog.hide();
+                        Toasty.error(OngoingShareActivity.this, "Impossibile ottenere QR Code al momento").show();
+                    }
+                }, e -> {
+                    qrCodeDialog.hide();
+                    Toasty.error(OngoingShareActivity.this, "Impossibile avviare la condivisione al momento").show();
+                });
             });
 
         }

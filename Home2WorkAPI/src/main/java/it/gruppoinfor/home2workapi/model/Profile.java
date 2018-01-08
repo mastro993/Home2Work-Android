@@ -4,7 +4,9 @@ package it.gruppoinfor.home2workapi.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Profile {
+import java.io.Serializable;
+
+public class Profile implements Serializable {
 
     @SerializedName("Exp")
     @Expose

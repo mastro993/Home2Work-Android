@@ -1,11 +1,12 @@
 package it.gruppoinfor.home2workapi.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 
-public class Achievement {
+public class Achievement implements Serializable {
 
     private Long achievementID;
     private String name;

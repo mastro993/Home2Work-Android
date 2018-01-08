@@ -4,9 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import it.gruppoinfor.home2work.utils.LatLngConverter;
+import it.gruppoinfor.home2workapi.model.LatLng;
 
 @Entity(tableName = "routePoint")
 public class RoutePointEntity {

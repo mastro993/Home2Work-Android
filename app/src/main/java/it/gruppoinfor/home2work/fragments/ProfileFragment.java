@@ -18,11 +18,9 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.arasthel.asyncjob.AsyncJob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.EditProfileActivity;
 import it.gruppoinfor.home2work.activities.MainActivity;
@@ -38,15 +38,15 @@ import it.gruppoinfor.home2work.activities.SettingsActivity;
 import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Achievement;
 import it.gruppoinfor.home2workapi.model.Profile;
 import it.gruppoinfor.home2workapi.model.User;
-import retrofit2.Call;
 
 
 public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
+    protected static Profile Profile;
+    protected static List<Achievement> AchievementList = new ArrayList<>();
     Unbinder unbinder;
     MainActivity activity;
     ProgressPagerAdapter pagerAdapter;
@@ -70,11 +70,7 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
     AppBarLayout appBar;
     @BindView(R.id.collapsingToolbar)
     CollapsingToolbarLayout collapsingToolbar;
-
-    protected static Profile Profile;
-    protected static List<Achievement> AchievementList = new ArrayList<>();
     // protected Statistics statistics;
-
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -96,17 +92,6 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
         return rootView;
     }
 
-    private void initUI() {
-        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-
-        viewPager.addOnPageChangeListener(this);
-
-        avatarView.setAvatarURL(Home2WorkClient.User.getAvatarURL());
-        nameTextView.setText(Home2WorkClient.User.toString());
-        jobTextView.setText(Home2WorkClient.User.getCompany().toString());
-    }
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -119,37 +104,67 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        toggleRefreshing(state == ViewPager.SCROLL_STATE_IDLE);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
+        }
     }
 
-    public void toggleRefreshing(boolean enabled) {
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(enabled);
-        }
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+    }
+
+    @OnClick(R.id.profile_options_button)
+    public void onViewClicked() {
+
+        String[] options = new String[]{"Modifica profilo", "Impostazioni", "Esci"};
+
+        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .items(options)
+                .itemsCallback((dialog, itemView, position, text) -> {
+                    switch (position) {
+                        case 0:
+                            startActivity(new Intent(getActivity(), EditProfileActivity.class));
+                            break;
+                        case 1:
+                            startActivity(new Intent(getActivity(), SettingsActivity.class));
+                            break;
+                        case 2:
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle(R.string.logout_dialog_title);
+                            builder.setMessage(R.string.logout_dialog_content);
+                            builder.setPositiveButton(R.string.logout_dialog_confirm, ((dialogInterface, i) -> logout()));
+                            builder.setNegativeButton(R.string.logout_dialog_cancel, null);
+                            builder.show();
+                            break;
+                    }
+                })
+                .show();
+
+    }
+
+    private void initUI() {
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        viewPager.addOnPageChangeListener(this);
+
+        User user = App.home2WorkClient.getUser();
+        avatarView.setAvatarURL(user.getAvatarURL());
+        nameTextView.setText(user.toString());
+        jobTextView.setText(user.getCompany().toString());
     }
 
     private void refreshData() {
         swipeRefreshLayout.setRefreshing(true);
 
-        AsyncJob.doInBackground(() -> {
+        App.home2WorkClient.refreshUser(aVoid -> {
+            swipeRefreshLayout.setRefreshing(false);
+            refreshTabs();
+            refreshProfileUI();
+        }, e -> Toasty.error(getContext(), "Non è possibile aggiornare le informazioni dell'utente al momento").show());
 
-            // TODO Call<List<Achievement>> bookingsCall = Home2WorkClient.getAPI().getUserAchievements(Home2WorkClient.getUser().getId());
-            Call<User> userCall = Home2WorkClient.getAPI().getUser(Home2WorkClient.User.getId());
-
-            try {
-                //Home2WorkClient.setUserAchivements(new ArrayList<>(bookingsCall.execute().body()));
-                Home2WorkClient.User = userCall.execute().body();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            AsyncJob.doOnMainThread(() -> {
-                swipeRefreshLayout.setRefreshing(false);
-                refreshTabs();
-                refreshProfileUI();
-            });
-
-        });
     }
 
     private void refreshTabs() {
@@ -161,55 +176,21 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
     }
 
     private void refreshProfileUI() {
+        User user = App.home2WorkClient.getUser();
+
         // TODO UI profilo
         //  Profile Profile = Home2WorkClient.getUserProfile();
-        avatarView.setExp(Home2WorkClient.User.getExp());
-    }
-
-    @Override
-    public void onDestroyView() {
-        unbinder.unbind();
-        super.onDestroyView();
+        avatarView.setExp(user.getExp());
     }
 
     private void logout() {
-        SessionManager.with(getContext()).signOutUser();
+        SessionManager sessionManager = new SessionManager(getContext());
+        sessionManager.signOutUser();
 
         // Avvio Activity di login
         Intent i = new Intent(getContext(), SignInActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
-    }
-
-    @OnClick(R.id.profile_options_button)
-    public void onViewClicked() {
-        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                .customView(R.layout.dialog_profile_fragment_options, false)
-                .show();
-
-        Button editProfileButton = (Button) materialDialog.findViewById(R.id.edit_profile_button);
-        Button settingsButton = (Button) materialDialog.findViewById(R.id.settings_button);
-        Button logoutbutton = (Button) materialDialog.findViewById(R.id.logout_button);
-
-        editProfileButton.setOnClickListener(view -> {
-            materialDialog.dismiss();
-            startActivity(new Intent(getActivity(), EditProfileActivity.class));
-        });
-
-        settingsButton.setOnClickListener(view -> {
-            materialDialog.dismiss();
-            startActivity(new Intent(getActivity(), SettingsActivity.class));
-        });
-
-        logoutbutton.setOnClickListener(view -> {
-            materialDialog.dismiss();
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(R.string.logout_dialog_title);
-            builder.setMessage(R.string.logout_dialog_content);
-            builder.setPositiveButton(R.string.logout_dialog_confirm, ((dialogInterface, i) -> logout()));
-            builder.setNegativeButton(R.string.logout_dialog_cancel, null);
-            builder.show();
-        });
     }
 
     private class ProgressPagerAdapter extends FragmentStatePagerAdapter {

@@ -1,13 +1,13 @@
 package it.gruppoinfor.home2workapi.model;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class Location {
+public class Location implements Serializable {
 
     @SerializedName("latlng")
     @Expose

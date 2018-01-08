@@ -1,14 +1,14 @@
 package it.gruppoinfor.home2workapi.model;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class Match {
+public class Match implements Serializable {
 
     @SerializedName("MatchID")
     @Expose
@@ -30,7 +30,7 @@ public class Match {
     private Integer distance;
     @SerializedName("StartLocation")
     @Expose
-    private LatLng startLocation;
+    private  LatLng startLocation;
     @SerializedName("StartTime")
     @Expose
     private Timestamp startTime;

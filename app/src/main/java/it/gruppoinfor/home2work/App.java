@@ -7,11 +7,14 @@ import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
 
 import it.gruppoinfor.home2work.database.DBApp;
-import it.gruppoinfor.home2work.utils.UserPrefs;
+import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 
 public class App extends Application {
-    public static DBApp dbApp;
+
+    public static DBApp DBApp;
+
+    public static Home2WorkClient home2WorkClient;
 
     @Override
     public void onCreate() {
@@ -35,9 +38,13 @@ public class App extends Application {
         Stetho.initialize(initializer);
 
         // Inizializzazione Room
-        dbApp = Room.databaseBuilder(getApplicationContext(), DBApp.class, "home2work")
+        DBApp = Room.databaseBuilder(this, DBApp.class, "home2work")
                 .fallbackToDestructiveMigration()
                 .build();
+
+        home2WorkClient = new Home2WorkClient();
+
+
     }
 
 }

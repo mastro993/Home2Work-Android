@@ -1,12 +1,12 @@
 package it.gruppoinfor.home2workapi.model;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class ShareGuest {
+public class ShareGuest implements Serializable {
 
     public static final int JOINED = 0;
     public static final int COMPLETED = 1;

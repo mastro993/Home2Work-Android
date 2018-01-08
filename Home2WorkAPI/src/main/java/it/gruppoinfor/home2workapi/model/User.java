@@ -1,15 +1,16 @@
 package it.gruppoinfor.home2workapi.model;
 
-import com.google.android.gms.maps.model.LatLng;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 
-public class User {
+public class User implements Serializable {
 
     @SerializedName("UserID")
     @Expose
@@ -64,9 +65,6 @@ public class User {
     @SerializedName("Telegram")
     @Expose
     private String telegram;
-    @SerializedName("Linkedin")
-    @Expose
-    private String linkedin;
 
 
     public Long getId() {
@@ -179,14 +177,6 @@ public class User {
 
     public void setTelegram(String telegram) {
         this.telegram = telegram;
-    }
-
-    public String getLinkedin() {
-        return linkedin;
-    }
-
-    public void setLinkedin(String linkedin) {
-        this.linkedin = linkedin;
     }
 
 ////////////////

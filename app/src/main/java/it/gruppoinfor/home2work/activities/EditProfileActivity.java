@@ -23,8 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.Tools;
@@ -79,22 +78,16 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 RequestBody requestFile = RequestBody.create(mediaType, decodedFile);
 
-                String filename = Home2WorkClient.User.getId() + ".jpg";
+                String filename = App.home2WorkClient.getUser().getId() + ".jpg";
 
                 MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-                Home2WorkClient home2WorkClient = new Home2WorkClient();
-
-                home2WorkClient.API.uploadAvatar(Home2WorkClient.User.getId(), body)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(responseBody -> {
-                            if (responseBody.code() == 201) {
-                                initUI();
-                                Toasty.success(EditProfileActivity.this, "Immagine modificata con successo").show();
-                            } else
-                                Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
-                        }, throwable -> Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show());
+                App.home2WorkClient.uploadAvatar(body, responseBody -> {
+                    initUI();
+                    Toasty.success(EditProfileActivity.this, "Immagine modificata con successo").show();
+                }, e -> {
+                    Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
+                });
 
 
             } catch (Exception e) {
@@ -119,7 +112,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .circleCrop()
                 .placeholder(R.drawable.ic_avatar_placeholder);
         Glide.with(this)
-                .load(Home2WorkClient.User.getAvatarURL())
+                .load(App.home2WorkClient.getUser().getAvatarURL())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
                 .into(avatarView);

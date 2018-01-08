@@ -5,9 +5,8 @@ import android.content.SharedPreferences;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
+import it.gruppoinfor.home2work.App;
+import it.gruppoinfor.home2workapi.interfaces.LoginCallback;
 
 
 /**
@@ -19,65 +18,75 @@ public class SessionManager {
 
     public static final int EXPIRED_TOKEN = 0;
     public static final int ERROR = 1;
+    public static final int NO_INTERNET = 2;
     public static final String AUTH_CODE = "auth_code";
     private static final String PREFS_SESSION = "it.fleetup.app.session";
     private final SharedPreferences prefs;
     private final String KEY_TOKEN = "token";
     private final String KEY_EMAIL = "email";
-    private Home2WorkClient home2WorkClient;
+    private SessionManagerCallback mCallback;
+    private LoginCallback mLoginCallback = new LoginCallback() {
+        @Override
+        public void onLoginSuccess() {
+            storeSession();
+            mCallback.onValidSession();
+        }
+
+        @Override
+        public void onInvalidCredential() {
+            mCallback.onExpiredToken();
+            signOutUser();
+        }
+
+        @Override
+        public void onLoginError() {
+            mCallback.onExpiredToken();
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            mCallback.onError(throwable);
+        }
+    };
 
     public SessionManager(Context context) {
-        home2WorkClient = new Home2WorkClient();
         prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE);
     }
 
-    public void storeSession() {
+    public SessionManager(Context context, SessionManagerCallback sessionManagerCallback) {
+        this(context);
+        mCallback = sessionManagerCallback;
+    }
 
+    public void storeSession() {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_EMAIL, Home2WorkClient.User.getEmail());
-        editor.putString(KEY_TOKEN, Home2WorkClient.User.getToken());
+        editor.putString(KEY_EMAIL, App.home2WorkClient.getUser().getEmail());
+        editor.putString(KEY_TOKEN, App.home2WorkClient.getUser().getToken());
         editor.apply();
 
         String token = FirebaseInstanceId.getInstance().getToken();
 
-        home2WorkClient.API
-                .setFCMToken(Home2WorkClient.User.getId(), token)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-
+        App.home2WorkClient.setFcmToken(token);
     }
 
-    public void checkSession(final SessionManagerCallback callback) {
+    public void loadSession() {
 
-        if (Home2WorkClient.User != null) {
-            callback.onValidSession();
-            return;
-        }
+        if (mCallback == null) throw new IllegalStateException("Callback non implementati");
 
-        if (!isUserSignedIn()) {
-            callback.onNoSession();
+        if (App.home2WorkClient.getUser() != null) {
+            mCallback.onValidSession();
             return;
         }
 
         String email = prefs.getString(KEY_EMAIL, null);
-        String password = prefs.getString(KEY_TOKEN, null);
+        String token = prefs.getString(KEY_TOKEN, null);
 
-        home2WorkClient.API.login(email, password, true)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(userResponse -> {
-                    switch (userResponse.code()) {
-                        case 200:
-                            Home2WorkClient.User = userResponse.body();
-                            storeSession();
-                            callback.onValidSession();
-                            break;
-                        default:
-                            callback.onExpiredToken();
-                            signOutUser();
-                            break;
-                    }
-                }, throwable -> callback.onError());
+        if (email == null && token == null) {
+            mCallback.onNoSession();
+            return;
+        }
+
+        App.home2WorkClient.login(email, token, true, mLoginCallback);
 
     }
 
@@ -85,12 +94,6 @@ public class SessionManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
-    }
-
-    private boolean isUserSignedIn() {
-        String email = prefs.getString(KEY_EMAIL, null);
-        String token = prefs.getString(KEY_TOKEN, null);
-        return email != null && token != null;
     }
 
     public interface SessionManagerCallback {
@@ -101,7 +104,7 @@ public class SessionManager {
 
         void onExpiredToken();
 
-        void onError();
+        void onError(Throwable throwable);
     }
 
 }

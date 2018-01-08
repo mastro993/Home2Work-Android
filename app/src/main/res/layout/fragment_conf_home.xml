@@ -9,7 +9,6 @@
     tools:ignore="Overdraw">
 
     <TextView
-
         android:id="@+id/textView4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -44,10 +43,10 @@
 
             <Button
                 android:id="@+id/setAddressButton"
-                style="@style/Widget.AppCompat.Button.Colored"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:padding="16dp"
                 android:text="Inserisci indirizzo" />
 
         </LinearLayout>

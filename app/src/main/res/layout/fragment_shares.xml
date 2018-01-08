@@ -10,40 +10,78 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/empty_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginBottom="128dp"
-                android:layout_marginTop="64dp"
-                android:gravity="center_horizontal"
-                android:padding="16dp"
-                android:text="Non hai ancora completato nessuna condivisione"
-                android:textColor="@color/light_bg_dark_secondary_text"
-                android:textSize="16dp"
-                android:textStyle="italic"
-                android:visibility="gone" />
+                android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/shares_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:elevation="@dimen/cardview_default_elevation"
-                android:paddingBottom="48dp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@+id/ongoing_share_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/share_ongoing_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:text="In corso"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
 
-        </LinearLayout>
+                <include
+                    android:id="@+id/ongoing_share_layout"
+                    layout="@layout/item_share_ongoing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/share_list_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:text="Completate"
+                    android:textColor="@color/light_bg_dark_secondary_text" />
+
+                <TextView
+                    android:id="@+id/empty_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="128dp"
+                    android:layout_marginTop="64dp"
+                    android:gravity="center_horizontal"
+                    android:padding="16dp"
+                    android:text="Non hai ancora completato nessuna condivisione"
+                    android:textColor="@color/light_bg_dark_secondary_text"
+                    android:textSize="16dp"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:paddingTop="1dp"
+                    android:id="@+id/shares_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:elevation="@dimen/cardview_default_elevation"
+                    android:paddingBottom="48dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/ongoing_share_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -54,19 +92,6 @@
             android:src="@drawable/ic_plus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-        <include
-            android:id="@+id/ongoing_share_layout"
-            layout="@layout/item_share_ongoing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-        </include>
 
     </FrameLayout>
 

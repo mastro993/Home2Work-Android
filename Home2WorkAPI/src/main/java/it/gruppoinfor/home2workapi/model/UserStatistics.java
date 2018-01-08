@@ -3,7 +3,9 @@ package it.gruppoinfor.home2workapi.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserStatistics {
+import java.io.Serializable;
+
+public class UserStatistics implements Serializable {
 
 
     public static final Double KILOMETER_PER_LITRE = 7.5;

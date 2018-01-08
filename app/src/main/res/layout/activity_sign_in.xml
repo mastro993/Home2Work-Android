@@ -1,115 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:padding="16dp"
+    android:orientation="vertical"
+    android:theme="@style/AppTheme.SignInTheme"
+    android:weightSum="2"
+    tools:context=".activities.SignInActivity"
     tools:ignore="ContentDescription">
 
     <ImageView
         android:id="@+id/logo_imageview"
-        android:layout_width="400dp"
-        android:layout_height="200dp"
-        android:paddingLeft="8dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/home2work_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/gradient"
+        android:padding="64dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/home2work_logo" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:clipToPadding="false"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo_imageview"
-        app:layout_constraintVertical_bias="0.0">
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_alignParentTop="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="0px"
+            android:layout_height="0px"/>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/email_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/LightTextInput">
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="8dp">
 
             <EditText
                 android:id="@+id/email_edit_text"
-                style="@style/LightEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_mail"
-                android:drawablePadding="@dimen/list_items_padding"
+                android:drawablePadding="16dp"
                 android:hint="Email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:paddingBottom="16dp" />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-
+            android:id="@+id/password_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/LightTextInput">
+            android:layout_below="@id/email_input_layout">
 
             <EditText
-
                 android:id="@+id/password_edit_text"
-                style="@style/LightEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_lock"
-                android:drawablePadding="@dimen/list_items_padding"
+                android:drawablePadding="16dp"
                 android:hint="Password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:paddingBottom="16dp" />
 
         </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/lost_password_button"
-            style="@android:style/Widget.Material.Button.Borderless.Small"
+            android:id="@+id/sign_in_button"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_above="@id/lost_password_button"
+            android:layout_marginBottom="16dp"
+            android:text="@string/activity_signin_sign_in"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:visibility="visible" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/sign_in_loading"
+            style="@style/AVLoadingIndicatorView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_above="@id/lost_password_button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:visibility="gone"
+            app:indicatorColor="@color/colorAccent"
+            app:indicatorName="BallPulseIndicator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/lost_password_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:gravity="bottom|end"
             android:text="Password dimenticata"
             android:textAllCaps="false"
-            android:textColor="@color/dark_bg_light_primary_text"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+            android:textColor="@color/light_bg_dark_hint_text" />
 
-    </LinearLayout>
 
-    <Button
-        android:id="@+id/sign_in_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/dark_bg_light_primary_text"
-        android:text="@string/activity_signin_sign_in"
-        android:textColor="@color/colorAccent"
-        android:textSize="18dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+    </RelativeLayout>
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/sign_in_loading"
-        style="@style/AVLoadingIndicatorView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        app:indicatorColor="@color/dark_bg_light_primary_text"
-        app:indicatorName="BallPulseIndicator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

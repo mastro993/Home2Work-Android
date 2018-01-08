@@ -33,15 +33,7 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
-        initUI();
         return rootView;
-    }
-
-    private void initUI() {
-
-        // TODO interfaccia utente
-        //((MainActivity) getActivity()).bottomNavigation.setNotification(String.valueOf(messages_count), 0);
-
     }
 
     @Override

@@ -22,14 +22,6 @@ import it.gruppoinfor.home2work.utils.UserPrefs;
 public class BootReceiver extends BroadcastReceiver {
 
     private Context context;
-
-    @SuppressLint("UnsafeProtectedBroadcastReceiver")
-    @Override
-    public void onReceive(final Context context, Intent arg1) {
-        this.context = context;
-        SessionManager.with(context).checkSession(sessionManagerCallback);
-    }
-
     private SessionManager.SessionManagerCallback sessionManagerCallback = new SessionManager.SessionManagerCallback() {
         @Override
         public void onValidSession() {
@@ -61,10 +53,18 @@ public class BootReceiver extends BroadcastReceiver {
         }
 
         @Override
-        public void onError() {
+        public void onError(Throwable throwable) {
             // ...
         }
     };
+
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
+    @Override
+    public void onReceive(final Context context, Intent arg1) {
+        this.context = context;
+        SessionManager sessionManager = new SessionManager(context, sessionManagerCallback);
+        sessionManager.loadSession();
+    }
 
     private void showLoginNotification() {
         Intent intent = new Intent(context, SplashActivity.class);

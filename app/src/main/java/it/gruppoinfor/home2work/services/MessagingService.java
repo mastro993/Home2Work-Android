@@ -14,6 +14,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.SplashActivity;
@@ -68,7 +69,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void sendNotification() {
 
-        if (Home2WorkClient.User != null) {
+        if (App.home2WorkClient.getUser()!= null) {
             Intent resultIntent = new Intent(this, MainActivity.class);
             pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {

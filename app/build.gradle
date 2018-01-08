@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'android'
-            keyPassword 'android'
-            storeFile file('C:/Users/feder/.android/android.jks')
-            storePassword 'android'
+            keyAlias 'ehzlab'
+            keyPassword 'edef.RICO.3991'
+            storeFile file('C:/Users/feder/Documents/android_keystore.jks')
+            storePassword 'edef.RICO.3991'
         }
     }
     flavorDimensions 'def'
@@ -60,6 +60,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.android.support:support-v4:27.0.2'
     compile 'android.arch.persistence.room:runtime:1.0.0'
+    implementation 'android.arch.persistence.room:rxjava2:1.0.0'
     compile 'com.google.zxing:core:3.3.0'
     annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
     testCompile 'junit:junit:4.12'

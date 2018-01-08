@@ -4,7 +4,9 @@ package it.gruppoinfor.home2workapi.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Address {
+import java.io.Serializable;
+
+public class Address implements Serializable {
 
 
     @SerializedName("City")

@@ -18,7 +18,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.arasthel.asyncjob.AsyncJob;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionClient;
@@ -27,18 +26,18 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.TimeUnit;
 
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
+import it.gruppoinfor.home2work.database.RoutePointRepo;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.Home2WorkClient;
-
-import static it.gruppoinfor.home2work.App.dbApp;
+import it.gruppoinfor.home2workapi.model.LatLng;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks {
 
@@ -69,7 +68,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 .addApi(LocationServices.API)
                 .build();
 
-        if (Home2WorkClient.User != null) {
+        if (App.home2WorkClient.getUser() != null) {
 
             mGoogleApiClient.connect();
 
@@ -176,9 +175,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         routePointEntity.setLatLng(latLng);
         routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
-        routePointEntity.setUserId(Home2WorkClient.User.getId());
+        routePointEntity.setUserId(App.home2WorkClient.getUser().getId());
 
-        AsyncJob.doInBackground(() -> dbApp.routePointDAO().insert(routePointEntity));
+        RoutePointRepo.insert(routePointEntity).subscribe();
     }
 
     @Override

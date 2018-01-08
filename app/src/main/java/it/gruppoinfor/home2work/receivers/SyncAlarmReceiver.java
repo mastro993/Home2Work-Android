@@ -21,26 +21,29 @@ public class SyncAlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent syncIntent = new Intent(context, SyncService.class);
 
-        SessionManager.with(context).checkSession(new SessionManager.SessionManagerCallback() {
+        SessionManager sessionManager = new SessionManager(context, new SessionManager.SessionManagerCallback() {
             @Override
-            public void onValidSession() {
+            public void onNoSession() {
                 context.startService(syncIntent);
             }
 
             @Override
-            public void onError() {
-                // ....
-            }
+            public void onValidSession() {
 
-            @Override
-            public void onNoSession() {
-                // ...
             }
 
             @Override
             public void onExpiredToken() {
-                // ...
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
             }
         });
+
+        sessionManager.loadSession();
+
     }
 }

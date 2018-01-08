@@ -2,9 +2,10 @@ package it.gruppoinfor.home2work.utils;
 
 import android.arch.persistence.room.TypeConverter;
 
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Locale;
+
+import it.gruppoinfor.home2workapi.model.LatLng;
 
 public class LatLngConverter {
 
@@ -18,6 +19,6 @@ public class LatLngConverter {
 
     @TypeConverter
     public static String toString(LatLng latLng) {
-        return String.format(Locale.ROOT, "%1$.8f,%2$.8f", latLng.latitude, latLng.longitude);
+        return String.format(Locale.ROOT, "%1$.8f,%2$.8f", latLng.getLat(), latLng.getLng());
     }
 }
