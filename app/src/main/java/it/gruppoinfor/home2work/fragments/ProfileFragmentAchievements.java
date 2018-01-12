@@ -54,7 +54,7 @@ public class ProfileFragmentAchievements extends Fragment implements ItemClickCa
             achievementRecyclerView.setVisibility(View.VISIBLE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
 
             achievementRecyclerView.setLayoutManager(layoutManager);
             achievementRecyclerView.setLayoutAnimation(animation);

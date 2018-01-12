@@ -101,5 +101,16 @@
     <string name="home">Casa</string>
     <string name="title_activity_share">ShareActivity</string>
 
+    <!-- CustomActivityOnCrash -->
+    <string name="customactivityoncrash_error_activity_error_occurred_explanation">Si è verificato un errore inaspettato.\nScusa per l\'inconveniente.</string>
+    <string name="customactivityoncrash_error_activity_restart_app">Riavvia app</string>
+    <string name="customactivityoncrash_error_activity_close_app">Chiudi app</string>
+    <string name="customactivityoncrash_error_activity_error_details">Mostra dettagli errore</string>
+    <string name="customactivityoncrash_error_activity_error_details_title">Dettagli errore</string>
+    <string name="customactivityoncrash_error_activity_error_details_close">Chiudi</string>
+    <string name="customactivityoncrash_error_activity_error_details_copy">Copia dettagli</string>
+    <string name="customactivityoncrash_error_activity_error_details_copied">Dettagli copiati nella clipboard</string>
+    <string name="customactivityoncrash_error_activity_error_details_clipboard_label">Informazioni errore</string>
+
 
 </resources>

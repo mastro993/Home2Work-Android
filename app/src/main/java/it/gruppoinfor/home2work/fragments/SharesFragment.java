@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,16 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -47,12 +40,10 @@ import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.activities.MainActivity;
-import it.gruppoinfor.home2work.activities.OngoingShareActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.SharesAdapter;
+import it.gruppoinfor.home2work.custom.OngoinShareView;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.Share;
 import okhttp3.ResponseBody;
 
@@ -65,23 +56,15 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
     @BindView(R.id.shares_recycler_view)
     RecyclerView sharesRecyclerView;
-    @BindView(R.id.ongoing_share_layout)
-    CardView ongoingShareLayout;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
-    @BindView(R.id.empty_view)
-    TextView emptyView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.ongoing_share_host_avatar_view)
-    ImageView ongoingShareHostAvatarView;
-    @BindView(R.id.ongoing_share_host_name_view)
-    TextView ongoingShareHostNameView;
-    @BindView(R.id.ongoing_share_guests_view)
-    TextView ongoingShareGuestsView;
-    @BindView(R.id.ongoin_share_container)
-    FrameLayout ongoinShareContainer;
+    @BindView(R.id.new_share_container)
+    RelativeLayout newShareContainer;
+    @BindView(R.id.ongoing_share_view)
+    OngoinShareView ongoingShareView;
+    @BindView(R.id.new_share_container_empty)
+    ConstraintLayout newShareContainerEmpty;
+
     private Unbinder unbinder;
 
     private List<Share> mShareList = new ArrayList<>();
@@ -100,6 +83,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        sharesRecyclerView.setNestedScrollingEnabled(false);
 
         refreshData();
         return rootView;
@@ -163,54 +147,51 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         return true;
     }
 
-    @OnClick(R.id.fab)
-    public void onFabClicked() {
-        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                .customView(R.layout.dialog_new_share, false)
+    @OnClick({R.id.new_share_container, R.id.new_share_container_empty})
+    public void onNewShareClicked() {
+        String[] options = new String[]{"Crea nuova condivisione", "Unisciti a condivisione"};
+
+        new MaterialDialog.Builder(getActivity())
+                .title("Nuova condivisione")
+                .items(options)
+                .itemsCallback((dialog, itemView, position, text) -> {
+                    switch (position) {
+                        case 0:
+                            createShare();
+                            break;
+                        case 1:
+                            joinShare();
+                            break;
+                    }
+                })
                 .show();
-
-        Button newShareButton = (Button) materialDialog.findViewById(R.id.new_share_button);
-        Button joinShareButton = (Button) materialDialog.findViewById(R.id.join_share_button);
-
-        newShareButton.setOnClickListener(view -> {
-            materialDialog.dismiss();
-            createShare();
-        });
-
-        joinShareButton.setOnClickListener(view -> {
-            materialDialog.dismiss();
-            joinShare();
-        });
-
     }
 
     private void initUI() {
         swipeRefreshLayout.setRefreshing(false);
-        sharesRecyclerView.setNestedScrollingEnabled(false);
 
-        fab.setVisibility(View.VISIBLE);
-        ongoingShareLayout.setVisibility(View.GONE);
+        newShareContainer.setVisibility(View.VISIBLE);
+        ongoingShareView.setVisibility(View.GONE);
 
         for (Share share : mShareList) {
-            if (share.getStatus() == Share.CREATED) {
-                fab.setVisibility(View.GONE);
-                ongoingShareLayout.setVisibility(View.VISIBLE);
+            if (share.getStatus() == Share.Status.CREATED) {
+                ongoingShareView.setShare(share);
                 mShareList.remove(share);
-                initOngoinView(share);
+                newShareContainer.setVisibility(View.GONE);
+                ongoingShareView.setVisibility(View.VISIBLE);
                 break;
             }
         }
 
         if (mShareList.size() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
             sharesRecyclerView.setVisibility(View.GONE);
+            newShareContainerEmpty.setVisibility(View.VISIBLE);
         } else {
-
-            emptyView.setVisibility(View.GONE);
             sharesRecyclerView.setVisibility(View.VISIBLE);
+            newShareContainerEmpty.setVisibility(View.GONE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
 
             sharesRecyclerView.setLayoutManager(layoutManager);
             sharesRecyclerView.setLayoutAnimation(animation);
@@ -225,39 +206,14 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         swipeRefreshLayout.setRefreshing(true);
 
         App.home2WorkClient.getUserShares(shares -> {
-            mShareList = shares;
+            mShareList.clear();
+            mShareList.addAll(shares);
             initUI();
         }, e -> {
             Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI();
         });
 
-    }
-
-    public void initOngoinView(Share share) {
-        RequestOptions requestOptions = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .circleCrop()
-                .placeholder(R.drawable.ic_avatar_placeholder);
-
-        Glide.with(getActivity())
-                .load(share.getHost().getAvatarURL())
-                .apply(requestOptions)
-                .into(ongoingShareHostAvatarView);
-
-        ongoingShareHostNameView.setText(share.getHost().toString());
-
-        int guestSize = share.getGuests().size();
-
-        ongoingShareGuestsView.setText(guestSize + " passeggeri");
-
-        ((MainActivity) getActivity()).setBadge(2, "In corso");
-
-        ongoinShareContainer.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
-            intent.putExtra("SHARE_ID", share.getId());
-            getActivity().startActivity(intent);
-        });
     }
 
     public void joinShare() {
@@ -314,7 +270,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
         App.home2WorkClient.createShare(share -> {
             materialDialog.dismiss();
-            fab.setVisibility(View.GONE);
+            newShareContainer.setVisibility(View.GONE);
             mShareList.add(0, share);
             mSharesAdapter.notifyDataSetChanged();
             Toasty.success(getContext(), "Condivisione creata con successo").show();

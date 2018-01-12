@@ -156,7 +156,7 @@ public class OngoingShareActivity extends AppCompatActivity {
             guestsRecyclerView.setVisibility(View.VISIBLE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation);
 
             guestsRecyclerView.setLayoutManager(layoutManager);
             guestsRecyclerView.setLayoutAnimation(animation);

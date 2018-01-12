@@ -159,7 +159,7 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
         else noMatchesView.setVisibility(View.GONE);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
 
         matchesRecyclerView.setLayoutManager(layoutManager);
         matchesRecyclerView.setLayoutAnimation(animation);

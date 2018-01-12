@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,13 +50,13 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         final Match match = matches.get(position);
 
         if (!match.isNew()) {
-            holder.newBadgeView.setVisibility(View.GONE);
+            holder.newBadgeView.setVisibility(View.INVISIBLE);
         } else {
             ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                     holder.newBadgeView,
-                    PropertyValuesHolder.ofFloat("scaleX", 0.5f),
-                    PropertyValuesHolder.ofFloat("scaleY", 0.5f));
-            scaleDown.setDuration(250);
+                    PropertyValuesHolder.ofFloat("scaleX", 0.8f),
+                    PropertyValuesHolder.ofFloat("scaleY", 0.8f));
+            scaleDown.setDuration(150);
 
             scaleDown.setRepeatCount(1);
             scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
@@ -94,7 +93,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         if (match.getScore() == 0) holder.scoreText.setVisibility(View.INVISIBLE);
 
-        if (position == matches.size() - 1) holder.divider.setVisibility(View.GONE);
+        if (position == 0) holder.divider.setVisibility(View.GONE);
 
         /*
         TODO Activity info utente
@@ -157,9 +156,9 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         @BindView(R.id.home_view)
         TextView homeView;
         @BindView(R.id.new_badge)
-        ImageView newBadgeView;
+        View newBadgeView;
         @BindView(R.id.container)
-        ConstraintLayout container;
+        View container;
         @BindView(R.id.divider)
         View divider;
 

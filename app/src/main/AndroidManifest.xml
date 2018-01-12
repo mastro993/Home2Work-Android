@@ -87,6 +87,10 @@
         </service>
 
         <activity
+            android:name="cat.ereza.customactivityoncrash.sample.CustomErrorActivity"
+            android:label="Ooooops!"
+            android:process=":error_activity" />
+        <activity
             android:name=".activities.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"

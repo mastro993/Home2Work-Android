@@ -108,6 +108,7 @@ public class SplashActivity extends AppCompatActivity {
 
             mSessionManager.loadSession();
 
+
         });
     }
 

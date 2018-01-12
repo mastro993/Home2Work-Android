@@ -15,16 +15,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/match_list_header"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:text="Disponibili"
-                android:textColor="@color/light_bg_dark_secondary_text" />
-
-            <TextView
                 android:id="@+id/no_matches_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

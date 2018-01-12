@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +39,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +49,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.RouteUtils;
 import it.gruppoinfor.home2workapi.model.LatLng;
@@ -69,7 +74,7 @@ public class MatchActivity extends AppCompatActivity {
     @BindView(R.id.job_view)
     TextView jobView;
     @BindView(R.id.profile_container)
-    ConstraintLayout userProfileContainer;
+    RelativeLayout userProfileContainer;
     @BindView(R.id.timetable)
     LinearLayout timetable;
     private GoogleMap googleMap;
@@ -97,6 +102,12 @@ public class MatchActivity extends AppCompatActivity {
             Toasty.error(this, "Impossibile visualizzare informazioni match").show();
             finish();
         }
+
+        App.home2WorkClient.editMatch(match, match -> {
+            // Nothing on success
+        }, e -> {
+            // Nothing on failure
+        });
 
     }
 

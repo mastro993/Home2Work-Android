@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         bottomNavigation.addItem(sharesTab);
         bottomNavigation.addItem(profileTab);
 
-        bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.grey_400));
+        bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.colorAccent));
+        bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.light_bg_dark_hint_text));
         bottomNavigation.setForceTint(true);
 
         bottomNavigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500));

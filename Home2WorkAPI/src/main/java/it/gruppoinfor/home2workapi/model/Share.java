@@ -9,10 +9,6 @@ import java.util.ArrayList;
 
 public class Share implements Serializable {
 
-    public static final int CREATED = 0;
-    public static final int COMPLETED = 1;
-    public static final int CANCELED = 2;
-
     @SerializedName("Id")
     @Expose
     private Long id;
@@ -21,10 +17,13 @@ public class Share implements Serializable {
     private User host;
     @SerializedName("Status")
     @Expose
-    private int status;
+    private Status status;
     @SerializedName("Date")
     @Expose
     private Timestamp date;
+    @SerializedName("Type")
+    @Expose
+    private Type type;
     @SerializedName("Guests")
     @Expose
     private ArrayList<ShareGuest> guests = new ArrayList<>();
@@ -45,11 +44,11 @@ public class Share implements Serializable {
         this.host = host;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -61,11 +60,57 @@ public class Share implements Serializable {
         this.date = date;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public ArrayList<ShareGuest> getGuests() {
         return guests;
     }
 
     public void setGuests(ArrayList<ShareGuest> guests) {
         this.guests = guests;
+    }
+
+    public enum Status {
+
+        @SerializedName("0")
+        CREATED(0),
+        @SerializedName("1")
+        COMPLETED(1),
+        @SerializedName("2")
+        CANCELED(2);
+
+        private final int value;
+
+        Status(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    public enum Type {
+        @SerializedName("0")
+        DRIVER(0),
+
+        @SerializedName("1")
+        GUEST(1);
+
+        private final int value;
+
+        Type(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }
