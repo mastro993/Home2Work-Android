@@ -153,6 +153,58 @@ public class Home2WorkClient {
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
+    public void cancelShare(long shareId, OnSuccessListener<ResponseBody> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.cancelShare(shareId, mUser.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(shareResponse -> {
+                    if (shareResponse.code() == 200)
+                        onSuccessListener.onSuccess(shareResponse.body());
+                    else
+                        onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
+
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
+    public void leaveShare(long shareId, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.leaveShare(shareId, mUser.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(shareResponse -> {
+                    if (shareResponse.code() == 200)
+                        onSuccessListener.onSuccess(shareResponse.body());
+                    else
+                        onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
+
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
+    public void expelGuest(long shareId, long guestId, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.leaveShare(shareId, guestId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(shareResponse -> {
+                    if (shareResponse.code() == 200)
+                        onSuccessListener.onSuccess(shareResponse.body());
+                    else
+                        onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
+
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
+    public void getShare(Long shareID, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.getShare(shareID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(shareResponse -> {
+                    if (shareResponse.code() == 200)
+                        onSuccessListener.onSuccess(shareResponse.body());
+                    else
+                        onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
+
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
     public void updateUser(OnSuccessListener<User> onSuccessListener, OnFailureListener onFailureListener) {
         mAPI.updateUser(mUser)
                 .subscribeOn(Schedulers.io())
@@ -200,7 +252,7 @@ public class Home2WorkClient {
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
-    public void joinShare(Long shareId, android.location.Location joinLocation, OnSuccessListener<ResponseBody> onSuccessListener, OnFailureListener onFailureListener) {
+    public void joinShare(Long shareId, android.location.Location joinLocation, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
         String locationString = joinLocation.getLatitude() + "," + joinLocation.getLongitude();
         mAPI.joinShare(shareId, mUser.getId(), locationString)
                 .subscribeOn(Schedulers.io())

@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -20,6 +21,8 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -32,27 +35,57 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
+import it.gruppoinfor.home2work.adapters.ShareGuestsAdapter;
+import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.services.MessagingService;
 import it.gruppoinfor.home2work.utils.QREncoder;
 import it.gruppoinfor.home2workapi.model.Share;
+import it.gruppoinfor.home2workapi.model.ShareGuest;
 
-public class OngoingShareActivity extends AppCompatActivity {
+public class OngoingShareActivity extends AppCompatActivity implements ItemClickCallbacks {
 
-    @BindView(R.id.loading_view)
-    FrameLayout loadingView;
-
-    Share share;
-    @BindView(R.id.qr_code_button)
-    Button qrCodeButton;
+    @BindView(R.id.layout_show_code)
+    LinearLayout layoutShowCode;
     @BindView(R.id.guests_recycler_view)
     RecyclerView guestsRecyclerView;
     @BindView(R.id.empty_view)
     TextView emptyView;
+    @BindView(R.id.button_complete_share)
+    Button buttonCompleteShare;
+    @BindView(R.id.button_cancel_share)
+    TextView buttonDeleteShare;
+    @BindView(R.id.host_layout)
+    LinearLayout hostLayout;
+    @BindView(R.id.guest_layout)
+    LinearLayout guestLayout;
+    @BindView(R.id.ongoing_share_layout)
+    RelativeLayout ongoingShareLayout;
+    @BindView(R.id.avatar_view)
+    AvatarView avatarView;
+    @BindView(R.id.name_text_view)
+    TextView nameTextView;
+    @BindView(R.id.job_text_view)
+    TextView jobTextView;
+    @BindView(R.id.text_share_distance)
+    TextView textShareDistance;
+    @BindView(R.id.text_share_xp)
+    TextView textShareXp;
+    @BindView(R.id.buttons_layout)
+    LinearLayout buttonsLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    private Share mShare;
+    private ShareGuestsAdapter mShareGuestsAdapter;
+    private MaterialDialog qrCodeDialog;
+
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TODO messaggio ricevuto ricarico gli ospiti
+            qrCodeDialog.dismiss();
+            refreshGuests();
         }
     };
 
@@ -62,15 +95,23 @@ public class OngoingShareActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ongoing_share);
         ButterKnife.bind(this);
 
-        if (getSupportActionBar() != null)
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        loadingView.setVisibility(View.VISIBLE);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         Intent intent = getIntent();
-        Long shareId = intent.getLongExtra("SHARE_ID", 0L);
+        mShare = (Share) intent.getSerializableExtra("SHARE");
 
-        // TODO passare share
+        if (mShare.getType() == Share.Type.DRIVER)
+            initHostUI();
+        else {
+            initGuestUI();
+        }
+
+        // TODO informazioni condivisione: tempo trascorso, chiloemtri percorsi, ecc..
 
     }
 
@@ -100,9 +141,39 @@ public class OngoingShareActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @OnClick(R.id.qr_code_button)
+    @Override
+    public void onItemClick(View view, int position) {
+        String[] options = new String[]{"Mostra profilo", "Espelli"};
+
+        new MaterialDialog.Builder(this)
+                .items(options)
+                .itemsCallback((dialog, itemView, p, text) -> {
+                    switch (p) {
+                        case 0:
+                            // TODO mostrare profilo
+                            break;
+                        case 1:
+                            App.home2WorkClient.expelGuest(mShare.getId(), mShare.getGuests().get(position).getGuest().getId(), share -> {
+                                mShare = share;
+                                initHostUI();
+                            }, Throwable::printStackTrace);
+                            break;
+                        case 2:
+
+                            break;
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public boolean onLongItemClick(View view, int position) {
+        return false;
+    }
+
+    @OnClick(R.id.layout_show_code)
     public void onShareCodeButtonClicked() {
-        MaterialDialog qrCodeDialog = new MaterialDialog.Builder(this)
+        qrCodeDialog = new MaterialDialog.Builder(this)
                 .customView(R.layout.dialog_share_qr_code, false)
                 .build();
 
@@ -144,11 +215,71 @@ public class OngoingShareActivity extends AppCompatActivity {
 
     }
 
-    private void initUI() {
-        loadingView.setVisibility(View.GONE);
+    @OnClick(R.id.button_cancel_share)
+    public void onDeleteButtonClick() {
+        switch (mShare.getType()) {
+            case DRIVER:
+                new MaterialDialog.Builder(this)
+                        .title("Annulla condivisione")
+                        .content("Sei sicuro di voler annullare la condivisione corrente? Tutti i progressi verranno persi")
+                        .onPositive((dialog, which) -> App.home2WorkClient.cancelShare(mShare.getId(), responseBody -> finish(), Throwable::printStackTrace))
+                        .positiveText("Conferma annullamento")
+                        .negativeText("Indietro")
+                        .show();
+
+                break;
+            case GUEST:
+                new MaterialDialog.Builder(this)
+                        .title("Annulla condivisione")
+                        .content("Sei sicuro di voler annullare la condivisione corrente? Tutti i progressi verranno persi")
+                        .onPositive((dialog, which) -> App.home2WorkClient.leaveShare(mShare.getId(), responseBody -> finish(), Throwable::printStackTrace))
+                        .positiveText("Conferma annullamento")
+                        .negativeText("Indietro")
+                        .show();
+                break;
+
+        }
+    }
+
+    @OnClick(R.id.button_complete_share)
+    public void onCompleteButtonClick() {
+
+        switch (mShare.getType()) {
+            case DRIVER:
+                if (mShare.getGuests().size() == 0) {
+                    new MaterialDialog.Builder(this)
+                            .title("Impossibile completare")
+                            .content("Non puoi segnalare come completata una condivisione senza passeggeri")
+                            .show();
+                }
+
+                for (ShareGuest shareGuest : mShare.getGuests()) {
+                    if (shareGuest.getStatus() != ShareGuest.Status.COMPLETED) {
+                        new MaterialDialog.Builder(this)
+                                .title("Impossibile completare")
+                                .content("Prima di poter completare la condivisione tutti i passeggeri devono convalidarla tramite il codice")
+                                .show();
+                    }
+                }
+
+                // Completa condivisione
+
+                break;
+            case GUEST:
+                // Todo validare condivisione
+                break;
+
+        }
 
 
-        if (share.getGuests() != null || share.getGuests().size() == 0) {
+    }
+
+    private void initHostUI() {
+
+        hostLayout.setVisibility(View.VISIBLE);
+        guestLayout.setVisibility(View.GONE);
+
+        if (mShare.getGuests() != null && mShare.getGuests().size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
             guestsRecyclerView.setVisibility(View.GONE);
         } else {
@@ -161,10 +292,33 @@ public class OngoingShareActivity extends AppCompatActivity {
             guestsRecyclerView.setLayoutManager(layoutManager);
             guestsRecyclerView.setLayoutAnimation(animation);
 
-/*            achievementAdapter = new AchievementAdapter(getActivity(), ProfileFragment.AchievementList);
-            achievementAdapter.setItemClickCallbacks(this);
-            achievementRecyclerView.setAdapter(achievementAdapter);*/
+            mShareGuestsAdapter = new ShareGuestsAdapter(this, mShare.getGuests());
+            mShareGuestsAdapter.setItemClickCallbacks(this);
+            guestsRecyclerView.setAdapter(mShareGuestsAdapter);
         }
+
+    }
+
+    private void initGuestUI() {
+
+        hostLayout.setVisibility(View.GONE);
+        guestLayout.setVisibility(View.VISIBLE);
+
+        nameTextView.setText(mShare.getHost().toString());
+        jobTextView.setText(mShare.getHost().getCompany().toString());
+
+        avatarView.setAvatarURL(mShare.getHost().getAvatarURL());
+        avatarView.setExp(mShare.getHost().getExp());
+
+
+    }
+
+    private void refreshGuests() {
+
+        App.home2WorkClient.getShare(mShare.getId(), share -> {
+            mShare = share;
+            initHostUI();
+        }, Throwable::printStackTrace);
 
     }
 }

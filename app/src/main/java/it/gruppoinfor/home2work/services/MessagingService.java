@@ -23,8 +23,9 @@ import it.gruppoinfor.home2workapi.Home2WorkClient;
 public class MessagingService extends FirebaseMessagingService {
 
     private static final String TYPE = "TYPE";
-    private static final String SHARE_JOIN = "SHARE_JOIN";
     public static final String SHARE_JOIN_REQUEST = "SHARE_JOIN_REQUEST";
+    public static final String SHARE_COMPLETE_REQUEST = "SHARE_COMPLETE_REQUEST";
+    public static final String SHARE_DETACH_REQUEST = "SHARE_COMPLETE_REQUEST";
 
     private LocalBroadcastManager broadcaster;
 
@@ -60,7 +61,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void processData(Map<String, String> data) {
         if (data.get(TYPE) != null) {
-            if (data.get(TYPE).equals(SHARE_JOIN)) {
+            if (data.get(TYPE).equals(SHARE_JOIN_REQUEST)) {
                 Intent intent = new Intent(SHARE_JOIN_REQUEST);
                 broadcaster.sendBroadcast(intent);
             }

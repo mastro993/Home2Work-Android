@@ -82,12 +82,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", filename, requestFile);
 
-                App.home2WorkClient.uploadAvatar(body, responseBody -> {
-                    initUI();
-                    Toasty.success(EditProfileActivity.this, "Immagine modificata con successo").show();
-                }, e -> {
-                    Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show();
-                });
+                App.home2WorkClient.uploadAvatar(body,
+                        responseBody -> initUI(),
+                        e -> Toasty.error(EditProfileActivity.this, "Impossibile caricare l'immagine al momento").show());
 
 
             } catch (Exception e) {

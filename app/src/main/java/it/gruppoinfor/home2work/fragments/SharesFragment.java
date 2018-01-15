@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.fragments;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -40,12 +41,13 @@ import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.MainActivity;
+import it.gruppoinfor.home2work.activities.OngoingShareActivity;
 import it.gruppoinfor.home2work.adapters.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.SharesAdapter;
 import it.gruppoinfor.home2work.custom.OngoinShareView;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.model.Share;
-import okhttp3.ResponseBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,12 +68,20 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     ConstraintLayout newShareContainerEmpty;
 
     private Unbinder unbinder;
+    private MainActivity activity;
+    private Share ongoingShare = null;
 
     private List<Share> mShareList = new ArrayList<>();
     private SharesAdapter mSharesAdapter;
 
     public SharesFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (MainActivity) context;
     }
 
     @Override
@@ -82,11 +92,21 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         setHasOptionsMenu(true);
 
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            refreshData();
+        });
         sharesRecyclerView.setNestedScrollingEnabled(false);
 
+        newShareContainerEmpty.setVisibility(View.GONE);
         refreshData();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
     }
 
     @Override
@@ -127,22 +147,6 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     @Override
     public boolean onLongItemClick(View view, int position) {
         // TODO share long click
-        /*MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                .customView(R.layout.dialog_match_item_options, false)
-                .show();
-
-        Button showUserProfileButton = (Button) materialDialog.findViewById(R.id.show_user_profile_button);
-        Button hideMatchButton = (Button) materialDialog.findViewById(R.id.hide_match_button);
-
-        showUserProfileButton.setOnClickListener(view1 -> {
-            materialDialog.dismiss();
-            showMatchUserProfile(position);
-        });
-
-        hideMatchButton.setOnClickListener(view12 -> {
-            materialDialog.dismiss();
-            showHideMatchDialog(position);
-        });*/
 
         return true;
     }
@@ -170,24 +174,14 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     private void initUI() {
         swipeRefreshLayout.setRefreshing(false);
 
-        newShareContainer.setVisibility(View.VISIBLE);
-        ongoingShareView.setVisibility(View.GONE);
-
-        for (Share share : mShareList) {
-            if (share.getStatus() == Share.Status.CREATED) {
-                ongoingShareView.setShare(share);
-                mShareList.remove(share);
-                newShareContainer.setVisibility(View.GONE);
-                ongoingShareView.setVisibility(View.VISIBLE);
-                break;
-            }
-        }
 
         if (mShareList.size() == 0) {
             sharesRecyclerView.setVisibility(View.GONE);
+            newShareContainer.setVisibility(View.GONE);
             newShareContainerEmpty.setVisibility(View.VISIBLE);
         } else {
             sharesRecyclerView.setVisibility(View.VISIBLE);
+            newShareContainer.setVisibility(View.VISIBLE);
             newShareContainerEmpty.setVisibility(View.GONE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -200,17 +194,41 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
             mSharesAdapter.setItemClickCallbacks(this);
             sharesRecyclerView.setAdapter(mSharesAdapter);
         }
+
+        if (ongoingShare != null) {
+            newShareContainerEmpty.setVisibility(View.GONE);
+            newShareContainer.setVisibility(View.GONE);
+            ongoingShareView.setVisibility(View.VISIBLE);
+
+
+            ongoingShareView.setShare(ongoingShare);
+            activity.setBadge(2, "In corso");
+        } else {
+            ongoingShareView.setVisibility(View.GONE);
+            activity.setBadge(2, "");
+        }
+
+
     }
 
     private void refreshData() {
-        swipeRefreshLayout.setRefreshing(true);
-
         App.home2WorkClient.getUserShares(shares -> {
+
+            ongoingShare = null;
+
+            for (Share share : shares) {
+                if (share.getStatus() == Share.Status.CREATED) {
+                    ongoingShare = share;
+                    shares.remove(share);
+                    break;
+                }
+            }
+
             mShareList.clear();
             mShareList.addAll(shares);
             initUI();
         }, e -> {
-            Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
+            //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI();
         });
 
@@ -243,17 +261,11 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
                     return;
                 }
 
-                App.home2WorkClient.joinShare(shareID, joinLocation, new OnSuccessListener<ResponseBody>() {
-                    @Override
-                    public void onSuccess(ResponseBody responseBody) {
-                        // TODO unione share
-                    }
-                }, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // TODO errore unione
-                    }
-                });
+                App.home2WorkClient.joinShare(shareID, joinLocation, share -> {
+                    Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
+                    intent.putExtra("SHARE", share);
+                    getActivity().startActivity(intent);
+                }, Throwable::printStackTrace);
 
             });
 
@@ -265,16 +277,17 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
                 .title("Nuova condivisione")
                 .content("Creazione di una condivisione in corso.")
                 .contentGravity(GravityEnum.CENTER)
-                .progress(false, 150, true)
+                .progress(true, 150, true)
                 .show();
 
         App.home2WorkClient.createShare(share -> {
             materialDialog.dismiss();
             newShareContainer.setVisibility(View.GONE);
-            mShareList.add(0, share);
-            mSharesAdapter.notifyDataSetChanged();
-            Toasty.success(getContext(), "Condivisione creata con successo").show();
-
+            ongoingShare = share;
+            initUI();
+            Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
+            intent.putExtra("SHARE", share);
+            getActivity().startActivity(intent);
         }, e -> {
             materialDialog.dismiss();
             Toasty.error(getContext(), "Impossibile creare nuova condivisione").show();

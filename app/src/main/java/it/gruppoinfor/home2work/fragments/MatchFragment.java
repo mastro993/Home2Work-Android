@@ -142,7 +142,7 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
             refreshList();
             swipeRefreshLayout.setRefreshing(false);
         }, e -> {
-            Toasty.error(activity, "Impossibile ottenere i match").show();
+            //Toasty.error(activity, "Impossibile ottenere i match").show();
             swipeRefreshLayout.setRefreshing(false);
         });
 
@@ -202,7 +202,6 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
                     App.home2WorkClient.editMatch(matchItem, match -> {
                         matchList.remove(position);
                         matchesAdapter.remove(position);
-                        Toasty.success(activity, "Match nascosto").show();
                     }, e -> Toasty.success(activity, "Non è possibile nascondere il match al momento").show());
 
 

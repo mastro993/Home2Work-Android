@@ -8,10 +8,6 @@ import java.sql.Timestamp;
 
 public class ShareGuest implements Serializable {
 
-    public static final int JOINED = 0;
-    public static final int COMPLETED = 1;
-    public static final int CANCELED = 2;
-
     @SerializedName("ShareId")
     @Expose
     private long shareId;
@@ -32,7 +28,7 @@ public class ShareGuest implements Serializable {
     private Timestamp endTime;
     @SerializedName("Status")
     @Expose
-    private int status;
+    private Status status;
     @SerializedName("Distance")
     @Expose
     private int distance;
@@ -85,11 +81,11 @@ public class ShareGuest implements Serializable {
         this.endTime = endTime;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -99,5 +95,25 @@ public class ShareGuest implements Serializable {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    public enum Status {
+
+        @SerializedName("0")
+        JOINED(0),
+        @SerializedName("1")
+        COMPLETED(1),
+        @SerializedName("2")
+        CANCELED(2);
+
+        private final int value;
+
+        Status(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

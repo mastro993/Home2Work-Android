@@ -40,7 +40,7 @@
                     android:id="@+id/avatar_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="18dp"
+                    android:layout_marginTop="24dp"
                     android:gravity="center_horizontal"
                     app:layout_behavior="it.gruppoinfor.home2work.custom.AvatarViewBehavior"
                     app:layout_constraintEnd_toEndOf="parent"

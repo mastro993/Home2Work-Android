@@ -82,8 +82,10 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
 
         stepperLayout.setAdapter(new ConfigurationStepsAdapter(getSupportFragmentManager(), this));
         stepperLayout.setOffscreenPageLimit(5);

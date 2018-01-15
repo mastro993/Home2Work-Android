@@ -121,4 +121,5 @@ dependencies {
     compile 'cat.ereza:customactivityoncrash:2.2.0'
 }
 
+
 apply plugin: 'com.google.gms.google-services'

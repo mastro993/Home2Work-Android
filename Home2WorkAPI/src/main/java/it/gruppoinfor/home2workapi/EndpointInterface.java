@@ -102,10 +102,24 @@ interface EndpointInterface {
 
     @FormUrlEncoded
     @POST("share/{shareId}/join")
-    Observable<Response<ResponseBody>> joinShare(
+    Observable<Response<Share>> joinShare(
+                    @Path("shareId") Long shareId,
+                    @Field("guestId") Long guestId,
+                    @Field("location") String locationString
+            );
+
+    @FormUrlEncoded
+    @POST("share/{shareId}/leave")
+    Observable<Response<Share>> leaveShare(
             @Path("shareId") Long shareId,
-            @Field("guestId") Long guestId,
-            @Field("location") String locationString
+            @Field("guestId") Long guestId
+    );
+
+    @FormUrlEncoded
+    @POST("share/{shareId}/cancel")
+    Observable<Response<ResponseBody>> cancelShare(
+            @Path("shareId") Long shareId,
+            @Field("hostId") Long guestId
     );
 
 

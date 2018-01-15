@@ -28,7 +28,7 @@ public class DateFormatUtils {
         if (elapsedDays > 6) {
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
             SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.ITALIAN);
-            return String.format("Il %1$s alle %2$s", sdfDate.format(startDate), sdfTime.format(startDate));
+            return String.format("%1$s alle %2$s", sdfDate.format(startDate), sdfTime.format(startDate));
         } else if (elapsedDays > 0)
             return elapsedDays + " giorni fa";
 

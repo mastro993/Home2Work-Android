@@ -56,10 +56,11 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
 
         int guestSize = share.getGuests().size();
 
-        holder.textShareGuests.setText(guestSize + " passeggeri");
+        holder.textShareGuests.setText(String.valueOf(guestSize));
 
         if (share.getType() == Share.Type.DRIVER) {
 
+            holder.textShareInfo.setText("Hai condiviso la tua auto");
 
             holder.textShareType.setText("Driver");
             holder.textShareType.setTextColor(activity.getResources().getColor(R.color.colorPrimary));
@@ -71,11 +72,13 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
             }
 
             Double totalKm = totalMt / 1000.0;
-            holder.textShareDistance.setText(mDf.format(totalKm / 1000.0) + " Km");
-            holder.textShareXp.setText(totalKm.intValue() * 10 + " Xp");
+            holder.textShareDistance.setText(mDf.format(totalKm));
+            holder.textShareXp.setText(String.valueOf(totalKm.intValue() * 10));
 
 
         } else {
+
+            holder.textShareInfo.setText("Hai condiviso l'auto di " + share.getHost().toString());
 
             holder.textShareType.setText("Guest");
             holder.textShareType.setTextColor(activity.getResources().getColor(R.color.colorAccent));
@@ -84,8 +87,8 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
             for (ShareGuest shareGuest : share.getGuests()) {
                 if (shareGuest.getGuest().equals(App.home2WorkClient.getUser())) {
                     Double totalKm = shareGuest.getDistance() / 1000.0;
-                    holder.textShareDistance.setText(mDf.format(totalKm / 1000.0) + " Km");
-                    holder.textShareXp.setText(totalKm.intValue() * 10 + " Xp");
+                    holder.textShareDistance.setText(mDf.format(totalKm));
+                    holder.textShareXp.setText(String.valueOf(totalKm.intValue() * 10));
                 }
             }
         }
@@ -110,12 +113,10 @@ public class SharesAdapter extends RecyclerView.Adapter<SharesAdapter.ViewHolder
         TextView textShareGuests;
         @BindView(R.id.text_share_distance)
         TextView textShareDistance;
-        @BindView(R.id.text_share_fuel)
-        TextView textShareFuel;
-        @BindView(R.id.text_share_emission)
-        TextView textShareEmission;
         @BindView(R.id.text_share_xp)
         TextView textShareXp;
+        @BindView(R.id.text_share_info)
+        TextView textShareInfo;
 
         ViewHolder(View view) {
             super(view);

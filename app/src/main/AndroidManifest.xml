@@ -136,7 +136,8 @@
             android:name=".activities.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Info condivisione"
-            android:screenOrientation="portrait" />
+            android:theme="@style/AppTheme.ConfigTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"

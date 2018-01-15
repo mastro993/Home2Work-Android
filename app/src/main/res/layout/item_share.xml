@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingBottom="2.5dp"
+    android:clipChildren="false"
+    android:paddingBottom="2.25dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
     tools:ignore="HardcodedText">
 
-    <View
-        android:layout_width="0.5dp"
-        android:layout_height="48dp"
+    <ImageView
+        android:layout_marginTop="-8dp"
+        android:layout_width="8dp"
+        android:layout_height="64dp"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
-        android:alpha="0.5"
-        android:background="@color/light_bg_dark_hint_text" />
+        android:layout_centerHorizontal="true"
+        android:alpha="0.1"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_road_sep" />
 
     <ImageView
         android:id="@+id/image_share_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
         android:background="@drawable/shape_share_driver"
         android:tint="@color/colorPrimary" />
 
@@ -28,10 +34,9 @@
         android:id="@+id/text_share_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="48dp"
         android:layout_marginTop="23dp"
+        android:layout_toStartOf="@id/image_share_type"
         android:text="Driver"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp"
@@ -43,114 +48,191 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/text_share_type"
         android:layout_alignBottom="@+id/text_share_type"
-        android:layout_alignEnd="@+id/cardView2"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/image_share_type"
         android:text="Il 23/01/2017 alle 9:00"
         android:textColor="@color/light_bg_dark_hint_text"
         android:textSize="12sp" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:background="@color/white"
         android:clipToPadding="false">
 
-        <TableLayout
+        <LinearLayout
+            android:id="@+id/share_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:padding="16dp"
-            android:stretchColumns="1">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <TableRow>
+            <TextView
+                android:id="@+id/text_share_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="4dp"
+                android:text="Hai condiviso la tua auto"
+                android:textColor="@color/light_bg_dark_primary_text" />
 
-                <TextView
-                    android:layout_marginEnd="8dp"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_share_guests"
-                    android:text="Ospiti:" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/text_share_guests"
-                    android:gravity="end"
-                    android:text="XXXX" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="2">
 
-            </TableRow>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_share_guests" />
 
-            <TableRow>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:layout_marginEnd="8dp"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_share_distance"
-                    android:text="Kilometri percorsi:" />
+                        <TextView
+                            android:id="@+id/text_share_guests"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:text="4"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/text_share_distance"
-                    android:gravity="end"
-                    android:text="XXXX" />
-
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_marginEnd="8dp"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_share_fuel"
-                    android:text="Carburante risparmiato:" />
-
-                <TextView
-                    android:id="@+id/text_share_fuel"
-                    android:gravity="end"
-                    android:text="XXXX" />
-
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_marginEnd="8dp"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_share_emission"
-                    android:text="Emissioni evitate:" />
-
-                <TextView
-                    android:id="@+id/text_share_emission"
-                    android:gravity="end"
-                    android:text="XXXX" />
-
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_marginEnd="8dp"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_share_xp"
-                    android:text="XP Guadagnata:" />
-
-                <TextView
-                    android:id="@+id/text_share_xp"
-                    android:gravity="end"
-                    android:text="XXXX" />
-
-            </TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Ospiti"
+                            android:textSize="12sp" />
 
 
-        </TableLayout>
+                    </LinearLayout>
 
-        <include
-            android:id="@+id/divider"
-            layout="@layout/horizontal_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom" />
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.5"
+                        android:background="@color/light_bg_dark_hint_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="2">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_share_distance" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+
+                            android:id="@+id/text_share_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="end"
+                            android:text="99.9"
+                            android:textColor="@color/blue_grey_500"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Km condivisi"
+                            android:textSize="12sp" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.5"
+                        android:background="@color/light_bg_dark_hint_text" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="2">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_share_xp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_share_xp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="end"
+                            android:text="99.9"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Punti XP"
+                            android:textSize="12sp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
