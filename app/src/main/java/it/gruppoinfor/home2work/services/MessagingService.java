@@ -18,15 +18,13 @@ import it.gruppoinfor.home2work.App;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.SplashActivity;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
 
 public class MessagingService extends FirebaseMessagingService {
 
-    private static final String TYPE = "TYPE";
     public static final String SHARE_JOIN_REQUEST = "SHARE_JOIN_REQUEST";
     public static final String SHARE_COMPLETE_REQUEST = "SHARE_COMPLETE_REQUEST";
     public static final String SHARE_DETACH_REQUEST = "SHARE_COMPLETE_REQUEST";
-
+    private static final String TYPE = "TYPE";
     private LocalBroadcastManager broadcaster;
 
     private Map<String, String> data;
@@ -70,7 +68,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void sendNotification() {
 
-        if (App.home2WorkClient.getUser()!= null) {
+        if (App.home2WorkClient.getUser() != null) {
             Intent resultIntent = new Intent(this, MainActivity.class);
             pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {

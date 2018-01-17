@@ -4,7 +4,8 @@
     android:id="@+id/ongoing_share_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:theme="@style/AppTheme.GradientTheme">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -27,24 +28,62 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/host_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/buttons_layout"
         android:layout_below="@id/appbar"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:id="@+id/header_view"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="Passeggeri"
+            android:textColor="@color/dark_bg_light_secondary_text" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/guests_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_show_code"
+            android:layout_marginTop="40dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_show_code"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="32dp"
+            android:text="Nessun ospite nella condivisione corrente. Invita qualcuno mostrando il codice di condivisione."
+            android:textColor="@color/dark_bg_light_secondary_text"
+            android:textSize="16dp"
+            android:textStyle="italic"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layout_show_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_alignParentBottom="true"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -55,21 +94,21 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/shape_share_new_bg" />
+                    android:src="@drawable/shape_qr_code_base_bg" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/shape_share_new" />
+                    android:src="@drawable/shape_qr_code_base" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_share_code" />
+                    android:src="@drawable/ic_share_code_accent" />
 
             </RelativeLayout>
 
@@ -79,76 +118,33 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:text="Mostra codice condivisione"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/dark_bg_light_primary_text"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:text="Passeggeri" />
+    </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/guests_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="32dp"
-                android:clipToPadding="false"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/empty_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginTop="32dp"
-                android:gravity="center"
-                android:padding="32dp"
-                android:text="Nessun ospite nella condivisione corrente. Invita qualcuno mostrando il codice di condivisione."
-                android:textColor="@color/light_bg_dark_secondary_text"
-                android:textSize="16dp"
-                android:textStyle="italic"
-                android:visibility="gone" />
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/guest_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/buttons_layout"
+        android:clickable="false"
+        android:focusable="false"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/layout_host"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_horizontal"
-            android:text="Host condivisione"
-            android:textColor="@color/dark_bg_light_secondary_text"
-            android:textSize="16sp" />
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:orientation="vertical"
-            android:paddingBottom="?attr/actionBarSize">
+            android:padding="16dp">
 
             <it.gruppoinfor.home2work.custom.AvatarView
                 android:id="@+id/avatar_view"
@@ -162,10 +158,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
+                android:text="Host condivisione"
+                android:textColor="@color/dark_bg_light_secondary_text"
+                android:textSize="12sp" />
+
+            <TextView
                 android:id="@+id/name_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="Nome Cognome"
                 android:textColor="@color/dark_bg_light_primary_text"
@@ -190,15 +194,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/name_text_view" />
 
-        </android.support.constraint.ConstraintLayout>
-
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="4dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:gravity="bottom"
+            android:visibility="gone"
             android:weightSum="2">
 
             <LinearLayout
@@ -208,7 +211,7 @@
                 android:weightSum="2">
 
                 <ImageView
-                    android:layout_width="48dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="8dp"
@@ -227,7 +230,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:gravity="end"
-                        android:text="99.9"
                         android:textColor="@color/dark_bg_light_primary_text"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -236,7 +238,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-2dp"
-                        android:text="Km condivisi"
+                        android:text="Km percorsi"
                         android:textColor="@color/dark_bg_light_secondary_text"
                         android:textSize="12sp" />
 
@@ -259,7 +261,7 @@
                 android:weightSum="2">
 
                 <ImageView
-                    android:layout_width="48dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="8dp"
@@ -278,7 +280,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:gravity="end"
-                        android:text="99.9"
                         android:textColor="@color/dark_bg_light_primary_text"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -287,7 +288,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-2dp"
-                        android:text="Punti XP"
+                        android:text="XP condivisi"
                         android:textColor="@color/dark_bg_light_secondary_text"
                         android:textSize="12sp" />
 
@@ -296,10 +297,9 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/buttons_layout"
@@ -307,7 +307,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:elevation="@dimen/cardview_default_elevation"
+        android:clipToPadding="false"
+        android:elevation="8dp"
         android:orientation="vertical"
         android:padding="16dp"
         android:weightSum="3">
@@ -318,21 +319,10 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_weight="2"
+            android:enabled="false"
             android:text="Completa"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/button_cancel_share"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Annulla"
-            android:textAllCaps="false"
-            android:textColor="@color/light_bg_dark_secondary_text"
-            android:textSize="16sp"
             android:visibility="visible" />
 
     </LinearLayout>

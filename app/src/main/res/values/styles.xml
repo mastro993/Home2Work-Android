@@ -39,22 +39,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
-    <style name="AppTheme.SplashTheme" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.GradientTheme" parent="AppTheme.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@drawable/gradient</item>
     </style>
 
-    <style name="AppTheme.SignInTheme" parent="AppTheme.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
+    <style name="AppTheme.FullScreen" parent="AppTheme.GradientTheme">
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/gradient</item>
-    </style>
-
-    <style name="AppTheme.ConfigTheme" parent="AppTheme.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/gradient</item>
     </style>
 
     <style name="ProgressFragment.UsernameStyle" parent="TextAppearance.AppCompat.Light.SearchResult.Title">

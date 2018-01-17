@@ -29,21 +29,29 @@ public class DateFormatUtils {
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
             SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.ITALIAN);
             return String.format("%1$s alle %2$s", sdfDate.format(startDate), sdfTime.format(startDate));
-        } else if (elapsedDays > 0)
+        } else if (elapsedDays > 1) {
             return elapsedDays + " giorni fa";
+        } else if (elapsedDays > 0) {
+            return elapsedDays + " giorno fa";
+        }
+
 
         long elapsedHours = different / hoursInMilli;
         different = different % hoursInMilli;
 
-        if (elapsedHours > 0) {
+        if (elapsedHours > 1) {
             return elapsedHours + " ore fa";
+        } else if (elapsedHours > 0) {
+            return elapsedHours + " ora fa";
         }
 
         long elapsedMinutes = different / minutesInMilli;
         different = different % minutesInMilli;
 
-        if (elapsedMinutes > 0) {
+        if (elapsedMinutes > 1) {
             return elapsedMinutes + " minuti fa";
+        } else if (elapsedMinutes > 0) {
+            return elapsedMinutes + " minuto fa";
         }
 
 

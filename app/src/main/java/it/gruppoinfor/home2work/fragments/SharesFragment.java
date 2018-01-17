@@ -23,11 +23,12 @@ import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.annimon.stream.Optional;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Predicate;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -48,6 +49,7 @@ import it.gruppoinfor.home2work.adapters.SharesAdapter;
 import it.gruppoinfor.home2work.custom.OngoinShareView;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.model.Share;
+import it.gruppoinfor.home2workapi.model.ShareGuest;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,7 +71,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
     private Unbinder unbinder;
     private MainActivity activity;
-    private Share ongoingShare = null;
+    private Share mOngoingShare = null;
 
     private List<Share> mShareList = new ArrayList<>();
     private SharesAdapter mSharesAdapter;
@@ -195,13 +197,13 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
             sharesRecyclerView.setAdapter(mSharesAdapter);
         }
 
-        if (ongoingShare != null) {
+        if (mOngoingShare != null) {
             newShareContainerEmpty.setVisibility(View.GONE);
             newShareContainer.setVisibility(View.GONE);
             ongoingShareView.setVisibility(View.VISIBLE);
 
 
-            ongoingShareView.setShare(ongoingShare);
+            ongoingShareView.setShare(mOngoingShare);
             activity.setBadge(2, "In corso");
         } else {
             ongoingShareView.setVisibility(View.GONE);
@@ -214,19 +216,37 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     private void refreshData() {
         App.home2WorkClient.getUserShares(shares -> {
 
-            ongoingShare = null;
+            mOngoingShare = null;
 
-            for (Share share : shares) {
-                if (share.getStatus() == Share.Status.CREATED) {
-                    ongoingShare = share;
-                    shares.remove(share);
-                    break;
+            Optional<Share> ongoingShareOptional = Stream.of(shares)
+                    .filter(value -> value.getStatus().equals(Share.Status.CREATED))
+                    .findFirst();
+
+            if(ongoingShareOptional.isPresent()){
+
+                Share ongoingShare = ongoingShareOptional.get();
+
+                // Controllo se l'utente è host o guest della condivisione
+                if(ongoingShare.getHost().equals(App.home2WorkClient.getUser())){
+                    mOngoingShare = ongoingShare;
+                    shares.remove(mOngoingShare);
+                } else {
+                    // Se è guest controllo se ha completato la condivisione o è ancora in corso
+                    Optional<ShareGuest> shareGuestOptional = Stream.of(ongoingShare.getGuests())
+                            .filter(value -> value.getGuest().equals(App.home2WorkClient.getUser()) && value.getStatus().equals(ShareGuest.Status.JOINED))
+                            .findFirst();
+                    if(shareGuestOptional.isPresent()){
+                        mOngoingShare = ongoingShare;
+                        shares.remove(mOngoingShare);
+                    }
                 }
+
             }
 
             mShareList.clear();
             mShareList.addAll(shares);
             initUI();
+
         }, e -> {
             //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI();
@@ -283,7 +303,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         App.home2WorkClient.createShare(share -> {
             materialDialog.dismiss();
             newShareContainer.setVisibility(View.GONE);
-            ongoingShare = share;
+            mOngoingShare = share;
             initUI();
             Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
             intent.putExtra("SHARE", share);

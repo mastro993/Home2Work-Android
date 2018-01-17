@@ -94,7 +94,7 @@
             android:name=".activities.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.SplashTheme">
+            android:theme="@style/AppTheme.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -110,13 +110,13 @@
             android:name=".activities.SignInActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.SignInTheme"
+            android:theme="@style/AppTheme.GradientTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.ConfigurationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ConfigTheme" />
+            android:theme="@style/AppTheme.FullScreen" />
         <activity
             android:name=".activities.MatchActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -135,8 +135,8 @@
         <activity
             android:name=".activities.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="Info condivisione"
-            android:theme="@style/AppTheme.ConfigTheme"
+            android:label="Condivisione in corso"
+            android:theme="@style/AppTheme.GradientTheme"
             android:screenOrientation="portrait"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

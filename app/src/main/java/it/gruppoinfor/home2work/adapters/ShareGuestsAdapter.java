@@ -72,9 +72,10 @@ public class ShareGuestsAdapter extends RecyclerView.Adapter<ShareGuestsAdapter.
         holder.container.setOnLongClickListener((v) -> itemClickCallbacks.onLongItemClick(v, position));
 
         if (shareGuest.getStatus() == ShareGuest.Status.COMPLETED) {
-            holder.guestStatus.setVisibility(View.VISIBLE);
+            holder.viewStatusCompleted.setVisibility(View.VISIBLE);
         } else if (shareGuest.getStatus() == ShareGuest.Status.CANCELED) {
-            holder.itemView.setAlpha(0.5f);
+            holder.viewStatusLeaved.setVisibility(View.VISIBLE);
+            holder.itemView.setAlpha(0.7f);
         }
 
     }
@@ -87,8 +88,6 @@ public class ShareGuestsAdapter extends RecyclerView.Adapter<ShareGuestsAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.guest_status)
-        ImageView guestStatus;
         @BindView(R.id.user_avatar)
         ImageView userAvatar;
         @BindView(R.id.name_view)
@@ -97,6 +96,10 @@ public class ShareGuestsAdapter extends RecyclerView.Adapter<ShareGuestsAdapter.
         TextView jobView;
         @BindView(R.id.container)
         View container;
+        @BindView(R.id.guest_status_completed)
+        View viewStatusCompleted;
+        @BindView(R.id.guest_status_leaved)
+        View viewStatusLeaved;
 
 
         ViewHolder(View view) {

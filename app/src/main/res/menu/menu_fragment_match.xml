@@ -3,15 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.infor.fleetupht.view.ProfileActivity">
     <item
-        android:id="@+id/action_edit_profile"
+        android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter"
-        android:title="Modifica profilo"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_sort"
-        android:title="Impostazioni"
+        android:title="Filtra matches"
         app:showAsAction="ifRoom" />
 
 

@@ -9,11 +9,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.annimon.stream.Stream;
+
+import java.util.ArrayList;
+import java.util.function.Predicate;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.OngoingShareActivity;
 import it.gruppoinfor.home2workapi.model.Share;
+import it.gruppoinfor.home2workapi.model.ShareGuest;
 
 public class OngoinShareView extends FrameLayout {
 
@@ -58,8 +64,7 @@ public class OngoinShareView extends FrameLayout {
 
     public void setShare(Share share) {
 
-
-        int guestSize = share.getGuests().size();
+        long guestSize = Stream.of(share.getGuests()).filter(value -> !value.getStatus().equals(ShareGuest.Status.CANCELED)).count();
         textOngoinShareGuests.setText(String.valueOf(guestSize));
 
         if (share.getType() == Share.Type.DRIVER) {

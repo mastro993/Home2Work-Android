@@ -109,6 +109,21 @@ interface EndpointInterface {
             );
 
     @FormUrlEncoded
+    @POST("share/{shareId}/complete")
+    Observable<Response<Share>> completeShare(
+            @Path("shareId") Long shareId,
+            @Field("guestId") Long guestId,
+            @Field("location") String locationString
+    );
+
+    @FormUrlEncoded
+    @POST("share/{shareId}/finish")
+    Observable<Response<Share>> finishShare(
+            @Path("shareId") Long shareId,
+            @Field("hostId") Long hostId
+    );
+
+    @FormUrlEncoded
     @POST("share/{shareId}/leave")
     Observable<Response<Share>> leaveShare(
             @Path("shareId") Long shareId,

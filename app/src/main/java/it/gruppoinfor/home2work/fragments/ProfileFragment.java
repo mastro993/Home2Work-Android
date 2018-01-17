@@ -88,7 +88,7 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
         unbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
         initUI();
-        refreshData();
+        //refreshData();
         return rootView;
     }
 

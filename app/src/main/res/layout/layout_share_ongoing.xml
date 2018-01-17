@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingTop="16dp"
+    android:paddingBottom="2.25dp"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
-    android:paddingBottom="2.25dp"
+    android:paddingTop="16dp"
     tools:ignore="HardcodedText">
 
     <android.support.v7.widget.CardView
@@ -20,12 +20,12 @@
         <RelativeLayout
             android:id="@+id/share_item_ongoing_container"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:padding="16dp"
+            android:layout_height="64dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
             android:weightSum="6">
 
             <TextView
-                android:textStyle="bold"
                 android:id="@+id/text_ongoing_share_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,13 +33,15 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:text="Stai convidendo la tua auto"
-                android:textColor="@color/dark_bg_light_primary_text" />
+                android:textColor="@color/dark_bg_light_primary_text"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/layout_guests_number"
-                android:layout_alignParentEnd="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:weightSum="2">
 
                 <ImageView
@@ -79,6 +81,7 @@
 
 
             </LinearLayout>
+
 
         </RelativeLayout>
 

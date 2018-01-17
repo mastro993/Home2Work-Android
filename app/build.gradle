@@ -119,6 +119,9 @@ dependencies {
 
     // CustomActivityOnCrash
     compile 'cat.ereza:customactivityoncrash:2.2.0'
+
+    // Lightweight Streams
+    compile 'com.annimon:stream:1.1.9'
 }
 
 

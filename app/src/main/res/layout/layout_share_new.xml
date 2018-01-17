@@ -4,7 +4,7 @@
     android:id="@+id/new_share_container"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="16dp"
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:clickable="true"
     android:clipChildren="false"
@@ -16,8 +16,8 @@
         android:layout_width="8dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="-6dp"
+        android:layout_marginStart="34dp"
         android:layout_marginTop="32dp"
         android:alpha="0.1"
         android:clipChildren="false"
@@ -27,8 +27,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp">
+        android:layout_centerVertical="true"
+        android:layout_marginStart="18dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -62,8 +62,7 @@
         android:layout_marginStart="72dp"
         android:text="Nuova condivisione"
         android:textColor="@color/colorAccent"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

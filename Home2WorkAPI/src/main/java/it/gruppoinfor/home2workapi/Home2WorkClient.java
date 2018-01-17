@@ -265,6 +265,31 @@ public class Home2WorkClient {
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
+    public void completeShare(Share share, android.location.Location joinLocation, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
+        String locationString = joinLocation.getLatitude() + "," + joinLocation.getLongitude();
+        mAPI.completeShare(share.getId(), mUser.getId(), locationString)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    if (responseBodyResponse.code() == 200)
+                        onSuccessListener.onSuccess(responseBodyResponse.body());
+                    else
+                        onFailureListener.onFailure(new Exception("Response code: " + responseBodyResponse.code()));
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
+    public void finishShare(Share share, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.finishShare(share.getId(), mUser.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    if (responseBodyResponse.code() == 200)
+                        onSuccessListener.onSuccess(responseBodyResponse.body());
+                    else
+                        onFailureListener.onFailure(new Exception("Response code: " + responseBodyResponse.code()));
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
     public void uploadLocation(List<Location> locationList, OnSuccessListener<List<Location>> onSuccessListener, OnFailureListener onFailureListener) {
         mAPI.uploadLocations(mUser.getId(), locationList)
                 .subscribeOn(Schedulers.io())
