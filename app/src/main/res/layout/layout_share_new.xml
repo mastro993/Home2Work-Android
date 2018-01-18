@@ -3,32 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/new_share_container"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:layout_marginTop="16dp"
-    android:background="?android:attr/selectableItemBackgroundBorderless"
-    android:clickable="true"
+    android:layout_height="wrap_content"
+    android:background="@color/window_background"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:focusable="true"
+    android:paddingTop="16dp"
     tools:ignore="HardcodedText">
 
-    <ImageView
+    <View
         android:layout_width="8dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="-6dp"
-        android:layout_marginStart="34dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="26dp"
         android:layout_marginTop="32dp"
-        android:alpha="0.1"
-        android:clipChildren="false"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_road_sep" />
+        android:alpha="0.7"
+        android:background="@color/grey_300" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="18dp">
+        android:layout_marginStart="10dp">
+        <!--android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"-->
 
         <ImageView
             android:layout_width="wrap_content"

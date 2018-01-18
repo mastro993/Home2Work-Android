@@ -13,10 +13,10 @@ import java.util.List;
 public class ActivityRecognizedService extends IntentService {
 
     private static final String TAG = "ACTIVITY_RECOGNITION";
-    private static boolean isDriving = false;
-    final int CONFIDENCE_TRESHOLD = 80; // Valore minimo di affidabilita' per i trigger delle attivita'
-    private static int stillStatusCounter = 0;
     private final static int MAX_STILL_STATUS_COUNT = 2;
+    private static boolean isDriving = false;
+    private static int stillStatusCounter = 0;
+    final int CONFIDENCE_TRESHOLD = 80; // Valore minimo di affidabilita' per i trigger delle attivita'
 
     public ActivityRecognizedService() {
         super("ActivityRecognizedService");

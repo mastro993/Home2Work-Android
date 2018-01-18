@@ -41,7 +41,7 @@ public class SyncService extends Service {
 
             @Override
             public void onValidSession() {
-                if (getConnectivityType(SyncService.this) == ConnectivityManager.TYPE_WIFI || UserPrefs.syncWithData) {
+                if (canSync()) {
                     sync();
                 }
             }
@@ -61,28 +61,25 @@ public class SyncService extends Service {
     }
 
     public void sync() {
-        RoutePointRepo.getAllUserLocations()
-                .subscribe(routePointEntities -> {
 
-                    for (RoutePointEntity routePointEntity : routePointEntities) {
+        RoutePointRepo.getAllUserLocations(routePointEntities -> {
+            for (RoutePointEntity routePointEntity : routePointEntities) {
 
-                        Location location = new Location();
-                        location.setLatLng(routePointEntity.getLatLng());
-                        location.setDate(new Date(routePointEntity.getTimestamp() * 1000));
-                        locations.add(location);
+                Location location = new Location();
+                location.setLatLng(routePointEntity.getLatLng());
+                location.setDate(new Date(routePointEntity.getTimestamp() * 1000));
+                locations.add(location);
 
-                    }
+            }
 
-                    if (locations.size() > 0) syncRoutePoints(locations);
-
-                });
-
+            if (locations.size() > 0) syncRoutePoints(locations);
+        }, Throwable::printStackTrace);
     }
 
     private void syncRoutePoints(final List<Location> locationList) {
 
         App.home2WorkClient.uploadLocation(locationList,
-                locations -> RoutePointRepo.deleteAllUserLocations().subscribe(),
+                locations -> RoutePointRepo.deleteAllUserLocations(),
                 e -> Log.e(TAG, "Sincronizzazione fallita", new Throwable(e)));
 
     }
@@ -98,11 +95,8 @@ public class SyncService extends Service {
     }
 
     private boolean canSync() {
-        if (getConnectivityType(this) != ConnectivityManager.TYPE_WIFI) {
-            if (!UserPrefs.syncWithData || getConnectivityType(this) != ConnectivityManager.TYPE_MOBILE)
-                return false;
-        }
-        return true;
+        boolean WiFiEnabled = getConnectivityType(SyncService.this) == ConnectivityManager.TYPE_WIFI;
+        return WiFiEnabled || UserPrefs.syncWithData;
     }
 
     @Nullable

@@ -1,62 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingBottom="2.25dp"
-    android:paddingEnd="16dp"
-    android:paddingStart="16dp"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp"
     tools:ignore="HardcodedText">
 
-    <ImageView
-        android:layout_width="8dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="-8dp"
-        android:alpha="0.1"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_road_sep" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp">
 
-    <ImageView
-        android:id="@+id/image_share_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/shape_share_driver"
-        android:tint="@color/colorPrimary" />
+        <ImageView
+            android:id="@+id/image_share_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/shape_share_driver"
+            android:tint="@color/colorPrimary" />
 
-    <TextView
-        android:id="@+id/text_share_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_toEndOf="@id/image_share_type"
-        android:text="Driver"
-        android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/text_share_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/image_share_type"
+            android:text="Driver"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/text_share_datetime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/text_share_type"
-        android:layout_alignBottom="@+id/text_share_type"
-        android:layout_alignParentEnd="true"
-        android:text="Il 23/01/2017 alle 9:00"
-        android:textColor="@color/light_bg_dark_hint_text"
-        android:textSize="12sp" />
+        <!--        <TextView
+                    android:id="@+id/text_share_datetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/text_share_type"
+                    android:layout_alignBottom="@+id/text_share_type"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="Il 23/01/2017 alle 9:00"
+                    android:textColor="@color/light_bg_dark_hint_text"
+                    android:textSize="12sp" />-->
+
+    </RelativeLayout>
+
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:background="@color/white"
         android:clipToPadding="false">
 
         <LinearLayout
@@ -66,43 +62,66 @@
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:background="@color/grey_600"
+                android:gravity="center"
+                android:padding="32dp"
+                android:text="Mappa del percorso con Google Static Map \n (placeholder)"
+                android:textColor="@color/dark_bg_light_primary_text" />
+
+            <!-- TODO mappa del percorso con static map Google-->
 
             <TextView
                 android:id="@+id/text_share_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="24dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:text="Hai condiviso la tua auto"
                 android:textColor="@color/light_bg_dark_primary_text" />
+
+            <TextView
+                android:id="@+id/text_share_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="23/01/2017 alle 9:00"
+                android:textColor="@color/light_bg_dark_secondary_text"
+                android:textSize="12sp" />
+
+            <include layout="@layout/horizontal_divider" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:weightSum="3">
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:weightSum="2">
+                    android:layout_weight="1">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_share_guests" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -121,40 +140,28 @@
                             android:text="Ospiti"
                             android:textSize="12sp" />
 
-
                     </LinearLayout>
-
-
-                    <View
-                        android:layout_width="0.5dp"
-                        android:layout_height="match_parent"
-                        android:alpha="0.5"
-                        android:background="@color/light_bg_dark_hint_text" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:weightSum="2">
+                    android:layout_weight="1">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_share_distance" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
-
                             android:id="@+id/text_share_distance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -169,17 +176,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="-2dp"
-                            android:text="Km condivisi"
+                            android:text="Km"
                             android:textSize="12sp" />
 
 
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="0.5dp"
-                        android:layout_height="match_parent"
-                        android:alpha="0.5"
-                        android:background="@color/light_bg_dark_hint_text" />
 
 
                 </LinearLayout>
@@ -187,21 +188,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:weightSum="2">
+                    android:layout_weight="1">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_share_xp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -235,6 +233,6 @@
     </android.support.v7.widget.CardView>
 
 
-</RelativeLayout>
+</LinearLayout>
 
 

@@ -36,8 +36,8 @@ import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.database.RoutePointRepo;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
 import it.gruppoinfor.home2work.utils.Tools;
-import it.gruppoinfor.home2workapi.Home2WorkClient;
 import it.gruppoinfor.home2workapi.model.LatLng;
+import it.gruppoinfor.home2workapi.model.User;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks {
 
@@ -45,6 +45,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private boolean isRecording = false;
     private FusedLocationProviderClient mFusedLocationClient;
+    private User mLoggedUser;
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -68,7 +69,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 .addApi(LocationServices.API)
                 .build();
 
-        if (App.home2WorkClient.getUser() != null) {
+        mLoggedUser = App.home2WorkClient.getUser();
+
+        if (mLoggedUser != null) {
 
             mGoogleApiClient.connect();
 
@@ -175,9 +178,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         routePointEntity.setLatLng(latLng);
         routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
-        routePointEntity.setUserId(App.home2WorkClient.getUser().getId());
+        routePointEntity.setUserId(mLoggedUser.getId());
 
-        RoutePointRepo.insert(routePointEntity).subscribe();
+        RoutePointRepo.insert(routePointEntity);
     }
 
     @Override

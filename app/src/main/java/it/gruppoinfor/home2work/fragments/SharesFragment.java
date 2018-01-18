@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -19,13 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Predicate;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,11 +60,11 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.new_share_container)
-    RelativeLayout newShareContainer;
+    View newShareContainer;
     @BindView(R.id.ongoing_share_view)
     OngoinShareView ongoingShareView;
     @BindView(R.id.new_share_container_empty)
-    ConstraintLayout newShareContainerEmpty;
+    View newShareContainerEmpty;
 
     private Unbinder unbinder;
     private MainActivity activity;
@@ -153,7 +150,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         return true;
     }
 
-    @OnClick({R.id.new_share_container, R.id.new_share_container_empty})
+    @OnClick({R.id.new_share_container, R.id.button_first_share})
     public void onNewShareClicked() {
         String[] options = new String[]{"Crea nuova condivisione", "Unisciti a condivisione"};
 
@@ -222,12 +219,12 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
                     .filter(value -> value.getStatus().equals(Share.Status.CREATED))
                     .findFirst();
 
-            if(ongoingShareOptional.isPresent()){
+            if (ongoingShareOptional.isPresent()) {
 
                 Share ongoingShare = ongoingShareOptional.get();
 
                 // Controllo se l'utente è host o guest della condivisione
-                if(ongoingShare.getHost().equals(App.home2WorkClient.getUser())){
+                if (ongoingShare.getHost().equals(App.home2WorkClient.getUser())) {
                     mOngoingShare = ongoingShare;
                     shares.remove(mOngoingShare);
                 } else {
@@ -235,7 +232,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
                     Optional<ShareGuest> shareGuestOptional = Stream.of(ongoingShare.getGuests())
                             .filter(value -> value.getGuest().equals(App.home2WorkClient.getUser()) && value.getStatus().equals(ShareGuest.Status.JOINED))
                             .findFirst();
-                    if(shareGuestOptional.isPresent()){
+                    if (shareGuestOptional.isPresent()) {
                         mOngoingShare = ongoingShare;
                         shares.remove(mOngoingShare);
                     }

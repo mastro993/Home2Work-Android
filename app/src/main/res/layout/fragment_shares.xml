@@ -4,25 +4,32 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/window_background"
     tools:context="it.gruppoinfor.home2work.fragments.HomeFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <View
+            android:layout_width="8dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="26dp"
+            android:alpha="0.7"
+            android:background="@color/grey_300" />
+
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <include
                     layout="@layout/layout_share_new"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <it.gruppoinfor.home2work.custom.OngoinShareView
                     android:id="@+id/ongoing_share_view"
@@ -32,6 +39,7 @@
                     android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:focusable="false"
                     android:id="@+id/shares_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

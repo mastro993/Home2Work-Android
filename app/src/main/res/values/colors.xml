@@ -10,7 +10,7 @@
     <color name="twitterLightBlue">#55acee</color>
     <color name="telegramLightBlue">#0088cc</color>
 
-    <color name="window_background">@color/grey_200</color>
+    <color name="window_background">#EEEEEE</color>
 
     <!-- Level colors -->
     <color name="level_1_4_color">@color/blue_grey_800</color>
