@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/App/App.iml" filepath="$PROJECT_DIR$/App/App.iml" />
       <module fileurl="file://$PROJECT_DIR$/Home2Work.iml" filepath="$PROJECT_DIR$/Home2Work.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Home2WorkAPI/Home2WorkAPI.iml" filepath="$PROJECT_DIR$/Home2WorkAPI/Home2WorkAPI.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\feder\Documents\GitHub\Home2Work\HomeToWorkAPI\Home2WorkAPI.iml" filepath="C:\Users\feder\Documents\GitHub\Home2Work\HomeToWorkAPI\Home2WorkAPI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HomeToWorkAPI/HomeToWorkAPI.iml" filepath="$PROJECT_DIR$/HomeToWorkAPI/HomeToWorkAPI.iml" />
     </modules>
   </component>
 </project>

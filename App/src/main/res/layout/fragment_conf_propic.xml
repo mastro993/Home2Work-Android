@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    tools:ignore="Overdraw">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:lineSpacingExtra="@dimen/ms_material_button_padding_vertical"
+        android:text="@string/activity_configuration_avatar_title"
+        android:textAlignment="center"
+        android:textColor="@color/dark_bg_light_primary_text"
+        android:textSize="21sp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:gravity="center"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/propicView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="25dp"
+                android:background="@drawable/ic_avatar_placeholder"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/selectPhotoButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/activity_configuration_avatar_selection"
+            android:textColor="@color/dark_bg_light_primary_text" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
