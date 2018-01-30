@@ -50,7 +50,7 @@ public class App extends Application {
         boolean isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
         CaocConfig.Builder.create()
                 //.backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
-                .enabled(isDebuggable) // Abilitato solo de in debug mode
+                // TODO rimettere .enabled(isDebuggable) // Abilitato solo de in debug mode
                 //.showErrorDetails(false) //default: true
                 //.showRestartButton(false) //default: true
                 //.logErrorOnRestart(false) //default: true

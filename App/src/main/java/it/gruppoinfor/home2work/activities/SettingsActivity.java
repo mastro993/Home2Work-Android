@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,18 +20,19 @@ import it.gruppoinfor.home2work.utils.UserPrefs;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    @BindView(R.id.tracking_switch)
-    Switch trackingSwitch;
-    @BindView(R.id.sync_mode_spinner)
-    Spinner syncModeSpinner;
-    @BindView(R.id.settings_sync_mode_container)
-    RelativeLayout settingsSyncModeContainer;
-    @BindView(R.id.notifications_switch)
-    Switch notificationsSwitch;
-    @BindView(R.id.news_notification_switch)
-    CheckBox newsNotificationSwitch;
-    @BindView(R.id.matches_notification_switch)
-    CheckBox matchesNotificationSwitch;
+
+    @BindView(R.id.text_tracking)
+    TextView textTracking;
+    @BindView(R.id.switch_tracking)
+    Switch switchTracking;
+    @BindView(R.id.spinner_sync_mode)
+    Spinner spinnerSyncMode;
+    @BindView(R.id.switch_notifications)
+    Switch switchNotifications;
+    @BindView(R.id.check_notifications_news)
+    CheckBox checkNotificationsNews;
+    @BindView(R.id.check_notifications_match)
+    CheckBox checkNotificationsMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +59,34 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        trackingSwitch.setChecked(UserPrefs.TrackingEnabled);
-        trackingSwitch.setOnCheckedChangeListener(getTrackingSwitchCheckedChangeListener());
+        switchTracking.setChecked(UserPrefs.TrackingEnabled);
+        switchTracking.setOnCheckedChangeListener(getTrackingSwitchCheckedChangeListener());
+        if (UserPrefs.TrackingEnabled) {
+            textTracking.setText(R.string.activity_settings_tracking_enabled);
+            textTracking.setTextColor(getResources().getColor(R.color.light_bg_dark_secondary_text));
+        } else {
+            textTracking.setText(R.string.activity_settings_tracking_disabled);
+            textTracking.setTextColor(getResources().getColor(R.color.red_500));
+        }
 
         if (UserPrefs.SyncWithData)
-            syncModeSpinner.setSelection(0);
+            spinnerSyncMode.setSelection(0);
         else
-            syncModeSpinner.setSelection(1);
+            spinnerSyncMode.setSelection(1);
 
-        syncModeSpinner.setOnItemSelectedListener(getSyncModeItemSelectedListener());
+        spinnerSyncMode.setOnItemSelectedListener(getSyncModeItemSelectedListener());
 
-        notificationsSwitch.setChecked(UserPrefs.NotificationsEnabled);
-        notificationsSwitch.setOnCheckedChangeListener(getNotificationSwitchCheckedChangeListener());
+        switchNotifications.setChecked(UserPrefs.NotificationsEnabled);
+        switchNotifications.setOnCheckedChangeListener(getNotificationSwitchCheckedChangeListener());
 
-        newsNotificationSwitch.setChecked(UserPrefs.NewsNotificationsEnabled);
-        newsNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
+        checkNotificationsNews.setChecked(UserPrefs.NewsNotificationsEnabled);
+        checkNotificationsNews.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.NewsNotificationsEnabled = b;
             UserPrefs.getManager().setBool(UserPrefs.NEWS_NOTIFICATIONS, b);
         }));
 
-        matchesNotificationSwitch.setChecked(UserPrefs.MatchesNotificationsEnabled);
-        matchesNotificationSwitch.setOnCheckedChangeListener(((compoundButton, b) -> {
+        checkNotificationsMatch.setChecked(UserPrefs.MatchesNotificationsEnabled);
+        checkNotificationsMatch.setOnCheckedChangeListener(((compoundButton, b) -> {
             UserPrefs.MatchesNotificationsEnabled = b;
             UserPrefs.getManager().setBool(UserPrefs.MATCHES_NOTIFICATIONS, b);
         }));
@@ -94,14 +102,18 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setPositiveButton(R.string.activity_settings_dialog_tracking_confirm, ((dialogInterface, i) -> {
                     UserPrefs.TrackingEnabled = false;
                     UserPrefs.getManager().setBool(UserPrefs.ACTIVITY_TRACKING, false);
+                    textTracking.setText(R.string.activity_settings_tracking_disabled);
+                    textTracking.setTextColor(getResources().getColor(R.color.red_500));
                     // TODO bottomNavigation.setNotification("!", 4);
                 }));
-                builder.setNegativeButton(R.string.activity_settings_dialog_tracking_discard, (((dialogInterface, i) -> trackingSwitch.setChecked(true))));
+                builder.setNegativeButton(R.string.activity_settings_dialog_tracking_discard, (((dialogInterface, i) -> switchTracking.setChecked(true))));
                 builder.show();
 
             } else {
                 UserPrefs.TrackingEnabled = true;
                 UserPrefs.getManager().setBool(UserPrefs.ACTIVITY_TRACKING, true);
+                textTracking.setText(R.string.activity_settings_tracking_enabled);
+                textTracking.setTextColor(getResources().getColor(R.color.light_bg_dark_secondary_text));
                 // TODO bottomNavigation.setNotification("", 4);
             }
         });
@@ -131,8 +143,8 @@ public class SettingsActivity extends AppCompatActivity {
         return ((compoundButton, b) -> {
             UserPrefs.NotificationsEnabled = b;
             UserPrefs.getManager().setBool(UserPrefs.NOTIFICATIONS, b);
-            newsNotificationSwitch.setEnabled(b);
-            matchesNotificationSwitch.setEnabled(b);
+            checkNotificationsNews.setEnabled(b);
+            checkNotificationsMatch.setEnabled(b);
         });
     }
 }

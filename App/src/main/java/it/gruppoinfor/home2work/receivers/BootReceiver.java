@@ -13,13 +13,15 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
+import org.jetbrains.annotations.Nullable;
+
 import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.SplashActivity;
 import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 
-public class BootReceiver extends BroadcastReceiver implements SessionManager.SessionManagerCallback {
+public class BootReceiver extends BroadcastReceiver implements SessionManager.SessionCallback {
 
     private Context mContext;
 
@@ -27,13 +29,11 @@ public class BootReceiver extends BroadcastReceiver implements SessionManager.Se
     @Override
     public void onReceive(final Context context, Intent arg1) {
         mContext = context;
-        SessionManager sessionManager = new SessionManager(context);
-        sessionManager.loadSession(this);
+        SessionManager.loadSession(context, this);
     }
 
     @Override
     public void onValidSession() {
-
         // Carica le preferenze
         UserPrefs.init(mContext);
 
@@ -51,18 +51,8 @@ public class BootReceiver extends BroadcastReceiver implements SessionManager.Se
     }
 
     @Override
-    public void onExpiredToken() {
-        showLoginNotification();
-    }
-
-    @Override
-    public void onNoSession() {
-        //...
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-        // ...
+    public void onInvalidSession(int code, @Nullable Throwable throwable) {
+        if (throwable != null) throwable.printStackTrace();
     }
 
     private void showLoginNotification() {

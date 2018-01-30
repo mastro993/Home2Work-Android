@@ -19,6 +19,7 @@ import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.Location;
+import it.gruppoinfor.home2workapi.model.User;
 
 
 public class SyncService extends Service {
@@ -27,6 +28,7 @@ public class SyncService extends Service {
 
     private List<Location> locations = new ArrayList<>();
     private RoutePointRepo mRoutePointRepo;
+    private User mUser;
 
     @Override
     public void onCreate() {
@@ -35,28 +37,16 @@ public class SyncService extends Service {
         UserPrefs.init(this);
         mRoutePointRepo = new RoutePointRepo(this);
 
-        SessionManager sessionManager = new SessionManager(this);
-        sessionManager.loadSession(new SessionManager.SessionManagerCallback() {
-            @Override
-            public void onNoSession() {
-
-            }
-
+        SessionManager.loadSession(this, new SessionManager.SessionCallback() {
             @Override
             public void onValidSession() {
-                if (canSync()) {
-                    sync();
-                }
+                mUser = HomeToWorkClient.getUser();
+                if (canSync()) sync();
             }
 
             @Override
-            public void onExpiredToken() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
+            public void onInvalidSession(int code, @Nullable Throwable throwable) {
+                if (throwable != null) throwable.printStackTrace();
             }
         });
 
@@ -66,12 +56,10 @@ public class SyncService extends Service {
 
         mRoutePointRepo.getAllUserLocations(routePointEntities -> {
             for (RoutePointEntity routePointEntity : routePointEntities) {
-
                 Location location = new Location();
                 location.setLatLng(routePointEntity.getLatLng());
                 location.setDate(new Date(routePointEntity.getTimestamp() * 1000));
                 locations.add(location);
-
             }
 
             if (locations.size() > 0) syncRoutePoints(locations);
@@ -79,9 +67,8 @@ public class SyncService extends Service {
     }
 
     private void syncRoutePoints(final List<Location> locationList) {
-
-        HomeToWorkClient.getInstance().uploadLocation(locationList,
-                locations -> mRoutePointRepo.deleteAllUserLocations(),
+        HomeToWorkClient.getInstance().uploadLocation(mUser.getId(), locationList,
+                locations -> mRoutePointRepo.deleteAllUserLocations(mUser.getId()),
                 e -> Log.e(TAG, "Sincronizzazione fallita", new Throwable(e)));
 
     }

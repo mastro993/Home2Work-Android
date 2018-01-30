@@ -39,6 +39,9 @@
     <string name="activity_configuration_wait">Completamento configurazione in corso</string>
     <string name="activity_configuration_completed">Il tuo profilo è pronto!\n Puoi cominciare ad usare FleetUp</string>
 
+    <string name="activity_settings_tracking_disabled">Tracking posizione disattivato</string>
+    <string name="activity_settings_tracking_enabled">Tracking posizione attivato</string>
+
     <string name="activity_edit_profile_title">Modifica informazioni</string>
     <string name="activity_edit_profile_avatar_upload_error">Errore durante l\'upload dell\'avatar</string>
 
@@ -67,6 +70,8 @@
     <string name="activity_ongoing_share_check_error">Impossibile verificare codice al momento</string>
     <string name="activity_ongoing_share_check_success">Condivisione completata con successo</string>
     <string name="activity_ongoing_share_check_wrong_code">Codice errato</string>
+    <string name="activity_ongoing_share_cancel_dialog_content">Eliminazione condivisione in corso</string>
+    <string name="activity_ongoing_share_leave_dialog_content">Abbandono della condivisione in corso</string>
 
     <string name="activity_settings_title">Preferenze</string>
     <string name="activity_settings_dialog_tracking_title">Disattivazione tracking</string>
@@ -89,6 +94,16 @@
     
     <string name="fragment_matches_empty">Non ci sono ancora abbastanza dati per trovare match. Abbiamo però rilevato persone nelle vicinanze che lavorano dove te. Prova a contattarle!</string>
 
+    <string-array name="fragment_profile_options">
+        <item>Modifica profilo</item>
+        <item>Preferenze</item>
+        <item>Esci</item>
+    </string-array>
+    <string name="fragment_profile_avatar_title">Immagine del profilo</string>
+    <string-array name="fragment_profile_avatar_options">
+        <item>Modifica</item>
+    </string-array>
+    <string name="fragment_profile_avatar_upload">Caricamento avatar in corso</string>
     <string name="fragment_profile_regdate">Iscritto dal %1$s</string>
     <string name="fragment_profile_stats_shares">%1$d condivisioni auto</string>
     <string name="fragment_profile_stats_distance">%1$s km condivisi</string>
@@ -97,6 +112,7 @@
 
     <string name="fragment_share_dialog_new_title">Nuova condivisione</string>
     <string name="fragment_share_dialog_new_content">Creazione di una condivisione in corso.</string>
+    <string name="fragment_share_dialog_join_content">Unione alla condivisione in corso.</string>
     <string name="fragment_share_dialog_new_error">Creazione di una condivisione in corso.</string>
     <string-array name="fragment_share_dialog_new_share_options">
         <item>Crea nuova condivisione</item>

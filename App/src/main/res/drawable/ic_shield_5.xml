@@ -15,6 +15,6 @@
 -330 38 0 291 219 394 340 230 272 356 645 356 1055 l0 140 -368 148 c-202 81 -376
 147 -387 146 -11 0 -183 -67 -382 -147z"
             android:strokeColor="@color/green_700"
-            android:strokeWidth="12" />
+            android:strokeWidth="16" />
     </group>
 </vector>

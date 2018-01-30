@@ -6,62 +6,34 @@ import android.content.SharedPreferences;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import it.gruppoinfor.home2work.services.LocationService;
 import it.gruppoinfor.home2work.services.SyncService;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback;
+import it.gruppoinfor.home2workapi.model.User;
 
 
 /**
  * Created by Federico on 10/01/2017.
- * Permette di salvare la sessione dell'utente nelle preferenze per un login rapido
+ * Permette di salvare la sessione dell'utente nelle preferenze e di ripristinarla all'occorrenza (se non scaduta)
  */
 
-public class SessionManager implements LoginCallback {
+public class SessionManager {
 
-    public static final int EXPIRED_TOKEN = 0;
-    public static final int ERROR = 1;
-    public static final int NO_INTERNET = 2;
     public static final String AUTH_CODE = "auth_code";
-    private static final String PREFS_SESSION = "it.fleetup.app.session";
-    private final SharedPreferences prefs;
-    private final String KEY_TOKEN = "token";
-    private final String KEY_EMAIL = "email";
-    private SessionManagerCallback mCallback;
-    private Context mContext;
+    private static final String PREFS_SESSION = "it.home2work.app.session";
+    private static final String PREFS_TOKEN = "token";
+    private static final String PREFS_EMAIL = "email";
 
-
-    public SessionManager(Context context) {
-        mContext = context;
-        prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE);
-    }
-
-    @Override
-    public void onLoginSuccess() {
-        storeSession();
-        mCallback.onValidSession();
-    }
-
-    @Override
-    public void onInvalidCredential() {
-        mCallback.onExpiredToken();
-        signOutUser();
-    }
-
-    @Override
-    public void onLoginError() {
-        mCallback.onExpiredToken();
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-        mCallback.onError(throwable);
-    }
-
-    public void storeSession() {
+    public static void storeSession(Context context, User user) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_EMAIL, HomeToWorkClient.getUser().getEmail());
-        editor.putString(KEY_TOKEN, HomeToWorkClient.getUser().getToken());
+
+        editor.putString(PREFS_EMAIL, user.getEmail());
+        editor.putString(PREFS_TOKEN, user.getToken());
         editor.apply();
 
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -69,46 +41,71 @@ public class SessionManager implements LoginCallback {
         HomeToWorkClient.getInstance().setFcmToken(token);
     }
 
-    public void loadSession(SessionManagerCallback sessionManagerCallback) {
-        mCallback = sessionManagerCallback;
-
-        if (mCallback == null) throw new IllegalStateException("Callback non implementati");
+    public static void loadSession(Context context, @NotNull SessionManager.SessionCallback callback) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE);
 
         if (HomeToWorkClient.getUser() != null) {
-            mCallback.onValidSession();
+            callback.onValidSession();
             return;
         }
 
-        String email = prefs.getString(KEY_EMAIL, null);
-        String token = prefs.getString(KEY_TOKEN, null);
+        String email = prefs.getString(PREFS_EMAIL, null);
+        String token = prefs.getString(PREFS_TOKEN, null);
 
         if (email == null && token == null) {
-            mCallback.onNoSession();
+            callback.onInvalidSession(0, null);
             return;
         }
 
-        HomeToWorkClient.getInstance().login(email, token, true, this);
+        HomeToWorkClient.getInstance().login(email, token, true, new LoginCallback() {
+            @Override
+            public void onLoginSuccess() {
+                callback.onValidSession();
+            }
 
+            @Override
+            public void onInvalidCredential() {
+                clearSession(context);
+                callback.onInvalidSession(1, null);
+            }
+
+            @Override
+            public void onLoginError() {
+                callback.onInvalidSession(2, null);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                callback.onInvalidSession(2, throwable);
+            }
+        });
     }
 
-    public void signOutUser() {
-        mContext.stopService(new Intent(mContext, LocationService.class));
-        mContext.stopService(new Intent(mContext, SyncService.class));
+    public static void clearSession(Context context) {
+        context.stopService(new Intent(context, LocationService.class));
+        context.stopService(new Intent(context, SyncService.class));
 
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
     }
 
-    public interface SessionManagerCallback {
+    public interface SessionCallback {
 
-        void onNoSession();
-
+        /**
+         * Sessione trovata e convalidata
+         */
         void onValidSession();
 
-        void onExpiredToken();
+        /**
+         * Sessione non trovata o non valida
+         *
+         * @param code      0: Nessuna sessione, 1: Token non valido, 2: Errore del server
+         * @param throwable Throwable opzionale in caso di errore
+         */
+        void onInvalidSession(int code, @Nullable Throwable throwable);
 
-        void onError(Throwable throwable);
     }
 
 }

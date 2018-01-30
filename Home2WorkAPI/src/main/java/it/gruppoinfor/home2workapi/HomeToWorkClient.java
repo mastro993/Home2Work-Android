@@ -109,8 +109,11 @@ public class HomeToWorkClient {
      */
     public void setFcmToken(String fcmToken) {
         mAPI.setFCMToken(sUser.getId(), fcmToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    // .. nulla
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -125,7 +128,7 @@ public class HomeToWorkClient {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (response.code() == 200)
+                    if (response.code() == 201)
                         onSuccessListener.onSuccess(response.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code " + response.code()));
@@ -397,8 +400,8 @@ public class HomeToWorkClient {
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
-    public void uploadLocation(List<Location> locationList, OnSuccessListener<List<Location>> onSuccessListener, OnFailureListener onFailureListener) {
-        mAPI.uploadLocations(sUser.getId(), locationList)
+    public void uploadLocation(long userId, List<Location> locationList, OnSuccessListener<List<Location>> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.uploadLocations(userId, locationList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listResponse -> {

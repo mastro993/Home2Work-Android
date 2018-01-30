@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,9 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.MediaStoreSignature;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import butterknife.BindView;
@@ -27,7 +28,6 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.utils.Tools;
 
 public class AvatarView extends RelativeLayout {
-
 
     @BindView(R.id.karma_donut_progress)
     DonutProgress karmaDonutProgress;
@@ -41,9 +41,10 @@ public class AvatarView extends RelativeLayout {
     RelativeLayout levelContainer;
 
     private Context mContext;
-    private Long mLastExp;
-    private Integer mLastLevel;
-    private Float mLastProgress;
+    private Long mLastExp = 0L;
+    private Integer mLastLevel = 0;
+    private Float mLastProgress = 0.0f;
+    private int mAvatarVersion = 0;
 
     public AvatarView(Context context) {
         super(context);
@@ -70,9 +71,8 @@ public class AvatarView extends RelativeLayout {
 
     public void setAvatarURL(String avatarURL) {
         RequestOptions requestOptions = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
                 .circleCrop()
+                .signature(new MediaStoreSignature("image/jpeg", System.currentTimeMillis(), 180))
                 .placeholder(R.drawable.ic_avatar_placeholder)
                 .dontAnimate();
         Glide.with(this)
@@ -83,38 +83,37 @@ public class AvatarView extends RelativeLayout {
 
     public void setExp(Long exp) {
 
-        int level = ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
-        int thisLevelExp = (int) Math.pow(10.0 * (level - 1.0), 2.0);
-        int nextLevelExp = (int) Math.pow(10 * level, 2.0);
-        int toNextLevelExp = nextLevelExp - thisLevelExp;
-        long expDelta = exp - toNextLevelExp;
-        float progress = (100.0f / toNextLevelExp) * expDelta;
+        final int animDuration = 500;
 
-        if (level < 101) {
-            DonutProgressAnimation animation = new DonutProgressAnimation(
-                    karmaDonutProgress,
-                    mLastProgress == null ? 0 : mLastProgress,
-                    progress);
-            animation.setDuration(mLastExp == null ? 500 : 200);
+        int level = ((Double) (1 + 0.10 * Math.sqrt(exp))).intValue();
+
+        if (level > 100) {
+
+            DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, mLastProgress, 100);
+            animation.setDuration(animDuration);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             karmaDonutProgress.startAnimation(animation);
+
         } else {
-            DonutProgressAnimation animation = new DonutProgressAnimation(
-                    karmaDonutProgress,
-                    mLastProgress == null ? 0 : 100,
-                    100);
-            animation.setDuration(mLastExp == null ? 500 : 200);
+
+            int thisLevelExp = (int) Math.pow(10.0 * (level - 1.0), 2.0);
+            int nextLevelExp = (int) Math.pow(10 * level, 2.0);
+            int toNextLevelExp = nextLevelExp - thisLevelExp;
+            long expDelta = exp - thisLevelExp;
+            float progress = (100.0f / toNextLevelExp) * expDelta;
+
+            DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, mLastProgress, progress);
+            animation.setDuration(animDuration);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             karmaDonutProgress.startAnimation(animation);
+
+            mLastProgress = progress;
         }
 
         level = Math.min(100, level);
 
-        ValueAnimator animator = ValueAnimator.ofInt(
-                mLastLevel == null ? 0 : mLastLevel,
-                level);
-
-        animator.setDuration(mLastLevel == null ? 500 : 200);
+        ValueAnimator animator = ValueAnimator.ofInt(mLastLevel, level);
+        animator.setDuration(animDuration);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(anim ->
                 expLevel.setText(anim.getAnimatedValue().toString())
@@ -131,7 +130,6 @@ public class AvatarView extends RelativeLayout {
                     Shader.TileMode.CLAMP);
             expLevel.getPaint().setShader(textShader);
             shieldIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_shield_8);
-            //levelContainer.setBackground(shieldIcon);
         }
 
         levelFrame.setImageDrawable(shieldIcon);
@@ -154,7 +152,6 @@ public class AvatarView extends RelativeLayout {
 
         mLastExp = exp;
         mLastLevel = level;
-        mLastProgress = progress;
     }
 
     private Drawable getLevelShield(int level) {
@@ -179,5 +176,6 @@ public class AvatarView extends RelativeLayout {
         View view = inflate(getContext(), R.layout.custom_avatar_view, this);
         ButterKnife.bind(this, view);
     }
+
 
 }

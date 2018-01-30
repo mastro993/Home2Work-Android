@@ -104,7 +104,7 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             builder.setMessage(R.string.dialog_logout_content);
             builder.setPositiveButton(R.string.dialog_logout_confirm, (dialogInterface, i) -> {
 
-                new SessionManager(ConfigurationActivity.this).signOutUser();
+                SessionManager.clearSession(ConfigurationActivity.this);
                 Intent intent = new Intent(ConfigurationActivity.this, SignInActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -285,10 +285,11 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
 
         private final int FINE_LOCATION_ACCESS = 0;
 
-        @BindView(R.id.currentPositionButton)
-        Button currentPositionButton;
+
         @BindView(R.id.mapView)
         MapView mapView;
+        @BindView(R.id.button_set_current_location)
+        Button buttonSetCurrentLocation;
 
         private GoogleMap googleMap;
         private FusedLocationProviderClient mFusedLocationClient;
@@ -321,18 +322,18 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             this.googleMap.getUiSettings().setAllGesturesEnabled(false);
             this.googleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-            if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 setUpMap();
             } else {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS);
             }
 
-            if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
                 mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext);
                 mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                     lastLocation = location;
-                    currentPositionButton.setVisibility(View.VISIBLE);
+                    buttonSetCurrentLocation.setVisibility(View.VISIBLE);
                 });
             }
 
@@ -355,7 +356,7 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             }
         }
 
-        @OnClick(R.id.setAddressButton)
+        @OnClick(R.id.button_set_address)
         void setAddress() {
             MaterialDialog editAddressDialog = new MaterialDialog.Builder(mContext)
                     .customView(R.layout.dialog_edit_address, false)
@@ -441,13 +442,13 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             }
         }
 
-        @OnClick(R.id.currentPositionButton)
+        @OnClick(R.id.button_set_current_location)
         void setCurrentPosition() {
             if (lastLocation != null) {
                 double homeLat = lastLocation.getLatitude();
                 double homeLon = lastLocation.getLongitude();
                 LatLng currentLatLng = new LatLng(homeLat, homeLon);
-                currentPositionButton.setVisibility(View.INVISIBLE);
+                buttonSetCurrentLocation.setVisibility(View.INVISIBLE);
                 setHomeLocation(currentLatLng);
             }
         }
@@ -713,15 +714,20 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
         @BindView(R.id.telegramInput)
         EditText telegramInput;
 
-        private Unbinder unbinder;
+        private Unbinder mUnbinder;
+        private Context mContext;
 
-        // TODO inserimento social
+        @Override
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            mContext = context;
+        }
 
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View root = inflater.inflate(R.layout.fragment_conf_social, container, false);
-            unbinder = ButterKnife.bind(this, root);
+            mUnbinder = ButterKnife.bind(this, root);
             return root;
         }
 
@@ -737,6 +743,9 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             if (!telegramInput.getText().toString().isEmpty())
                 HomeToWorkClient.getUser().setTelegram(telegramInput.getText().toString());
 
+            if (facebookInput.getText().toString().isEmpty() && twitterInput.getText().toString().isEmpty() && telegramInput.getText().toString().isEmpty()) {
+                return new VerificationError("Inserisci almeno un metodo di contatto");
+            }
 
             return null;
         }
@@ -748,12 +757,12 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
 
         @Override
         public void onError(@NonNull VerificationError error) {
-
+            Toasty.warning(mContext, error.getErrorMessage()).show();
         }
 
         @Override
         public void onDestroyView() {
-            unbinder.unbind();
+            mUnbinder.unbind();
             super.onDestroyView();
         }
     }

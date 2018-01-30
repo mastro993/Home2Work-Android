@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
@@ -19,19 +20,16 @@ import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.User;
 
-public class SplashActivity extends AppCompatActivity implements SessionManager.SessionManagerCallback {
+public class SplashActivity extends AppCompatActivity implements SessionManager.SessionCallback {
 
     private final int FINE_LOCATION_ACCESS = 0;
     private final int SPLASH_TIME = 500;
-    private SessionManager mSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-
-        mSessionManager = new SessionManager(this);
 
         // Controllo dei permessi
         if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -54,14 +52,7 @@ public class SplashActivity extends AppCompatActivity implements SessionManager.
     }
 
     @Override
-    public void onNoSession() {
-        Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
     public void onValidSession() {
-
         User user = HomeToWorkClient.getUser();
         if (user.isConfigured()) {
             Intent i = new Intent(SplashActivity.this, MainActivity.class);
@@ -75,22 +66,31 @@ public class SplashActivity extends AppCompatActivity implements SessionManager.
     }
 
     @Override
-    public void onExpiredToken() {
-        Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-        intent.putExtra(SessionManager.AUTH_CODE, SessionManager.EXPIRED_TOKEN);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-        Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-        if (throwable instanceof UnknownHostException) {
-            intent.putExtra(SessionManager.AUTH_CODE, SessionManager.NO_INTERNET);
-        } else {
-            intent.putExtra(SessionManager.AUTH_CODE, SessionManager.ERROR);
+    public void onInvalidSession(int code, @Nullable Throwable throwable) {
+        Intent intent;
+        switch (code) {
+            case 0:
+                intent = new Intent(SplashActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case 1:
+                intent = new Intent(SplashActivity.this, SignInActivity.class);
+                intent.putExtra(SessionManager.AUTH_CODE, SignInActivity.CODE_EXPIRED_TOKEN);
+                startActivity(intent);
+                finish();
+                break;
+            case 2:
+                intent = new Intent(SplashActivity.this, SignInActivity.class);
+                if (throwable instanceof UnknownHostException) {
+                    intent.putExtra(SessionManager.AUTH_CODE, SignInActivity.CODE_NO_INTERNET);
+                } else {
+                    intent.putExtra(SessionManager.AUTH_CODE, SignInActivity.CODE_ERROR);
+                }
+                startActivity(intent);
+                finish();
+                break;
         }
-        startActivity(intent);
-        finish();
     }
 
     private void initApp() {
@@ -106,7 +106,7 @@ public class SplashActivity extends AppCompatActivity implements SessionManager.
                 e.printStackTrace();
             }
 
-            mSessionManager.loadSession(this);
+            SessionManager.loadSession(this, this);
 
 
         });

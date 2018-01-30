@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,9 +43,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks;
 import it.gruppoinfor.home2work.adapters.ShareGuestsAdapter;
 import it.gruppoinfor.home2work.custom.AvatarView;
+import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks;
 import it.gruppoinfor.home2work.services.MessagingService;
 import it.gruppoinfor.home2work.utils.QREncoder;
 import it.gruppoinfor.home2work.utils.Tools;
@@ -54,9 +55,8 @@ import it.gruppoinfor.home2workapi.model.Share;
 
 public class OngoingShareActivity extends AppCompatActivity implements ItemClickCallbacks {
 
-    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     public static final String EXTRA_SHARE = "share";
-
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     @BindView(R.id.layout_show_code)
     LinearLayout layoutShowCode;
     @BindView(R.id.guests_recycler_view)
@@ -92,6 +92,7 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
 
     private Share mShare;
     // private Guest mUserShareGuest;
+    @Nullable
     private MaterialDialog qrCodeDialog;
     private MaterialDialog loadingDialog;
 
@@ -99,7 +100,7 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            qrCodeDialog.dismiss();
+            if (qrCodeDialog != null) qrCodeDialog.dismiss();
             refreshGuests();
         }
     };
@@ -148,7 +149,22 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
                         new MaterialDialog.Builder(this)
                                 .title("Annulla condivisione")
                                 .content("Sei sicuro di voler annullare la condivisione corrente? Tutti i progressi verranno persi")
-                                .onPositive((dialog, which) -> HomeToWorkClient.getInstance().cancelShare(mShare, responseBody -> finish(), Throwable::printStackTrace))
+                                .onPositive((dialog, which) -> {
+                                    MaterialDialog materialDialog = new MaterialDialog.Builder(OngoingShareActivity.this)
+                                            .content(R.string.activity_ongoing_share_cancel_dialog_content)
+                                            .contentGravity(GravityEnum.CENTER)
+                                            .progress(true, 150, true)
+                                            .show();
+
+                                    HomeToWorkClient.getInstance().cancelShare(mShare, responseBody -> {
+                                        materialDialog.dismiss();
+                                        finish();
+                                    }, e -> {
+                                        Toasty.error(OngoingShareActivity.this, getString(R.string.activity_signin_server_error)).show();
+                                        materialDialog.dismiss();
+                                        e.printStackTrace();
+                                    });
+                                })
                                 .positiveText("Conferma")
                                 .negativeText("Indietro")
                                 .show();
@@ -158,7 +174,23 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
                         new MaterialDialog.Builder(this)
                                 .title("Annulla condivisione")
                                 .content("Sei sicuro di voler annullare la condivisione corrente? Tutti i progressi verranno persi")
-                                .onPositive((dialog, which) -> HomeToWorkClient.getInstance().leaveShare(mShare, responseBody -> finish(), Throwable::printStackTrace))
+                                .onPositive((dialog, which) -> {
+                                    MaterialDialog materialDialog = new MaterialDialog.Builder(OngoingShareActivity.this)
+                                            .content(R.string.activity_ongoing_share_leave_dialog_content)
+                                            .contentGravity(GravityEnum.CENTER)
+                                            .progress(true, 150, true)
+                                            .show();
+
+
+                                    HomeToWorkClient.getInstance().leaveShare(mShare, responseBody -> {
+                                        materialDialog.dismiss();
+                                        finish();
+                                    }, e -> {
+                                        Toasty.error(OngoingShareActivity.this, getString(R.string.activity_signin_server_error)).show();
+                                        materialDialog.dismiss();
+                                        e.printStackTrace();
+                                    });
+                                })
                                 .positiveText("Conferma")
                                 .negativeText("Indietro")
                                 .show();
@@ -175,6 +207,14 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver,
                 new IntentFilter(MessagingService.SHARE_JOIN_REQUEST)
+        );
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver,
+                new IntentFilter(MessagingService.SHARE_COMPLETE_REQUEST)
+        );
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver,
+                new IntentFilter(MessagingService.SHARE_DETACH_REQUEST)
         );
     }
 
@@ -363,11 +403,13 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
 
                 if (endLocation == null) {
                     Toasty.error(this, getString(R.string.activity_ongoing_share_check_error)).show();
+                    loadingDialog.dismiss();
                     return;
                 }
 
                 if (Tools.getDistance(endLocation, hostLocation) > 500) {
                     Toasty.error(this, getString(R.string.activity_ongoing_share_check_wrong_code)).show();
+                    loadingDialog.dismiss();
                     return;
                 }
 
@@ -425,6 +467,8 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
 
         avatarView.setAvatarURL(mShare.getHost().getAvatarURL());
         avatarView.setExp(mShare.getHost().getExp());
+
+        buttonCompleteShare.setEnabled(true);
 
 
     }

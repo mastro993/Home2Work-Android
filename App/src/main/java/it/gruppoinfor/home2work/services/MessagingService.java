@@ -57,10 +57,8 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void processData(Map<String, String> data) {
         if (data.get(TYPE) != null) {
-            if (data.get(TYPE).equals(SHARE_JOIN_REQUEST)) {
-                Intent intent = new Intent(SHARE_JOIN_REQUEST);
-                broadcaster.sendBroadcast(intent);
-            }
+            Intent intent = new Intent(data.get(TYPE));
+            broadcaster.sendBroadcast(intent);
         }
     }
 

@@ -1,15 +1,16 @@
 package it.gruppoinfor.home2work.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.wang.avi.AVLoadingIndicatorView;
 
 import java.net.UnknownHostException;
 
@@ -25,6 +26,12 @@ import it.gruppoinfor.home2workapi.model.User;
 
 public class SignInActivity extends AppCompatActivity implements LoginCallback {
 
+    public static final int CODE_EXPIRED_TOKEN = 0;
+    public static final int CODE_ERROR = 1;
+    public static final int CODE_NO_INTERNET = 2;
+    private static final String PREFS_EMAIL = "signin_email";
+    private static final String PREFS_SIGNIN = "it.home2work.app.signin";
+
     @BindView(R.id.sign_in_button)
     Button signInButton;
     @BindView(R.id.lost_password_button)
@@ -33,17 +40,13 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
     EditText emailEditText;
     @BindView(R.id.password_edit_text)
     EditText passwordEditText;
-    @BindView(R.id.sign_in_loading)
-    AVLoadingIndicatorView signInLoading;
-
-    private SessionManager mSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
-        mSessionManager = new SessionManager(this);
+        loadEmail();
     }
 
     @Override
@@ -53,13 +56,13 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
         if (bundle != null) {
 
             switch (bundle.getInt(SessionManager.AUTH_CODE)) {
-                case SessionManager.ERROR:
+                case CODE_ERROR:
                     Toasty.error(this, getString(R.string.activity_signin_error), Toast.LENGTH_SHORT, true).show();
                     break;
-                case SessionManager.EXPIRED_TOKEN:
+                case CODE_EXPIRED_TOKEN:
                     Toasty.warning(this, getString(R.string.activity_signin_session_expired), Toast.LENGTH_SHORT, true).show();
                     break;
-                case SessionManager.NO_INTERNET:
+                case CODE_NO_INTERNET:
                     Toasty.error(this, getString(R.string.activity_signin_no_internet), Toast.LENGTH_SHORT, true).show();
                     break;
             }
@@ -70,8 +73,9 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
 
     @Override
     public void onLoginSuccess() {
-        mSessionManager.storeSession();
+        storeEmail();
 
+        SessionManager.storeSession(this, HomeToWorkClient.getUser());
         User user = HomeToWorkClient.getUser();
 
         if (user.isConfigured()) {
@@ -113,14 +117,17 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
 
     @OnClick(R.id.sign_in_button)
     void signInButtonClick() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
         if (!validate())
             return;
 
         emailEditText.setEnabled(false);
         passwordEditText.setEnabled(false);
-        signInButton.setVisibility(View.GONE);
-        signInLoading.setVisibility(View.VISIBLE);
 
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -157,6 +164,20 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
         }
 
         return valid;
+    }
+
+    private void storeEmail() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_SIGNIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PREFS_EMAIL, emailEditText.getText().toString());
+        editor.apply();
+    }
+
+    private void loadEmail() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_SIGNIN, Context.MODE_PRIVATE);
+        String email = prefs.getString(PREFS_EMAIL, "");
+        emailEditText.setText(email);
+
     }
 
 }

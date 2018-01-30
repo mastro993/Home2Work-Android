@@ -11,7 +11,7 @@ public class Guest implements Serializable {
     @SerializedName("ShareId")
     @Expose
     private long shareId;
-    @SerializedName("Guest")
+    @SerializedName("User")
     @Expose
     private User user;
     @SerializedName("StartLocation")

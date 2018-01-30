@@ -13,6 +13,7 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
+import it.gruppoinfor.home2workapi.model.User;
 
 public class RoutePointRepo {
 
@@ -43,8 +44,8 @@ public class RoutePointRepo {
         });
     }
 
-    public void deleteAllUserLocations() {
-        AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(HomeToWorkClient.getUser().getId()));
+    public void deleteAllUserLocations(long userId) {
+        AsyncJob.doInBackground(() -> dbApp.routePointDAO().deleteAll(userId));
     }
 
     public void insert(RoutePointEntity routePointEntity, OnSuccessListener<Long> onSuccessListener) {

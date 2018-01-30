@@ -14,6 +14,6 @@
             android:pathData="M450 1127 c0 -562 1 -569 61 -689 60 -118 181 -210 321 -243 81 -19 265 -19 346 0
 140 33 261 125 321 243 60 120 61 127 61 689 l0 513 -555 0 -555 0 0 -513z"
             android:strokeColor="@color/blue_grey_900"
-            android:strokeWidth="12" />
+            android:strokeWidth="16" />
     </group>
 </vector>

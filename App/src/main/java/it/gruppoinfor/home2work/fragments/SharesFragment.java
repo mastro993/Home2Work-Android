@@ -103,7 +103,6 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         sharesRecyclerView.setNestedScrollingEnabled(false);
 
         newShareContainerEmpty.setVisibility(View.GONE);
-        refreshData();
         return rootView;
     }
 
@@ -111,6 +110,12 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     public void onResume() {
         super.onResume();
         refreshData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if(isVisibleToUser && mShareList.size() == 0) refreshData();
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
@@ -177,15 +182,17 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     private void initUI() {
         swipeRefreshLayout.setRefreshing(false);
 
+        // Utilizzo dei falg per la visivilità per evitare dei glitch durante il controllo
+        int listVisibility, fabVisibility, newShareVisibility, ongoingShareVisibility;
 
         if (mShareList.size() == 0) {
-            sharesRecyclerView.setVisibility(View.GONE);
-            fabNewShare.setVisibility(View.GONE);
-            newShareContainerEmpty.setVisibility(View.VISIBLE);
+            listVisibility = View.GONE;
+            fabVisibility = View.GONE;
+            newShareVisibility = View.VISIBLE;
         } else {
-            sharesRecyclerView.setVisibility(View.VISIBLE);
-            fabNewShare.setVisibility(View.VISIBLE);
-            newShareContainerEmpty.setVisibility(View.GONE);
+            listVisibility = View.VISIBLE;
+            fabVisibility = View.VISIBLE;
+            newShareVisibility = View.GONE;
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
@@ -199,19 +206,24 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
         }
 
         if (mOngoingShare != null) {
-            newShareContainerEmpty.setVisibility(View.GONE);
-            fabNewShare.setVisibility(View.GONE);
-            ongoingShareView.setVisibility(View.VISIBLE);
-
+            fabVisibility = View.GONE;
+            newShareVisibility = View.GONE;
+            ongoingShareVisibility = View.VISIBLE;
 
             ongoingShareView.setShare(mOngoingShare);
             ((MainActivity) mContext).setBadge(2, "In corso");
 
-
         } else {
-            ongoingShareView.setVisibility(View.GONE);
+            ongoingShareVisibility = View.GONE;
             ((MainActivity) mContext).setBadge(2, "");
         }
+
+        // Applico la visibilità solo alla fine dei controlli
+        sharesRecyclerView.setVisibility(listVisibility);
+        fabNewShare.setVisibility(fabVisibility);
+        newShareContainerEmpty.setVisibility(newShareVisibility);
+        ongoingShareView.setVisibility(ongoingShareVisibility);
+
 
     }
 
@@ -254,7 +266,6 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
             //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI();
         });
-
     }
 
     public void joinShare() {
@@ -269,6 +280,14 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
     }
 
     private void checkShareCode(Long shareID, LatLng hostLocation) {
+        MaterialDialog materialDialog = new MaterialDialog.Builder(mContext)
+                .title(R.string.fragment_share_dialog_new_title)
+                .content(R.string.fragment_share_dialog_join_content)
+                .contentGravity(GravityEnum.CENTER)
+                .progress(true, 150, true)
+                .show();
+
+
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext);
@@ -276,19 +295,26 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
                 if (joinLocation == null) {
                     Toasty.error(mContext, mContext.getString(R.string.activity_ongoing_share_invalid_code)).show();
+                    materialDialog.dismiss();
                     return;
                 }
 
                 if (Tools.getDistance(joinLocation, hostLocation) > 500) {
                     Toasty.error(mContext, mContext.getString(R.string.activity_ongoing_share_invalid_code)).show();
+                    materialDialog.dismiss();
                     return;
                 }
 
                 HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, share -> {
+                    materialDialog.dismiss();
                     Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
                     intent.putExtra(EXTRA_SHARE, share);
                     mContext.startActivity(intent);
-                }, Throwable::printStackTrace);
+                }, e -> {
+                    Toasty.error(mContext, mContext.getString(R.string.activity_signin_server_error)).show();
+                    materialDialog.dismiss();
+                    e.printStackTrace();
+                });
 
             });
 

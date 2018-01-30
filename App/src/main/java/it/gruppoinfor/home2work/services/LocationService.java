@@ -34,6 +34,7 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.database.RoutePointEntity;
 import it.gruppoinfor.home2work.database.RoutePointRepo;
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver;
+import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.LatLng;
@@ -45,7 +46,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private boolean isRecording = false;
     private FusedLocationProviderClient mFusedLocationClient;
-    private User mLoggedUser;
+    private User mUser;
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -57,49 +58,19 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onCreate() {
         super.onCreate();
 
-        String channelID = "LOCATION_SERVICE_NOTIFICATION_CHANNEL";
-        int notificationIcon = R.drawable.home2work_icon;
-
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener((connectionResult -> Log.e(TAG, "Connessione fallita: " + connectionResult)))
-                .addApi(ActivityRecognition.API)
-                .addApi(LocationServices.API)
-                .build();
-
-        mLoggedUser = HomeToWorkClient.getUser();
-
-        if (mLoggedUser != null) {
-
-            mGoogleApiClient.connect();
-
-            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            Intent i = new Intent(this, SyncAlarmReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-            if (am != null) {
-                am.setInexactRepeating(
-                        AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime(),
-                        AlarmManager.INTERVAL_HOUR,
-                        pi);
+        SessionManager.loadSession(this, new SessionManager.SessionCallback() {
+            @Override
+            public void onValidSession() {
+                mUser = HomeToWorkClient.getUser();
+                startService();
             }
 
-            Notification serviceNotification = new NotificationCompat.Builder(this, channelID)
-                    .setPriority(NotificationCompat.PRIORITY_MIN)
-                    .setSmallIcon(notificationIcon)
-                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                    .setContentTitle("Home2Work")
-                    .setContentText("Servizio di localizzazione")
-                    .setOngoing(true)
-                    .setShowWhen(false)
-                    .build();
+            @Override
+            public void onInvalidSession(int code, @Nullable Throwable throwable) {
+                if (throwable != null) throwable.printStackTrace();
+            }
+        });
 
-            startForeground(1337, serviceNotification);
-
-        } else {
-            Log.i(TAG, "Sessione non presente");
-        }
 
     }
 
@@ -149,6 +120,46 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         return Service.START_STICKY;
     }
 
+    private void startService() {
+
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener((connectionResult -> Log.e(TAG, "Connessione fallita: " + connectionResult)))
+                .addApi(ActivityRecognition.API)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                new Intent(this, SyncAlarmReceiver.class),
+                0
+        );
+
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime(),
+                    AlarmManager.INTERVAL_HOUR,
+                    pendingIntent);
+        }
+
+        Notification serviceNotification = new NotificationCompat.Builder(this, "LOCATION_SERVICE_NOTIFICATION_CHANNEL")
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setSmallIcon(R.drawable.home2work_icon)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setContentTitle("Home2Work")
+                .setContentText("Servizio di localizzazione")
+                .setOngoing(true)
+                .setShowWhen(false)
+                .build();
+
+        startForeground(1337, serviceNotification);
+    }
+
     private void startLocationRequests() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -157,9 +168,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
             LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(TimeUnit.MINUTES.toMillis(2));
-            locationRequest.setFastestInterval(TimeUnit.MINUTES.toMillis(1));
-            locationRequest.setSmallestDisplacement(1000f);
+            locationRequest.setInterval(TimeUnit.MINUTES.toMillis(1));
+            locationRequest.setFastestInterval(TimeUnit.SECONDS.toMillis(30));
+            locationRequest.setSmallestDisplacement(500f);
 
             mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper());
 
@@ -183,13 +194,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         routePointEntity.setLatLng(latLng);
         routePointEntity.setTimestamp(Tools.getCurrentTimestamp());
-        routePointEntity.setUserId(mLoggedUser.getId());
+        routePointEntity.setUserId(mUser.getId());
 
         RoutePointRepo routePointRepo = new RoutePointRepo(this);
         routePointRepo.insert(routePointEntity);
     }
-
-
 
 
 }

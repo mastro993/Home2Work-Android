@@ -12,10 +12,6 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true">
 
-        <include
-            layout="@layout/layout_share_empty"
-            android:visibility="gone" />
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_new_share"
             android:layout_width="wrap_content"
@@ -43,7 +39,7 @@
                     android:clipToPadding="false"
                     android:elevation="@dimen/cardview_default_elevation"
                     android:focusable="false"
-                    android:paddingBottom="68dp"
+                    android:paddingBottom="72dp"
                     android:paddingTop="4dp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/ongoing_share_layout"
@@ -61,6 +57,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:focusableInTouchMode="true"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/layout_share_empty"
             android:visibility="gone" />
 
     </FrameLayout>

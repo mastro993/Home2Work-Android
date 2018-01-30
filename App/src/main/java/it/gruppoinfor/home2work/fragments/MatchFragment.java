@@ -55,20 +55,25 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
     }
 
     @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_match, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
-        refreshData();
         return rootView;
     }
 
     @Override
-    public void onAttach(Context context) {
-        mContext = context;
-        super.onAttach(context);
+    public void onResume() {
+        super.onResume();
+        refreshData();
     }
 
 /*

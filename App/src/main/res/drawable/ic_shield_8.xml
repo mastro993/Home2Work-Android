@@ -20,6 +20,6 @@
 53 -144 -55 -301 -12 -432 117 -34 35 -79 86 -98 115 -19 29 -38 53 -42 53 -4 0
 -23 -24 -42 -53z"
             android:strokeColor="@color/colorAccent"
-            android:strokeWidth="12" />
+            android:strokeWidth="16" />
     </group>
 </vector>

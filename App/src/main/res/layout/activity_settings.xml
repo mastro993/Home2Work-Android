@@ -3,41 +3,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:mContext="it.gruppoinfor.home2work.fragments.SettingsFragment"
-    tools:ignore="HardcodedText,RtlHardcoded,ContentDescription">
+    android:background="@color/window_background"
+    tools:ignore="HardcodedText,RtlHardcoded,ContentDescription"
+    tools:mContext="it.gruppoinfor.home2work.fragments.SettingsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="48dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="Matching"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:layout_marginBottom="8dp"
+            android:background="@color/cardview_light_background"
+            android:elevation="@dimen/cardview_default_elevation"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/gps_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/ic_gps" />
+                android:src="@drawable/ic_gps_accent" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="72dp"
-                android:text="Tracking posizione"
-                android:textColor="@color/light_bg_dark_primary_text" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tracking posizione"
+                    android:textColor="@color/light_bg_dark_primary_text" />
+
+                <TextView
+                    android:id="@+id/text_tracking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tracking posizione"
+                    android:textColor="@color/light_bg_dark_secondary_text"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
             <Switch
-                android:id="@+id/tracking_switch"
+                android:id="@+id/switch_tracking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -46,22 +71,27 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_divider" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="Sincronizzazione"
+            android:textStyle="bold" />
 
         <RelativeLayout
-            android:id="@+id/settings_sync_mode_container"
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:layout_marginTop="8dp">
+            android:background="@color/cardview_light_background"
+            android:elevation="@dimen/cardview_default_elevation">
 
             <ImageView
-                android:id="@+id/sync_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/ic_sync" />
+                android:src="@drawable/ic_sync_accent" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -74,7 +104,7 @@
                 android:textColor="@color/light_bg_dark_primary_text" />
 
             <Spinner
-                android:id="@+id/sync_mode_spinner"
+                android:id="@+id/spinner_sync_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -87,88 +117,102 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_divider" />
-
-        <RelativeLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="Notifiche"
+            android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/bell_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_bell" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="72dp"
-                android:gravity="center_vertical"
-                android:text="Notifiche"
-                android:textColor="@color/light_bg_dark_primary_text" />
-
-            <Switch
-                android:id="@+id/notifications_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp">
+            android:layout_height="wrap_content"
+            android:background="@color/cardview_light_background"
+            android:elevation="@dimen/cardview_default_elevation"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="72dp"
-                android:gravity="center_vertical"
-                android:text="Novità"
-                android:textColor="@color/light_bg_dark_primary_text" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/news_notification_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_bell_accent" />
 
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="72dp"
+                    android:gravity="center_vertical"
+                    android:text="Notifiche"
+                    android:textColor="@color/light_bg_dark_primary_text" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp">
+                <Switch
+                    android:id="@+id/switch_notifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="72dp"
-                android:gravity="center_vertical"
-                android:text="Nuovi match"
-                android:textColor="@color/light_bg_dark_primary_text" />
+            </RelativeLayout>
 
-            <CheckBox
-                android:id="@+id/matches_notification_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp" />
+            <include layout="@layout/horizontal_divider" />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="72dp"
+                    android:gravity="center_vertical"
+                    android:text="Novità"
+                    android:textColor="@color/light_bg_dark_primary_text" />
+
+                <CheckBox
+                    android:id="@+id/check_notifications_news"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="72dp"
+                    android:gravity="center_vertical"
+                    android:text="Nuovi match"
+                    android:textColor="@color/light_bg_dark_primary_text" />
+
+                <CheckBox
+                    android:id="@+id/check_notifications_match"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp" />
+
+            </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
