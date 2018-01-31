@@ -21,7 +21,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -118,12 +117,9 @@ public class MatchActivity extends AppCompatActivity {
 
     @OnClick(R.id.profile_container)
     public void onViewClicked() {
-        /*
-        TODO Activity profilo utente
-        Intent userIntent = new Intent(activity, ShowUserActivity.class);
-        User matchedUser = match.getHost();
-        userIntent.putExtra("userID", matchedUser.getId());
-        activity.startActivity(userIntent);*/
+        Intent userIntent = new Intent(this, ShowUserActivity.class);
+        userIntent.putExtra("user", match.getHost());
+        startActivity(userIntent);
     }
 
     private void initUI() {

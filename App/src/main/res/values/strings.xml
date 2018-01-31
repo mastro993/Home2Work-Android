@@ -91,7 +91,9 @@
     <string name="activity_signin_lost_pass">Password dimenticata</string>
     <string name="activity_signin_email">Email</string>
     <string name="activity_signin_password">Password</string>
-    
+
+    <string name="activity_show_user_error">Impossibile visualizzare informazioni utente</string>
+
     <string name="fragment_matches_empty">Non ci sono ancora abbastanza dati per trovare match. Abbiamo però rilevato persone nelle vicinanze che lavorano dove te. Prova a contattarle!</string>
 
     <string-array name="fragment_profile_options">

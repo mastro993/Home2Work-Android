@@ -9,9 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -31,10 +28,12 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.activities.MainActivity;
 import it.gruppoinfor.home2work.activities.MatchActivity;
 import it.gruppoinfor.home2work.activities.SettingsActivity;
+import it.gruppoinfor.home2work.activities.ShowUserActivity;
 import it.gruppoinfor.home2work.adapters.MatchAdapter;
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.model.User;
 
 public class MatchFragment extends Fragment implements ItemClickCallbacks {
 
@@ -66,7 +65,10 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
         mUnbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            refreshData();
+        });
         return rootView;
     }
 
@@ -75,23 +77,6 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
         super.onResume();
         refreshData();
     }
-
-/*
-    Attualmente non richiesto
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment_match, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // TODO sort e filter match
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
 
     @Override
     public void onItemClick(View view, int position) {
@@ -143,8 +128,6 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
     }
 
     private void refreshData() {
-        swipeRefreshLayout.setRefreshing(true);
-
         HomeToWorkClient.getInstance().getUserMatches(matches -> {
             matchList = matches;
             refreshBadgeCounter();
@@ -154,7 +137,6 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
             //Toasty.error(activity, "Impossibile ottenere i match").show();
             swipeRefreshLayout.setRefreshing(false);
         });
-
     }
 
     private void refreshList() {
@@ -189,12 +171,10 @@ public class MatchFragment extends Fragment implements ItemClickCallbacks {
     }
 
     private void showMatchUserProfile(int position) {
-        /*
-        TODO Activity profilo utente
-        Intent userIntent = new Intent(activity, ShowUserActivity.class);
-        User matchedUser = match.getHost();
-        userIntent.putExtra("userID", matchedUser.getId());
-        activity.startActivity(userIntent);*/
+        Intent userIntent = new Intent(getActivity(), ShowUserActivity.class);
+        User matchedUser = matchList.get(position).getHost();
+        userIntent.putExtra("user", matchedUser);
+        startActivity(userIntent);
     }
 
     private void showHideMatchDialog(int position) {

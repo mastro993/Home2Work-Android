@@ -412,10 +412,17 @@ public class HomeToWorkClient {
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
-    public Observable<Response<User>> getUser(Long userId) {
-        return mAPI.getUser(userId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+    public void getUser(Long uID, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.getUser(uID)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userResponse -> {
+                    if (userResponse.code() == 200) {
+                        sUser = userResponse.body();
+                        onSuccessListener.onSuccess(null);
+                    } else
+                        onFailureListener.onFailure(new Exception("Response code: " + userResponse.code()));
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
 }

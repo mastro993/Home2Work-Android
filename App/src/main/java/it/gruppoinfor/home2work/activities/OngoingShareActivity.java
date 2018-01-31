@@ -52,6 +52,7 @@ import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.Guest;
 import it.gruppoinfor.home2workapi.model.Share;
+import it.gruppoinfor.home2workapi.model.User;
 
 public class OngoingShareActivity extends AppCompatActivity implements ItemClickCallbacks {
 
@@ -239,7 +240,9 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
                 .itemsCallback((dialog, itemView, p, text) -> {
                     switch (p) {
                         case 0:
-                            // TODO mostrare profilo utente
+                            Intent userIntent = new Intent(this, ShowUserActivity.class);
+                            userIntent.putExtra("user",  mShare.getGuests().get(position));
+                            startActivity(userIntent);
                             break;
                         case 1:
                             HomeToWorkClient.getInstance().expelGuest(mShare, mShare.getGuests().get(position), share -> {
@@ -368,7 +371,9 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
 
     @OnClick(R.id.layout_host)
     public void onHostLayoutClick() {
-        // TODO profilo host
+        Intent userIntent = new Intent(this, ShowUserActivity.class);
+        userIntent.putExtra("user", mShare.getHost());
+        startActivity(userIntent);
     }
 
     private boolean enableCompleteButton() {

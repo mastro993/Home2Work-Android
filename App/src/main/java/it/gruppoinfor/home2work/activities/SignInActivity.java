@@ -129,6 +129,9 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
         emailEditText.setEnabled(false);
         passwordEditText.setEnabled(false);
 
+        signInButton.setEnabled(false);
+        signInButton.setText("Accesso in corso");
+
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
@@ -137,7 +140,8 @@ public class SignInActivity extends AppCompatActivity implements LoginCallback {
     }
 
     private void enableLogin() {
-        signInButton.setVisibility(View.VISIBLE);
+        signInButton.setEnabled(true);
+        signInButton.setText("Accedi");
         emailEditText.setEnabled(true);
         passwordEditText.setEnabled(true);
     }

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,8 +26,10 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
+import it.gruppoinfor.home2work.activities.ShowUserActivity;
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks;
 import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.model.User;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
 
@@ -96,24 +99,12 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
         if (position == 0) holder.divider.setVisibility(View.GONE);
 
-        /*
-        TODO Activity info utente
-        holder.userAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity, ShowUserActivity.class);
+        holder.userAvatar.setOnClickListener(v -> {
+            Intent userIntent = new Intent(mContext, ShowUserActivity.class);
+            userIntent.putExtra("user", match.getHost());
+            mContext.startActivity(userIntent);
 
-                intent.putExtra("userID", match.getHost().getId());
-                intent.putExtra("name", match.getHost().getName());
-                intent.putExtra("surname", match.getHost().getSurname());
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(activity, v, "avatar");
-
-                activity.startActivity(intent, options.toBundle());
-
-            }
-        });*/
+        });
     }
 
     @Override

@@ -101,8 +101,6 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
             refreshData();
         });
         sharesRecyclerView.setNestedScrollingEnabled(false);
-
-        newShareContainerEmpty.setVisibility(View.GONE);
         return rootView;
     }
 
