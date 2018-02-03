@@ -16,14 +16,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -50,6 +46,7 @@ import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.User;
+import it.gruppoinfor.home2workapi.model.UserProfile;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -57,7 +54,7 @@ import okhttp3.RequestBody;
 import static android.app.Activity.RESULT_OK;
 
 
-public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeListener {
+public class ProfileFragment extends Fragment {
 
     private final int REQ_CODE_AVATAR = 1;
     private final int REQ_CODE_EXTERNAL_STORAGE = 2;
@@ -84,6 +81,7 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
     CoordinatorLayout rootView;
     private Unbinder mUnbinder;
     private Context mContext;
+    private UserProfile mProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -102,40 +100,13 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
 
         setHasOptionsMenu(true);
         initUI();
-        initAvatarView();
-        //refreshData();
         return rootView;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment_match, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // TODO sort e filter match
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
-        }
+    public void onResume() {
+        super.onResume();
+        refreshData();
     }
 
     @Override
@@ -284,7 +255,10 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
             }
         });
 
-        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            refreshData();
+        });
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         User user = HomeToWorkClient.getUser();
@@ -296,27 +270,21 @@ public class ProfileFragment extends Fragment implements ViewPager.OnPageChangeL
     }
 
     private void refreshData() {
-        swipeRefreshLayout.setRefreshing(true);
-
-        HomeToWorkClient.getInstance().refreshUser(aVoid -> {
+        HomeToWorkClient.getInstance().getUserProfile(userProfile -> {
             swipeRefreshLayout.setRefreshing(false);
-            initAvatarView();
+            mProfile = userProfile;
+            refreshUI();
         }, e -> {
-            Toasty.error(mContext, "Non è possibile aggiornare le informazioni dell'utente al momento").show();
-            initAvatarView();
+            Toasty.error(mContext, "Impossibile ottenere informazioni del profilo al momento").show();
+            swipeRefreshLayout.setRefreshing(false);
         });
 
     }
 
-    private void initAvatarView() {
-        User user = HomeToWorkClient.getUser();
-
-        // TODO UI profilo
-        //  Profile Profile = Home2WorkClient.getUserProfile();
-        avatarView.setExp(user.getExp());
-
-        swipeRefreshLayout.setRefreshing(false);
+    private void refreshUI() {
+        avatarView.setExp(mProfile.getExp());
     }
+
 
     private void logout() {
         SessionManager.clearSession(getContext());

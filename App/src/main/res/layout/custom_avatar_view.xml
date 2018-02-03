@@ -13,7 +13,7 @@
         android:animateLayoutChanges="true"
         android:rotation="40"
         app:donut_finished_color="@color/dark_bg_light_primary_text"
-        app:donut_progress="50"
+        app:donut_progress="0"
         app:donut_unfinished_color="#55454545" />
 
     <ImageView
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="00"
+            android:text="-"
             android:textAlignment="center"
             android:textColor="@color/dark_bg_light_primary_text"
             android:textSize="16sp"

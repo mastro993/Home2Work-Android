@@ -8,6 +8,7 @@ import it.gruppoinfor.home2workapi.model.Location;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
+import it.gruppoinfor.home2workapi.model.UserProfile;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -103,10 +104,10 @@ interface EndpointInterface {
     @FormUrlEncoded
     @POST("share/{shareId}/join")
     Observable<Response<Share>> joinShare(
-                    @Path("shareId") Long shareId,
-                    @Field("guestId") Long guestId,
-                    @Field("location") String locationString
-            );
+            @Path("shareId") Long shareId,
+            @Field("guestId") Long guestId,
+            @Field("location") String locationString
+    );
 
     @FormUrlEncoded
     @POST("share/{shareId}/complete")
@@ -135,6 +136,11 @@ interface EndpointInterface {
     Observable<Response<ResponseBody>> cancelShare(
             @Path("shareId") Long shareId,
             @Field("hostId") Long guestId
+    );
+
+    @GET("user/{id}/profile")
+    Observable<Response<UserProfile>> getUserProfile(
+            @Path("id") Long userId
     );
 
 

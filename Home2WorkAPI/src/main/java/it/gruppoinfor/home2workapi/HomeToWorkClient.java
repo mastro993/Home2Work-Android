@@ -9,7 +9,6 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -20,10 +19,10 @@ import it.gruppoinfor.home2workapi.model.Location;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
+import it.gruppoinfor.home2workapi.model.UserProfile;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -420,6 +419,22 @@ public class HomeToWorkClient {
                     if (userResponse.code() == 200) {
                         sUser = userResponse.body();
                         onSuccessListener.onSuccess(null);
+                    } else
+                        onFailureListener.onFailure(new Exception("Response code: " + userResponse.code()));
+                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+    }
+
+    public void getUserProfile(OnSuccessListener<UserProfile> onSuccessListener, OnFailureListener onFailureListener) {
+        getUserProfile(sUser.getId(), onSuccessListener, onFailureListener);
+    }
+
+    public void getUserProfile(Long userId, OnSuccessListener<UserProfile> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.getUserProfile(userId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userResponse -> {
+                    if (userResponse.code() == 200) {
+                        onSuccessListener.onSuccess(userResponse.body());
                     } else
                         onFailureListener.onFailure(new Exception("Response code: " + userResponse.code()));
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));

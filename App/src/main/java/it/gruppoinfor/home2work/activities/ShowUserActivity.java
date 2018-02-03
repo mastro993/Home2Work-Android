@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,6 +16,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
@@ -23,6 +27,7 @@ import it.gruppoinfor.home2work.custom.AppBarStateChangeListener;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.User;
+import it.gruppoinfor.home2workapi.model.UserProfile;
 
 public class ShowUserActivity extends AppCompatActivity {
 
@@ -50,6 +55,7 @@ public class ShowUserActivity extends AppCompatActivity {
     CoordinatorLayout rootView;
 
     private User mUser;
+    private UserProfile mProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,7 @@ public class ShowUserActivity extends AppCompatActivity {
         if (intent.hasExtra(EXTRA_USER)) {
             mUser = (User) intent.getSerializableExtra(EXTRA_USER);
             initUI();
+            refreshData();
         } else {
             Toasty.error(this, getString(R.string.activity_show_user_error)).show();
             finish();
@@ -116,11 +123,13 @@ public class ShowUserActivity extends AppCompatActivity {
             }
         });
 
-        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            refreshData();
+        });
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         avatarView.setAvatarURL(mUser.getAvatarURL());
-        avatarView.setExp(mUser.getExp());
         nameTextView.setText(mUser.toString());
         jobTextView.setText(mUser.getCompany().toString());
         textNameSmall.setText(mUser.toString());
@@ -128,24 +137,26 @@ public class ShowUserActivity extends AppCompatActivity {
     }
 
     private void refreshData() {
-        swipeRefreshLayout.setRefreshing(true);
 
-        HomeToWorkClient.getInstance().getUser(mUser.getId(), aVoid -> {
-            swipeRefreshLayout.setRefreshing(false);
-            initAvatarView();
-        }, e -> {
-            Toasty.error(this, "Non è possibile aggiornare le informazioni dell'utente al momento").show();
-            initAvatarView();
+
+        HomeToWorkClient.getInstance().getUserProfile(mUser.getId(), new OnSuccessListener<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile userProfile) {
+                swipeRefreshLayout.setRefreshing(false);
+                mProfile = userProfile;
+                refreshUI();
+            }
+        }, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toasty.error(ShowUserActivity.this, "Impossibile ottenere informazioni dell'utente al momento").show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
         });
 
     }
 
-    private void initAvatarView() {
-
-        // TODO UI profilo
-        //  Profile Profile = Home2WorkClient.getUserProfile();
-        avatarView.setExp(mUser.getExp());
-
-        swipeRefreshLayout.setRefreshing(false);
+    private void refreshUI() {
+        avatarView.setExp(mProfile.getExp());
     }
 }

@@ -44,10 +44,6 @@ public class User implements Serializable {
     @Expose
     private Company company;
 
-    @SerializedName("Exp")
-    @Expose
-    private Long exp;
-
     @SerializedName("Regdate")
     @Expose
     private Date registrationDate;
@@ -145,14 +141,6 @@ public class User implements Serializable {
 
     public void setConfigured(Boolean configured) {
         this.configured = configured;
-    }
-
-    public Long getExp() {
-        return exp;
-    }
-
-    public void setExp(Long exp) {
-        this.exp = exp;
     }
 
     public String getFacebook() {
