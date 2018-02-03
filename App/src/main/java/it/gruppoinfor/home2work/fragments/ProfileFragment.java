@@ -100,13 +100,14 @@ public class ProfileFragment extends Fragment {
 
         setHasOptionsMenu(true);
         initUI();
+        refreshData();
         return rootView;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        refreshData();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser && mProfile == null) refreshData();
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
