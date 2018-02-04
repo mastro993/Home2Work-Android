@@ -131,16 +131,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
+                android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="@dimen/activity_padding">
+                android:padding="8dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="600dp"
-                    android:layout_margin="@dimen/activity_margin"
-                    android:text="@string/lorem"
-                    android:textSize="16dp" />
+                <include layout="@layout/layout_profile_card_exp" />
+
+                <include layout="@layout/layout_profile_card_shares" />
+
+                <include layout="@layout/layout_profile_card_achievements" />
 
             </LinearLayout>
 

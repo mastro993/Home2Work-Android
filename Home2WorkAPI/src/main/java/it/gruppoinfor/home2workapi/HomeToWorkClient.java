@@ -15,8 +15,8 @@ import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Guest;
-import it.gruppoinfor.home2workapi.model.RouteLocation;
 import it.gruppoinfor.home2workapi.model.Match;
+import it.gruppoinfor.home2workapi.model.RouteLocation;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
 import it.gruppoinfor.home2workapi.model.UserProfile;
@@ -132,7 +132,7 @@ public class HomeToWorkClient {
                     else
                         onFailureListener.onFailure(new Exception("Response code " + response.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -174,7 +174,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(matchResponse.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code: " + matchResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -205,7 +205,7 @@ public class HomeToWorkClient {
                     else
                         onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -225,7 +225,7 @@ public class HomeToWorkClient {
                     else
                         onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -245,7 +245,7 @@ public class HomeToWorkClient {
                     else
                         onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -266,7 +266,7 @@ public class HomeToWorkClient {
                     else
                         onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -286,7 +286,7 @@ public class HomeToWorkClient {
                     else
                         onFailureListener.onFailure(new Exception("Response code " + shareResponse.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -306,7 +306,7 @@ public class HomeToWorkClient {
                     } else
                         onFailureListener.onFailure(new Exception("Response code " + response.code()));
 
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -340,7 +340,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(null);
                     } else
                         onFailureListener.onFailure(new Exception("Response code: " + userResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -358,7 +358,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(listResponse.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code: " + listResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     public void joinShare(Long shareId, android.location.Location joinLocation, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
@@ -371,7 +371,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(responseBodyResponse.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code: " + responseBodyResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     public void completeShare(Share share, android.location.Location joinLocation, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
@@ -384,7 +384,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(responseBodyResponse.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code: " + responseBodyResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     public void finishShare(Share share, OnSuccessListener<Share> onSuccessListener, OnFailureListener onFailureListener) {
@@ -396,7 +396,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(responseBodyResponse.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code: " + responseBodyResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     public void uploadLocation(long userId, List<RouteLocation> routeLocationList, OnSuccessListener<List<RouteLocation>> onSuccessListener, OnFailureListener onFailureListener) {
@@ -408,7 +408,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(listResponse.body());
                     else
                         onFailureListener.onFailure(new Exception("Response code" + listResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     public void getUser(Long uID, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
@@ -421,7 +421,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(null);
                     } else
                         onFailureListener.onFailure(new Exception("Response code: " + userResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
     public void getUserProfile(OnSuccessListener<UserProfile> onSuccessListener, OnFailureListener onFailureListener) {
@@ -437,7 +437,7 @@ public class HomeToWorkClient {
                         onSuccessListener.onSuccess(userResponse.body());
                     } else
                         onFailureListener.onFailure(new Exception("Response code: " + userResponse.code()));
-                }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
+                }, Throwable::printStackTrace);
     }
 
 }

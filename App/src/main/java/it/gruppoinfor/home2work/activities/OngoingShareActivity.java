@@ -470,7 +470,7 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
 
         avatarView.setAvatarURL(mShare.getHost().getAvatarURL());
         // TODO mettere immagine normale senza avatar view
-        //avatarView.setExp(mShare.getHost().getExp());
+        //avatarView.setLevel(mShare.getHost().getExp());
 
         buttonCompleteShare.setEnabled(true);
 

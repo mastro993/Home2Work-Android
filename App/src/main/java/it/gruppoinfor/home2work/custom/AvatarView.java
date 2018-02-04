@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -19,19 +18,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.MediaStoreSignature;
-import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import org.jetbrains.annotations.Contract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2workapi.model.Experience;
 
 public class AvatarView extends RelativeLayout {
 
-    @BindView(R.id.karma_donut_progress)
-    DonutProgress karmaDonutProgress;
     @BindView(R.id.user_propic)
     ImageView userPropic;
     @BindView(R.id.exp_level)
@@ -42,10 +37,7 @@ public class AvatarView extends RelativeLayout {
     RelativeLayout levelContainer;
 
     private Context mContext;
-    private Long mLastExp = 0L;
     private Integer mLastLevel = 0;
-    private Float mLastProgress = 0.0f;
-    private int mAvatarVersion = 0;
 
     public AvatarView(Context context) {
         super(context);
@@ -82,28 +74,11 @@ public class AvatarView extends RelativeLayout {
                 .apply(requestOptions).into(userPropic);
     }
 
-    public void setExp(Experience exp) {
+    public void setLevel(int level) {
 
         final int animDuration = 500;
 
-        if (exp.getLevel() > 100) {
-
-            DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, mLastProgress, 100);
-            animation.setDuration(animDuration);
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            karmaDonutProgress.startAnimation(animation);
-
-        } else {
-
-            DonutProgressAnimation animation = new DonutProgressAnimation(karmaDonutProgress, mLastProgress, exp.getProgress());
-            animation.setDuration(animDuration);
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            karmaDonutProgress.startAnimation(animation);
-
-            mLastProgress = exp.getProgress();
-        }
-
-        int lvl = Math.min(100, exp.getLevel());
+        int lvl = Math.min(100, level);
 
         ValueAnimator animator = ValueAnimator.ofInt(mLastLevel, lvl);
         animator.setDuration(animDuration);
@@ -113,26 +88,29 @@ public class AvatarView extends RelativeLayout {
         );
         animator.start();
 
-        Drawable shieldIcon = getLevelShield(lvl);
+        Shader textShader;
 
-        if (lvl > 99) {
-            Shader gradientShader = new LinearGradient(
+        if (lvl == 100) {
+            textShader = new LinearGradient(
                     0, 0, 0, 60,
                     ContextCompat.getColor(mContext, R.color.colorAccent),
                     ContextCompat.getColor(mContext, R.color.colorPrimary),
                     Shader.TileMode.CLAMP);
-            expLevel.getPaint().setShader(gradientShader);
-            shieldIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_shield_8);
         } else {
-            Shader textShader = new LinearGradient(
+            int color = getLevelColor(lvl);
+            textShader = new LinearGradient(
                     0, 0, 0, 60,
-                    ContextCompat.getColor(mContext, R.color.dark_bg_light_primary_text),
-                    ContextCompat.getColor(mContext, R.color.dark_bg_light_primary_text),
+                    ContextCompat.getColor(mContext, color),
+                    ContextCompat.getColor(mContext, color),
                     Shader.TileMode.CLAMP);
-            expLevel.getPaint().setShader(textShader);
         }
 
-        levelFrame.setImageDrawable(shieldIcon);
+        expLevel.getPaint().setShader(textShader);
+
+
+        //Drawable shieldIcon = getLevelShield(lvl);
+        //shieldIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_shield_8);
+        //levelFrame.setImageDrawable(shieldIcon);
 
 
         if (mLastLevel < lvl) {
@@ -150,11 +128,10 @@ public class AvatarView extends RelativeLayout {
 
         }
 
-        mLastExp = exp.getValue();
         mLastLevel = lvl;
     }
 
-    private Drawable getLevelShield(int level) {
+/*    private Drawable getLevelShield(int level) {
         if (isBetween(level, 1, 4))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_1);
         else if (isBetween(level, 5, 9))
@@ -169,7 +146,23 @@ public class AvatarView extends RelativeLayout {
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_6);
         else
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_7);
+    }*/
 
+    private int getLevelColor(int level) {
+        if (isBetween(level, 1, 4))
+            return R.color.blue_grey_900;
+        else if (isBetween(level, 5, 9))
+            return R.color.brown_600;
+        else if (isBetween(level, 10, 19))
+            return R.color.grey_600;
+        else if (isBetween(level, 20, 34))
+            return R.color.amber_600;
+        else if (isBetween(level, 35, 49))
+            return R.color.green_700;
+        else if (isBetween(level, 50, 69))
+            return R.color.blue_700;
+        else
+            return R.color.purple_700;
     }
 
     @Contract(pure = true)

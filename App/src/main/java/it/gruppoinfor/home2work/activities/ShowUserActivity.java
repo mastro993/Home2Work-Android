@@ -157,6 +157,6 @@ public class ShowUserActivity extends AppCompatActivity {
     }
 
     private void refreshUI() {
-        avatarView.setExp(mProfile.getExp());
+        avatarView.setLevel(mProfile.getExp().getLevel());
     }
 }

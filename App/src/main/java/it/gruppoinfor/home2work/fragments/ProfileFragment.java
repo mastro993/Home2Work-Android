@@ -42,8 +42,8 @@ import it.gruppoinfor.home2work.activities.SignInActivity;
 import it.gruppoinfor.home2work.custom.AppBarStateChangeListener;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.Converters;
-import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.ImageTools;
+import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.User;
 import it.gruppoinfor.home2workapi.model.UserProfile;
@@ -283,7 +283,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void refreshUI() {
-        avatarView.setExp(mProfile.getExp());
+        avatarView.setLevel(mProfile.getExp().getLevel());
     }
 
 
