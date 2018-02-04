@@ -197,8 +197,8 @@ public class MatchActivity extends AppCompatActivity {
                 MapsInitializer.initialize(mContext);
 
                 List<com.google.android.gms.maps.model.LatLng> matchWaypoints = new ArrayList<>();
-                matchWaypoints.add(match.getStartLocation().toLatLng());
-                matchWaypoints.add(match.getEndLocation().toLatLng());
+                matchWaypoints.add(new com.google.android.gms.maps.model.LatLng(match.getStartLocation().getLat(), match.getStartLocation().getLng()));
+                matchWaypoints.add(new com.google.android.gms.maps.model.LatLng(match.getEndLocation().getLat(), match.getEndLocation().getLng()));
 
                 final Routing matchRouting = new Routing.Builder()
                         .travelMode(Routing.TravelMode.WALKING)
@@ -242,14 +242,14 @@ public class MatchActivity extends AppCompatActivity {
 
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    .position(first.toLatLng())
+                    .position(new com.google.android.gms.maps.model.LatLng(first.getLat(), first.getLng()))
                     .title("Casa")
             );
 
 
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    .position(last.toLatLng())
+                    .position(new com.google.android.gms.maps.model.LatLng(last.getLat(), last.getLng()))
                     .title("Lavoro")
             );
 

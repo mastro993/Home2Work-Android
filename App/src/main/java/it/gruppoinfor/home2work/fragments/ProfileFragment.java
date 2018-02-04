@@ -43,7 +43,7 @@ import it.gruppoinfor.home2work.custom.AppBarStateChangeListener;
 import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2work.utils.Tools;
+import it.gruppoinfor.home2work.utils.ImageTools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.User;
 import it.gruppoinfor.home2workapi.model.UserProfile;
@@ -117,13 +117,13 @@ public class ProfileFragment extends Fragment {
 
                 Uri selectedImageUri = data.getData();
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), selectedImageUri);
-                Bitmap propic = Tools.shrinkBitmap(bitmap, 300);
+                Bitmap propic = ImageTools.shrinkBitmap(bitmap, 300);
 
                 File file = Converters.bitmapToFile(mContext, propic);
-                String decodedAvatar = Tools.decodeFile(file.getPath());
+                String decodedAvatar = ImageTools.decodeFile(file.getPath());
                 File decodedFile = new File(decodedAvatar);
 
-                String mime = Tools.getMimeType(decodedFile.getPath());
+                String mime = ImageTools.getMimeType(decodedFile.getPath());
                 MediaType mediaType = MediaType.parse(mime);
 
                 RequestBody requestFile = RequestBody.create(mediaType, decodedFile);

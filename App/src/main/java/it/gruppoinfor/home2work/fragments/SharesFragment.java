@@ -27,7 +27,6 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -45,9 +44,9 @@ import it.gruppoinfor.home2work.activities.OngoingShareActivity;
 import it.gruppoinfor.home2work.adapters.SharesAdapter;
 import it.gruppoinfor.home2work.custom.OngoinShareView;
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks;
-import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.Guest;
+import it.gruppoinfor.home2workapi.model.LatLng;
 import it.gruppoinfor.home2workapi.model.Share;
 
 import static it.gruppoinfor.home2work.activities.OngoingShareActivity.EXTRA_SHARE;
@@ -112,7 +111,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if(isVisibleToUser && mShareList.size() == 0) refreshData();
+        if (isVisibleToUser && mShareList.size() == 0) refreshData();
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -297,7 +296,7 @@ public class SharesFragment extends Fragment implements ItemClickCallbacks {
                     return;
                 }
 
-                if (Tools.getDistance(joinLocation, hostLocation) > 500) {
+                if (hostLocation.distanceTo(joinLocation) > 500) {
                     Toasty.error(mContext, mContext.getString(R.string.activity_ongoing_share_invalid_code)).show();
                     materialDialog.dismiss();
                     return;

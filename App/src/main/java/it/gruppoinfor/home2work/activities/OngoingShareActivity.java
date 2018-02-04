@@ -34,7 +34,6 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -48,11 +47,10 @@ import it.gruppoinfor.home2work.custom.AvatarView;
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks;
 import it.gruppoinfor.home2work.services.MessagingService;
 import it.gruppoinfor.home2work.utils.QREncoder;
-import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.Guest;
+import it.gruppoinfor.home2workapi.model.LatLng;
 import it.gruppoinfor.home2workapi.model.Share;
-import it.gruppoinfor.home2workapi.model.User;
 
 public class OngoingShareActivity extends AppCompatActivity implements ItemClickCallbacks {
 
@@ -241,7 +239,7 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
                     switch (p) {
                         case 0:
                             Intent userIntent = new Intent(this, ShowUserActivity.class);
-                            userIntent.putExtra("user",  mShare.getGuests().get(position));
+                            userIntent.putExtra("user", mShare.getGuests().get(position));
                             startActivity(userIntent);
                             break;
                         case 1:
@@ -412,7 +410,7 @@ public class OngoingShareActivity extends AppCompatActivity implements ItemClick
                     return;
                 }
 
-                if (Tools.getDistance(endLocation, hostLocation) > 500) {
+                if (hostLocation.distanceTo(endLocation) > 500) {
                     Toasty.error(this, getString(R.string.activity_ongoing_share_check_wrong_code)).show();
                     loadingDialog.dismiss();
                     return;

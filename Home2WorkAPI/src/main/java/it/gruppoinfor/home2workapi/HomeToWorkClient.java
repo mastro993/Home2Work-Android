@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers;
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback;
 import it.gruppoinfor.home2workapi.model.Company;
 import it.gruppoinfor.home2workapi.model.Guest;
-import it.gruppoinfor.home2workapi.model.Location;
+import it.gruppoinfor.home2workapi.model.RouteLocation;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
@@ -399,8 +399,8 @@ public class HomeToWorkClient {
                 }, throwable -> onFailureListener.onFailure(new Exception(throwable)));
     }
 
-    public void uploadLocation(long userId, List<Location> locationList, OnSuccessListener<List<Location>> onSuccessListener, OnFailureListener onFailureListener) {
-        mAPI.uploadLocations(userId, locationList)
+    public void uploadLocation(long userId, List<RouteLocation> routeLocationList, OnSuccessListener<List<RouteLocation>> onSuccessListener, OnFailureListener onFailureListener) {
+        mAPI.uploadLocations(userId, routeLocationList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listResponse -> {

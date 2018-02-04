@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
@@ -22,10 +21,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.MediaStoreSignature;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
+import org.jetbrains.annotations.Contract;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.gruppoinfor.home2work.R;
-import it.gruppoinfor.home2work.utils.Tools;
 import it.gruppoinfor.home2workapi.model.Experience;
 
 public class AvatarView extends RelativeLayout {
@@ -116,15 +116,20 @@ public class AvatarView extends RelativeLayout {
         Drawable shieldIcon = getLevelShield(lvl);
 
         if (lvl > 99) {
-            Shader textShader = new LinearGradient(
+            Shader gradientShader = new LinearGradient(
                     0, 0, 0, 60,
                     ContextCompat.getColor(mContext, R.color.colorAccent),
                     ContextCompat.getColor(mContext, R.color.colorPrimary),
                     Shader.TileMode.CLAMP);
-            expLevel.getPaint().setShader(textShader);
+            expLevel.getPaint().setShader(gradientShader);
             shieldIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_shield_8);
         } else {
-            expLevel.setTextColor(getResources().getColor(R.color.dark_bg_light_primary_text));
+            Shader textShader = new LinearGradient(
+                    0, 0, 0, 60,
+                    ContextCompat.getColor(mContext, R.color.dark_bg_light_primary_text),
+                    ContextCompat.getColor(mContext, R.color.dark_bg_light_primary_text),
+                    Shader.TileMode.CLAMP);
+            expLevel.getPaint().setShader(textShader);
         }
 
         levelFrame.setImageDrawable(shieldIcon);
@@ -150,21 +155,26 @@ public class AvatarView extends RelativeLayout {
     }
 
     private Drawable getLevelShield(int level) {
-        if (Tools.isBetween(level, 1, 4))
+        if (isBetween(level, 1, 4))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_1);
-        else if (Tools.isBetween(level, 5, 9))
+        else if (isBetween(level, 5, 9))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_2);
-        else if (Tools.isBetween(level, 10, 19))
+        else if (isBetween(level, 10, 19))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_3);
-        else if (Tools.isBetween(level, 20, 34))
+        else if (isBetween(level, 20, 34))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_4);
-        else if (Tools.isBetween(level, 35, 49))
+        else if (isBetween(level, 35, 49))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_5);
-        else if (Tools.isBetween(level, 50, 69))
+        else if (isBetween(level, 50, 69))
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_6);
         else
             return ContextCompat.getDrawable(mContext, R.drawable.ic_shield_7);
 
+    }
+
+    @Contract(pure = true)
+    private boolean isBetween(int x, int lower, int upper) {
+        return lower <= x && x <= upper;
     }
 
     private void initUI() {

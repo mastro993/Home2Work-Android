@@ -55,7 +55,7 @@ import it.gruppoinfor.home2work.R;
 import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter;
 import it.gruppoinfor.home2work.utils.Converters;
 import it.gruppoinfor.home2work.utils.SessionManager;
-import it.gruppoinfor.home2work.utils.Tools;
+import it.gruppoinfor.home2work.utils.ImageTools;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
 import it.gruppoinfor.home2workapi.model.Address;
 import it.gruppoinfor.home2workapi.model.Company;
@@ -352,7 +352,7 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 MapsInitializer.initialize(mContext);
                 googleMap.setMyLocationEnabled(true);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.909986, 12.3959159).toLatLng(), 5.0f));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new com.google.android.gms.maps.model.LatLng(41.909986, 12.3959159), 5.0f));
             }
         }
 
@@ -457,10 +457,10 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
             homeLocation = latLng;
             googleMap.clear();
             googleMap.addMarker(new MarkerOptions()
-                    .position(latLng.toLatLng())
+                    .position(new com.google.android.gms.maps.model.LatLng(latLng.getLat(), latLng.getLng()))
                     .title(getString(R.string.home)))
                     .showInfoWindow();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng.toLatLng(), 15.0f));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new com.google.android.gms.maps.model.LatLng(latLng.getLat(), latLng.getLng()), 15.0f));
         }
 
         @Override
@@ -626,7 +626,7 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
 
                     Uri selectedImageUri = data.getData();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), selectedImageUri);
-                    propic = Tools.shrinkBitmap(bitmap, 300);
+                    propic = ImageTools.shrinkBitmap(bitmap, 300);
                     propicView.setImageBitmap(propic);
                     uploaded = false;
 
@@ -671,10 +671,10 @@ public class ConfigurationActivity extends AppCompatActivity implements StepperL
                 callback.getStepperLayout().showProgress(mContext.getString(R.string.activity_configuration_avatar_upload));
 
                 File file = Converters.bitmapToFile(getContext(), propic);
-                String decodedAvatar = Tools.decodeFile(file.getPath());
+                String decodedAvatar = ImageTools.decodeFile(file.getPath());
                 File decodedFile = new File(decodedAvatar);
 
-                String mime = Tools.getMimeType(decodedFile.getPath());
+                String mime = ImageTools.getMimeType(decodedFile.getPath());
                 MediaType mediaType = MediaType.parse(mime);
 
                 RequestBody requestFile = RequestBody.create(mediaType, decodedFile);

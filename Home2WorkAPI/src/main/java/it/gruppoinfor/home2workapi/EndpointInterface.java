@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import it.gruppoinfor.home2workapi.model.Company;
-import it.gruppoinfor.home2workapi.model.Location;
+import it.gruppoinfor.home2workapi.model.RouteLocation;
 import it.gruppoinfor.home2workapi.model.Match;
 import it.gruppoinfor.home2workapi.model.Share;
 import it.gruppoinfor.home2workapi.model.User;
@@ -58,9 +58,9 @@ interface EndpointInterface {
     );
 
     @POST("user/{id}/location")
-    Observable<Response<List<Location>>> uploadLocations(
+    Observable<Response<List<RouteLocation>>> uploadLocations(
             @Path("id") Long id,
-            @Body List<Location> locations
+            @Body List<RouteLocation> routeLocations
     );
 
     @GET("user/{id}/match")

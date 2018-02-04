@@ -17,8 +17,7 @@ import java.io.FileOutputStream;
  * Altre funzioni
  */
 
-public class Tools {
-
+public class ImageTools {
 
     public static String getMimeType(String url) {
         String type = null;
@@ -98,20 +97,4 @@ public class Tools {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public static long getCurrentTimestamp() {
-        return System.currentTimeMillis() / 1000L;
-    }
-
-
-    public static float getDistance(Location a, LatLng b) {
-        Location loc2 = new Location("");
-        loc2.setLatitude(b.latitude);
-        loc2.setLongitude(b.longitude);
-
-        return a.distanceTo(loc2);
-    }
-
-    public static boolean isBetween(int x, int lower, int upper) {
-        return lower <= x && x <= upper;
-    }
 }

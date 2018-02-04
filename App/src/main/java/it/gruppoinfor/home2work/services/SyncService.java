@@ -18,7 +18,7 @@ import it.gruppoinfor.home2work.database.RoutePointRepo;
 import it.gruppoinfor.home2work.utils.SessionManager;
 import it.gruppoinfor.home2work.utils.UserPrefs;
 import it.gruppoinfor.home2workapi.HomeToWorkClient;
-import it.gruppoinfor.home2workapi.model.Location;
+import it.gruppoinfor.home2workapi.model.RouteLocation;
 import it.gruppoinfor.home2workapi.model.User;
 
 
@@ -26,7 +26,7 @@ public class SyncService extends Service {
 
     private final String TAG = "SYNC_SERVICE";
 
-    private List<Location> locations = new ArrayList<>();
+    private List<RouteLocation> routeLocations = new ArrayList<>();
     private RoutePointRepo mRoutePointRepo;
     private User mUser;
 
@@ -56,18 +56,18 @@ public class SyncService extends Service {
 
         mRoutePointRepo.getAllUserLocations(routePointEntities -> {
             for (RoutePointEntity routePointEntity : routePointEntities) {
-                Location location = new Location();
-                location.setLatLng(routePointEntity.getLatLng());
-                location.setDate(new Date(routePointEntity.getTimestamp() * 1000));
-                locations.add(location);
+                RouteLocation routeLocation = new RouteLocation();
+                routeLocation.setLatLng(routePointEntity.getLatLng());
+                routeLocation.setDate(new Date(routePointEntity.getTimestamp() * 1000));
+                routeLocations.add(routeLocation);
             }
 
-            if (locations.size() > 0) syncRoutePoints(locations);
+            if (routeLocations.size() > 0) syncRoutePoints(routeLocations);
         }, Throwable::printStackTrace);
     }
 
-    private void syncRoutePoints(final List<Location> locationList) {
-        HomeToWorkClient.getInstance().uploadLocation(mUser.getId(), locationList,
+    private void syncRoutePoints(final List<RouteLocation> routeLocationList) {
+        HomeToWorkClient.getInstance().uploadLocation(mUser.getId(), routeLocationList,
                 locations -> mRoutePointRepo.deleteAllUserLocations(mUser.getId()),
                 e -> Log.e(TAG, "Sincronizzazione fallita", new Throwable(e)));
 

@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2workapi.model;
 
 import android.arch.persistence.room.Ignore;
+import android.location.Location;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -27,14 +28,21 @@ public class LatLng implements Serializable {
         this.lng = lng;
     }
 
-    @Ignore
-    public LatLng(com.google.android.gms.maps.model.LatLng latLng) {
-        this.lat = latLng.latitude;
-        this.lng = latLng.longitude;
+    public float distanceTo(LatLng latLng) {
+        Location dep = new Location("");
+        dep.setLatitude(lat);
+        dep.setLongitude(lng);
+        Location dest = new Location("");
+        dest.setLatitude(latLng.getLat());
+        dest.setLongitude(latLng.getLng());
+        return dep.distanceTo(dest);
     }
 
-    public com.google.android.gms.maps.model.LatLng toLatLng() {
-        return new com.google.android.gms.maps.model.LatLng(lat, lng);
+    public float distanceTo(Location dest) {
+        Location dep = new Location("");
+        dep.setLatitude(lat);
+        dep.setLongitude(lng);
+        return dep.distanceTo(dest);
     }
 
     public Double getLat() {
