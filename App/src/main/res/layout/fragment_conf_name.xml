@@ -10,7 +10,6 @@
     android:windowSoftInputMode="adjustPan">
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
@@ -23,7 +22,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,7 +35,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/nameInput"
+                android:id="@+id/input_name"
                 style="@style/Widget.AppCompat.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +48,7 @@
             <include layout="@layout/horizontal_divider" />
 
             <EditText
-                android:id="@+id/surnameInput"
+                android:id="@+id/input_surname"
                 style="@style/Widget.AppCompat.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

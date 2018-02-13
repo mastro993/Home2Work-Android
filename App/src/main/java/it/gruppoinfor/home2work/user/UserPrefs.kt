@@ -5,14 +5,15 @@ import android.content.SharedPreferences
 
 import org.jetbrains.annotations.Contract
 
-/**
- * Created by Federico on 01/03/2017.
- *
- *
- * Preferenze utente
- */
-
 object UserPrefs {
+
+    @get:Contract(pure = true)
+    var manager: Manager
+        private set
+
+    init {
+        manager = Manager(context)
+    }
 
     // Chiavi
     var NOTIFICATIONS = "notifications"
@@ -31,9 +32,7 @@ object UserPrefs {
     var SyncWithData: Boolean = false
     var LastSync: String = ""
 
-    @get:Contract(pure = true)
-    var manager: Manager? = null
-        private set
+
 
     fun init(context: Context) {
         manager = Manager(context)

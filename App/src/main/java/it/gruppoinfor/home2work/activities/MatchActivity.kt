@@ -16,7 +16,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -25,67 +24,37 @@ import com.directions.route.Route
 import com.directions.route.RouteException
 import com.directions.route.Routing
 import com.directions.route.RoutingListener
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-
-import java.util.ArrayList
-import java.util.Locale
-
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.utils.Converters.dateToString
 import it.gruppoinfor.home2work.utils.RouteUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.Match
-
-import it.gruppoinfor.home2work.utils.Converters.dateToString
+import kotlinx.android.synthetic.main.activity_match.*
+import java.util.*
 
 class MatchActivity : AppCompatActivity() {
-    @BindView(R.id.score_text)
-    internal var scoreText: TextView? = null
-    @BindView(R.id.home_view)
-    internal var homeView: TextView? = null
-    internal var mapFragment: SupportMapFragment
-    @BindView(R.id.match_loading_view)
-    internal var matchLoadingView: FrameLayout? = null
-    @BindView(R.id.user_avatar)
-    internal var userAvatar: ImageView? = null
-    @BindView(R.id.name_view)
-    internal var nameView: TextView? = null
-    @BindView(R.id.job_view)
-    internal var jobView: TextView? = null
-    @BindView(R.id.timetable_time)
-    internal var timetableTime: TextView? = null
-    @BindView(R.id.timetable_weekdays)
-    internal var timetableWeekdays: TextView? = null
     private var googleMap: GoogleMap? = null
     private var match: Match? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_match)
-        ButterKnife.bind(this)
 
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
 
-        mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.onCreate(savedInstanceState)
+        val map = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        map.onCreate(savedInstanceState)
 
-        matchLoadingView!!.visibility = View.VISIBLE
+        match_loading_view.visibility = View.VISIBLE
 
-        mapFragment.getMapAsync(MyMapReadyCallback(this))
+        map.getMapAsync(MyMapReadyCallback(this))
 
         val intent = intent
         if (intent.hasExtra(EXTRA_MATCH)) {
@@ -162,7 +131,7 @@ class MatchActivity : AppCompatActivity() {
     }
 
     private fun refreshUI() {
-        matchLoadingView!!.visibility = View.GONE
+        match_loading_view.visibility = View.GONE
         val animator = ValueAnimator.ofInt(0, match!!.score)
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()

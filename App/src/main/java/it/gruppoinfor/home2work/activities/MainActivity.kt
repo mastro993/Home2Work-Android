@@ -9,14 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
-
-import butterknife.BindView
-import butterknife.ButterKnife
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.fragments.HomeFragment
 import it.gruppoinfor.home2work.fragments.MatchFragment
@@ -25,25 +19,13 @@ import it.gruppoinfor.home2work.fragments.SharesFragment
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
 import it.gruppoinfor.home2work.user.UserPrefs
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
-    @BindView(R.id.bottom_navigation)
-    var bottomNavigation: AHBottomNavigation? = null
-    @BindView(R.id.toolbar)
-    internal var toolbar: Toolbar? = null
-    @BindView(R.id.view_pager)
-    internal var viewPager: AHBottomNavigationViewPager? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }*/
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ButterKnife.bind(this)
 
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
@@ -97,64 +79,55 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         val sharesTab = AHBottomNavigationItem(R.string.activity_main_tab_shares, R.drawable.ic_car_side, R.color.light_blue_300)
         val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_user, R.color.colorAccent)
 
-        bottomNavigation!!.removeAllItems()
-        bottomNavigation!!.addItem(homeTab)
-        bottomNavigation!!.addItem(matchTab)
-        bottomNavigation!!.addItem(sharesTab)
-        bottomNavigation!!.addItem(profileTab)
+        bottom_navigation.removeAllItems()
+        bottom_navigation.addItem(homeTab)
+        bottom_navigation.addItem(matchTab)
+        bottom_navigation.addItem(sharesTab)
+        bottom_navigation.addItem(profileTab)
 
-        bottomNavigation!!.accentColor = ContextCompat.getColor(this, R.color.colorAccent)
-        bottomNavigation!!.inactiveColor = ContextCompat.getColor(this, R.color.light_bg_dark_hint_text)
-        bottomNavigation!!.isForceTint = true
+        bottom_navigation.accentColor = ContextCompat.getColor(this, R.color.colorAccent)
+        bottom_navigation.inactiveColor = ContextCompat.getColor(this, R.color.light_bg_dark_hint_text)
+        bottom_navigation.isForceTint = true
 
-        bottomNavigation!!.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
+        bottom_navigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
 
-        bottomNavigation!!.isBehaviorTranslationEnabled = false
-        bottomNavigation!!.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
+        bottom_navigation.isBehaviorTranslationEnabled = false
+        bottom_navigation.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
 
-        bottomNavigation!!.setOnTabSelectedListener { position, wasSelected ->
-            viewPager!!.setCurrentItem(position, false)
-            title = bottomNavigation!!.getItem(position).getTitle(this)
+        bottom_navigation.setOnTabSelectedListener { position, wasSelected ->
+            view_pager.setCurrentItem(position, false)
+            title = bottom_navigation.getItem(position).getTitle(this)
             true
         }
 
         // View Pager
-        viewPager!!.offscreenPageLimit = 4
+        view_pager.offscreenPageLimit = 4
         val pagerAdapter = PagerAdapter(supportFragmentManager)
-        viewPager!!.adapter = pagerAdapter
-        viewPager!!.addOnPageChangeListener(this)
+        view_pager.adapter = pagerAdapter
+        view_pager.addOnPageChangeListener(this)
 
         // Setup iniziale
-        bottomNavigation!!.currentItem = 0
-        title = bottomNavigation!!.getItem(0).getTitle(this)
+        bottom_navigation.currentItem = 0
+        title = bottom_navigation.getItem(0).getTitle(this)
     }
 
     fun setBadge(itemPosition: Int, title: String) {
-        bottomNavigation!!.setNotification(title, itemPosition)
+        bottom_navigation.setNotification(title, itemPosition)
     }
 
-    private inner class PagerAdapter
-    //List<Fragment> fragments;
-
-    internal constructor(fm: FragmentManager)/*            fragments = new ArrayList<>();
-            fragments.add(new HomeFragment());
-            fragments.add(new MatchFragment());
-            fragments.add(new SharesFragment());
-            fragments.add(new ProfileFragment());*/ : FragmentPagerAdapter(fm) {
+    private inner class PagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
-            //return fragments.get(position);
-            when (position) {
-                0 -> return HomeFragment()
-                1 -> return MatchFragment()
-                2 -> return SharesFragment()
-                3 -> return ProfileFragment()
-                else -> return HomeFragment()
+            return when (position) {
+                0 -> HomeFragment()
+                1 -> MatchFragment()
+                2 -> SharesFragment()
+                3 -> ProfileFragment()
+                else -> HomeFragment()
             }
         }
 
         override fun getCount(): Int {
-            /*return fragments.size();*/
             return 4
         }
 
