@@ -15,43 +15,30 @@ public class User implements Serializable {
     @SerializedName("UserID")
     @Expose
     private Long id;
-
     @SerializedName("Email")
     @Expose
     private String email;
-
     @SerializedName("Token")
     @Expose
     private String token;
-
     @SerializedName("Name")
     @Expose
     private String name;
-
     @SerializedName("Surname")
     @Expose
     private String surname;
-
     @SerializedName("HomeLatLng")
     @Expose
     private LatLng location;
-
     @SerializedName("HomeAddress")
     @Expose
     private Address address;
-
     @SerializedName("Company")
     @Expose
     private Company company;
-
-    @SerializedName("Regdate")
-    @Expose
-    private Date registrationDate;
-
     @SerializedName("Configured")
     @Expose
     private Boolean configured;
-
     @SerializedName("Facebook")
     @Expose
     private String facebook;
@@ -61,6 +48,18 @@ public class User implements Serializable {
     @SerializedName("Telegram")
     @Expose
     private String telegram;
+    @SerializedName("Regdate")
+    @Expose
+    private Date regdate;
+
+
+    public Date getRegdate() {
+        return regdate;
+    }
+
+    public void setRegdate(Date regdate) {
+        this.regdate = regdate;
+    }
 
 
     public Long getId() {
@@ -127,14 +126,6 @@ public class User implements Serializable {
         this.company = company;
     }
 
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
     public Boolean isConfigured() {
         return configured;
     }
@@ -184,10 +175,10 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof User){
+        if (obj instanceof User) {
             User user = (User) obj;
             return id.equals(user.getId());
         }
-        return  false;
+        return false;
     }
 }

@@ -111,6 +111,13 @@
     <string name="fragment_profile_stats_distance">%1$s km condivisi</string>
     <string name="fragment_profile_fuel">%1$s l di carburante risparmiato</string>
     <string name="fragment_profile_emission">%1$s g di CO2 evitati</string>
+    <string name="fragment_profile_card_exp">Livello utente</string>
+    <string name="fragment_profile_card_exp_value">%1$,d / %2$,d</string>
+    <string name="fragment_profile_card_exp_level">%d</string>
+    <string name="fragment_profile_card_exp_left">%,d punti al prossimo livello</string>
+    <string name="fragment_profile_card_shares_distance">Distanza condivisa</string>
+    <string name="fragment_profile_card_shares_distance_value">%.2f km</string>
+    <string name="fragment_profile_registration_date">Iscrizione</string>
 
     <string name="fragment_share_dialog_new_title">Nuova condivisione</string>
     <string name="fragment_share_dialog_new_content">Creazione di una condivisione in corso.</string>

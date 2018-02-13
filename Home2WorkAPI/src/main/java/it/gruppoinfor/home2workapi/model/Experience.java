@@ -4,22 +4,25 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Experience {
-    @SerializedName("Value")
+    @SerializedName("Amount")
     @Expose
-    private Long value;
+    private Integer amount;
     @SerializedName("Level")
     @Expose
     private Integer level;
     @SerializedName("Progress")
     @Expose
     private float progress;
+    @SerializedName("NextLvlExp")
+    @Expose
+    private Integer nextLvlExp;
 
-    public Long getValue() {
-        return value;
+    public Integer getValue() {
+        return amount;
     }
 
-    public void setValue(Long value) {
-        this.value = value;
+    public void setValue(Integer value) {
+        this.amount = value;
     }
 
     public Integer getLevel() {
@@ -36,5 +39,13 @@ public class Experience {
 
     public void setProgress(float progress) {
         this.progress = progress;
+    }
+
+    public Integer getNextLvlExp() {
+        return nextLvlExp;
+    }
+
+    public void setNextLvlExp(Integer nextLvlExp) {
+        this.nextLvlExp = nextLvlExp;
     }
 }

@@ -5,9 +5,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class UserProfile implements Serializable {
+
+    @SerializedName("Regdate")
+    @Expose
+    private Date registrationDate;
 
     @SerializedName("Exp")
     @Expose
@@ -18,6 +23,14 @@ public class UserProfile implements Serializable {
     @SerializedName("Achievements")
     @Expose
     private List<Achievement> achievements;
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
 
     public Experience getExp() {
         return exp;
