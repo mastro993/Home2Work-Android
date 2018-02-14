@@ -1,12 +1,14 @@
 package it.gruppoinfor.home2work
 
 import android.app.Application
+import android.arch.persistence.room.Room
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.ApplicationInfo
-
-import com.facebook.stetho.Stetho
-import com.squareup.leakcanary.LeakCanary
-
 import cat.ereza.customactivityoncrash.config.CaocConfig
+import com.facebook.stetho.Stetho
+import com.pixplicity.easyprefs.library.Prefs
+import com.squareup.leakcanary.LeakCanary
 import it.gruppoinfor.home2work.activities.SplashActivity
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 
@@ -19,6 +21,7 @@ class App : Application() {
         initLeakCanary() // LaakCanary
         initCaoc() // Caoc
         initStetho() // Stetho
+        initPrefsManager() // EasyPrefs
 
         HomeToWorkClient.init()
 
@@ -46,10 +49,10 @@ class App : Application() {
     }
 
     private fun initCaoc() {
-        val isDebuggable = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
+        //val isDebuggable = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
         CaocConfig.Builder.create()
                 //.backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
-                // TODO rimettere .enabled(isDebuggable) // Abilitato solo de in debug mode
+                // TODO rimettere .enabled(isDebuggable) // Abilitato solo se in debug mode
                 //.showErrorDetails(false) //default: true
                 //.showRestartButton(false) //default: true
                 //.logErrorOnRestart(false) //default: true
@@ -60,6 +63,15 @@ class App : Application() {
                 //.errorActivity(YourCustomErrorActivity.class) //default: null (default error activity)
                 //.eventListener(new YourCustomEventListener()) //default: null
                 .apply()
+    }
+
+    private fun initPrefsManager() {
+        Prefs.Builder()
+                .setContext(this)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(packageName)
+                .setUseDefaultSharedPreference(true)
+                .build()
     }
 
 

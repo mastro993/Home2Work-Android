@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.fragments.HomeFragment
 import it.gruppoinfor.home2work.fragments.MatchFragment
@@ -18,7 +19,7 @@ import it.gruppoinfor.home2work.fragments.ProfileFragment
 import it.gruppoinfor.home2work.fragments.SharesFragment
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
-import it.gruppoinfor.home2work.user.UserPrefs
+import it.gruppoinfor.home2work.user.Const
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
@@ -34,9 +35,9 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
         initUI()
 
-        if (UserPrefs.TrackingEnabled) {
+        if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
             val locationIntent = Intent(this, LocationService::class.java)
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(locationIntent)
             } else {
                 startService(locationIntent)
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         bottom_navigation.isBehaviorTranslationEnabled = false
         bottom_navigation.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
 
-        bottom_navigation.setOnTabSelectedListener { position, wasSelected ->
+        bottom_navigation.setOnTabSelectedListener { position, _ ->
             view_pager.setCurrentItem(position, false)
             title = bottom_navigation.getItem(position).getTitle(this)
             true

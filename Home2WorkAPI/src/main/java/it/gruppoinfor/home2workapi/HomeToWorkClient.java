@@ -92,7 +92,7 @@ public class HomeToWorkClient {
                             break;
                         case 200:
                             sUser = userResponse.body();
-                            loginCallback.onLoginSuccess();
+                            loginCallback.onLoginSuccess(sUser);
                             break;
                         default:
                             loginCallback.onLoginError();

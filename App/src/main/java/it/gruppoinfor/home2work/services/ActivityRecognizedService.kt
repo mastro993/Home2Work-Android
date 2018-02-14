@@ -9,7 +9,9 @@ import com.google.android.gms.location.DetectedActivity
 
 
 class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
-    internal val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
+
+    private var isDriving = false
+    private var stillStatusCounter = 0
 
     override fun onHandleIntent(intent: Intent?) {
         if (ActivityRecognitionResult.hasResult(intent)) {
@@ -65,10 +67,9 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
     companion object {
 
-        private val TAG = "ACTIVITY_RECOGNITION"
-        private val MAX_STILL_STATUS_COUNT = 2
-        private var isDriving = false
-        private var stillStatusCounter = 0
+        private const val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
+        private const val TAG = "ACTIVITY_RECOGNITION"
+        private const val MAX_STILL_STATUS_COUNT = 2
 
         fun hasResult(intent: Intent?): Boolean {
             return intent != null && intent.hasExtra(DrivingActivity::class.java.simpleName)

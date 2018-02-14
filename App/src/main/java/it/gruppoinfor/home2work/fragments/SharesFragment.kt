@@ -2,95 +2,66 @@ package it.gruppoinfor.home2work.fragments
 
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.NestedScrollView
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
-
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
-import com.annimon.stream.Optional
 import com.annimon.stream.Stream
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
-import com.google.zxing.integration.android.IntentResult
-
-import java.util.ArrayList
-
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.Unbinder
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
 import it.gruppoinfor.home2work.adapters.SharesAdapter
-import it.gruppoinfor.home2work.custom.OngoinShareView
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
+import it.gruppoinfor.home2work.user.Const.EXTRA_SHARE
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.Share
-
-import it.gruppoinfor.home2work.activities.OngoingShareActivity.EXTRA_SHARE
+import kotlinx.android.synthetic.main.dialog_new_share.*
+import kotlinx.android.synthetic.main.fragment_shares.*
+import kotlinx.android.synthetic.main.layout_share_empty.*
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class SharesFragment : Fragment(), ItemClickCallbacks {
+class SharesFragment : Fragment() {
 
-    @BindView(R.id.shares_recycler_view)
-    internal var sharesRecyclerView: RecyclerView? = null
-    @BindView(R.id.swipe_refresh_layout)
-    internal var swipeRefreshLayout: SwipeRefreshLayout? = null
-    @BindView(R.id.ongoing_share_view)
-    internal var ongoingShareView: OngoinShareView? = null
-    @BindView(R.id.new_share_container_empty)
-    internal var newShareContainerEmpty: View? = null
-    @BindView(R.id.nested_scroll_view)
-    internal var nestedScrollView: NestedScrollView? = null
-    @BindView(R.id.fab_new_share)
-    internal var fabNewShare: FloatingActionButton? = null
-
-    private var unbinder: Unbinder? = null
-    private var mContext: Context? = null
     private var mOngoingShare: Share? = null
 
     private val mShareList = ArrayList<Share>()
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_shares, container, false)
-        unbinder = ButterKnife.bind(this, rootView)
         setHasOptionsMenu(true)
+        return rootView
+    }
 
-        swipeRefreshLayout!!.setColorSchemeResources(R.color.colorAccent)
-        swipeRefreshLayout!!.setOnRefreshListener {
-            swipeRefreshLayout!!.isRefreshing = true
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = true
             refreshData()
         }
-        sharesRecyclerView!!.isNestedScrollingEnabled = false
-        return rootView
+
+        shares_recycler_view.isNestedScrollingEnabled = false
+
+
     }
 
     override fun onResume() {
@@ -118,45 +89,11 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
             val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
             checkShareCode(shareId, latLng)
         } else
-            Toasty.error(mContext!!, mContext!!.getString(R.string.activity_ongoing_share_invalid_code))
-    }
-
-    override fun onDestroyView() {
-        unbinder!!.unbind()
-        super.onDestroyView()
-    }
-
-    override fun onItemClick(view: View, position: Int) {
-        // TODO share click
-        /*Share share = mShareList.get(position);
-        Intent intent = new Intent(getActivity(), OngoingShareActivity.class);
-        intent.putExtra("SHARE_ID", share.getId());
-        getActivity().startActivity(intent);*/
-    }
-
-    override fun onLongItemClick(view: View, position: Int): Boolean {
-        // TODO share long click
-
-        return true
-    }
-
-    @OnClick(R.id.fab_new_share, R.id.button_first_share)
-    fun onNewShareClicked() {
-
-        MaterialDialog.Builder(mContext!!)
-                .title(R.string.fragment_share_dialog_new_title)
-                .items(R.array.fragment_share_dialog_new_share_options)
-                .itemsCallback { dialog, itemView, position, text ->
-                    when (position) {
-                        0 -> createShare()
-                        1 -> joinShare()
-                    }
-                }
-                .show()
+            Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code))
     }
 
     private fun initUI() {
-        swipeRefreshLayout!!.isRefreshing = false
+        swipe_refresh_layout.isRefreshing = false
 
         // Utilizzo dei falg per la visivilità per evitare dei glitch durante il controllo
         val listVisibility: Int
@@ -165,10 +102,13 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
         val ongoingShareVisibility: Int
 
         if (mShareList.size == 0) {
+
             listVisibility = View.GONE
             fabVisibility = View.GONE
             newShareVisibility = View.VISIBLE
+
         } else {
+
             listVisibility = View.VISIBLE
             fabVisibility = View.VISIBLE
             newShareVisibility = View.GONE
@@ -176,12 +116,20 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
 
-            sharesRecyclerView!!.layoutManager = layoutManager
-            sharesRecyclerView!!.layoutAnimation = animation
+            shares_recycler_view.layoutManager = layoutManager
+            shares_recycler_view.layoutAnimation = animation
 
-            val mSharesAdapter = SharesAdapter(activity, mShareList)
-            mSharesAdapter.setItemClickCallbacks(this)
-            sharesRecyclerView!!.adapter = mSharesAdapter
+            val mSharesAdapter = SharesAdapter(context as MainActivity, mShareList)
+            mSharesAdapter.setItemClickCallbacks(object : ItemClickCallbacks {
+                override fun onItemClick(view: View, position: Int) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onLongItemClick(view: View, position: Int): Boolean {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            })
+            shares_recycler_view.adapter = mSharesAdapter
         }
 
         if (mOngoingShare != null) {
@@ -189,21 +137,40 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
             newShareVisibility = View.GONE
             ongoingShareVisibility = View.VISIBLE
 
-            ongoingShareView!!.setShare(mOngoingShare)
-            (mContext as MainActivity).setBadge(2, "In corso")
+            ongoing_share_view.setShare(mOngoingShare!!)
+            (context as MainActivity).setBadge(2, "In corso")
 
         } else {
             ongoingShareVisibility = View.GONE
-            (mContext as MainActivity).setBadge(2, "")
+            (context as MainActivity).setBadge(2, "")
         }
 
         // Applico la visibilità solo alla fine dei controlli
-        sharesRecyclerView!!.visibility = listVisibility
-        fabNewShare!!.visibility = fabVisibility
-        newShareContainerEmpty!!.visibility = newShareVisibility
-        ongoingShareView!!.visibility = ongoingShareVisibility
+        shares_recycler_view.visibility = listVisibility
+        fab_new_share.visibility = fabVisibility
+        new_share_container_empty.visibility = newShareVisibility
+        ongoing_share_view.visibility = ongoingShareVisibility
 
+        fab_new_share.setOnClickListener {
+            newShareDialog()
+        }
+        new_share_container_empty.setOnClickListener {
+            newShareDialog()
+        }
 
+    }
+
+    private fun newShareDialog() {
+        MaterialDialog.Builder(context!!)
+                .title(R.string.fragment_share_dialog_new_title)
+                .items(R.array.fragment_share_dialog_new_share_options)
+                .itemsCallback { _, _, position, _ ->
+                    when (position) {
+                        0 -> createShare()
+                        1 -> joinShare()
+                    }
+                }
+                .show()
     }
 
     private fun refreshData() {
@@ -241,15 +208,15 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
             mShareList.addAll(shares)
             initUI()
 
-        }) { e ->
+        }) {
             //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI()
         }
     }
 
     fun joinShare() {
-        if (ContextCompat.checkSelfPermission(mContext!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions((mContext as MainActivity?)!!, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions((context as MainActivity?)!!, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         } else {
             val intentIntegrator = IntentIntegrator(activity)
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
@@ -259,7 +226,7 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
     }
 
     private fun checkShareCode(shareID: Long?, hostLocation: LatLng) {
-        val materialDialog = MaterialDialog.Builder(mContext!!)
+        val materialDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.fragment_share_dialog_new_title)
                 .content(R.string.fragment_share_dialog_join_content)
                 .contentGravity(GravityEnum.CENTER)
@@ -267,33 +234,32 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
                 .show()
 
 
-        if (ActivityCompat.checkSelfPermission(mContext!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext!!)
+            val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context!!)
             mFusedLocationClient.lastLocation.addOnSuccessListener { joinLocation ->
 
-                if (joinLocation == null) {
-                    Toasty.error(mContext!!, mContext!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
-                    materialDialog.dismiss()
-                    return@mFusedLocationClient.getLastLocation().addOnSuccessListener
+                when {
+                    joinLocation == null -> {
+                        Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
+                        materialDialog.dismiss()
+                    }
+                    hostLocation.distanceTo(joinLocation) > 500 -> {
+                        Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
+                        materialDialog.dismiss()
+                    }
+                    else -> HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, { share ->
+                        materialDialog.dismiss()
+                        val intent = Intent(activity, OngoingShareActivity::class.java)
+                        intent.putExtra(EXTRA_SHARE, share)
+                        context!!.startActivity(intent)
+                    }) { e ->
+                        Toasty.error(context!!, context!!.getString(R.string.activity_signin_server_error)).show()
+                        materialDialog.dismiss()
+                        e.printStackTrace()
+                    }
                 }
 
-                if (hostLocation.distanceTo(joinLocation) > 500) {
-                    Toasty.error(mContext!!, mContext!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
-                    materialDialog.dismiss()
-                    return@mFusedLocationClient.getLastLocation().addOnSuccessListener
-                }
-
-                HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, { share ->
-                    materialDialog.dismiss()
-                    val intent = Intent(activity, OngoingShareActivity::class.java)
-                    intent.putExtra(EXTRA_SHARE, share)
-                    mContext!!.startActivity(intent)
-                }) { e ->
-                    Toasty.error(mContext!!, mContext!!.getString(R.string.activity_signin_server_error)).show()
-                    materialDialog.dismiss()
-                    e.printStackTrace()
-                }
 
             }
 
@@ -301,7 +267,7 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
     }
 
     private fun createShare() {
-        val materialDialog = MaterialDialog.Builder(mContext!!)
+        val materialDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.fragment_share_dialog_new_title)
                 .content(R.string.fragment_share_dialog_new_content)
                 .contentGravity(GravityEnum.CENTER)
@@ -310,15 +276,15 @@ class SharesFragment : Fragment(), ItemClickCallbacks {
 
         HomeToWorkClient.getInstance().createShare({ share ->
             materialDialog.dismiss()
-            fabNewShare!!.visibility = View.GONE
+            fab_new_share!!.visibility = View.GONE
             mOngoingShare = share
             initUI()
             val intent = Intent(activity, OngoingShareActivity::class.java)
             intent.putExtra(EXTRA_SHARE, share)
-            mContext!!.startActivity(intent)
-        }) { e ->
+            context!!.startActivity(intent)
+        }) {
             materialDialog.dismiss()
-            Toasty.error(mContext!!, mContext!!.getString(R.string.fragment_share_dialog_new_error)).show()
+            Toasty.error(context!!, context!!.getString(R.string.fragment_share_dialog_new_error)).show()
         }
 
 

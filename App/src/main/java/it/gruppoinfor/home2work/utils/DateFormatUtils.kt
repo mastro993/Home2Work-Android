@@ -59,5 +59,11 @@ object DateFormatUtils {
 
     }
 
+    fun dateToString(date: Date): String {
+        val sdf = SimpleDateFormat("HH:mm", Locale.ITALY)
+        sdf.timeZone = TimeZone.getTimeZone("GMT+1")
+        return sdf.format(date)
+    }
+
 
 }

@@ -13,31 +13,21 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-
-import java.util.ArrayList
-import java.util.Locale
-
-import butterknife.BindView
-import butterknife.ButterKnife
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.ShowUserActivity
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2workapi.model.Match
-import it.gruppoinfor.home2workapi.model.User
+import kotlinx.android.synthetic.main.item_match.view.*
+import java.util.*
 
 class MatchAdapter(private val mContext: Context, values: List<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
 
     private var mItemClickCallbacks: ItemClickCallbacks? = null
-    private val mMatches: ArrayList<Match>
-
-    init {
-        mMatches = ArrayList(values)
-    }
+    private val mMatches: ArrayList<Match> = ArrayList(values)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchAdapter.ViewHolder {
         val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.item_match, parent, false)
@@ -49,10 +39,10 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
         val match = mMatches[position]
 
         if (!match.isNew) {
-            holder.newBadgeView!!.visibility = View.INVISIBLE
+            holder.newBadge.visibility = View.INVISIBLE
         } else {
             val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
-                    holder.newBadgeView,
+                    holder.newBadge,
                     PropertyValuesHolder.ofFloat("scaleX", 0.8f),
                     PropertyValuesHolder.ofFloat("scaleY", 0.8f))
             scaleDown.duration = 150
@@ -72,29 +62,29 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
                 .load(match.host.avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
-                .into(holder.userAvatar!!)
+                .into(holder.userAvatar)
 
         val animator = ValueAnimator.ofInt(0, match.score)
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.addUpdateListener { valueAnimator -> holder.scoreText!!.text = String.format(Locale.ITALIAN, "%1\$d%%", valueAnimator.animatedValue as Int) }
+        animator.addUpdateListener { valueAnimator -> holder.scoreText.text = "${valueAnimator.animatedValue}" }
         animator.start()
 
         val color = getScoreColor(match.score!!)
-        holder.scoreText!!.setTextColor(color)
+        holder.scoreText.setTextColor(color)
 
-        holder.nameView!!.text = match.host.toString()
-        holder.jobView!!.text = match.host.company.toString()
-        holder.homeView!!.text = match.host.address.city
+        holder.nameText.text = match.host.toString()
+        holder.jobText.text = match.host.company.toString()
+        holder.homeText.text = match.host.address.city
 
-        holder.container!!.setOnClickListener { v -> mItemClickCallbacks!!.onItemClick(v, position) }
-        holder.container!!.setOnLongClickListener { v -> mItemClickCallbacks!!.onLongItemClick(v, position) }
+        holder.container.setOnClickListener { v -> mItemClickCallbacks!!.onItemClick(v, position) }
+        holder.container.setOnLongClickListener { v -> mItemClickCallbacks!!.onLongItemClick(v, position) }
 
-        if (match.score == 0) holder.scoreText!!.visibility = View.INVISIBLE
+        if (match.score == 0) holder.scoreText.visibility = View.INVISIBLE
 
-        if (position == 0) holder.divider!!.visibility = View.GONE
+        if (position == 0) holder.divider.visibility = View.GONE
 
-        holder.userAvatar!!.setOnClickListener { v ->
+        holder.userAvatar.setOnClickListener {
             val userIntent = Intent(mContext, ShowUserActivity::class.java)
             userIntent.putExtra("user", match.host)
             mContext.startActivity(userIntent)
@@ -107,16 +97,12 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
     }
 
     private fun getScoreColor(score: Int): Int {
-        return if (score < 60) {
-            ContextCompat.getColor(mContext, R.color.red_500)
-        } else if (score < 70) {
-            ContextCompat.getColor(mContext, R.color.orange_600)
-        } else if (score < 80) {
-            ContextCompat.getColor(mContext, R.color.amber_400)
-        } else if (score < 90) {
-            ContextCompat.getColor(mContext, R.color.light_green_500)
-        } else {
-            ContextCompat.getColor(mContext, R.color.green_500)
+        return when {
+            score < 60 -> ContextCompat.getColor(mContext, R.color.red_500)
+            score < 70 -> ContextCompat.getColor(mContext, R.color.orange_600)
+            score < 80 -> ContextCompat.getColor(mContext, R.color.amber_400)
+            score < 90 -> ContextCompat.getColor(mContext, R.color.light_green_500)
+            else -> ContextCompat.getColor(mContext, R.color.green_500)
         }
     }
 
@@ -130,26 +116,14 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
         mItemClickCallbacks = itemClickCallbacks
     }
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        @BindView(R.id.user_avatar)
-        var userAvatar: ImageView? = null
-        @BindView(R.id.score_text)
-        var scoreText: TextView? = null
-        @BindView(R.id.name_view)
-        var nameView: TextView? = null
-        @BindView(R.id.job_view)
-        var jobView: TextView? = null
-        @BindView(R.id.home_view)
-        var homeView: TextView? = null
-        @BindView(R.id.new_badge)
-        var newBadgeView: View? = null
-        @BindView(R.id.container)
-        var container: View? = null
-        @BindView(R.id.divider)
-        var divider: View? = null
-
-        init {
-            ButterKnife.bind(this, view)
-        }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val newBadge: View = itemView.new_badge
+        val userAvatar: ImageView = itemView.match_user_avatar
+        val scoreText: TextView = itemView.score_text
+        val nameText: TextView = itemView.match_user_name_view
+        val jobText: TextView = itemView.match_user_job_view
+        val homeText: TextView = itemView.home_view
+        val container: View = itemView.item_match_container
+        val divider: View = itemView.item_match_divider
     }
 }

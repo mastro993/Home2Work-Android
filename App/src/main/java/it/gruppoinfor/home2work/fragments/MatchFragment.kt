@@ -1,26 +1,14 @@
 package it.gruppoinfor.home2work.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
-import android.widget.TextView
-
 import com.afollestad.materialdialogs.MaterialDialog
-
-import java.util.ArrayList
-
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.MainActivity
@@ -29,39 +17,31 @@ import it.gruppoinfor.home2work.activities.SettingsActivity
 import it.gruppoinfor.home2work.activities.ShowUserActivity
 import it.gruppoinfor.home2work.adapters.MatchAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
+import it.gruppoinfor.home2work.user.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Match
-import it.gruppoinfor.home2workapi.model.User
+import kotlinx.android.synthetic.main.fragment_match.*
+import java.util.*
 
 class MatchFragment : Fragment(), ItemClickCallbacks {
 
-    @BindView(R.id.matches_recycler_view)
-    internal var matchesRecyclerView: RecyclerView? = null
-    @BindView(R.id.swipe_refresh_layout)
-    internal var swipeRefreshLayout: SwipeRefreshLayout? = null
-    @BindView(R.id.no_matches_view)
-    internal var noMatchesView: TextView? = null
-    private var mUnbinder: Unbinder? = null
-    private var matchesAdapter: MatchAdapter? = null
-    private var mContext: Context? = null
+    private lateinit var matchesAdapter: MatchAdapter
 
     private var matchList: MutableList<Match> = ArrayList()
 
-    override fun onAttach(context: Context) {
-        mContext = context
-        super.onAttach(context)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_match, container, false)
-        mUnbinder = ButterKnife.bind(this, rootView)
         setHasOptionsMenu(true)
-        swipeRefreshLayout!!.setColorSchemeResources(R.color.colorAccent)
-        swipeRefreshLayout!!.setOnRefreshListener {
-            swipeRefreshLayout!!.isRefreshing = true
+        return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = true
             refreshData()
         }
-        return rootView
     }
 
     override fun onResume() {
@@ -76,11 +56,11 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
         } else {
             if (match.isNew!!) {
                 match.isNew = false
-                matchesAdapter!!.notifyItemChanged(position)
+                matchesAdapter.notifyItemChanged(position)
                 refreshBadgeCounter()
             }
             val matchIntent = Intent(context, MatchActivity::class.java)
-            matchIntent.putExtra("match", matchList[position])
+            matchIntent.putExtra(Const.EXTRA_MATCH, matchList[position])
             startActivity(matchIntent)
         }
     }
@@ -89,9 +69,9 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
 
         val options = arrayOf("Mostra profilo utente", "Nascondi")
 
-        MaterialDialog.Builder(mContext!!)
+        MaterialDialog.Builder(context!!)
                 .items(*options)
-                .itemsCallback { dialog, itemView, p, text ->
+                .itemsCallback { _, _, p, _ ->
                     when (p) {
                         0 -> showMatchUserProfile(position)
                         1 -> startActivity(Intent(activity, SettingsActivity::class.java))
@@ -104,78 +84,66 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
         return true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mUnbinder!!.unbind()
-    }
-
     private fun refreshData() {
         HomeToWorkClient.getInstance().getUserMatches({ matches ->
             matchList = matches
             refreshBadgeCounter()
             refreshList()
-            swipeRefreshLayout!!.isRefreshing = false
-        }) { e ->
-            //Toasty.error(activity, "Impossibile ottenere i match").show();
-            swipeRefreshLayout!!.isRefreshing = false
+            swipe_refresh_layout.isRefreshing = false
+        }) {
+            swipe_refresh_layout.isRefreshing = false
         }
     }
 
     private fun refreshList() {
 
-        var noMatches = false
-        for (match in matchList) {
-            if (match.score == 0) noMatches = true
-        }
+        val noMatches = matchList.any { it.score == 0 }
 
         if (noMatches)
-            noMatchesView!!.visibility = View.VISIBLE
+            no_matches_view.visibility = View.VISIBLE
         else
-            noMatchesView!!.visibility = View.GONE
+            no_matches_view.visibility = View.GONE
 
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
 
-        matchesRecyclerView!!.layoutManager = layoutManager
-        matchesRecyclerView!!.layoutAnimation = animation
+        matches_recycler_view.layoutManager = layoutManager
+        matches_recycler_view.layoutAnimation = animation
 
-        matchesAdapter = MatchAdapter(activity, matchList)
-        matchesAdapter!!.notifyDataSetChanged()
-        matchesRecyclerView!!.adapter = matchesAdapter
-        matchesAdapter!!.setItemClickCallbacks(this)
+        matchesAdapter = MatchAdapter(context!!, matchList)
+        matchesAdapter.notifyDataSetChanged()
+        matches_recycler_view.adapter = matchesAdapter
+        matchesAdapter.setItemClickCallbacks(this)
     }
 
     protected fun refreshBadgeCounter() {
-        var newMatches: Int? = 0
+        val newMatches = matchList.count { it.isNew!! }
 
-        for (match in matchList)
-            if (match.isNew!!) newMatches++
-
-        (mContext as MainActivity).setBadge(1, if (newMatches > 0) newMatches!!.toString() else "")
+        (context as MainActivity).setBadge(1, if (newMatches > 0) newMatches.toString() else "")
     }
 
     private fun showMatchUserProfile(position: Int) {
         val userIntent = Intent(activity, ShowUserActivity::class.java)
         val matchedUser = matchList[position].host
-        userIntent.putExtra("user", matchedUser)
+        userIntent.putExtra(Const.EXTRA_USER, matchedUser)
         startActivity(userIntent)
     }
 
     private fun showHideMatchDialog(position: Int) {
         val matchItem = matchList[position]
-        val hideDialog = MaterialDialog.Builder(mContext!!)
+        val hideDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.item_match_dialog_hide_title)
                 .content(R.string.item_match_dialog_hide_content)
                 .positiveText(R.string.item_match_dialog_hide_confirm)
                 .negativeText(R.string.item_match_dialog_hide_cancel)
-                .onPositive { dialog, which ->
+                .onPositive { _, _ ->
 
                     matchItem.hidden = true
 
-                    HomeToWorkClient.getInstance().editMatch(matchItem, { match ->
+                    HomeToWorkClient.getInstance().editMatch(matchItem, {
                         matchList.removeAt(position)
-                        matchesAdapter!!.remove(position)
-                    }) { e -> Toasty.success(mContext!!, mContext!!.getString(R.string.item_match_dialog_hide_error)).show() }
+                        matchesAdapter.remove(position)
+                    }) { Toasty.success(context!!, context!!.getString(R.string.item_match_dialog_hide_error)).show() }
 
 
                 }

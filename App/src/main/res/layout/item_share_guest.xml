@@ -10,7 +10,7 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/container"
+        android:id="@+id/share_guest_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
@@ -18,7 +18,7 @@
         android:focusable="true">
 
         <ImageView
-            android:id="@+id/user_avatar"
+            android:id="@+id/share_guest_user_avatar"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_alignParentStart="true"
@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/name_view"
+                android:id="@+id/share_guest_name_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1"
@@ -50,7 +50,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/job_view"
+                android:id="@+id/share_guest_job_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1"

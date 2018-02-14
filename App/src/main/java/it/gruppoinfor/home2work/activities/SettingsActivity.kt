@@ -1,74 +1,46 @@
 package it.gruppoinfor.home2work.activities
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
-import android.widget.CheckBox
 import android.widget.CompoundButton
-import android.widget.Spinner
-import android.widget.Switch
-import android.widget.TextView
-
-import butterknife.BindView
-import butterknife.ButterKnife
+import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.user.UserPrefs
+import it.gruppoinfor.home2work.user.Const
+import kotlinx.android.synthetic.main.activity_settings.*
 
 
 class SettingsActivity : AppCompatActivity() {
 
-
-    @BindView(R.id.text_tracking)
-    internal var textTracking: TextView? = null
-    @BindView(R.id.switch_tracking)
-    internal var switchTracking: Switch? = null
-    @BindView(R.id.spinner_sync_mode)
-    internal var spinnerSyncMode: Spinner? = null
-    @BindView(R.id.switch_notifications)
-    internal var switchNotifications: Switch? = null
-    @BindView(R.id.check_notifications_news)
-    internal var checkNotificationsNews: CheckBox? = null
-    @BindView(R.id.check_notifications_match)
-    internal var checkNotificationsMatch: CheckBox? = null
-
-    private// TODO bottomNavigation.setNotification("!", 4);
-            // TODO bottomNavigation.setNotification("", 4);
-    val trackingSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
-        get() = { compoundButton, b ->
+    private val trackingSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
+        get() = CompoundButton.OnCheckedChangeListener { _, b ->
             if (!b) {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle(R.string.activity_settings_dialog_tracking_title)
                 builder.setMessage(R.string.activity_settings_dialog_tracking_content)
-                builder.setPositiveButton(R.string.activity_settings_dialog_tracking_confirm) { dialogInterface, i ->
-                    UserPrefs.TrackingEnabled = false
-                    UserPrefs.manager!!.setBool(UserPrefs.ACTIVITY_TRACKING, false)
-                    textTracking!!.setText(R.string.activity_settings_tracking_disabled)
-                    textTracking!!.setTextColor(resources.getColor(R.color.red_500))
+                builder.setPositiveButton(R.string.activity_settings_dialog_tracking_confirm) { _, _ ->
+                    Prefs.putBoolean(Const.PREF_ACTIVITY_TRACKING, b)
+                    text_tracking.setText(R.string.activity_settings_tracking_disabled)
+                    text_tracking.setTextColor(ContextCompat.getColor(this, R.color.red_500))
                 }
-                builder.setNegativeButton(R.string.activity_settings_dialog_tracking_discard) { dialogInterface, i -> switchTracking!!.isChecked = true }
+                builder.setNegativeButton(R.string.activity_settings_dialog_tracking_discard) { _, _ -> switch_tracking.isChecked = true }
                 builder.show()
 
             } else {
-                UserPrefs.TrackingEnabled = true
-                UserPrefs.manager!!.setBool(UserPrefs.ACTIVITY_TRACKING, true)
-                textTracking!!.setText(R.string.activity_settings_tracking_enabled)
-                textTracking!!.setTextColor(resources.getColor(R.color.light_bg_dark_secondary_text))
+                Prefs.putBoolean(Const.PREF_ACTIVITY_TRACKING, b)
+                text_tracking.setText(R.string.activity_settings_tracking_enabled)
+                text_tracking.setTextColor(ContextCompat.getColor(this, R.color.light_bg_dark_secondary_text))
             }
         }
 
     private val syncModeItemSelectedListener: AdapterView.OnItemSelectedListener
         get() = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                if (i == 1) {
-                    UserPrefs.manager!!.setBool(UserPrefs.SYNC_WITH_DATA, false)
-                    UserPrefs.SyncWithData = false
-                } else {
-                    UserPrefs.manager!!.setBool(UserPrefs.SYNC_WITH_DATA, true)
-                    UserPrefs.SyncWithData = true
-                }
+                Prefs.putBoolean(Const.PREF_SYNC_WITH_DATA, i != 1)
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -77,17 +49,15 @@ class SettingsActivity : AppCompatActivity() {
         }
 
     private val notificationSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
-        get() = { compoundButton, b ->
-            UserPrefs.NotificationsEnabled = b
-            UserPrefs.manager!!.setBool(UserPrefs.NOTIFICATIONS, b)
-            checkNotificationsNews!!.isEnabled = b
-            checkNotificationsMatch!!.isEnabled = b
+        get() = CompoundButton.OnCheckedChangeListener { _, b ->
+            Prefs.putBoolean(Const.PREF_NOTIFICATIONS, b)
+            check_notifications_match.isEnabled = b
+            check_notifications_news.isEnabled = b
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        ButterKnife.bind(this)
 
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -108,36 +78,34 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-        switchTracking!!.isChecked = UserPrefs.TrackingEnabled
-        switchTracking!!.setOnCheckedChangeListener(trackingSwitchCheckedChangeListener)
-        if (UserPrefs.TrackingEnabled) {
-            textTracking!!.setText(R.string.activity_settings_tracking_enabled)
-            textTracking!!.setTextColor(resources.getColor(R.color.light_bg_dark_secondary_text))
+        switch_tracking.setOnCheckedChangeListener(trackingSwitchCheckedChangeListener)
+        if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
+            switch_tracking.isChecked = true
+            text_tracking.setText(R.string.activity_settings_tracking_enabled)
+            text_tracking.setTextColor(ContextCompat.getColor(this, R.color.light_bg_dark_secondary_text))
         } else {
-            textTracking!!.setText(R.string.activity_settings_tracking_disabled)
-            textTracking!!.setTextColor(resources.getColor(R.color.red_500))
+            switch_tracking.isChecked = false
+            text_tracking.setText(R.string.activity_settings_tracking_disabled)
+            text_tracking.setTextColor(ContextCompat.getColor(this, R.color.red_500))
         }
 
-        if (UserPrefs.SyncWithData)
-            spinnerSyncMode!!.setSelection(0)
+        if (Prefs.getBoolean(Const.PREF_SYNC_WITH_DATA, true))
+            spinner_sync_mode.setSelection(0)
         else
-            spinnerSyncMode!!.setSelection(1)
+            spinner_sync_mode.setSelection(1)
+        spinner_sync_mode.onItemSelectedListener = syncModeItemSelectedListener
 
-        spinnerSyncMode!!.onItemSelectedListener = syncModeItemSelectedListener
+        switch_notifications.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS, true)
+        switch_notifications.setOnCheckedChangeListener(notificationSwitchCheckedChangeListener)
 
-        switchNotifications!!.isChecked = UserPrefs.NotificationsEnabled
-        switchNotifications!!.setOnCheckedChangeListener(notificationSwitchCheckedChangeListener)
-
-        checkNotificationsNews!!.isChecked = UserPrefs.NewsNotificationsEnabled
-        checkNotificationsNews!!.setOnCheckedChangeListener { compoundButton, b ->
-            UserPrefs.NewsNotificationsEnabled = b
-            UserPrefs.manager!!.setBool(UserPrefs.NEWS_NOTIFICATIONS, b)
+        check_notifications_news.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS_NEWS, true)
+        check_notifications_news.setOnCheckedChangeListener { _, b ->
+            Prefs.putBoolean(Const.PREF_NOTIFICATIONS_NEWS, b)
         }
 
-        checkNotificationsMatch!!.isChecked = UserPrefs.MatchesNotificationsEnabled
-        checkNotificationsMatch!!.setOnCheckedChangeListener { compoundButton, b ->
-            UserPrefs.MatchesNotificationsEnabled = b
-            UserPrefs.manager!!.setBool(UserPrefs.MATCHES_NOTIFICATIONS, b)
+        check_notifications_match.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS_MATCHES, true)
+        check_notifications_match.setOnCheckedChangeListener { _, b ->
+            Prefs.putBoolean(Const.PREF_NOTIFICATIONS_MATCHES, b)
         }
 
     }

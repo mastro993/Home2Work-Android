@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.services
 
 import android.app.AlarmManager
-import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -16,33 +15,22 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.ActivityRecognition
-import com.google.android.gms.location.ActivityRecognitionClient
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Task
-
-import java.util.concurrent.TimeUnit
-
+import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.database.RoutePointEntity
 import it.gruppoinfor.home2work.database.RoutePointRepo
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver
 import it.gruppoinfor.home2work.user.SessionManager
-import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.User
+import java.util.concurrent.TimeUnit
 
 class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
-    private var isRecording = false
-    private var mFusedLocationClient: FusedLocationProviderClient? = null
-    private var mUser: User? = null
+    private var isTracking = false
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    lateinit var mUser: User
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             saveLocation(locationResult!!.lastLocation)
@@ -53,8 +41,8 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         super.onCreate()
 
         SessionManager.loadSession(this, object : SessionManager.SessionCallback {
-            override fun onValidSession() {
-                mUser = HomeToWorkClient.getUser()
+            override fun onValidSession(user: User) {
+                mUser = user
                 startService()
             }
 
@@ -83,9 +71,9 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         )
 
         val activityRecognitionClient = ActivityRecognition.getClient(this@LocationService)
-        val task = activityRecognitionClient.requestActivityUpdates(15000, pendingIntent)
+        val task = activityRecognitionClient.requestActivityUpdates(10000, pendingIntent)
 
-        task.addOnSuccessListener { result -> Log.d(TAG, "activityRecognitionClient avviato con successo") }
+        task.addOnSuccessListener { Log.d(TAG, "activityRecognitionClient avviato con successo") }
 
     }
 
@@ -98,7 +86,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
         if (ActivityRecognizedService.hasResult(intent)) {
             val drivingActivity = ActivityRecognizedService.extractResult(intent)
-            if (drivingActivity == ActivityRecognizedService.DrivingActivity.STARTED_DRIVING && !isRecording) {
+            if (drivingActivity == ActivityRecognizedService.DrivingActivity.STARTED_DRIVING && !isTracking) {
                 startLocationRequests()
             } else if (drivingActivity == ActivityRecognizedService.DrivingActivity.STOPPED_DRIVING) {
                 stopLocationRequests()
@@ -127,7 +115,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
                 0
         )
 
-        alarmManager?.setInexactRepeating(
+        alarmManager.setInexactRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime(),
                 AlarmManager.INTERVAL_HOUR,
@@ -150,7 +138,9 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            mFusedLocationClient!!.lastLocation.addOnSuccessListener(OnSuccessListener<Location> { this.saveLocation(it) })
+            mFusedLocationClient.lastLocation.addOnSuccessListener({
+                this.saveLocation(it)
+            })
 
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -158,21 +148,21 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
             locationRequest.fastestInterval = TimeUnit.SECONDS.toMillis(30)
             locationRequest.smallestDisplacement = 500f
 
-            mFusedLocationClient!!.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
+            mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
 
-            isRecording = true
+            isTracking = true
         }
     }
 
     private fun stopLocationRequests() {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mFusedLocationClient!!.lastLocation.addOnSuccessListener(OnSuccessListener<Location> { this.saveLocation(it) })
+            mFusedLocationClient.lastLocation.addOnSuccessListener({ this.saveLocation(it) })
         }
 
-        mFusedLocationClient!!.removeLocationUpdates(mLocationCallback)
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
 
-        isRecording = false
+        isTracking = false
     }
 
     private fun saveLocation(location: Location) {
@@ -180,7 +170,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         val latLng = LatLng(location.latitude, location.longitude)
         routePointEntity.latLng = latLng
         routePointEntity.timestamp = System.currentTimeMillis() / 1000L
-        routePointEntity.userId = mUser!!.id
+        routePointEntity.userId = mUser.id
 
         val routePointRepo = RoutePointRepo(this)
         routePointRepo.insert(routePointEntity)

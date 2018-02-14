@@ -17,13 +17,12 @@ import it.gruppoinfor.home2workapi.model.User
 
 object SessionManager {
 
-    val AUTH_CODE = "auth_code"
-    private val PREFS_SESSION = "it.home2work.app.session"
-    private val PREFS_TOKEN = "token"
-    private val PREFS_EMAIL = "email"
+    private const val PREFS_SESSION = "it.home2work.app.session"
+    private const val PREFS_TOKEN = "SESSION_TOKEN"
+    private const val PREFS_EMAIL = "SESSION_EMAIL"
 
-    fun storeSession(context: Context, user: User) {
-        val prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
+    fun storeSession(ctx: Context, user: User) {
+        val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
         val editor = prefs.edit()
 
         editor.putString(PREFS_EMAIL, user.email)
@@ -31,33 +30,33 @@ object SessionManager {
         editor.apply()
 
         val token = FirebaseInstanceId.getInstance().token
-
         HomeToWorkClient.getInstance().setFcmToken(token)
     }
 
-    fun loadSession(context: Context, callback: SessionManager.SessionCallback) {
-        val prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
+    fun loadSession(ctx: Context, callback: SessionManager.SessionCallback) {
+        val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
 
-        if (HomeToWorkClient.getUser() != null) {
-            callback.onValidSession()
+        val user: User? = HomeToWorkClient.getUser()
+        if (user != null) {
+            callback.onValidSession(user)
             return
         }
 
-        val email = prefs.getString(PREFS_EMAIL, null)
-        val token = prefs.getString(PREFS_TOKEN, null)
+        val email = prefs.getString(PREFS_EMAIL, "")
+        val token = prefs.getString(PREFS_TOKEN, "")
 
-        if (email == null && token == null) {
+        if (email.isEmpty() || token.isEmpty()) {
             callback.onInvalidSession(0, null)
             return
         }
 
         HomeToWorkClient.getInstance().login(email, token, true, object : LoginCallback {
-            override fun onLoginSuccess() {
-                callback.onValidSession()
+            override fun onLoginSuccess(user: User) {
+                callback.onValidSession(user)
             }
 
             override fun onInvalidCredential() {
-                clearSession(context)
+                clearSession(ctx)
                 callback.onInvalidSession(1, null)
             }
 
@@ -71,31 +70,19 @@ object SessionManager {
         })
     }
 
-    fun clearSession(context: Context) {
-        context.stopService(Intent(context, LocationService::class.java))
-        context.stopService(Intent(context, SyncService::class.java))
+    fun clearSession(ctx: Context) {
+        ctx.stopService(Intent(ctx, LocationService::class.java))
+        ctx.stopService(Intent(ctx, SyncService::class.java))
 
-        val prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
+        val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.clear()
         editor.apply()
     }
 
     interface SessionCallback {
-
-        /**
-         * Sessione trovata e convalidata
-         */
-        fun onValidSession()
-
-        /**
-         * Sessione non trovata o non valida
-         *
-         * @param code      0: Nessuna sessione, 1: Token non valido, 2: Errore del server
-         * @param throwable Throwable opzionale in caso di errore
-         */
+        fun onValidSession(user: User)
         fun onInvalidSession(code: Int, throwable: Throwable?)
-
     }
 
 }

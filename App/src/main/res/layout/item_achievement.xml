@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/container"
+        android:id="@+id/item_achievement_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
@@ -15,7 +15,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/list_items_padding">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/achievement_icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -32,9 +32,9 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_marginBottom="4dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
 
                 <TextView
                     android:id="@+id/achievement_name"
@@ -62,10 +62,10 @@
 
 
             <TextView
-                android:layout_marginBottom="4dp"
                 android:id="@+id/achievement_description"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/lorem"

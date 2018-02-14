@@ -25,6 +25,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.stepstone.stepper.BlockingStep
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.StepperLayout
@@ -34,13 +36,14 @@ import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter
 import it.gruppoinfor.home2work.user.SessionManager
-import it.gruppoinfor.home2work.utils.Converters
-import it.gruppoinfor.home2work.utils.ImageTools
+import it.gruppoinfor.home2work.utils.AddressConverter
+import it.gruppoinfor.home2work.utils.ImageUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Address
 import it.gruppoinfor.home2workapi.model.Company
 import it.gruppoinfor.home2workapi.model.LatLng
 import kotlinx.android.synthetic.main.activity_configuration.*
+import kotlinx.android.synthetic.main.dialog_edit_address.*
 import kotlinx.android.synthetic.main.fragment_conf_home.*
 import kotlinx.android.synthetic.main.fragment_conf_job.*
 import kotlinx.android.synthetic.main.fragment_conf_name.*
@@ -190,12 +193,12 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
             if (input_name.text.isEmpty()) {
                 input_name.error = mContext.getString(R.string.activity_configuration_name_warning)
-                return VerificationError(mContext!!.getString(R.string.activity_configuration_name_error))
+                return VerificationError(mContext.getString(R.string.activity_configuration_name_error))
             }
 
             if (input_surname.text.isEmpty()) {
                 input_surname.error = mContext.getString(R.string.activity_configuration_surname_warning)
-                return VerificationError(mContext!!.getString(R.string.activity_configuration_surname_error))
+                return VerificationError(mContext.getString(R.string.activity_configuration_surname_error))
             }
 
             HomeToWorkClient.getUser().name = input_name.text.toString().trim { it <= ' ' }
@@ -234,15 +237,15 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             val root = inflater.inflate(R.layout.fragment_conf_home, container, false)
 
             button_set_address.setOnClickListener {
-                val editAddressDialog = MaterialDialog.Builder(mContext!!)
+                val editAddressDialog = MaterialDialog.Builder(mContext)
                         .customView(R.layout.dialog_edit_address, false)
                         .positiveText(R.string.activity_configuration_address_save)
                         .negativeText(R.string.activity_configuration_address_discard)
-                        .onPositive { dialog, which ->
+                        .onPositive { dialog, _ ->
 
                             val view = dialog.customView
                             if (view != null) {
-                                checkAddressDialog(view)
+                                checkAddressDialog()
                             }
 
                         }
@@ -320,7 +323,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
         override fun verifyStep(): VerificationError? {
             if (homeLocation == null)
-                return VerificationError(mContext!!.getString(R.string.activity_configuration_company_step_warning))
+                return VerificationError(mContext.getString(R.string.activity_configuration_company_step_warning))
 
             HomeToWorkClient.getUser().location = homeLocation
 
@@ -332,12 +335,12 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-            Toasty.warning(mContext!!, error.errorMessage).show()
+            Toasty.warning(mContext, error.errorMessage).show()
         }
 
         private fun setUpMap() {
-            if (ActivityCompat.checkSelfPermission(mContext!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                MapsInitializer.initialize(mContext!!)
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                MapsInitializer.initialize(mContext)
                 googleMap.isMyLocationEnabled = true
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(41.909986, 12.3959159), 5.0f))
             }
@@ -357,61 +360,58 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             }
         }
 
-        private fun checkAddressDialog(view: View) {
+        private fun checkAddressDialog() {
 
-            var valid: Boolean? = true
+            var valid = true
 
-            val cityInput = view.findViewById<EditText>(R.id.city_input)
-            val capInput = view.findViewById<EditText>(R.id.cap_input)
-            val addressInput = view.findViewById<EditText>(R.id.address_input)
 
-            val addr = addressInput.text.toString()
-            val city = cityInput.text.toString()
-            val cap = capInput.text.toString()
+            val addr = address_input.text.toString()
+            val city = city_input.text.toString()
+            val cap = cap_input.text.toString()
 
             if (addr.isEmpty()) {
-                addressInput.error = getString(R.string.activity_configuration_address_warning_address)
+                address_input.error = getString(R.string.activity_configuration_address_warning_address)
                 valid = false
             }
 
             if (city.isEmpty()) {
-                capInput.error = getString(R.string.activity_configuration_address_warning_CAP)
+                cap_input.error = getString(R.string.activity_configuration_address_warning_CAP)
                 valid = false
             }
 
             if (cap.isEmpty()) {
-                cityInput.error = getString(R.string.activity_configuration_address_warning_city)
+                city_input.error = getString(R.string.activity_configuration_address_warning_city)
                 valid = false
             }
 
-            if (valid!!) {
-                val latLng = Converters.addressToLatLng(context!!, "$addr, $city $cap")
-                if (latLng != null) {
+            if (valid) {
+                AddressConverter.addressToLatLng(
+                        mContext,
+                        "$addr, $city $cap",
+                        OnSuccessListener { latLng ->
+                            val newAddress = Address()
+                            newAddress.city = city
+                            newAddress.address = addr
+                            newAddress.postalCode = cap
 
-                    val newAddress = Address()
-                    newAddress.city = city
-                    newAddress.address = addr
-                    newAddress.postalCode = cap
+                            HomeToWorkClient.getUser().location = latLng
+                            HomeToWorkClient.getUser().address = newAddress
 
-                    HomeToWorkClient.getUser().location = latLng
-                    HomeToWorkClient.getUser().address = newAddress
-
-                    setHomeLocation(latLng)
-
-                } else {
-                    Toasty.warning(mContext!!, getString(R.string.activity_configuration_address_error), Toast.LENGTH_LONG).show()
-                }
+                            setHomeLocation(latLng)
+                        }, OnFailureListener {
+                    Toasty.warning(mContext, getString(R.string.activity_configuration_address_error), Toast.LENGTH_LONG).show()
+                })
             }
         }
 
         private fun setHomeLocation(latLng: LatLng) {
             homeLocation = latLng
-            googleMap!!.clear()
-            googleMap!!.addMarker(MarkerOptions()
+            googleMap.clear()
+            googleMap.addMarker(MarkerOptions()
                     .position(com.google.android.gms.maps.model.LatLng(latLng.lat!!, latLng.lng!!))
                     .title(getString(R.string.home)))
                     .showInfoWindow()
-            googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(latLng.lat!!, latLng.lng!!), 15.0f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(latLng.lat!!, latLng.lng!!), 15.0f))
         }
 
 
@@ -444,7 +444,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         override fun verifyStep(): VerificationError? {
 
             if (companySpinner!!.selectedItem.toString() == getString(R.string.company))
-                return VerificationError(mContext!!.getString(R.string.activity_configuration_company_step_warning))
+                return VerificationError(mContext.getString(R.string.activity_configuration_company_step_warning))
 
             HomeToWorkClient.getUser().company = companySpinner!!.selectedItem as Company
 
@@ -456,7 +456,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-            Toasty.warning(mContext!!, error.errorMessage).show()
+            Toasty.warning(mContext, error.errorMessage).show()
         }
 
         private fun initCompaniesSpinner() {
@@ -510,7 +510,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
                     val selectedImageUri = data.data
                     val bitmap = MediaStore.Images.Media.getBitmap(mContext.contentResolver, selectedImageUri)
-                    propic = ImageTools.shrinkBitmap(bitmap, 300)
+                    propic = ImageUtils.shrinkBitmap(bitmap, 300)
                     propicView!!.setImageBitmap(propic)
                     uploaded = false
 
@@ -550,11 +550,11 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
                 callback.stepperLayout.showProgress(mContext.getString(R.string.activity_configuration_avatar_upload))
 
-                val file = Converters.bitmapToFile(context!!, propic!!)
-                val decodedAvatar = ImageTools.decodeFile(file.path)
+                val file = ImageUtils.bitmapToFile(context!!, propic!!)
+                val decodedAvatar = ImageUtils.decodeFile(file.path)
                 val decodedFile = File(decodedAvatar)
 
-                val mime = ImageTools.getMimeType(decodedFile.path)
+                val mime = ImageUtils.getMimeType(decodedFile.path)
                 val mediaType = MediaType.parse(mime!!)
 
                 val requestFile = RequestBody.create(mediaType, decodedFile)
@@ -568,7 +568,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                     callback.goToNextStep()
                 }) {
                     callback.stepperLayout.hideProgress()
-                    Toasty.error(mContext, mContext!!.getString(R.string.activity_configuration_avatar_upload_error)).show()
+                    Toasty.error(mContext, mContext.getString(R.string.activity_configuration_avatar_upload_error)).show()
                 }
 
             }

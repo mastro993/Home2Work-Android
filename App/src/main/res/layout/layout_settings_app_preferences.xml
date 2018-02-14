@@ -38,7 +38,7 @@
                 android:text="Tracking posizione" />
 
             <Switch
-                android:id="@+id/tracking_switch"
+                android:id="@+id/switch_tracking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

@@ -13,41 +13,35 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.directions.route.Route
-import com.directions.route.RouteException
-import com.directions.route.Routing
-import com.directions.route.RoutingListener
+import com.directions.route.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.utils.Converters.dateToString
+import it.gruppoinfor.home2work.user.Const.EXTRA_MATCH
+import it.gruppoinfor.home2work.user.Const.EXTRA_USER
+import it.gruppoinfor.home2work.user.Const.GOOGLE_API_KEY
+import it.gruppoinfor.home2work.utils.DateFormatUtils.dateToString
 import it.gruppoinfor.home2work.utils.RouteUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.activity_match.*
-import java.util.*
 
 class MatchActivity : AppCompatActivity() {
-    private var googleMap: GoogleMap? = null
-    private var match: Match? = null
+    private lateinit var googleMap: GoogleMap
+    private lateinit var match: Match
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_match)
 
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val map = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         map.onCreate(savedInstanceState)
@@ -56,7 +50,6 @@ class MatchActivity : AppCompatActivity() {
 
         map.getMapAsync(MyMapReadyCallback(this))
 
-        val intent = intent
         if (intent.hasExtra(EXTRA_MATCH)) {
             match = intent.getSerializableExtra(EXTRA_MATCH) as Match
             initUI()
@@ -79,14 +72,14 @@ class MatchActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    @OnClick(R.id.profile_container)
-    fun onViewClicked() {
-        val userIntent = Intent(this, ShowUserActivity::class.java)
-        userIntent.putExtra("user", match!!.host)
-        startActivity(userIntent)
-    }
 
     private fun initUI() {
+
+        profile_container.setOnClickListener {
+            val userIntent = Intent(this, ShowUserActivity::class.java)
+            userIntent.putExtra(EXTRA_USER, match.host)
+            startActivity(userIntent)
+        }
 
         val requestOptions = RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -94,69 +87,64 @@ class MatchActivity : AppCompatActivity() {
                 .placeholder(R.drawable.ic_avatar_placeholder)
 
         Glide.with(this)
-                .load(match!!.host.avatarURL)
+                .load(match.host.avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
-                .into(userAvatar!!)
+                .into(user_avatar)
 
-        nameView!!.text = match!!.host.toString()
-        jobView!!.text = match!!.host.company.toString()
-        homeView!!.text = match!!.host.address.city
+        name_view.text = match.host.toString()
+        job_view.text = match.host.company.toString()
+        home_view.text = match.host.address.city
 
-        timetableTime!!.text = String.format(
+        timetable_time.text = String.format(
                 resources.getString(R.string.activity_match_time),
-                dateToString(match!!.startTime),
-                dateToString(match!!.endTime)
+                dateToString(match.startTime),
+                dateToString(match.endTime)
         )
 
         val days = ArrayList<String>()
-        for (d in match!!.weekdays)
-            days.add(resources.getStringArray(R.array.giorni)[d])
-        timetableWeekdays!!.text = TextUtils.join(", ", days)
+        match.weekdays.mapTo(days) { resources.getStringArray(R.array.giorni)[it] }
+        timetable_weekdays.text = TextUtils.join(", ", days)
 
     }
 
     private fun getScoreColor(score: Int): Int {
-        return if (score < 60) {
-            ContextCompat.getColor(this, R.color.red_500)
-        } else if (score < 70) {
-            ContextCompat.getColor(this, R.color.orange_600)
-        } else if (score < 80) {
-            ContextCompat.getColor(this, R.color.amber_400)
-        } else if (score < 90) {
-            ContextCompat.getColor(this, R.color.light_green_500)
-        } else {
-            ContextCompat.getColor(this, R.color.green_500)
+        return when {
+            score < 60 -> ContextCompat.getColor(this, R.color.red_500)
+            score < 70 -> ContextCompat.getColor(this, R.color.orange_600)
+            score < 80 -> ContextCompat.getColor(this, R.color.amber_400)
+            score < 90 -> ContextCompat.getColor(this, R.color.light_green_500)
+            else -> ContextCompat.getColor(this, R.color.green_500)
         }
     }
 
     private fun refreshUI() {
         match_loading_view.visibility = View.GONE
-        val animator = ValueAnimator.ofInt(0, match!!.score)
+        val animator = ValueAnimator.ofInt(0, match.score)
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.addUpdateListener { valueAnimator -> scoreText!!.text = String.format(Locale.ITALIAN, "%1\$d%%", valueAnimator.animatedValue as Int) }
+        animator.addUpdateListener { valueAnimator -> score_text.text = "${valueAnimator.animatedValue}" }
         animator.start()
 
-        val color = getScoreColor(match!!.score!!)
-        scoreText!!.setTextColor(color)
+        val color = getScoreColor(match.score)
+        score_text.setTextColor(color)
     }
 
     private inner class MyMapReadyCallback internal constructor(private val mContext: Context) : OnMapReadyCallback, RoutingListener {
 
         override fun onMapReady(gmap: GoogleMap) {
             googleMap = gmap
-            googleMap!!.uiSettings.isMyLocationButtonEnabled = false
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
 
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 MapsInitializer.initialize(mContext)
 
                 val matchWaypoints = ArrayList<com.google.android.gms.maps.model.LatLng>()
-                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match!!.startLocation.lat!!, match!!.startLocation.lng!!))
-                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match!!.endLocation.lat!!, match!!.endLocation.lng!!))
+                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match.startLocation.lat, match.startLocation.lng))
+                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match.endLocation.lat, match.endLocation.lng))
 
                 val matchRouting = Routing.Builder()
-                        .travelMode(Routing.TravelMode.WALKING)
+                        .travelMode(AbstractRouting.TravelMode.WALKING)
                         .withListener(this)
                         .waypoints(matchWaypoints)
                         .key(GOOGLE_API_KEY)
@@ -185,27 +173,23 @@ class MatchActivity : AppCompatActivity() {
             polyOptions.color(ContextCompat.getColor(mContext, R.color.red_500))
             polyOptions.addAll(route.points)
 
-            googleMap!!.addPolyline(polyOptions)
+            googleMap.addPolyline(polyOptions)
 
             val latLngBounds = RouteUtils.getRouteBounds(route.points)
 
-            val first = match!!.startLocation
-            val last = match!!.endLocation
-
-            googleMap!!.addMarker(MarkerOptions()
+            googleMap.addMarker(MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    .position(com.google.android.gms.maps.model.LatLng(first.lat!!, first.lng!!))
+                    .position(com.google.android.gms.maps.model.LatLng(match.startLocation.lat, match.startLocation.lng))
                     .title("Casa")
             )
 
-
-            googleMap!!.addMarker(MarkerOptions()
+            googleMap.addMarker(MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    .position(com.google.android.gms.maps.model.LatLng(last.lat!!, last.lng!!))
+                    .position(com.google.android.gms.maps.model.LatLng(match.endLocation.lat, match.endLocation.lng))
                     .title("Lavoro")
             )
 
-            googleMap!!.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100))
 
             refreshUI()
         }
@@ -215,10 +199,5 @@ class MatchActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-
-        val EXTRA_MATCH = "match"
-        private val GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I"
-    }
 
 }

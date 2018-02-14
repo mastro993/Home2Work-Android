@@ -9,10 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import it.gruppoinfor.home2work.R
 
 /**
@@ -21,14 +17,15 @@ import it.gruppoinfor.home2work.R
 class HomeFragment : Fragment() {
 
 
-    private var mUnbinder: Unbinder? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_home, container, false)
-        mUnbinder = ButterKnife.bind(this, rootView)
         setHasOptionsMenu(true)
         return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -41,8 +38,5 @@ class HomeFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onDestroyView() {
-        mUnbinder!!.unbind()
-        super.onDestroyView()
-    }
-}// Required empty public constructor
+
+}

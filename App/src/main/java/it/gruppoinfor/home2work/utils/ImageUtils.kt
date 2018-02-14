@@ -1,15 +1,14 @@
 package it.gruppoinfor.home2work.utils
 
+import android.content.Context
 import android.graphics.Bitmap
-import android.location.Location
 import android.os.Environment
 import android.webkit.MimeTypeMap
-
-import com.google.android.gms.maps.model.LatLng
-
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by Federico on 04/02/2017.
@@ -18,7 +17,7 @@ import java.io.FileOutputStream
  * Altre funzioni
  */
 
-object ImageTools {
+object ImageUtils {
 
     fun getMimeType(url: String): String? {
         var type: String? = null
@@ -50,7 +49,7 @@ object ImageTools {
             val extr = Environment.getExternalStorageDirectory().toString()
             val mFolder = File(extr + "/TMMFOLDER")
             if (!mFolder.exists()) {
-                val dirCreated = mFolder.mkdir()
+                mFolder.mkdir()
             }
 
             val s = "tmp.png"
@@ -95,5 +94,23 @@ object ImageTools {
 
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
+
+    fun bitmapToFile(context: Context, bitmap: Bitmap): File {
+        val filesDir = context.cacheDir
+        val imageFile = File(filesDir, "avatar.png")
+        val fos: FileOutputStream
+
+        try {
+            fos = FileOutputStream(imageFile)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.flush()
+            fos.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return imageFile
+    }
+
 
 }
