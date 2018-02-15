@@ -55,9 +55,11 @@ class SyncService : Service() {
 
                     if (routeLocations.size > 0) syncRoutePoints(routeLocations)
                 }, OnFailureListener { it.printStackTrace() })
+
     }
 
     private fun syncRoutePoints(routeLocationList: List<RouteLocation>) {
+
         HomeToWorkClient.getInstance().uploadLocation(mUser.id, routeLocationList, OnSuccessListener
         { mRoutePointRepo.deleteAllUserLocations(mUser.id) }
                 , OnFailureListener { e -> Log.e(this::class.java.name, "Sincronizzazione fallita", Throwable(e)) })
@@ -65,6 +67,7 @@ class SyncService : Service() {
     }
 
     private fun getConnectivityType(context: Context): Int {
+
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
         if (cm != null) {
             val activeNetwork = cm.activeNetworkInfo
@@ -72,15 +75,19 @@ class SyncService : Service() {
                 return activeNetwork.type
             }
         }
+
         return -1
     }
 
     private fun canSync(): Boolean {
+
         val wifiEnabled = getConnectivityType(this@SyncService) == ConnectivityManager.TYPE_WIFI
+
         return wifiEnabled || Prefs.getBoolean(Const.PREF_SYNC_WITH_DATA, true)
     }
 
     override fun onBind(intent: Intent): IBinder? {
+
         return null
     }
 }

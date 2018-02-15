@@ -34,13 +34,14 @@ import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.activity_match.*
 
 class MatchActivity : AppCompatActivity() {
+
     private lateinit var googleMap: GoogleMap
     private lateinit var match: Match
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_match)
 
+        setContentView(R.layout.activity_match)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val map = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -59,19 +60,20 @@ class MatchActivity : AppCompatActivity() {
         }
 
         HomeToWorkClient.getInstance().editMatch(match)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
-        // Respond to the action bar's Up/Home button
             android.R.id.home -> {
                 finish()
                 return true
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
-
 
     private fun initUI() {
 
@@ -109,6 +111,7 @@ class MatchActivity : AppCompatActivity() {
     }
 
     private fun getScoreColor(score: Int): Int {
+
         return when {
             score < 60 -> ContextCompat.getColor(this, R.color.red_500)
             score < 70 -> ContextCompat.getColor(this, R.color.orange_600)
@@ -119,6 +122,7 @@ class MatchActivity : AppCompatActivity() {
     }
 
     private fun refreshUI() {
+
         match_loading_view.visibility = View.GONE
         val animator = ValueAnimator.ofInt(0, match.score)
         animator.duration = 500
@@ -128,11 +132,13 @@ class MatchActivity : AppCompatActivity() {
 
         val color = getScoreColor(match.score)
         score_text.setTextColor(color)
+
     }
 
     private inner class MyMapReadyCallback internal constructor(private val mContext: Context) : OnMapReadyCallback, RoutingListener {
 
         override fun onMapReady(gmap: GoogleMap) {
+
             googleMap = gmap
             googleMap.uiSettings.isMyLocationButtonEnabled = false
 
@@ -157,8 +163,10 @@ class MatchActivity : AppCompatActivity() {
         }
 
         override fun onRoutingFailure(e: RouteException) {
+
             Toasty.error(mContext, mContext.getString(R.string.activity_match_error)).show()
             finish()
+
         }
 
         override fun onRoutingStart() {
@@ -166,6 +174,7 @@ class MatchActivity : AppCompatActivity() {
         }
 
         override fun onRoutingSuccess(arrayList: ArrayList<Route>, i: Int) {
+
             val route = arrayList[0]
 
             val polyOptions = PolylineOptions()
@@ -192,6 +201,7 @@ class MatchActivity : AppCompatActivity() {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100))
 
             refreshUI()
+
         }
 
         override fun onRoutingCancelled() {

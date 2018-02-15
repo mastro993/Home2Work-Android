@@ -14,32 +14,29 @@ import com.bumptech.glide.request.RequestOptions
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2workapi.model.Guest
-import kotlinx.android.synthetic.main.item_match.view.*
 import kotlinx.android.synthetic.main.item_share_guest.view.*
-import java.util.*
 
-class ShareGuestsAdapter(private val mContext: Context, values: List<Guest>) : RecyclerView.Adapter<ShareGuestsAdapter.ViewHolder>() {
-    private val mGuests: ArrayList<Guest>
+class ShareGuestsAdapter(private val context: Context, private val guests: ArrayList<Guest>) : RecyclerView.Adapter<ShareGuestsAdapter.ViewHolder>() {
+
     private var mItemClickCallbacks: ItemClickCallbacks? = null
 
-    init {
-        mGuests = ArrayList(values)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_share_guest, parent, false)
+
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val guest = mGuests[position]
+
+        val guest = guests[position]
 
         val requestOptions = RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .circleCrop()
                 .placeholder(R.drawable.ic_avatar_placeholder)
 
-        Glide.with(mContext)
+        Glide.with(context)
                 .load(guest.user.avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
@@ -62,10 +59,12 @@ class ShareGuestsAdapter(private val mContext: Context, values: List<Guest>) : R
     }
 
     override fun getItemCount(): Int {
-        return mGuests.size
+
+        return guests.size
     }
 
     fun setItemClickCallbacks(itemClickCallbacks: ItemClickCallbacks) {
+
         mItemClickCallbacks = itemClickCallbacks
     }
 

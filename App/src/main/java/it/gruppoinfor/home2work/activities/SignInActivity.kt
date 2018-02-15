@@ -21,6 +21,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_sign_in)
 
         sign_in_button.setOnClickListener {
@@ -61,6 +62,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
     }
 
     override fun onLoginSuccess(user: User) {
+
         Prefs.putString(PREFS_EMAIL, user.email)
 
         SessionManager.storeSession(this, HomeToWorkClient.user)
@@ -73,11 +75,14 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
         startActivity(i)
         finish()
+
     }
 
     override fun onInvalidCredential() {
+
         enableLogin()
         Toasty.error(this@SignInActivity, getString(R.string.activity_signin_login_failed), Toast.LENGTH_SHORT, true).show()
+
     }
 
     override fun onLoginError() {
@@ -95,10 +100,12 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun enableLogin() {
+
         sign_in_button.isEnabled = true
         sign_in_button.text = "Accedi"
         email_edit_text.isEnabled = true
         password_edit_text.isEnabled = true
+
     }
 
     private fun validate(): Boolean {
@@ -126,13 +133,16 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun storeEmail() {
+
         val prefs = getSharedPreferences(PREFS_SIGNIN, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putString(PREFS_EMAIL, email_edit_text.text.toString())
         editor.apply()
+
     }
 
     private fun loadEmail() {
+
         val prefs = getSharedPreferences(PREFS_SIGNIN, Context.MODE_PRIVATE)
         val email = prefs.getString(PREFS_EMAIL, "")
         email_edit_text.setText(email)

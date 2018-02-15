@@ -31,6 +31,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
     private var isTracking = false
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mUser: User
+
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             saveLocation(locationResult!!.lastLocation)
@@ -51,18 +52,20 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
             }
         })
 
-
     }
 
     override fun onBind(arg0: Intent): IBinder? {
+
         return null
     }
 
     override fun onConnected(bundle: Bundle?) {
+
         val intent = Intent(
                 this@LocationService,
                 ActivityRecognizedService::class.java
         )
+
         val pendingIntent = PendingIntent.getService(
                 this@LocationService,
                 0,
@@ -78,7 +81,9 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
     }
 
     override fun onConnectionSuspended(i: Int) {
+
         Log.w(TAG, "onConnectionSuspended: " + i)
+
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -132,9 +137,11 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
                 .build()
 
         startForeground(1337, serviceNotification)
+
     }
 
     private fun startLocationRequests() {
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -152,6 +159,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
             isTracking = true
         }
+
     }
 
     private fun stopLocationRequests() {
@@ -163,9 +171,11 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
 
         isTracking = false
+
     }
 
     private fun saveLocation(location: Location) {
+
         val routePointEntity = RoutePointEntity()
         val latLng = LatLng(location.latitude, location.longitude)
         routePointEntity.latLng = latLng
@@ -174,10 +184,10 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
         val routePointRepo = RoutePointRepo(this)
         routePointRepo.insert(routePointEntity)
+
     }
 
     companion object {
-
         private val TAG = LocationService::class.java.simpleName
     }
 

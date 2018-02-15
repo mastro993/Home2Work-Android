@@ -23,18 +23,18 @@ import it.gruppoinfor.home2workapi.model.User
 
 class MessagingService : FirebaseMessagingService() {
 
-    private val TYPE = "TYPE"
-    private val MATCHES_CHANNELL = "MATCHES_CHANNEL"
+
     private lateinit var broadcaster: LocalBroadcastManager
 
     override fun onCreate() {
-        broadcaster = LocalBroadcastManager.getInstance(this)
         super.onCreate()
+
+        broadcaster = LocalBroadcastManager.getInstance(this)
+
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
-        // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
             val type = remoteMessage.data[TYPE]
             if (!type.isNullOrEmpty()) {
@@ -43,7 +43,6 @@ class MessagingService : FirebaseMessagingService() {
             }
         }
 
-        // Check if message contains a notification payload.
         if (remoteMessage.notification != null) {
             sendNotification(remoteMessage.notification!!)
         }
@@ -78,10 +77,12 @@ class MessagingService : FirebaseMessagingService() {
         }
 
         mNotifyMgr.notify(mNotificationId, mBuilder.build())
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(notifyMgr: NotificationManager) {
+
         val followersChannel = NotificationChannel(
                 MATCHES_CHANNELL,
                 "Matches Notification Channel",
@@ -91,6 +92,12 @@ class MessagingService : FirebaseMessagingService() {
         followersChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 500, 200, 500)
 
         notifyMgr.createNotificationChannel(followersChannel)
+
+    }
+
+    companion object {
+        private const val TYPE = "TYPE"
+        private const val MATCHES_CHANNELL = "MATCHES_CHANNEL"
     }
 
 }

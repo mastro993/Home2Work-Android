@@ -18,6 +18,7 @@ abstract class LocationsDatabase : RoomDatabase() {
         private var INSTANCE: LocationsDatabase? = null
 
         fun getInstance(context: Context): LocationsDatabase? {
+
             if (INSTANCE == null) {
                 synchronized(LocationsDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
@@ -26,6 +27,7 @@ abstract class LocationsDatabase : RoomDatabase() {
                             .build()
                 }
             }
+
             return INSTANCE
         }
 

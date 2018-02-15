@@ -20,15 +20,18 @@ import java.util.*
 object ImageUtils {
 
     fun getMimeType(url: String): String? {
+
         var type: String? = null
         val extension = MimeTypeMap.getFileExtensionFromUrl(url)
         if (extension != null) {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
         }
+
         return type
     }
 
     fun decodeFile(path: String): String {
+
         var strMyImagePath: String? = null
         val scaledBitmap: Bitmap
 
@@ -80,6 +83,7 @@ object ImageUtils {
     }
 
     fun shrinkBitmap(image: Bitmap, maxSize: Int): Bitmap {
+
         var width = image.width
         var height = image.height
 
@@ -96,6 +100,7 @@ object ImageUtils {
     }
 
     fun bitmapToFile(context: Context, bitmap: Bitmap): File {
+
         val filesDir = context.cacheDir
         val imageFile = File(filesDir, "avatar.png")
         val fos: FileOutputStream

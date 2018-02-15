@@ -9,8 +9,10 @@ class ProgressBarAnimation(private val progressBar: ProgressBar, private var fro
 
     override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
         super.applyTransformation(interpolatedTime, t)
+
         val value = from + (to - from) * interpolatedTime
         progressBar.progress = value.toInt()
+
     }
 
 }

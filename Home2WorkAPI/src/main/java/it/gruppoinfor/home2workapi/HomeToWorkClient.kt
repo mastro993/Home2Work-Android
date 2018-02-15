@@ -50,6 +50,7 @@ class HomeToWorkClient private constructor() {
      * @param loginCallback   LoginCallback Callback per il login
      */
     fun login(email: String, password: String, isPasswordToken: Boolean, loginCallback: LoginCallback) {
+
         mAPI.login(email, password, isPasswordToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -63,6 +64,7 @@ class HomeToWorkClient private constructor() {
                         else -> loginCallback.onLoginError()
                     }
                 }, { loginCallback.onError(it) })
+
     }
 
     /**
@@ -71,13 +73,14 @@ class HomeToWorkClient private constructor() {
      * @param fcmToken Token generato per Firebase Messaging Cloud platform
      */
     fun setFcmToken(fcmToken: String?) {
+
         if (fcmToken == null) return
+
         mAPI.setFCMToken(user!!.id, fcmToken)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ _ ->
-                    // .. nulla
-                }, { it.printStackTrace() })
+                .subscribe({ _ -> }, { it.printStackTrace() })
+
     }
 
     /**
@@ -88,16 +91,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server
      */
     fun uploadAvatar(avatarBody: MultipartBody.Part, onSuccessListener: OnSuccessListener<ResponseBody>, onFailureListener: OnFailureListener) {
+
         mAPI.uploadAvatar(user!!.id, avatarBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
+
                     if (response.code() == 201)
                         onSuccessListener.onSuccess(response.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + response.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -107,15 +113,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server
      */
     fun getUserMatches(onSuccessListener: OnSuccessListener<ArrayList<Match>>, onFailureListener: OnFailureListener) {
+
         mAPI.getMatches(user!!.id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listResponse ->
+
                     if (listResponse.code() == 200)
                         onSuccessListener.onSuccess(listResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code: " + listResponse.code()))
+
                 }, { throwable -> onFailureListener.onFailure(Exception(throwable)) })
+
     }
 
     /**
@@ -126,14 +136,17 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server
      */
     fun editMatch(match: Match, onSuccessListener: OnSuccessListener<Match>, onFailureListener: OnFailureListener) {
+
         mAPI.editMatch(match)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ matchResponse ->
+
                     if (matchResponse.code() == 200)
                         onSuccessListener.onSuccess(matchResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code: " + matchResponse.code()))
+
                 }, { it.printStackTrace() })
     }
 
@@ -143,10 +156,12 @@ class HomeToWorkClient private constructor() {
      * @param match Match aggiornato da salvarne in cambiamenti sul server
      */
     fun editMatch(match: Match) {
+
         mAPI.editMatch(match)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
+
     }
 
     /**
@@ -156,16 +171,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server
      */
     fun createShare(onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         mAPI.createShare(user!!.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
+
                     if (shareResponse.code() == 200)
                         onSuccessListener.onSuccess(shareResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -176,16 +194,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun cancelShare(share: Share, onSuccessListener: OnSuccessListener<ResponseBody>, onFailureListener: OnFailureListener) {
+
         mAPI.cancelShare(share.id, user!!.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
+
                     if (shareResponse.code() == 200)
                         onSuccessListener.onSuccess(shareResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -196,16 +217,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun leaveShare(share: Share, onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         mAPI.leaveShare(share.id, user!!.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
+
                     if (shareResponse.code() == 200)
                         onSuccessListener.onSuccess(shareResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -217,16 +241,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun expelGuest(share: Share, guest: Guest, onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         mAPI.leaveShare(share.id, guest.user.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
+
                     if (shareResponse.code() == 200)
                         onSuccessListener.onSuccess(shareResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -237,16 +264,19 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun getShare(sID: Long?, onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         mAPI.getShare(sID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
+
                     if (shareResponse.code() == 200)
                         onSuccessListener.onSuccess(shareResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -256,10 +286,12 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun updateUser(onSuccessListener: OnSuccessListener<Void>, onFailureListener: OnFailureListener) {
+
         mAPI.updateUser(user!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
+
                     if (response.code() == 200) {
                         user = response.body()
                         onSuccessListener.onSuccess(null)
@@ -267,6 +299,7 @@ class HomeToWorkClient private constructor() {
                         onFailureListener.onFailure(Exception("Response code " + response.code()))
 
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -274,14 +307,18 @@ class HomeToWorkClient private constructor() {
      *
      * @param onSuccessListener Callback in caso di caricamento avvenuto con successo. Restituisce la lista delle aziende
      */
-    fun getCompanies(onSuccessListener: OnSuccessListener<List<Company>>) {
+    fun getCompanies(onSuccessListener: OnSuccessListener<ArrayList<Company>>) {
+
         mAPI.companies
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ companiesResponse ->
+
                     if (companiesResponse.code() == 200)
                         onSuccessListener.onSuccess(companiesResponse.body())
+
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -291,16 +328,20 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun refreshUser(onSuccessListener: OnSuccessListener<Void>, onFailureListener: OnFailureListener) {
+
         mAPI.getUser(user!!.id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userResponse ->
+
                     if (userResponse.code() == 200) {
                         user = userResponse.body()
                         onSuccessListener.onSuccess(null)
                     } else
                         onFailureListener.onFailure(Exception("Response code: " + userResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     /**
@@ -310,94 +351,123 @@ class HomeToWorkClient private constructor() {
      * @param onFailureListener Callback in caso di errori del server.
      */
     fun getUserShares(onSuccessListener: OnSuccessListener<ArrayList<Share>>, onFailureListener: OnFailureListener) {
+
         mAPI.getShares(user!!.id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listResponse ->
+
                     if (listResponse.code() == 200)
                         onSuccessListener.onSuccess(listResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code: " + listResponse.code()))
+
                 }, { it.printStackTrace() })
     }
 
     fun joinShare(shareId: Long?, joinLocation: android.location.Location, onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         val locationString = joinLocation.latitude.toString() + "," + joinLocation.longitude
         mAPI.joinShare(shareId, user!!.id, locationString)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ responseBodyResponse ->
+
                     if (responseBodyResponse.code() == 200)
                         onSuccessListener.onSuccess(responseBodyResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code: " + responseBodyResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     fun completeShare(share: Share, joinLocation: android.location.Location, onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         val locationString = joinLocation.latitude.toString() + "," + joinLocation.longitude
         mAPI.completeShare(share.id, user!!.id, locationString)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ responseBodyResponse ->
+
                     if (responseBodyResponse.code() == 200)
                         onSuccessListener.onSuccess(responseBodyResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code: " + responseBodyResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     fun finishShare(share: Share, onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
         mAPI.finishShare(share.id, user!!.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ responseBodyResponse ->
+
                     if (responseBodyResponse.code() == 200)
                         onSuccessListener.onSuccess(responseBodyResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code: " + responseBodyResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     fun uploadLocation(userId: Long, routeLocationList: List<RouteLocation>, onSuccessListener: OnSuccessListener<List<RouteLocation>>, onFailureListener: OnFailureListener) {
+
         mAPI.uploadLocations(userId, routeLocationList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listResponse ->
+
                     if (listResponse.code() == 200)
                         onSuccessListener.onSuccess(listResponse.body())
                     else
                         onFailureListener.onFailure(Exception("Response code" + listResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     fun getUser(uID: Long?, onSuccessListener: OnSuccessListener<Void>, onFailureListener: OnFailureListener) {
+
         mAPI.getUser(uID)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userResponse ->
+
                     if (userResponse.code() == 200) {
                         user = userResponse.body()
                         onSuccessListener.onSuccess(null)
                     } else
                         onFailureListener.onFailure(Exception("Response code: " + userResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     fun getUserProfile(onSuccessListener: OnSuccessListener<UserProfile>, onFailureListener: OnFailureListener) {
+
         getUserProfile(user!!.id, onSuccessListener, onFailureListener)
+
     }
 
     fun getUserProfile(userId: Long?, onSuccessListener: OnSuccessListener<UserProfile>, onFailureListener: OnFailureListener) {
+
         mAPI.getUserProfile(userId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userResponse ->
+
                     if (userResponse.code() == 200) {
                         onSuccessListener.onSuccess(userResponse.body())
                     } else
                         onFailureListener.onFailure(Exception("Response code: " + userResponse.code()))
+
                 }, { it.printStackTrace() })
+
     }
 
     companion object {
@@ -407,7 +477,7 @@ class HomeToWorkClient private constructor() {
         const val ACHIEVEMENTS_BASE_URL = "http://home2workapi.azurewebsites.net/images/achievements/"
         private const val API_BASE_URL = "http://home2workapi.azurewebsites.net/api/"
 
-        var myInstancesCount = 0;
+        var myInstancesCount = 0
         private val mInstance: HomeToWorkClient = HomeToWorkClient()
 
         @Synchronized

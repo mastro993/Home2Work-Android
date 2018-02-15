@@ -10,7 +10,7 @@ import retrofit2.http.*
 internal interface EndpointInterface {
 
     @get:GET("company")
-    val companies: Observable<Response<List<Company>>>
+    val companies: Observable<Response<ArrayList<Company>>>
 
     @FormUrlEncoded
     @POST("user/login")

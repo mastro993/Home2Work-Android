@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.location.Location
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
@@ -15,7 +14,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.EditText
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,45 +57,53 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_configuration)
         initUI()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
         menuInflater.inflate(R.menu.menu_configuration, menu)
+
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == R.id.action_logout) {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle(R.string.dialog_logout_title)
-            builder.setMessage(R.string.dialog_logout_content)
-            builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
 
-                SessionManager.clearSession(this@ConfigurationActivity)
-                val intent = Intent(this@ConfigurationActivity, SignInActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                finish()
+        when (item.itemId) {
+            R.id.action_logout -> {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle(R.string.dialog_logout_title)
+                builder.setMessage(R.string.dialog_logout_content)
+                builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
 
+                    SessionManager.clearSession(this@ConfigurationActivity)
+                    val intent = Intent(this@ConfigurationActivity, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+
+                }
+                builder.setNegativeButton(R.string.dialog_logout_decline, null)
+                builder.show()
             }
-            builder.setNegativeButton(R.string.dialog_logout_decline, null)
-            builder.show()
         }
 
         return super.onOptionsItemSelected(item)
     }
 
     override fun onCompleted(completeButton: View) {
+
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+
     }
 
     override fun onError(verificationError: VerificationError) {
-        //Toast.makeText(this, "onError! -> " + verificationError.getErrorMessage(), Toast.LENGTH_SHORT).show();
+
     }
 
     override fun onStepSelected(newStepPosition: Int) {
@@ -108,14 +114,15 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         finish()
     }
 
-    fun initUI() {
+    private fun initUI() {
+
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-        }
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         stepperLayout.adapter = ConfigurationStepsAdapter(supportFragmentManager, this)
         stepperLayout.setOffscreenPageLimit(5)
         stepperLayout.setListener(this)
+
     }
 
     class ConfigurationStepsAdapter internal constructor(fm: FragmentManager, context: Context) : AbstractFragmentStepAdapter(fm, context) {
@@ -135,9 +142,10 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
             val bundle = Bundle()
             bundle.putInt(CURRENT_STEP_POSITION_KEY, position)
-
             fragment.arguments = bundle
+
             return fragment as Step
+
         }
 
         override fun getCount(): Int {
@@ -148,13 +156,12 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             private const val CURRENT_STEP_POSITION_KEY = "current_step"
         }
 
-
     }
 
     class ConfigurationFragmentStart : Fragment(), Step {
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
             return inflater.inflate(R.layout.fragment_conf_start, container, false)
         }
 
@@ -173,37 +180,30 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
     class ConfigurationFragmentName : Fragment(), Step {
 
-        private lateinit var mContext: Context
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        override fun onAttach(context: Context) {
-            mContext = context
-            super.onAttach(context)
+            return inflater.inflate(R.layout.fragment_conf_name, container, false)
         }
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val root = inflater.inflate(R.layout.fragment_conf_name, container, false)
-
-            input_name.setText(HomeToWorkClient.user!!.name)
-            input_surname.setText(HomeToWorkClient.user!!.surname)
-
-            return root
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            initUI()
         }
 
         override fun verifyStep(): VerificationError? {
 
             if (input_name.text.isEmpty()) {
-                input_name.error = mContext.getString(R.string.activity_configuration_name_warning)
-                return VerificationError(mContext.getString(R.string.activity_configuration_name_error))
+                input_name.error = getString(R.string.activity_configuration_name_warning)
+                return VerificationError(getString(R.string.activity_configuration_name_error))
             }
 
             if (input_surname.text.isEmpty()) {
-                input_surname.error = mContext.getString(R.string.activity_configuration_surname_warning)
-                return VerificationError(mContext.getString(R.string.activity_configuration_surname_error))
+                input_surname.error = getString(R.string.activity_configuration_surname_warning)
+                return VerificationError(getString(R.string.activity_configuration_surname_error))
             }
 
-            HomeToWorkClient.user!!.name = input_name.text.toString().trim { it <= ' ' }
-            HomeToWorkClient.user!!.surname = input_surname.text.toString().trim { it <= ' ' }
+            HomeToWorkClient.user?.name = input_name.text.toString().trim { it <= ' ' }
+            HomeToWorkClient.user?.surname = input_surname.text.toString().trim { it <= ' ' }
 
             return null
         }
@@ -213,121 +213,124 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-            Toasty.warning(mContext, error.errorMessage).show()
+
+            Toasty.warning(context!!, error.errorMessage).show()
+
+        }
+
+        private fun initUI() {
+
+            input_name.setText(HomeToWorkClient.user!!.name)
+            input_surname.setText(HomeToWorkClient.user!!.surname)
+
         }
 
     }
 
     class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
 
-        private val FINE_LOCATION_ACCESS = 0
-
         private lateinit var googleMap: GoogleMap
-        private var mFusedLocationClient: FusedLocationProviderClient? = null
-        private var lastLocation: Location? = null
+        private lateinit var mFusedLocationClient: FusedLocationProviderClient
         private var homeLocation: LatLng? = null
-        private lateinit var mContext: Context
 
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-            mContext = context
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+            return inflater.inflate(R.layout.fragment_conf_home, container, false)
         }
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val root = inflater.inflate(R.layout.fragment_conf_home, container, false)
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
 
             button_set_address.setOnClickListener {
-                val editAddressDialog = MaterialDialog.Builder(mContext)
+                val editAddressDialog = MaterialDialog.Builder(context!!)
                         .customView(R.layout.dialog_edit_address, false)
                         .positiveText(R.string.activity_configuration_address_save)
                         .negativeText(R.string.activity_configuration_address_discard)
-                        .onPositive { dialog, _ ->
-
-                            val view = dialog.customView
-                            if (view != null) {
-                                checkAddressDialog()
-                            }
-
+                        .onPositive { _, _ ->
+                            checkAddressDialog()
                         }
                         .build()
 
-                val view = editAddressDialog.customView
-
-                if (view != null) {
-                    setupAddressDialog(view)
-                }
+                address_input.setText(HomeToWorkClient.user?.address?.address)
+                cap_input.setText(HomeToWorkClient.user?.address?.postalCode)
+                city_input.setText(HomeToWorkClient.user?.address?.city)
 
                 editAddressDialog.show()
-            }
-
-            button_set_current_location.setOnClickListener {
-                if (lastLocation != null) {
-                    val homeLat = lastLocation!!.latitude
-                    val homeLon = lastLocation!!.longitude
-                    val currentLatLng = LatLng(homeLat, homeLon)
-                    button_set_current_location.visibility = View.INVISIBLE
-                    setHomeLocation(currentLatLng)
-                }
             }
 
             map_view.onCreate(savedInstanceState)
             map_view.getMapAsync(this)
 
-            return root
         }
 
         override fun onMapReady(googleMap: GoogleMap) {
+
             this.googleMap = googleMap
             this.googleMap.uiSettings.setAllGesturesEnabled(false)
             this.googleMap.uiSettings.isMyLocationButtonEnabled = false
 
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                setUpMap()
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), FINE_LOCATION_ACCESS)
-            }
+            if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
-                mFusedLocationClient!!.lastLocation.addOnSuccessListener { location ->
-                    lastLocation = location
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context!!)
+                mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
                     button_set_current_location.visibility = View.VISIBLE
+                    button_set_current_location.setOnClickListener {
+                        val homeLat = location.latitude
+                        val homeLon = location.longitude
+                        val currentLatLng = LatLng(homeLat, homeLon)
+                        button_set_current_location.visibility = View.INVISIBLE
+                        setHomeLocation(currentLatLng)
+                    }
                 }
+
+                setUpMap()
+
+            } else {
+
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Const.PERMISSION_FINE_LOCATION)
+
             }
 
         }
 
         override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-            if (requestCode == FINE_LOCATION_ACCESS) {
+
+            if (requestCode == Const.PERMISSION_FINE_LOCATION) {
                 if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setUpMap()
                 }
             }
+
         }
 
         override fun onResume() {
-            map_view.onResume()
             super.onResume()
+
+            map_view.onResume()
+
         }
 
         override fun onPause() {
             super.onPause()
+
             map_view.onPause()
+
         }
 
         override fun onLowMemory() {
             super.onLowMemory()
+
             map_view.onLowMemory()
+
         }
 
         override fun verifyStep(): VerificationError? {
-            if (homeLocation != null) {
-                HomeToWorkClient.user!!.location = homeLocation!!
-                return null
+
+            return if (homeLocation != null) {
+                HomeToWorkClient.user?.location = homeLocation!!
+                null
             } else {
-                return VerificationError(mContext.getString(R.string.activity_configuration_company_step_warning))
+                VerificationError(getString(R.string.activity_configuration_company_step_warning))
             }
         }
 
@@ -336,34 +339,36 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-            Toasty.warning(mContext, error.errorMessage).show()
+
+            Toasty.warning(context!!, error.errorMessage).show()
+
+        }
+
+        private fun setHomeLocation(latLng: LatLng) {
+
+            homeLocation = latLng
+            googleMap.clear()
+            googleMap.addMarker(MarkerOptions()
+                    .position(com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng))
+                    .title(getString(R.string.home)))
+                    .showInfoWindow()
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng), 15.0f))
+
         }
 
         private fun setUpMap() {
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                MapsInitializer.initialize(mContext)
+
+            if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                MapsInitializer.initialize(context!!)
                 googleMap.isMyLocationEnabled = true
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(41.909986, 12.3959159), 5.0f))
             }
-        }
-
-        private fun setupAddressDialog(view: View) {
-            val cityInput = view.findViewById<EditText>(R.id.city_input)
-            val capInput = view.findViewById<EditText>(R.id.cap_input)
-            val addressInput = view.findViewById<EditText>(R.id.address_input)
-
-            val user = HomeToWorkClient.user!!
-
-            addressInput.setText(user.address.address)
-            capInput.setText(user.address.postalCode)
-            cityInput.setText(user.address.city)
 
         }
 
         private fun checkAddressDialog() {
 
             var valid = true
-
 
             val addr = address_input.text.toString()
             val city = city_input.text.toString()
@@ -385,9 +390,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             }
 
             if (valid) {
-                AddressConverter.addressToLatLng(
-                        mContext,
-                        "$addr, $city $cap",
+                AddressConverter.addressToLatLng(context!!, "$addr, $city $cap",
                         OnSuccessListener { latLng ->
                             val newAddress = Address()
                             newAddress.city = city
@@ -399,52 +402,41 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
                             setHomeLocation(latLng)
                         }, OnFailureListener {
-                    Toasty.warning(mContext, getString(R.string.activity_configuration_address_error), Toast.LENGTH_LONG).show()
+                    Toasty.warning(context!!, getString(R.string.activity_configuration_address_error), Toast.LENGTH_LONG).show()
                 })
             }
-        }
 
-        private fun setHomeLocation(latLng: LatLng) {
-            homeLocation = latLng
-            googleMap.clear()
-            googleMap.addMarker(MarkerOptions()
-                    .position(com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng))
-                    .title(getString(R.string.home)))
-                    .showInfoWindow()
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng), 15.0f))
         }
-
 
     }
 
     class ConfigurationFragmentJob : Fragment(), Step {
 
-        private lateinit var mCompanies: List<Company>
-        private lateinit var mContext: Context
+        private lateinit var mCompanies: ArrayList<Company>
 
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-            mContext = context
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+            return inflater.inflate(R.layout.fragment_conf_job, container, false)
         }
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val root = inflater.inflate(R.layout.fragment_conf_job, container, false)
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
 
             HomeToWorkClient.getInstance().getCompanies(OnSuccessListener {
                 mCompanies = it
-                initCompaniesSpinner()
+                val companySpinnerAdapter = CompanySpinnerAdapter(activity as Activity, mCompanies)
+                companySpinner.adapter = companySpinnerAdapter
+                loadingView.visibility = View.GONE
             })
 
             companySpinner.requestFocus()
 
-            return root
         }
 
         override fun verifyStep(): VerificationError? {
 
             if (companySpinner!!.selectedItem.toString() == getString(R.string.company))
-                return VerificationError(mContext.getString(R.string.activity_configuration_company_step_warning))
+                return VerificationError(getString(R.string.activity_configuration_company_step_warning))
 
             HomeToWorkClient.user?.company = companySpinner!!.selectedItem as Company
 
@@ -456,59 +448,53 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-            Toasty.warning(mContext, error.errorMessage).show()
-        }
 
-        private fun initCompaniesSpinner() {
-            val companySpinnerAdapter = CompanySpinnerAdapter(activity as Activity, mCompanies)
-            companySpinner.adapter = companySpinnerAdapter
-            loadingView.visibility = View.GONE
+            Toasty.warning(context!!, error.errorMessage).show()
+
         }
 
     }
 
     class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
 
-
         private var propic: Bitmap? = null
         private var uploaded = false
-        private lateinit var mContext: Context
 
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-            mContext = context
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+            return inflater.inflate(R.layout.fragment_conf_propic, container, false)
         }
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val root = inflater.inflate(R.layout.fragment_conf_propic, container, false)
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
 
             selectPhotoButton.setOnClickListener {
-                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0)
                 } else {
                     selectImageIntent()
                 }
             }
 
-            return root
         }
 
-
         private fun selectImageIntent() {
+
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent,
                     getString(R.string.activity_configuration_avatar_selection)), Const.REQ_CAMERA)
+
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
             if (requestCode == Const.REQ_CAMERA && resultCode == Activity.RESULT_OK) {
                 try {
 
                     val selectedImageUri = data.data
-                    val bitmap = MediaStore.Images.Media.getBitmap(mContext.contentResolver, selectedImageUri)
+                    val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, selectedImageUri)
                     propic = ImageUtils.shrinkBitmap(bitmap, 300)
                     propicView!!.setImageBitmap(propic)
                     uploaded = false
@@ -516,16 +502,16 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
+
         }
 
         override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 selectImageIntent()
-            } /*else {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-            }*/
+            }
+
         }
 
         override fun verifyStep(): VerificationError? {
@@ -546,8 +532,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             if (propic == null || uploaded) {
                 callback.goToNextStep()
             } else {
-
-                callback.stepperLayout.showProgress(mContext.getString(R.string.activity_configuration_avatar_upload))
+                callback.stepperLayout.showProgress(getString(R.string.activity_configuration_avatar_upload))
 
                 val file = ImageUtils.bitmapToFile(context!!, propic!!)
                 val decodedAvatar = ImageUtils.decodeFile(file.path)
@@ -567,7 +552,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                     callback.goToNextStep()
                 }, OnFailureListener {
                     callback.stepperLayout.hideProgress()
-                    Toasty.error(mContext, mContext.getString(R.string.activity_configuration_avatar_upload_error)).show()
+                    Toasty.error(context!!, getString(R.string.activity_configuration_avatar_upload_error)).show()
                 })
 
             }
@@ -578,21 +563,16 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onBackClicked(callback: StepperLayout.OnBackClickedCallback) {
+
             callback.goToPrevStep()
+
         }
     }
 
     class ConfigurationFragmentSocial : Fragment(), Step {
 
-        private lateinit var mContext: Context
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-            mContext = context
-        }
-
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.fragment_conf_social, container, false)
         }
 
@@ -618,26 +598,22 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-            Toasty.warning(mContext, error.errorMessage).show()
+
+            Toasty.warning(context!!, error.errorMessage).show()
+
         }
 
     }
 
     class ConfigurationFragmentComplete : Fragment(), BlockingStep {
 
-        private lateinit var mContext: Context
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-            mContext = context
-        }
-
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.fragment_conf_completed, container, false)
         }
 
         override fun verifyStep(): VerificationError? {
+
             return null
         }
 
@@ -654,21 +630,24 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onCompleteClicked(callback: StepperLayout.OnCompleteClickedCallback) {
-            callback.stepperLayout.showProgress(mContext.getString(R.string.activity_configuration_wait))
+
+            callback.stepperLayout.showProgress(getString(R.string.activity_configuration_wait))
 
             HomeToWorkClient.user?.isConfigured = true
 
-            HomeToWorkClient.getInstance().updateUser(OnSuccessListener
-            {
-                callback.complete()
-            }, OnFailureListener {
+            HomeToWorkClient.getInstance().updateUser(
+                    OnSuccessListener {
+                        callback.complete()
+                    }, OnFailureListener {
                 callback.stepperLayout.hideProgress()
             })
 
         }
 
         override fun onBackClicked(callback: StepperLayout.OnBackClickedCallback) {
+
             callback.goToPrevStep()
+
         }
     }
 

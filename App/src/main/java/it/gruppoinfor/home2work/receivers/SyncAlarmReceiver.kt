@@ -16,7 +16,9 @@ import it.gruppoinfor.home2work.services.SyncService
 class SyncAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+
         val syncIntent = Intent(context, SyncService::class.java)
         context.startService(syncIntent)
+
     }
 }

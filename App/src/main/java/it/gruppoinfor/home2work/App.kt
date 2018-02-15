@@ -26,28 +26,28 @@ class App : Application() {
     }
 
     private fun initLeakCanary() {
-        // Inizializzazione LeakCanary
+
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return
         }
         LeakCanary.install(this)
+
     }
 
     private fun initStetho() {
-        // Inizializzazione Stetho
+
         val initializerBuilder = Stetho.newInitializerBuilder(this)
-        // Abilito gli strumenti di sviluppo di chrome
         initializerBuilder.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
-        // Abilito CLI
         initializerBuilder.enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
         val initializer = initializerBuilder.build()
         Stetho.initialize(initializer)
+
     }
 
     private fun initCaoc() {
-        //val isDebuggable = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
+
         CaocConfig.Builder.create()
                 //.backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
                 // TODO rimettere .enabled(isDebuggable) // Abilitato solo se in debug mode
@@ -61,15 +61,18 @@ class App : Application() {
                 //.errorActivity(YourCustomErrorActivity.class) //default: null (default error activity)
                 //.eventListener(new YourCustomEventListener()) //default: null
                 .apply()
+
     }
 
     private fun initPrefsManager() {
+
         Prefs.Builder()
                 .setContext(this)
                 .setMode(ContextWrapper.MODE_PRIVATE)
                 .setPrefsName(packageName)
                 .setUseDefaultSharedPreference(true)
                 .build()
+
     }
 
 

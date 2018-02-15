@@ -36,19 +36,16 @@ import kotlinx.android.synthetic.main.fragment_shares.*
 import kotlinx.android.synthetic.main.layout_share_empty.*
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class SharesFragment : Fragment() {
 
     private var mOngoingShare: Share? = null
-
     private val mShareList = ArrayList<Share>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         val rootView = inflater.inflate(R.layout.fragment_shares, container, false)
         setHasOptionsMenu(true)
+
         return rootView
     }
 
@@ -63,27 +60,32 @@ class SharesFragment : Fragment() {
 
         shares_recycler_view.isNestedScrollingEnabled = false
 
-
     }
 
     override fun onResume() {
         super.onResume()
+
         refreshData()
+
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+
         if (isVisibleToUser && mShareList.size == 0) refreshData()
+
         super.setUserVisibleHint(isVisibleToUser)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == Const.REQ_CAMERA) {
+
+        if (requestCode == Const.REQ_CAMERA)
             joinShare()
-        }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (scanResult != null) {
             val stringData = scanResult.contents.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -92,9 +94,11 @@ class SharesFragment : Fragment() {
             checkShareCode(shareId, latLng)
         } else
             Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code))
+
     }
 
     private fun initUI() {
+
         swipe_refresh_layout.isRefreshing = false
 
         // Utilizzo dei falg per la visivilità per evitare dei glitch durante il controllo
@@ -163,6 +167,7 @@ class SharesFragment : Fragment() {
     }
 
     private fun newShareDialog() {
+
         MaterialDialog.Builder(context!!)
                 .title(R.string.fragment_share_dialog_new_title)
                 .items(R.array.fragment_share_dialog_new_share_options)
@@ -173,9 +178,11 @@ class SharesFragment : Fragment() {
                     }
                 }
                 .show()
+
     }
 
     private fun refreshData() {
+
         HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
 
             mOngoingShare = null
@@ -203,7 +210,6 @@ class SharesFragment : Fragment() {
                     }
                 }
 
-
             }
 
             mShareList.clear()
@@ -214,9 +220,11 @@ class SharesFragment : Fragment() {
             //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI()
         })
+
     }
 
-    fun joinShare() {
+    private fun joinShare() {
+
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions((context as MainActivity?)!!, arrayOf(Manifest.permission.CAMERA), Const.REQ_CAMERA)
         } else {
@@ -225,9 +233,11 @@ class SharesFragment : Fragment() {
             intentIntegrator.setOrientationLocked(false)
             intentIntegrator.initiateScan()
         }
+
     }
 
     private fun checkShareCode(shareID: Long?, hostLocation: LatLng) {
+
         val materialDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.fragment_share_dialog_new_title)
                 .content(R.string.fragment_share_dialog_join_content)
@@ -262,13 +272,14 @@ class SharesFragment : Fragment() {
                     })
                 }
 
-
             }
 
         }
+
     }
 
     private fun createShare() {
+
         val materialDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.fragment_share_dialog_new_title)
                 .content(R.string.fragment_share_dialog_new_content)
@@ -289,8 +300,6 @@ class SharesFragment : Fragment() {
             Toasty.error(context!!, context!!.getString(R.string.fragment_share_dialog_new_error)).show()
         })
 
-
     }
 
-
-}// Required empty public constructor
+}

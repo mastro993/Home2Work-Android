@@ -9,11 +9,11 @@ import com.google.zxing.common.BitMatrix
 
 object QREncoder {
 
-
-    private val QRcodeWidth = 500
+    private const val QRcodeWidth = 500
 
     @Throws(WriterException::class)
     fun encodeText(Value: String): Bitmap? {
+
         val bitMatrix: BitMatrix
         try {
             bitMatrix = MultiFormatWriter().encode(
@@ -37,6 +37,7 @@ object QREncoder {
         }
         val bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444)
         bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight)
+
         return bitmap
     }
 }

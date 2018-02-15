@@ -26,14 +26,11 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowHomeEnabled(false)
-        }
-
-        initUI()
+        supportActionBar?.setDisplayShowHomeEnabled(false)
 
         if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
             val locationIntent = Intent(this, LocationService::class.java)
@@ -46,12 +43,16 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
         startService(Intent(this, SyncService::class.java))
 
+        initUI()
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
         for (fragment in supportFragmentManager.fragments) {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -60,12 +61,12 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     override fun onPageSelected(position: Int) {
-        if (supportActionBar != null) {
-            if (position == 3)
-                supportActionBar!!.hide()
-            else
-                supportActionBar!!.show()
-        }
+
+        if (position == 3)
+            supportActionBar?.hide()
+        else
+            supportActionBar?.show()
+
     }
 
     override fun onPageScrollStateChanged(state: Int) {
@@ -74,7 +75,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     private fun initUI() {
 
-        // Navigation
         val homeTab = AHBottomNavigationItem(R.string.activity_main_tab_home, R.drawable.ic_home, R.color.colorPrimaryDark)
         val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_match, R.color.colorPrimary)
         val sharesTab = AHBottomNavigationItem(R.string.activity_main_tab_shares, R.drawable.ic_car_side, R.color.light_blue_300)
@@ -101,24 +101,26 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
             true
         }
 
-        // View Pager
         view_pager.offscreenPageLimit = 4
         val pagerAdapter = PagerAdapter(supportFragmentManager)
         view_pager.adapter = pagerAdapter
         view_pager.addOnPageChangeListener(this)
 
-        // Setup iniziale
         bottom_navigation.currentItem = 0
         title = bottom_navigation.getItem(0).getTitle(this)
+
     }
 
     fun setBadge(itemPosition: Int, title: String) {
+
         bottom_navigation.setNotification(title, itemPosition)
+
     }
 
     private inner class PagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
+
             return when (position) {
                 0 -> HomeFragment()
                 1 -> MatchFragment()
@@ -129,6 +131,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         }
 
         override fun getCount(): Int {
+
             return 4
         }
 

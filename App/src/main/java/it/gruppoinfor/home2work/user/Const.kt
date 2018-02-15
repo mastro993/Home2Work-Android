@@ -17,6 +17,9 @@ object Const {
     const val CODE_EXPIRED_TOKEN = 1
     const val CODE_ERROR = 2
     const val CODE_NO_INTERNET = 3
+    const val CODE_INVALID_CREDENTIALS = 4
+    const val CODE_LOGIN_ERROR = 5
+    const val CODE_SERVER_ERROR = 6
 
     // Permessi
     const val PERMISSION_FINE_LOCATION = 0

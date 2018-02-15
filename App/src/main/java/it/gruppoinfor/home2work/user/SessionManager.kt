@@ -35,7 +35,7 @@ object SessionManager {
         HomeToWorkClient.getInstance().setFcmToken(token)
     }
 
-    fun loadSession(ctx: Context, callback: SessionManager.SessionCallback) {
+    fun loadSession(ctx: Context, callback: SessionCallback) {
         val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
 
         val user: User? = HomeToWorkClient.user
@@ -60,15 +60,15 @@ object SessionManager {
 
             override fun onInvalidCredential() {
                 clearSession(ctx)
-                callback.onInvalidSession(1, null)
+                callback.onInvalidSession(Const.CODE_INVALID_CREDENTIALS, null)
             }
 
             override fun onLoginError() {
-                callback.onInvalidSession(2, null)
+                callback.onInvalidSession(Const.CODE_LOGIN_ERROR, null)
             }
 
             override fun onError(throwable: Throwable) {
-                callback.onInvalidSession(2, throwable)
+                callback.onInvalidSession(Const.CODE_SERVER_ERROR, throwable)
             }
         })
     }

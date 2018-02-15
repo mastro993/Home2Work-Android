@@ -31,26 +31,33 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     private lateinit var matchList: ArrayList<Match>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         val rootView = inflater.inflate(R.layout.fragment_match, container, false)
         setHasOptionsMenu(true)
+
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
             refreshData()
         }
+
     }
 
     override fun onResume() {
         super.onResume()
+
         refreshData()
+
     }
 
     override fun onItemClick(view: View, position: Int) {
+
         val match = matchList[position]
         if (match.score == 0) {
             showMatchUserProfile(position)
@@ -64,6 +71,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
             matchIntent.putExtra(Const.EXTRA_MATCH, matchList[position])
             startActivity(matchIntent)
         }
+
     }
 
     override fun onLongItemClick(view: View, position: Int): Boolean {
@@ -86,6 +94,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     }
 
     private fun refreshData() {
+
         HomeToWorkClient.getInstance().getUserMatches(OnSuccessListener { matches ->
             matchList = matches
             refreshBadgeCounter()
@@ -94,6 +103,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
         }, OnFailureListener {
             swipe_refresh_layout.isRefreshing = false
         })
+
     }
 
     private fun refreshList() {
@@ -115,6 +125,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
         matchesAdapter.notifyDataSetChanged()
         matches_recycler_view.adapter = matchesAdapter
         matchesAdapter.setItemClickCallbacks(this)
+
     }
 
     protected fun refreshBadgeCounter() {
@@ -124,13 +135,16 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     }
 
     private fun showMatchUserProfile(position: Int) {
+
         val userIntent = Intent(activity, ShowUserActivity::class.java)
         val matchedUser = matchList[position].host
         userIntent.putExtra(Const.EXTRA_USER, matchedUser)
         startActivity(userIntent)
+
     }
 
     private fun showHideMatchDialog(position: Int) {
+
         val matchItem = matchList[position]
         val hideDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.item_match_dialog_hide_title)
@@ -151,7 +165,9 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
                 .build()
 
         hideDialog.show()
+
     }
 
 
-}// Required empty public constructor
+}
+

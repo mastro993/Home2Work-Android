@@ -25,6 +25,7 @@ class ShowUserActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_show_user)
 
         setSupportActionBar(toolbar)
@@ -43,28 +44,34 @@ class ShowUserActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
-        // Respond to the action bar's Up/Home button
             android.R.id.home -> {
                 finish()
                 return true
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
     private fun initUI() {
-        appBar!!.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
+
+        appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
+
                 when (state) {
                     AppBarStateChangeListener.State.COLLAPSED -> if (toolbar_layout.alpha < 1.0f) {
+
                         toolbar_layout.visibility = View.VISIBLE
                         toolbar_layout.animate()
                                 //.translationY(toolbarLayout.getHeight())
                                 .alpha(1.0f)
                                 .setListener(null)
+
                     }
                     AppBarStateChangeListener.State.IDLE -> if (toolbar_layout.alpha > 0.0f) {
+
                         toolbar_layout.animate()
                                 .translationY(0f)
                                 .alpha(0.0f)
@@ -74,8 +81,11 @@ class ShowUserActivity : AppCompatActivity() {
                                         toolbar_layout.visibility = View.GONE
                                     }
                                 })
+
                     }
-                    else -> {}
+                    AppBarStateChangeListener.State.EXPANDED -> {
+
+                    }
                 }
             }
         })
@@ -94,6 +104,7 @@ class ShowUserActivity : AppCompatActivity() {
     }
 
     private fun refreshData() {
+
         HomeToWorkClient.getInstance().getUserProfile(mUser.id, OnSuccessListener { userProfile ->
             swipe_refresh_layout.isRefreshing = false
             mProfile = userProfile
@@ -102,10 +113,13 @@ class ShowUserActivity : AppCompatActivity() {
             Toasty.error(this@ShowUserActivity, "Impossibile ottenere informazioni dell'utente al momento").show()
             swipe_refresh_layout.isRefreshing = false
         })
+
     }
 
     private fun refreshUI() {
+
         avatar_view.setLevel(mProfile.exp.level)
+
     }
 
 }

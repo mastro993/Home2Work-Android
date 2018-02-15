@@ -10,6 +10,7 @@ import java.util.*
 
 
 object AddressConverter {
+
     fun addressToLatLng(context: Context, addr: String, onSuccessListener: OnSuccessListener<LatLng>, onFailureListener: OnFailureListener) {
 
         val geocoder = Geocoder(context, Locale.ITALY)
@@ -30,5 +31,6 @@ object AddressConverter {
         }
 
         onSuccessListener.onSuccess(LatLng(lat, lon))
+
     }
 }

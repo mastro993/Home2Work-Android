@@ -15,21 +15,22 @@ import kotlinx.android.synthetic.main.layout_share_ongoing.view.*
 
 class OngoinShareView : FrameLayout {
 
-    private var mContext: Context? = null
-
     constructor(context: Context) : super(context) {
+
         View.inflate(context, R.layout.layout_share_ongoing, this)
-        mContext = context
+
     }
 
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes) {
+
         View.inflate(context, R.layout.layout_share_ongoing, this)
-        mContext = context
+
     }
 
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
+
         View.inflate(context, R.layout.layout_share_ongoing, this)
-        mContext = context
+
     }
 
     fun setShare(share: Share) {
@@ -48,9 +49,9 @@ class OngoinShareView : FrameLayout {
         }
 
         share_item_ongoing_container.setOnClickListener {
-            val intent = Intent(mContext, OngoingShareActivity::class.java)
+            val intent = Intent(context, OngoingShareActivity::class.java)
             intent.putExtra(Const.EXTRA_SHARE, share)
-            mContext!!.startActivity(intent)
+            context.startActivity(intent)
         }
 
     }

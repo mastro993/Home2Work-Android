@@ -20,35 +20,40 @@ import kotlinx.android.synthetic.main.custom_avatar_view.view.*
 
 class AvatarView : RelativeLayout {
 
-    private var mContext: Context
     private var mLastLevel: Int = 0
     private val animationTime: Long = 500
 
     constructor(context: Context) : super(context) {
+
         View.inflate(context, R.layout.custom_avatar_view, this)
-        mContext = context
+
     }
 
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes) {
+
         View.inflate(context, R.layout.custom_avatar_view, this)
-        mContext = context
+
     }
 
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
+
         View.inflate(context, R.layout.custom_avatar_view, this)
-        mContext = context
+
     }
 
     fun setAvatarURL(avatarURL: String?) {
+
         val requestOptions = RequestOptions()
                 .circleCrop()
                 .signature(MediaStoreSignature("image/jpeg", System.currentTimeMillis(), 180))
                 .placeholder(R.drawable.ic_avatar_placeholder)
                 .dontAnimate()
+
         Glide.with(this)
                 .load(avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions).into(user_propic)
+
     }
 
     fun setLevel(level: Int?) {
@@ -67,14 +72,14 @@ class AvatarView : RelativeLayout {
         val textShader = if (lvl == 100) {
             LinearGradient(
                     0f, 0f, 0f, 60f,
-                    ContextCompat.getColor(mContext, R.color.colorAccent),
-                    ContextCompat.getColor(mContext, R.color.colorPrimary),
+                    ContextCompat.getColor(context, R.color.colorAccent),
+                    ContextCompat.getColor(context, R.color.colorPrimary),
                     Shader.TileMode.CLAMP)
         } else {
             LinearGradient(
                     0f, 0f, 0f, 60f,
-                    ContextCompat.getColor(mContext, color),
-                    ContextCompat.getColor(mContext, color),
+                    ContextCompat.getColor(context, color),
+                    ContextCompat.getColor(context, color),
                     Shader.TileMode.CLAMP)
         }
 
@@ -92,9 +97,11 @@ class AvatarView : RelativeLayout {
         }
 
         mLastLevel = lvl
+
     }
 
     private fun getLevelColor(level: Int): Int {
+
         return when (level) {
             in 1..4 -> R.color.blue_grey_900
             in 5..9 -> R.color.brown_600

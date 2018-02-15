@@ -50,15 +50,17 @@ import java.util.*
 
 class ProfileFragment : Fragment() {
 
-
     private lateinit var mProfile: UserProfile
     private var mExpOld: Experience = Experience()
-    private lateinit var df: DecimalFormat
+    private var df: DecimalFormat = DecimalFormat("#,##0.00")
+
+    init {
+        df.decimalFormatSymbols = DecimalFormatSymbols(Locale.ITALY)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         val rootView = inflater.inflate(R.layout.fragment_profile, container, false)
-        df = DecimalFormat("#,##0.00")
-        df.decimalFormatSymbols = DecimalFormatSymbols(Locale.ITALY)
         setHasOptionsMenu(true)
 
         return rootView
@@ -66,19 +68,23 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initUI()
         refreshData()
+
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+
         if (isVisibleToUser) refreshData()
+
         super.setUserVisibleHint(isVisibleToUser)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
         if (requestCode == REQ_CODE_AVATAR && resultCode == RESULT_OK) {
             try {
-
                 val selectedImageUri = data.data
                 val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, selectedImageUri)
                 val propic = ImageUtils.shrinkBitmap(bitmap, 300)
@@ -112,7 +118,6 @@ class ProfileFragment : Fragment() {
                     materialDialog.dismiss()
                 })
 
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -120,18 +125,21 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
         if (requestCode == REQ_CODE_EXTERNAL_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 selectImageIntent()
         }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun initUI() {
+
         appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
+
                 when (state) {
                     AppBarStateChangeListener.State.COLLAPSED -> if (toolbar_layout.alpha < 1.0f) {
                         toolbar_layout.visibility = View.VISIBLE
@@ -154,8 +162,10 @@ class ProfileFragment : Fragment() {
                     AppBarStateChangeListener.State.EXPANDED -> {
                     }
                 }
+
             }
         })
+
         avatar_view.setOnClickListener {
             MaterialDialog.Builder(context!!)
                     .title(R.string.fragment_profile_avatar_title)
@@ -171,6 +181,7 @@ class ProfileFragment : Fragment() {
                     }
                     .show()
         }
+
         profile_options_button.setOnClickListener {
             MaterialDialog.Builder(context!!)
                     .items(*context!!.resources.getStringArray(R.array.fragment_profile_options))
@@ -195,29 +206,32 @@ class ProfileFragment : Fragment() {
             swipe_refresh_layout.isRefreshing = true
             refreshData()
         }
+
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
 
-        val user = HomeToWorkClient.user
-        avatar_view.setAvatarURL(user?.avatarURL)
-        name_text_view.text = user.toString()
-        job_text_view.text = user?.company.toString()
-        text_name_small.text = user.toString()
+        avatar_view.setAvatarURL(HomeToWorkClient.user?.avatarURL)
+        name_text_view.text = HomeToWorkClient.user.toString()
+        job_text_view.text = HomeToWorkClient.user?.company.toString()
+        text_name_small.text = HomeToWorkClient.user.toString()
 
         val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
-        val strDt = simpleDate.format(user?.regdate)
+        val strDt = simpleDate.format(HomeToWorkClient.user?.regdate)
         text_regdate.text = strDt
 
     }
 
     private fun selectImageIntent() {
+
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent,
                 getString(R.string.activity_configuration_avatar_selection)), REQ_CODE_AVATAR)
+
     }
 
     private fun refreshData() {
+
         HomeToWorkClient.getInstance().getUserProfile(OnSuccessListener { userProfile ->
             swipe_refresh_layout.isRefreshing = false
             mProfile = userProfile
@@ -252,18 +266,20 @@ class ProfileFragment : Fragment() {
         //textShares.setText(String.format(Locale.ITALIAN, "%1$d", stats.getShares()));
         val distanceInKm = stats.sharedDistance / 1000f
         shared_distance_text_view.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_distance_value), distanceInKm)
+
     }
 
-
     private fun logout() {
+
         SessionManager.clearSession(context!!)
 
         // Avvio Activity di login
         val i = Intent(context, SignInActivity::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(i)
+
     }
 
-}// Required empty public constructor
+}
 
 

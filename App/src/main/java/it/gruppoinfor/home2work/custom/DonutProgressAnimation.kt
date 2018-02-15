@@ -10,8 +10,10 @@ class DonutProgressAnimation internal constructor(private val donutProgress: Don
 
     override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
         super.applyTransformation(interpolatedTime, t)
+
         val value = from + (to - from) * interpolatedTime
         donutProgress.progress = value.toInt().toFloat()
+
     }
 
 

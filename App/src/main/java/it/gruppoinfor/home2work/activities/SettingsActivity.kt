@@ -18,6 +18,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private val trackingSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
         get() = CompoundButton.OnCheckedChangeListener { _, b ->
+
             if (!b) {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle(R.string.activity_settings_dialog_tracking_title)
@@ -35,12 +36,15 @@ class SettingsActivity : AppCompatActivity() {
                 text_tracking.setText(R.string.activity_settings_tracking_enabled)
                 text_tracking.setTextColor(ContextCompat.getColor(this, R.color.light_bg_dark_secondary_text))
             }
+
         }
 
     private val syncModeItemSelectedListener: AdapterView.OnItemSelectedListener
         get() = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+
                 Prefs.putBoolean(Const.PREF_SYNC_WITH_DATA, i != 1)
+
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -50,9 +54,11 @@ class SettingsActivity : AppCompatActivity() {
 
     private val notificationSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
         get() = CompoundButton.OnCheckedChangeListener { _, b ->
+
             Prefs.putBoolean(Const.PREF_NOTIFICATIONS, b)
             check_notifications_match.isEnabled = b
             check_notifications_news.isEnabled = b
+
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,17 +73,19 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
-        // Respond to the action bar's Up/Home button
             android.R.id.home -> {
                 finish()
                 return true
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
     private fun initUI() {
+
         switch_tracking.setOnCheckedChangeListener(trackingSwitchCheckedChangeListener)
         if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
             switch_tracking.isChecked = true

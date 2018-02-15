@@ -17,6 +17,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_splash)
 
         // Controllo dei permessi
@@ -29,29 +30,32 @@ class SplashActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
         if (requestCode == Const.PERMISSION_FINE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 initApp()
             else
                 finish()
         }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
 
     private fun initApp() {
 
         AsyncJob.doInBackground {
 
+            // Mostra il logo per un secondo
             try {
-                Thread.sleep(500)
+                Thread.sleep(1000)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
 
+            // Controlla se una sessione è presente
             SessionManager.loadSession(this, object : SessionManager.SessionCallback {
                 override fun onValidSession(user: User) {
-                    val i = if (user.isConfigured) {
+                    val i: Intent = if (user.isConfigured) {
                         Intent(this@SplashActivity, MainActivity::class.java)
                     } else {
                         Intent(this@SplashActivity, ConfigurationActivity::class.java)
@@ -61,30 +65,17 @@ class SplashActivity : AppCompatActivity() {
                 }
 
                 override fun onInvalidSession(code: Int, throwable: Throwable?) {
-                    val intent: Intent
+                    val intent = Intent(this@SplashActivity, SignInActivity::class.java)
                     when (code) {
-                        0 -> {
-                            intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                        1 -> {
-                            intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                            intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
-                            startActivity(intent)
-                            finish()
-                        }
-                        2 -> {
-                            intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                            if (throwable is UnknownHostException) {
+                        Const.CODE_INVALID_CREDENTIALS -> intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
+                        else ->
+                            if (throwable is UnknownHostException)
                                 intent.putExtra(Const.CODE_AUTH, Const.CODE_NO_INTERNET)
-                            } else {
+                            else
                                 intent.putExtra(Const.CODE_AUTH, Const.CODE_ERROR)
-                            }
-                            startActivity(intent)
-                            finish()
-                        }
                     }
+                    startActivity(intent)
+                    finish()
                 }
             })
 

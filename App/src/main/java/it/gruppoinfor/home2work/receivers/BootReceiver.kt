@@ -21,19 +21,18 @@ import it.gruppoinfor.home2workapi.model.User
 
 class BootReceiver : BroadcastReceiver() {
 
-    private lateinit var mContext: Context
+    private lateinit var context: Context
 
     private val sessionCallback: SessionManager.SessionCallback
         get() = object : SessionManager.SessionCallback {
             override fun onValidSession(user: User) {
 
-                // Servizio di localizzazione
                 if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
-                    val locationIntent = Intent(mContext, LocationService::class.java)
+                    val locationIntent = Intent(context, LocationService::class.java)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        mContext.startForegroundService(locationIntent)
+                        context.startForegroundService(locationIntent)
                     } else {
-                        mContext.startService(locationIntent)
+                        context.startService(locationIntent)
                     }
                 } else {
                     showEnableTrackingNotification()
@@ -47,15 +46,15 @@ class BootReceiver : BroadcastReceiver() {
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, arg1: Intent) {
-        mContext = context
+        this.context = context
         SessionManager.loadSession(context, sessionCallback)
     }
 
 
     private fun showLoginNotification() {
-        val intent = Intent(mContext, SplashActivity::class.java)
+        val intent = Intent(context, SplashActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT)
 
         val channelID = "ROUTE_SERVICE_NOTIFICATION"
@@ -63,10 +62,10 @@ class BootReceiver : BroadcastReceiver() {
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val notification = NotificationCompat.Builder(mContext, channelID)
+        val notification = NotificationCompat.Builder(context, channelID)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(notificationIcon)
-                .setColor(ContextCompat.getColor(mContext, R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 //.setLargeIcon(icon)
                 .setContentTitle("Home2Work")
                 .setContentText("Per poter utilizzare il servizio devi effettuare l'accesso")
@@ -75,25 +74,27 @@ class BootReceiver : BroadcastReceiver() {
                 .setAutoCancel(true)
                 .build()
 
-        val notificationManager = mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         notificationManager.notify(0, notification)
+
     }
 
     private fun showEnableTrackingNotification() {
-        val intent = Intent(mContext, SplashActivity::class.java)
+
+        val intent = Intent(context, SplashActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT)
 
         val channelID = "ROUTE_SERVICE_NOTIFICATION"
         val notificationIcon = R.drawable.home2work_icon
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notification = NotificationCompat.Builder(mContext, channelID)
+        val notification = NotificationCompat.Builder(context, channelID)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(notificationIcon)
-                .setColor(ContextCompat.getColor(mContext, R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 //.setLargeIcon(icon)
                 .setContentTitle("Tracking Attività disabilitato")
                 .setContentText("Clicca qui per abilitare il tracking delle attività")
@@ -104,8 +105,9 @@ class BootReceiver : BroadcastReceiver() {
                 .setContentIntent(pendingIntent)
                 .build()
 
-        val notificationManager = mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notification)
+
     }
 
 }

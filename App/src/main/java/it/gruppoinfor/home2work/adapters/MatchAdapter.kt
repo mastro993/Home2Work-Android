@@ -22,21 +22,21 @@ import it.gruppoinfor.home2work.activities.ShowUserActivity
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.item_match.view.*
-import java.util.*
 
-class MatchAdapter(private val mContext: Context, values: List<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
+class MatchAdapter(private val mContext: Context, private val matches: ArrayList<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
 
     private var mItemClickCallbacks: ItemClickCallbacks? = null
-    private val mMatches: ArrayList<Match> = ArrayList(values)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchAdapter.ViewHolder {
-        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.item_match, parent, false)
-        return MatchAdapter.ViewHolder(layoutView)
 
+        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.item_match, parent, false)
+
+        return MatchAdapter.ViewHolder(layoutView)
     }
 
     override fun onBindViewHolder(holder: MatchAdapter.ViewHolder, position: Int) {
-        val match = mMatches[position]
+
+        val match = matches[position]
 
         if (!match.isNew) {
             holder.newBadge.visibility = View.INVISIBLE
@@ -88,15 +88,17 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
             val userIntent = Intent(mContext, ShowUserActivity::class.java)
             userIntent.putExtra("user", match.host)
             mContext.startActivity(userIntent)
-
         }
+
     }
 
     override fun getItemCount(): Int {
-        return mMatches.size
+
+        return matches.size
     }
 
     private fun getScoreColor(score: Int): Int {
+
         return when {
             score < 60 -> ContextCompat.getColor(mContext, R.color.red_500)
             score < 70 -> ContextCompat.getColor(mContext, R.color.orange_600)
@@ -107,13 +109,17 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
     }
 
     fun remove(position: Int) {
-        mMatches.removeAt(position)
+
+        matches.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, mMatches.size)
+        notifyItemRangeChanged(position, matches.size)
+
     }
 
     fun setItemClickCallbacks(itemClickCallbacks: ItemClickCallbacks) {
+
         mItemClickCallbacks = itemClickCallbacks
+
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
