@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.MainActivity
@@ -21,13 +23,12 @@ import it.gruppoinfor.home2work.user.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.fragment_match.*
-import java.util.*
 
 class MatchFragment : Fragment(), ItemClickCallbacks {
 
     private lateinit var matchesAdapter: MatchAdapter
 
-    private var matchList: MutableList<Match> = ArrayList()
+    private lateinit var matchList: ArrayList<Match>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_match, container, false)
@@ -54,7 +55,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
         if (match.score == 0) {
             showMatchUserProfile(position)
         } else {
-            if (match.isNew!!) {
+            if (match.isNew) {
                 match.isNew = false
                 matchesAdapter.notifyItemChanged(position)
                 refreshBadgeCounter()
@@ -85,14 +86,14 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     }
 
     private fun refreshData() {
-        HomeToWorkClient.getInstance().getUserMatches({ matches ->
+        HomeToWorkClient.getInstance().getUserMatches(OnSuccessListener { matches ->
             matchList = matches
             refreshBadgeCounter()
             refreshList()
             swipe_refresh_layout.isRefreshing = false
-        }) {
+        }, OnFailureListener {
             swipe_refresh_layout.isRefreshing = false
-        }
+        })
     }
 
     private fun refreshList() {
@@ -117,7 +118,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     }
 
     protected fun refreshBadgeCounter() {
-        val newMatches = matchList.count { it.isNew!! }
+        val newMatches = matchList.count { it.isNew }
 
         (context as MainActivity).setBadge(1, if (newMatches > 0) newMatches.toString() else "")
     }
@@ -140,10 +141,10 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
 
                     matchItem.hidden = true
 
-                    HomeToWorkClient.getInstance().editMatch(matchItem, {
+                    HomeToWorkClient.getInstance().editMatch(matchItem, OnSuccessListener {
                         matchList.removeAt(position)
                         matchesAdapter.remove(position)
-                    }) { Toasty.success(context!!, context!!.getString(R.string.item_match_dialog_hide_error)).show() }
+                    }, OnFailureListener { Toasty.success(context!!, context!!.getString(R.string.item_match_dialog_hide_error)).show() })
 
 
                 }

@@ -64,13 +64,13 @@ class SharesAdapter(private val mContext: Context, values: List<Share>) : Recycl
 
         } else {
 
-            holder.textShareInfo.text = "Hai condiviso l'auto di " + share.host.toString()
+            holder.textShareInfo.text = "Hai condiviso l'auto di ${share.host}"
 
             holder.textShareType.text = "Guest"
             holder.textShareType.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent))
 
             for (guest in share.guests) {
-                if (guest.user == HomeToWorkClient.getUser()) {
+                if (guest.user == HomeToWorkClient.user) {
                     val totalKm = guest.distance / 1000.0
                     holder.textShareDistance.text = mDf.format(totalKm)
                     holder.textShareXp.text = (totalKm.toInt() * 10).toString()

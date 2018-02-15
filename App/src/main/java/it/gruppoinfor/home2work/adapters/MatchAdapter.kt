@@ -70,7 +70,7 @@ class MatchAdapter(private val mContext: Context, values: List<Match>) : Recycle
         animator.addUpdateListener { valueAnimator -> holder.scoreText.text = "${valueAnimator.animatedValue}" }
         animator.start()
 
-        val color = getScoreColor(match.score!!)
+        val color = getScoreColor(match.score)
         holder.scoreText.setTextColor(color)
 
         holder.nameText.text = match.host.toString()

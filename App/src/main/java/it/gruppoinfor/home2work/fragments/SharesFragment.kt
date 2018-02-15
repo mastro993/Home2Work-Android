@@ -17,6 +17,8 @@ import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.annimon.stream.Stream
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
@@ -24,12 +26,12 @@ import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
 import it.gruppoinfor.home2work.adapters.SharesAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
+import it.gruppoinfor.home2work.user.Const
 import it.gruppoinfor.home2work.user.Const.EXTRA_SHARE
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.Share
-import kotlinx.android.synthetic.main.dialog_new_share.*
 import kotlinx.android.synthetic.main.fragment_shares.*
 import kotlinx.android.synthetic.main.layout_share_empty.*
 import java.util.*
@@ -75,7 +77,7 @@ class SharesFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+        if (requestCode == Const.REQ_CAMERA) {
             joinShare()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -174,7 +176,7 @@ class SharesFragment : Fragment() {
     }
 
     private fun refreshData() {
-        HomeToWorkClient.getInstance().getUserShares({ shares ->
+        HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
 
             mOngoingShare = null
 
@@ -187,17 +189,17 @@ class SharesFragment : Fragment() {
                 val ongoingShare = ongoingShareOptional.get()
 
                 // Controllo se l'utente è host o guest della condivisione
-                if (ongoingShare.host == HomeToWorkClient.getUser()) {
+                if (ongoingShare.host == HomeToWorkClient.user) {
                     mOngoingShare = ongoingShare
-                    shares.remove(mOngoingShare)
+                    shares.remove(ongoingShare)
                 } else {
                     // Se è guest controllo se ha completato la condivisione o è ancora in corso
                     val shareGuestOptional = Stream.of(ongoingShare.guests)
-                            .filter { value -> value.user == HomeToWorkClient.getUser() && value.status == Guest.Status.JOINED }
+                            .filter { value -> value.user == HomeToWorkClient.user && value.status == Guest.Status.JOINED }
                             .findFirst()
                     if (shareGuestOptional.isPresent) {
                         mOngoingShare = ongoingShare
-                        shares.remove(mOngoingShare)
+                        shares.remove(ongoingShare)
                     }
                 }
 
@@ -208,15 +210,15 @@ class SharesFragment : Fragment() {
             mShareList.addAll(shares)
             initUI()
 
-        }) {
+        }, OnFailureListener {
             //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
             initUI()
-        }
+        })
     }
 
     fun joinShare() {
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions((context as MainActivity?)!!, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions((context as MainActivity?)!!, arrayOf(Manifest.permission.CAMERA), Const.REQ_CAMERA)
         } else {
             val intentIntegrator = IntentIntegrator(activity)
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
@@ -248,16 +250,16 @@ class SharesFragment : Fragment() {
                         Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
                         materialDialog.dismiss()
                     }
-                    else -> HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, { share ->
+                    else -> HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, OnSuccessListener { share ->
                         materialDialog.dismiss()
                         val intent = Intent(activity, OngoingShareActivity::class.java)
                         intent.putExtra(EXTRA_SHARE, share)
                         context!!.startActivity(intent)
-                    }) { e ->
+                    }, OnFailureListener { e ->
                         Toasty.error(context!!, context!!.getString(R.string.activity_signin_server_error)).show()
                         materialDialog.dismiss()
                         e.printStackTrace()
-                    }
+                    })
                 }
 
 
@@ -274,7 +276,7 @@ class SharesFragment : Fragment() {
                 .progress(true, 150, true)
                 .show()
 
-        HomeToWorkClient.getInstance().createShare({ share ->
+        HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
             materialDialog.dismiss()
             fab_new_share!!.visibility = View.GONE
             mOngoingShare = share
@@ -282,17 +284,13 @@ class SharesFragment : Fragment() {
             val intent = Intent(activity, OngoingShareActivity::class.java)
             intent.putExtra(EXTRA_SHARE, share)
             context!!.startActivity(intent)
-        }) {
+        }, OnFailureListener {
             materialDialog.dismiss()
             Toasty.error(context!!, context!!.getString(R.string.fragment_share_dialog_new_error)).show()
-        }
+        })
 
 
     }
 
-    companion object {
-
-        private val CAMERA_PERMISSION_REQUEST_CODE = 1
-    }
 
 }// Required empty public constructor

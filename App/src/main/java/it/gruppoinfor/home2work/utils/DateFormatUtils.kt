@@ -8,7 +8,9 @@ import java.util.*
 
 object DateFormatUtils {
 
-    fun formatDate(timestamp: Timestamp): String {
+    fun formatDate(timestamp: Timestamp?): String {
+
+        if (timestamp == null) return ""
 
         val endDate = Date()
         val startDate = Date(timestamp.time)
@@ -59,7 +61,7 @@ object DateFormatUtils {
 
     }
 
-    fun dateToString(date: Date): String {
+    fun dateToString(date: Date?): String {
         val sdf = SimpleDateFormat("HH:mm", Locale.ITALY)
         sdf.timeZone = TimeZone.getTimeZone("GMT+1")
         return sdf.format(date)

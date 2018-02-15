@@ -17,6 +17,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.EditProfileActivity
@@ -49,8 +51,8 @@ import java.util.*
 class ProfileFragment : Fragment() {
 
 
-    private var mProfile: UserProfile? = null
-    private var mExpOld: Experience? = null
+    private lateinit var mProfile: UserProfile
+    private var mExpOld: Experience = Experience()
     private lateinit var df: DecimalFormat
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,7 +71,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && mProfile == null) refreshData()
+        if (isVisibleToUser) refreshData()
         super.setUserVisibleHint(isVisibleToUser)
     }
 
@@ -90,7 +92,7 @@ class ProfileFragment : Fragment() {
 
                 val requestFile = RequestBody.create(mediaType, decodedFile)
 
-                val filename = HomeToWorkClient.getUser().id!!.toString() + ".jpg"
+                val filename = "${HomeToWorkClient.user?.id}.jpg"
 
                 val body = MultipartBody.Part.createFormData("avatar", filename, requestFile)
 
@@ -100,15 +102,15 @@ class ProfileFragment : Fragment() {
                         .progress(true, 150, true)
                         .show()
 
-                HomeToWorkClient.getInstance().uploadAvatar(body,
-                        {
-                            avatar_view.setAvatarURL(HomeToWorkClient.getUser().avatarURL)
-                            materialDialog.dismiss()
-                        }
-                ) {
-                    Toasty.error(context!!, getString(R.string.activity_edit_profile_avatar_upload_error)).show()
+                HomeToWorkClient.getInstance().uploadAvatar(body, OnSuccessListener
+                {
+                    avatar_view.setAvatarURL(HomeToWorkClient.user?.avatarURL)
                     materialDialog.dismiss()
                 }
+                        , OnFailureListener {
+                    Toasty.error(context!!, getString(R.string.activity_edit_profile_avatar_upload_error)).show()
+                    materialDialog.dismiss()
+                })
 
 
             } catch (e: Exception) {
@@ -149,7 +151,8 @@ class ProfileFragment : Fragment() {
                                     }
                                 })
                     }
-                    AppBarStateChangeListener.State.EXPANDED -> {}
+                    AppBarStateChangeListener.State.EXPANDED -> {
+                    }
                 }
             }
         })
@@ -194,14 +197,14 @@ class ProfileFragment : Fragment() {
         }
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
 
-        val user = HomeToWorkClient.getUser()
-        avatar_view.setAvatarURL(user.avatarURL)
+        val user = HomeToWorkClient.user
+        avatar_view.setAvatarURL(user?.avatarURL)
         name_text_view.text = user.toString()
-        job_text_view.text = user.company.toString()
+        job_text_view.text = user?.company.toString()
         text_name_small.text = user.toString()
 
         val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
-        val strDt = simpleDate.format(user.regdate)
+        val strDt = simpleDate.format(user?.regdate)
         text_regdate.text = strDt
 
     }
@@ -215,24 +218,25 @@ class ProfileFragment : Fragment() {
     }
 
     private fun refreshData() {
-        HomeToWorkClient.getInstance().getUserProfile({ userProfile ->
+        HomeToWorkClient.getInstance().getUserProfile(OnSuccessListener { userProfile ->
             swipe_refresh_layout.isRefreshing = false
             mProfile = userProfile
             refreshUI()
-        }) {
+        }, OnFailureListener {
             Toasty.error(context!!, "Impossibile ottenere informazioni del profilo al momento").show()
             swipe_refresh_layout.isRefreshing = false
-        }
+        })
 
     }
 
     private fun refreshUI() {
-        avatar_view.setLevel(mProfile!!.exp.level!!)
 
-        val exp = mProfile!!.exp
+        avatar_view.setLevel(mProfile.exp.level)
+
+        val exp = mProfile.exp
 
         val anim = ProgressBarAnimation(progress_exp,
-                if (mExpOld == null) 0f else mExpOld!!.progress,
+                mExpOld.progress,
                 exp.progress)
         anim.duration = 500
         progress_exp!!.startAnimation(anim)
@@ -240,14 +244,13 @@ class ProfileFragment : Fragment() {
         text_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), exp.value, exp.nextLvlExp)
         text_exp_lv.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_level), exp.level)
 
-        text_exp_left.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_left), exp.nextLvlExp!! - exp.value!!)
+        text_exp_left.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_left), exp.expForNextLevel)
 
         mExpOld = exp
 
-        val stats = mProfile!!.stats
-
+        val stats = mProfile.stats
         //textShares.setText(String.format(Locale.ITALIAN, "%1$d", stats.getShares()));
-        val distanceInKm = stats.sharedDistance!! / 1000f
+        val distanceInKm = stats.sharedDistance / 1000f
         shared_distance_text_view.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_distance_value), distanceInKm)
     }
 

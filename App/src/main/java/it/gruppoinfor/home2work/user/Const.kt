@@ -23,9 +23,9 @@ object Const {
     const val CAMERA_PERMISSION_REQUEST_CODE = 1
 
     // Codici richiesta
-
     const val REQ_CODE_AVATAR = 1
     const val REQ_CODE_EXTERNAL_STORAGE = 2
+    const val REQ_CAMERA = 3
 
     // Codici broadcast
     const val SHARE_JOIN_REQUEST = "SHARE_JOIN_REQUEST"

@@ -23,8 +23,6 @@ class App : Application() {
         initStetho() // Stetho
         initPrefsManager() // EasyPrefs
 
-        HomeToWorkClient.init()
-
     }
 
     private fun initLeakCanary() {

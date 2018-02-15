@@ -21,7 +21,9 @@ object SessionManager {
     private const val PREFS_TOKEN = "SESSION_TOKEN"
     private const val PREFS_EMAIL = "SESSION_EMAIL"
 
-    fun storeSession(ctx: Context, user: User) {
+    fun storeSession(ctx: Context, user: User?) {
+        if (user == null) return
+
         val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
         val editor = prefs.edit()
 
@@ -36,7 +38,8 @@ object SessionManager {
     fun loadSession(ctx: Context, callback: SessionManager.SessionCallback) {
         val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
 
-        val user: User? = HomeToWorkClient.getUser()
+        val user: User? = HomeToWorkClient.user
+
         if (user != null) {
             callback.onValidSession(user)
             return

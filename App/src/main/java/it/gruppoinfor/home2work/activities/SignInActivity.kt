@@ -63,7 +63,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
     override fun onLoginSuccess(user: User) {
         Prefs.putString(PREFS_EMAIL, user.email)
 
-        SessionManager.storeSession(this, HomeToWorkClient.getUser())
+        SessionManager.storeSession(this, HomeToWorkClient.user)
 
         val i = if (user.isConfigured) {
             Intent(this@SignInActivity, MainActivity::class.java)
@@ -140,8 +140,8 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
     }
 
     companion object {
-        private val PREFS_EMAIL = "signin_email"
-        private val PREFS_SIGNIN = "it.home2work.app.signin"
+        private const val PREFS_EMAIL = "signin_email"
+        private const val PREFS_SIGNIN = "it.home2work.app.signin"
     }
 
 }

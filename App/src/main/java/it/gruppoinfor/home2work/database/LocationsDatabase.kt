@@ -9,7 +9,7 @@ import android.content.Context
 import it.gruppoinfor.home2work.utils.LatLngConverter
 
 
-@Database(entities = [(RoutePointEntity::class)], version = 4, exportSchema = false)
+@Database(entities = [(RoutePointEntity::class)], version = 5, exportSchema = false)
 @TypeConverters(LatLngConverter::class)
 abstract class LocationsDatabase : RoomDatabase() {
     abstract fun routePointDAO(): RoutePointDAO

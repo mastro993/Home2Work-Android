@@ -9,7 +9,7 @@ import it.gruppoinfor.home2workapi.model.LatLng
 
 @Entity(tableName = "routePoint")
 data class RoutePointEntity(var userId: Long = 0,
-                            @TypeConverters(LatLngConverter::class) var latLng: LatLng? = null,
+                            @TypeConverters(LatLngConverter::class) var latLng: LatLng = LatLng(),
                             var timestamp: Long = 0) {
 
     @PrimaryKey(autoGenerate = true)

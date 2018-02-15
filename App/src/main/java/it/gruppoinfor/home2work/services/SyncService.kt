@@ -58,9 +58,9 @@ class SyncService : Service() {
     }
 
     private fun syncRoutePoints(routeLocationList: List<RouteLocation>) {
-        HomeToWorkClient.getInstance().uploadLocation(mUser.id, routeLocationList,
-                { mRoutePointRepo.deleteAllUserLocations(mUser.id) }
-                , { e -> Log.e(this::class.java.name, "Sincronizzazione fallita", Throwable(e)) })
+        HomeToWorkClient.getInstance().uploadLocation(mUser.id, routeLocationList, OnSuccessListener
+        { mRoutePointRepo.deleteAllUserLocations(mUser.id) }
+                , OnFailureListener { e -> Log.e(this::class.java.name, "Sincronizzazione fallita", Throwable(e)) })
 
     }
 

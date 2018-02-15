@@ -39,7 +39,7 @@ class AvatarView : RelativeLayout {
         mContext = context
     }
 
-    fun setAvatarURL(avatarURL: String) {
+    fun setAvatarURL(avatarURL: String?) {
         val requestOptions = RequestOptions()
                 .circleCrop()
                 .signature(MediaStoreSignature("image/jpeg", System.currentTimeMillis(), 180))
@@ -51,7 +51,9 @@ class AvatarView : RelativeLayout {
                 .apply(requestOptions).into(user_propic)
     }
 
-    fun setLevel(level: Int) {
+    fun setLevel(level: Int?) {
+
+        if (level == null) return
 
         val lvl = Math.min(100, level)
 

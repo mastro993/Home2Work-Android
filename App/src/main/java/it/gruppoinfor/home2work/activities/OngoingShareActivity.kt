@@ -22,6 +22,8 @@ import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.annimon.stream.Stream
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
@@ -85,14 +87,14 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                                         .progress(true, 150, true)
                                         .show()
 
-                                HomeToWorkClient.getInstance().cancelShare(mShare, {
+                                HomeToWorkClient.getInstance().cancelShare(mShare, OnSuccessListener {
                                     materialDialog.dismiss()
                                     finish()
-                                }) { e ->
+                                }, OnFailureListener { e ->
                                     Toasty.error(this@OngoingShareActivity, getString(R.string.activity_signin_server_error)).show()
                                     materialDialog.dismiss()
                                     e.printStackTrace()
-                                }
+                                })
                             }
                             .positiveText("Conferma")
                             .negativeText("Indietro")
@@ -108,19 +110,20 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                                         .show()
 
 
-                                HomeToWorkClient.getInstance().leaveShare(mShare, {
+                                HomeToWorkClient.getInstance().leaveShare(mShare, OnSuccessListener {
                                     materialDialog.dismiss()
                                     finish()
-                                }) { e ->
+                                }, OnFailureListener { e ->
                                     Toasty.error(this@OngoingShareActivity, getString(R.string.activity_signin_server_error)).show()
                                     materialDialog.dismiss()
                                     e.printStackTrace()
-                                }
+                                })
                             }
                             .positiveText("Conferma")
                             .negativeText("Indietro")
                             .show()
-                    else -> {}
+                    else -> {
+                    }
 
                 }
                 return true
@@ -168,10 +171,10 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                             userIntent.putExtra("user", mShare.guests[position])
                             startActivity(userIntent)
                         }
-                        1 -> HomeToWorkClient.getInstance().expelGuest(mShare, mShare.guests[position], { share ->
+                        1 -> HomeToWorkClient.getInstance().expelGuest(mShare, mShare.guests[position], OnSuccessListener { share ->
                             mShare = share
                             initUI()
-                        }, { it.printStackTrace() })
+                        }, OnFailureListener { it.printStackTrace() })
                         2 -> {
                         }
                     }
@@ -218,7 +221,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                     } else {
                         val latlngString = "${location.latitude},${location.longitude}"
 
-                        HomeToWorkClient.getInstance().createShare({ share ->
+                        HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
                             try {
                                 val bitmap = QREncoder.encodeText("${share.id},$latlngString")
                                 qrCodeImage.setImageBitmap(bitmap)
@@ -227,10 +230,10 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                                 qrCodeDialog!!.hide()
                                 Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_code_unavailable)).show()
                             }
-                        }) {
+                        }, OnFailureListener {
                             qrCodeDialog!!.hide()
                             Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_code_unavailable)).show()
-                        }
+                        })
                     }
 
 
@@ -261,22 +264,22 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                                 .progress(true, 150, true)
                                 .show()
 
-                        HomeToWorkClient.getInstance().finishShare(mShare, {
+                        HomeToWorkClient.getInstance().finishShare(mShare, OnSuccessListener {
                             loadingDialog!!.dismiss()
                             Toasty.success(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_dialog_completition_success)).show()
                             finish()
-                        }) { e ->
+                        }, OnFailureListener { e ->
                             loadingDialog!!.dismiss()
                             Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_dialog_completition_error)).show()
                             e.printStackTrace()
-                        }
+                        })
                     }
                 }
 
                 host_layout.visibility = View.VISIBLE
                 guest_layout.visibility = View.GONE
 
-                if (mShare.guests?.size == 0) {
+                if (mShare.guests.size == 0) {
                     empty_view.visibility = View.VISIBLE
                     header_view.visibility = View.GONE
                     guests_recycler_view.visibility = View.GONE
@@ -331,7 +334,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
     }
 
     private fun enableCompleteButton(): Boolean {
-        if (mShare.guests?.size == 0) return false
+        if (mShare.guests.size == 0) return false
 
         val shareGuestStream = Stream.of(mShare.guests)
 
@@ -371,15 +374,15 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                         loadingDialog!!.dismiss()
 
                     }
-                    else -> HomeToWorkClient.getInstance().completeShare(mShare, endLocation, {
+                    else -> HomeToWorkClient.getInstance().completeShare(mShare, endLocation, OnSuccessListener {
                         loadingDialog!!.dismiss()
                         finish()
                         Toasty.success(this, getString(R.string.activity_ongoing_share_check_success)).show()
-                    }) { e ->
+                    }, OnFailureListener { e ->
                         loadingDialog!!.dismiss()
                         Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_check_error)).show()
                         e.printStackTrace()
-                    }
+                    })
                 }
 
 
@@ -390,11 +393,10 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
 
     private fun refreshGuests() {
-
-        HomeToWorkClient.getInstance().getShare(mShare.id, { share ->
+        HomeToWorkClient.getInstance().getShare(mShare.id, OnSuccessListener { share ->
             mShare = share
             initUI()
-        }, { it.printStackTrace() })
+        }, OnFailureListener { it.printStackTrace() })
 
     }
 

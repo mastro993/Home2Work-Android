@@ -15,53 +15,13 @@ import java.net.UnknownHostException
 
 class SplashActivity : AppCompatActivity() {
 
-    private val sessionCallbacks: SessionManager.SessionCallback
-        get() = object : SessionManager.SessionCallback {
-            override fun onValidSession(user: User) {
-                val i = if (user.isConfigured) {
-                    Intent(this@SplashActivity, MainActivity::class.java)
-                } else {
-                    Intent(this@SplashActivity, ConfigurationActivity::class.java)
-                }
-                startActivity(i)
-                finish()
-            }
-
-            override fun onInvalidSession(code: Int, throwable: Throwable?) {
-                val intent: Intent
-                when (code) {
-                    0 -> {
-                        intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                    1 -> {
-                        intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                        intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
-                        startActivity(intent)
-                        finish()
-                    }
-                    2 -> {
-                        intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                        if (throwable is UnknownHostException) {
-                            intent.putExtra(Const.CODE_AUTH, Const.CODE_NO_INTERNET)
-                        } else {
-                            intent.putExtra(Const.CODE_AUTH, Const.CODE_ERROR)
-                        }
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
         // Controllo dei permessi
-        if (ActivityCompat.checkSelfPermission(this@SplashActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this@SplashActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE), Const.PERMISSION_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE), Const.PERMISSION_FINE_LOCATION)
         } else {
             initApp()
         }
@@ -89,7 +49,44 @@ class SplashActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
-            SessionManager.loadSession(this, sessionCallbacks)
+            SessionManager.loadSession(this, object : SessionManager.SessionCallback {
+                override fun onValidSession(user: User) {
+                    val i = if (user.isConfigured) {
+                        Intent(this@SplashActivity, MainActivity::class.java)
+                    } else {
+                        Intent(this@SplashActivity, ConfigurationActivity::class.java)
+                    }
+                    startActivity(i)
+                    finish()
+                }
+
+                override fun onInvalidSession(code: Int, throwable: Throwable?) {
+                    val intent: Intent
+                    when (code) {
+                        0 -> {
+                            intent = Intent(this@SplashActivity, SignInActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        1 -> {
+                            intent = Intent(this@SplashActivity, SignInActivity::class.java)
+                            intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
+                            startActivity(intent)
+                            finish()
+                        }
+                        2 -> {
+                            intent = Intent(this@SplashActivity, SignInActivity::class.java)
+                            if (throwable is UnknownHostException) {
+                                intent.putExtra(Const.CODE_AUTH, Const.CODE_NO_INTERNET)
+                            } else {
+                                intent.putExtra(Const.CODE_AUTH, Const.CODE_ERROR)
+                            }
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                }
+            })
 
         }
     }

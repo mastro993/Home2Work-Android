@@ -7,6 +7,8 @@ import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.custom.AppBarStateChangeListener
@@ -19,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_show_user.*
 class ShowUserActivity : AppCompatActivity() {
 
     private lateinit var mUser: User
-    private var mProfile: UserProfile? = null
+    private var mProfile: UserProfile = UserProfile()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,18 +94,18 @@ class ShowUserActivity : AppCompatActivity() {
     }
 
     private fun refreshData() {
-        HomeToWorkClient.getInstance().getUserProfile(mUser.id, { userProfile ->
+        HomeToWorkClient.getInstance().getUserProfile(mUser.id, OnSuccessListener { userProfile ->
             swipe_refresh_layout.isRefreshing = false
             mProfile = userProfile
             refreshUI()
-        }) {
+        }, OnFailureListener {
             Toasty.error(this@ShowUserActivity, "Impossibile ottenere informazioni dell'utente al momento").show()
             swipe_refresh_layout.isRefreshing = false
-        }
+        })
     }
 
     private fun refreshUI() {
-        avatar_view.setLevel(mProfile!!.exp.level!!)
+        avatar_view.setLevel(mProfile.exp.level)
     }
 
 }

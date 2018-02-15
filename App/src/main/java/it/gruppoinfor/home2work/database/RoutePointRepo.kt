@@ -18,8 +18,7 @@ class RoutePointRepo constructor(ctx: Context) {
     }
 
     fun getAllUserLocations(onSuccessListener: OnSuccessListener<List<RoutePointEntity>>, onFailureListener: OnFailureListener) {
-
-        locationsDatabase.routePointDAO().getAllUserPoints(HomeToWorkClient.getUser().id!!)
+        locationsDatabase.routePointDAO().getAllUserPoints(HomeToWorkClient.user!!.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ onSuccessListener.onSuccess(it) }, { onFailureListener.onFailure(Exception(it)) })
@@ -27,13 +26,14 @@ class RoutePointRepo constructor(ctx: Context) {
 
     fun deleteAllUserLocations(onSuccessListener: OnSuccessListener<Int>) {
         AsyncJob.doInBackground {
-            val deletedRows = locationsDatabase.routePointDAO().deleteAll(HomeToWorkClient.getUser().id!!)
+            val deletedRows = locationsDatabase.routePointDAO().deleteAll(HomeToWorkClient.user!!.id)
             AsyncJob.doOnMainThread { onSuccessListener.onSuccess(deletedRows) }
 
         }
     }
 
-    fun deleteAllUserLocations(userId: Long) {
+    fun deleteAllUserLocations(userId: Long?) {
+        if (userId == null) return
         AsyncJob.doInBackground { locationsDatabase.routePointDAO().deleteAll(userId) }
     }
 

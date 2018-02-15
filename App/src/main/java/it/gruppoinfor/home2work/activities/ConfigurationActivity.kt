@@ -35,6 +35,7 @@ import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter
+import it.gruppoinfor.home2work.user.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.AddressConverter
 import it.gruppoinfor.home2work.utils.ImageUtils
@@ -183,8 +184,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                                   savedInstanceState: Bundle?): View? {
             val root = inflater.inflate(R.layout.fragment_conf_name, container, false)
 
-            input_name.setText(HomeToWorkClient.getUser().name)
-            input_surname.setText(HomeToWorkClient.getUser().surname)
+            input_name.setText(HomeToWorkClient.user!!.name)
+            input_surname.setText(HomeToWorkClient.user!!.surname)
 
             return root
         }
@@ -201,8 +202,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                 return VerificationError(mContext.getString(R.string.activity_configuration_surname_error))
             }
 
-            HomeToWorkClient.getUser().name = input_name.text.toString().trim { it <= ' ' }
-            HomeToWorkClient.getUser().surname = input_surname.text.toString().trim { it <= ' ' }
+            HomeToWorkClient.user!!.name = input_name.text.toString().trim { it <= ' ' }
+            HomeToWorkClient.user!!.surname = input_surname.text.toString().trim { it <= ' ' }
 
             return null
         }
@@ -322,12 +323,12 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun verifyStep(): VerificationError? {
-            if (homeLocation == null)
+            if (homeLocation != null) {
+                HomeToWorkClient.user!!.location = homeLocation!!
+                return null
+            } else {
                 return VerificationError(mContext.getString(R.string.activity_configuration_company_step_warning))
-
-            HomeToWorkClient.getUser().location = homeLocation
-
-            return null
+            }
         }
 
         override fun onSelected() {
@@ -351,13 +352,12 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             val capInput = view.findViewById<EditText>(R.id.cap_input)
             val addressInput = view.findViewById<EditText>(R.id.address_input)
 
-            val user = HomeToWorkClient.getUser()
+            val user = HomeToWorkClient.user!!
 
-            if (user.address != null) {
-                addressInput.setText(user.address.address)
-                capInput.setText(user.address.postalCode)
-                cityInput.setText(user.address.city)
-            }
+            addressInput.setText(user.address.address)
+            capInput.setText(user.address.postalCode)
+            cityInput.setText(user.address.city)
+
         }
 
         private fun checkAddressDialog() {
@@ -394,8 +394,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                             newAddress.address = addr
                             newAddress.postalCode = cap
 
-                            HomeToWorkClient.getUser().location = latLng
-                            HomeToWorkClient.getUser().address = newAddress
+                            HomeToWorkClient.user!!.location = latLng
+                            HomeToWorkClient.user!!.address = newAddress
 
                             setHomeLocation(latLng)
                         }, OnFailureListener {
@@ -408,10 +408,10 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             homeLocation = latLng
             googleMap.clear()
             googleMap.addMarker(MarkerOptions()
-                    .position(com.google.android.gms.maps.model.LatLng(latLng.lat!!, latLng.lng!!))
+                    .position(com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng))
                     .title(getString(R.string.home)))
                     .showInfoWindow()
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(latLng.lat!!, latLng.lng!!), 15.0f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng), 15.0f))
         }
 
 
@@ -431,10 +431,10 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                                   savedInstanceState: Bundle?): View? {
             val root = inflater.inflate(R.layout.fragment_conf_job, container, false)
 
-            HomeToWorkClient.getInstance().getCompanies { companies ->
-                mCompanies = companies
+            HomeToWorkClient.getInstance().getCompanies(OnSuccessListener {
+                mCompanies = it
                 initCompaniesSpinner()
-            }
+            })
 
             companySpinner.requestFocus()
 
@@ -446,7 +446,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             if (companySpinner!!.selectedItem.toString() == getString(R.string.company))
                 return VerificationError(mContext.getString(R.string.activity_configuration_company_step_warning))
 
-            HomeToWorkClient.getUser().company = companySpinner!!.selectedItem as Company
+            HomeToWorkClient.user?.company = companySpinner!!.selectedItem as Company
 
             return null
         }
@@ -469,7 +469,6 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
     class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
 
-        private val PHOTO_INTENT = 0
 
         private var propic: Bitmap? = null
         private var uploaded = false
@@ -501,11 +500,11 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent,
-                    getString(R.string.activity_configuration_avatar_selection)), PHOTO_INTENT)
+                    getString(R.string.activity_configuration_avatar_selection)), Const.REQ_CAMERA)
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-            if (requestCode == PHOTO_INTENT && resultCode == Activity.RESULT_OK) {
+            if (requestCode == Const.REQ_CAMERA && resultCode == Activity.RESULT_OK) {
                 try {
 
                     val selectedImageUri = data.data
@@ -559,17 +558,17 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
                 val requestFile = RequestBody.create(mediaType, decodedFile)
 
-                val filename = HomeToWorkClient.getUser().id!!.toString() + ".jpg"
+                val filename = "${HomeToWorkClient.user?.id}.jpg"
 
                 val body = MultipartBody.Part.createFormData("avatar", filename, requestFile)
 
-                HomeToWorkClient.getInstance().uploadAvatar(body, {
+                HomeToWorkClient.getInstance().uploadAvatar(body, OnSuccessListener {
                     callback.stepperLayout.hideProgress()
                     callback.goToNextStep()
-                }) {
+                }, OnFailureListener {
                     callback.stepperLayout.hideProgress()
                     Toasty.error(mContext, mContext.getString(R.string.activity_configuration_avatar_upload_error)).show()
-                }
+                })
 
             }
         }
@@ -600,13 +599,13 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         override fun verifyStep(): VerificationError? {
 
             if (!facebookInput.text.isEmpty())
-                HomeToWorkClient.getUser().facebook = facebookInput.text.toString()
+                HomeToWorkClient.user?.facebook = facebookInput.text.toString()
 
             if (!twitterInput.text.isEmpty())
-                HomeToWorkClient.getUser().twitter = twitterInput.text.toString()
+                HomeToWorkClient.user?.twitter = twitterInput.text.toString()
 
             if (!telegramInput.text.isEmpty())
-                HomeToWorkClient.getUser().telegram = telegramInput.text.toString()
+                HomeToWorkClient.user?.telegram = telegramInput.text.toString()
 
             return if (facebookInput.text.isEmpty() && twitterInput!!.text.isEmpty() && telegramInput!!.text.isEmpty()) {
                 VerificationError("Inserisci almeno un metodo di contatto")
@@ -657,15 +656,14 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         override fun onCompleteClicked(callback: StepperLayout.OnCompleteClickedCallback) {
             callback.stepperLayout.showProgress(mContext.getString(R.string.activity_configuration_wait))
 
-            HomeToWorkClient.getUser().isConfigured = true
+            HomeToWorkClient.user?.isConfigured = true
 
-            HomeToWorkClient.getInstance().updateUser(
-                    {
-                        callback.complete()
-                    }
-            ) {
+            HomeToWorkClient.getInstance().updateUser(OnSuccessListener
+            {
+                callback.complete()
+            }, OnFailureListener {
                 callback.stepperLayout.hideProgress()
-            }
+            })
 
         }
 

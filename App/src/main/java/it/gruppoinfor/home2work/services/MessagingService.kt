@@ -52,7 +52,7 @@ class MessagingService : FirebaseMessagingService() {
 
     private fun sendNotification(notification: RemoteMessage.Notification) {
 
-        val user: User? = HomeToWorkClient.getUser()
+        val user: User? = HomeToWorkClient.user
 
         val resultIntent = if (user != null) {
             Intent(this, MainActivity::class.java)
