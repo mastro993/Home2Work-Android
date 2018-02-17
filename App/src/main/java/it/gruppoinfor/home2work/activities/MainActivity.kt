@@ -19,7 +19,7 @@ import it.gruppoinfor.home2work.fragments.ProfileFragment
 import it.gruppoinfor.home2work.fragments.SharesFragment
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
@@ -106,8 +106,8 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         view_pager.adapter = pagerAdapter
         view_pager.addOnPageChangeListener(this)
 
-        bottom_navigation.currentItem = 0
-        title = bottom_navigation.getItem(0).getTitle(this)
+        bottom_navigation.currentItem = Const.HOME_TAB
+        title = bottom_navigation.getItem(Const.HOME_TAB).getTitle(this)
 
     }
 

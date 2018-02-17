@@ -10,7 +10,7 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import kotlinx.android.synthetic.main.activity_settings.*
 
 

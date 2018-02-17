@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import com.annimon.stream.Stream
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.Share
 import kotlinx.android.synthetic.main.layout_share_ongoing.view.*
@@ -48,9 +48,11 @@ class OngoinShareView : FrameLayout {
             layout_guests_number.visibility = View.GONE
         }
 
+        val extra = Const.EXTRA_SHARE
+
         share_item_ongoing_container.setOnClickListener {
             val intent = Intent(context, OngoingShareActivity::class.java)
-            intent.putExtra(Const.EXTRA_SHARE, share)
+            intent.putExtra(extra, share)
             context.startActivity(intent)
         }
 

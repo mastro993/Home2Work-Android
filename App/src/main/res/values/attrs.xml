@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="avatar_view_attrs">
+        <attr name="size" format="enum">
+            <enum name="small" value="0" />
+            <enum name="normal" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

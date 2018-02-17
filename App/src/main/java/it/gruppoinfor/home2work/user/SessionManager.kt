@@ -5,6 +5,7 @@ import android.content.Intent
 import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback
 import it.gruppoinfor.home2workapi.model.User

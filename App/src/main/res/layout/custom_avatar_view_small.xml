@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/user_propic"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_centerInParent="true"
         android:elevation="1dp"
         android:padding="8dp"
@@ -19,8 +19,8 @@
 
     <RelativeLayout
         android:id="@+id/level_container"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_alignBottom="@id/user_propic"
         android:layout_alignEnd="@id/user_propic"
         android:layout_margin="3dp"
@@ -43,7 +43,7 @@
             android:text="-"
             android:textAlignment="center"
             android:textColor="@color/light_bg_dark_primary_text"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="bold|italic" />
 
     </RelativeLayout>

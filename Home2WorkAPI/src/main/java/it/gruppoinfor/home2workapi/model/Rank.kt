@@ -12,16 +12,16 @@ class Rank : Serializable {
     @SerializedName("MonthShares")
     @Expose
     var monthShares: Int = 0
-    @SerializedName("LastMonthShares")
+    @SerializedName("MonthSharesAvg")
     @Expose
-    var lastMonthShares: Int = 0
+    var monthSharesAvg: Int = 0
     @SerializedName("SharedDistance")
     @Expose
     var sharedDistance: Int = 0
     @SerializedName("MonthSharedDistance")
     @Expose
     var monthSharedDistance: Int = 0
-    @SerializedName("LastMonthSharedDistance")
+    @SerializedName("MonthSharedDistanceAvg")
     @Expose
-    var lastMonthSharedDistance: Int = 0
+    var monthSharedDistanceAvg: Int = 0
 }

@@ -6,17 +6,28 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import es.dmoral.toasty.Toasty
@@ -27,17 +38,18 @@ import it.gruppoinfor.home2work.activities.SettingsActivity
 import it.gruppoinfor.home2work.activities.SignInActivity
 import it.gruppoinfor.home2work.custom.AppBarStateChangeListener
 import it.gruppoinfor.home2work.custom.ProgressBarAnimation
-import it.gruppoinfor.home2work.user.Const.REQ_CODE_AVATAR
-import it.gruppoinfor.home2work.user.Const.REQ_CODE_EXTERNAL_STORAGE
 import it.gruppoinfor.home2work.user.SessionManager
+import it.gruppoinfor.home2work.utils.Const.REQ_CODE_AVATAR
+import it.gruppoinfor.home2work.utils.Const.REQ_CODE_EXTERNAL_STORAGE
 import it.gruppoinfor.home2work.utils.ImageUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Experience
 import it.gruppoinfor.home2workapi.model.UserProfile
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile_card_exp.*
+import kotlinx.android.synthetic.main.fragment_profile_activity.*
+import kotlinx.android.synthetic.main.fragment_profile_exp.*
 import kotlinx.android.synthetic.main.fragment_profile_header.*
-import kotlinx.android.synthetic.main.fragment_profile_stats.*
+import kotlinx.android.synthetic.main.fragment_profile_shares.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -46,6 +58,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ProfileFragment : Fragment() {
@@ -70,6 +83,8 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initUI()
+        initSharesChart()
+        initActivityChart()
         refreshData()
 
     }
@@ -210,6 +225,8 @@ class ProfileFragment : Fragment() {
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
 
         avatar_view.setAvatarURL(HomeToWorkClient.user?.avatarURL)
+        avatar_view_small.setAvatarURL(HomeToWorkClient.user?.avatarURL)
+
         name_text_view.text = HomeToWorkClient.user.toString()
         job_text_view.text = HomeToWorkClient.user?.company.toString()
         text_name_small.text = HomeToWorkClient.user.toString()
@@ -217,6 +234,60 @@ class ProfileFragment : Fragment() {
         val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
         val strDt = simpleDate.format(HomeToWorkClient.user?.regdate)
         text_regdate.text = strDt
+
+    }
+
+    private fun initSharesChart() {
+
+        // TODO rimuovere valore se 0 %
+
+        chart_shares.setUsePercentValues(true)
+        chart_shares.description.isEnabled = false
+        chart_shares.isRotationEnabled = false
+        chart_shares.setEntryLabelColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
+        chart_shares.setEntryLabelTypeface(Typeface.DEFAULT_BOLD)
+        chart_shares.maxAngle = 180f
+        chart_shares.rotationAngle = 180f
+        chart_shares.setCenterTextOffset(0f, -22f)
+        chart_shares.animateY(1400, Easing.EasingOption.EaseInOutQuad)
+        chart_shares.setTransparentCircleAlpha(110)
+        chart_shares.holeRadius = 58f
+        chart_shares.transparentCircleRadius = 61f
+
+        val legend = chart_shares.legend
+        legend.isEnabled = false
+
+    }
+
+    private fun initActivityChart() {
+
+        // TODO marker con info mese selezionato
+
+        chart_activity.setViewPortOffsets(0f, 0f, 0f, 0f)
+        chart_activity.description.isEnabled = false
+        chart_activity.isDragEnabled = false
+        chart_activity.setPinchZoom(false)
+        chart_activity.setScaleEnabled(false)
+        chart_activity.setDrawGridBackground(false)
+        chart_activity.maxHighlightDistance = 300f
+        chart_activity.animateY(1400, Easing.EasingOption.EaseInOutQuad)
+        chart_activity.xAxis.isEnabled = false
+        chart_activity.axisLeft.isEnabled = false
+        chart_activity.axisRight.isEnabled = false
+
+        chart_activity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                // TODO dialog con informazioni
+                Toasty.info(context!!, e.toString()).show()
+            }
+
+            override fun onNothingSelected() {
+                // ...
+            }
+        })
+
+        val legend = chart_activity.legend
+        legend.isEnabled = false
 
     }
 
@@ -236,6 +307,8 @@ class ProfileFragment : Fragment() {
             swipe_refresh_layout.isRefreshing = false
             mProfile = userProfile
             refreshUI()
+            refreshActivityChart()
+            refreshSharesChart()
         }, OnFailureListener {
             Toasty.error(context!!, "Impossibile ottenere informazioni del profilo al momento").show()
             swipe_refresh_layout.isRefreshing = false
@@ -245,27 +318,99 @@ class ProfileFragment : Fragment() {
 
     private fun refreshUI() {
 
+        // Avatar
         avatar_view.setLevel(mProfile.exp.level)
+        avatar_view_small.setLevel(mProfile.exp.level)
 
-        val exp = mProfile.exp
-
-        val anim = ProgressBarAnimation(progress_exp,
-                mExpOld.progress,
-                exp.progress)
+        // Exp
+        val anim = ProgressBarAnimation(progress_exp, mExpOld.progress, mProfile.exp.progress)
         anim.duration = 500
-        progress_exp!!.startAnimation(anim)
+        progress_exp.startAnimation(anim)
 
-        text_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), exp.value, exp.nextLvlExp)
-        text_exp_lv.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_level), exp.level)
+        text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), mProfile.exp.value)
+        text_exp_left.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_left), mProfile.exp.expForNextLevel)
 
-        text_exp_left.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_left), exp.expForNextLevel)
+        mExpOld = mProfile.exp
 
-        mExpOld = exp
+        // Condivisioni
+        text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
+        text_month_shares_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), mProfile.stats.monthShares)
+        text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), mProfile.stats.monthSharesAvg)
 
-        val stats = mProfile.stats
-        //textShares.setText(String.format(Locale.ITALIAN, "%1$d", stats.getShares()));
-        val distanceInKm = stats.sharedDistance / 1000f
-        shared_distance_text_view.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_distance_value), distanceInKm)
+        // Attività
+        // TODO attività ultimi 6 mesi
+        // TODO mese più attivo
+        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), mProfile.stats.monthSharedDistance)
+        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), mProfile.stats.monthSharedDistanceAvg)
+
+    }
+
+    private fun refreshSharesChart() {
+
+        val s = SpannableString("${mProfile.stats.shares}\ncondivisioni effettuate")
+        s.setSpan(RelativeSizeSpan(2.1f), 0, "${mProfile.stats.shares}".length, 0)
+        s.setSpan(StyleSpan(Typeface.BOLD), 0, "${mProfile.stats.shares}".length, 0)
+        s.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)), 0, "${mProfile.stats.shares}".length, 0)
+        chart_shares.centerText = s
+
+        // TODO ottenere numero di condivisioni da driver o guest
+        val entriesPie = ArrayList<PieEntry>()
+        entriesPie.add(PieEntry(mProfile.stats.hostShares.toFloat(), "Driver"))
+        entriesPie.add(PieEntry(mProfile.stats.guestShares.toFloat(), "Guest"))
+
+        val pieDataSet = PieDataSet(entriesPie, null) // add entries to dataset
+        pieDataSet.sliceSpace = 2f
+
+        val colors = ArrayList<Int>()
+        colors.add(ContextCompat.getColor(context!!, R.color.colorPrimary))
+        colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
+
+        pieDataSet.colors = colors
+
+        val pieData = PieData(pieDataSet)
+        pieData.setValueTextColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
+        pieData.setValueFormatter(PercentFormatter())
+        pieData.setValueTextSize(16f)
+
+        chart_shares.data = pieData
+        chart_shares.invalidate()
+
+    }
+
+    private fun refreshActivityChart() {
+
+        val colors = ArrayList<Int>()
+        colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
+
+        val entries = ArrayList<Entry>()
+        for (i in 1..6) {
+            // turn your data into Entry objects
+            val random = Math.floor(1 + Random().nextDouble() * (50 - 1))
+            entries.add(Entry(i.toFloat(), random.toFloat(), "Ciao"))
+        }
+
+        val dataSet = LineDataSet(entries, "Label") // add entries to dataset
+        dataSet.color = ContextCompat.getColor(context!!, R.color.colorAccent)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        dataSet.setDrawFilled(true)
+        dataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.drawable_activity_chart_fill)
+        dataSet.fillAlpha = 100
+        dataSet.lineWidth = 3f
+        dataSet.setDrawCircles(true)
+        dataSet.setDrawCircleHole(true)
+        dataSet.circleRadius = 6f
+        dataSet.circleHoleRadius = 4f
+        dataSet.setCircleColorHole(ContextCompat.getColor(context!!, R.color.cardview_light_background))
+        dataSet.setDrawValues(false)
+        dataSet.valueTextColor = ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)
+        dataSet.valueTextSize = 12f
+        dataSet.setDrawHorizontalHighlightIndicator(false)
+        dataSet.setDrawVerticalHighlightIndicator(false)
+        dataSet.circleColors = colors
+
+        val lineData = LineData(dataSet)
+        chart_activity.data = lineData
+        chart_activity.invalidate()
 
     }
 
@@ -279,6 +424,7 @@ class ProfileFragment : Fragment() {
         startActivity(i)
 
     }
+
 
 }
 

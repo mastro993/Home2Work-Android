@@ -29,7 +29,7 @@ import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.ShareGuestsAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.QREncoder
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Guest

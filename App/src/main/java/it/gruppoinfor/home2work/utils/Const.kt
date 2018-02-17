@@ -1,7 +1,14 @@
-package it.gruppoinfor.home2work.user
+package it.gruppoinfor.home2work.utils
 
 
 object Const {
+
+    // Tabs
+    const val HOME_TAB = 0
+    const val RANKS_TAB = 0
+    const val MATCHES_TAB = 1
+    const val SHARES_TAB = 2
+    const val PROFILE_TAB = 3
 
     // Impostazioni
     const val PREF_NOTIFICATIONS = "NOTIFICATIONS"

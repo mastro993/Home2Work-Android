@@ -24,9 +24,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.user.Const.EXTRA_MATCH
-import it.gruppoinfor.home2work.user.Const.EXTRA_USER
-import it.gruppoinfor.home2work.user.Const.GOOGLE_API_KEY
+import it.gruppoinfor.home2work.utils.Const.EXTRA_MATCH
+import it.gruppoinfor.home2work.utils.Const.EXTRA_USER
+import it.gruppoinfor.home2work.utils.Const.GOOGLE_API_KEY
 import it.gruppoinfor.home2work.utils.DateFormatUtils.dateToString
 import it.gruppoinfor.home2work.utils.RouteUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient

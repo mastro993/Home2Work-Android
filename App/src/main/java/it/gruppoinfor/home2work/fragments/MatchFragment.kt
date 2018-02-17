@@ -19,7 +19,7 @@ import it.gruppoinfor.home2work.activities.SettingsActivity
 import it.gruppoinfor.home2work.activities.ShowUserActivity
 import it.gruppoinfor.home2work.adapters.MatchAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.fragment_match.*
@@ -131,7 +131,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     protected fun refreshBadgeCounter() {
         val newMatches = matchList.count { it.isNew }
 
-        (context as MainActivity).setBadge(1, if (newMatches > 0) newMatches.toString() else "")
+        (context as MainActivity).setBadge(Const.MATCHES_TAB, if (newMatches > 0) newMatches.toString() else "")
     }
 
     private fun showMatchUserProfile(position: Int) {

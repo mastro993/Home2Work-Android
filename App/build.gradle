@@ -133,6 +133,9 @@ dependencies {
 
     //Easyprefs
     implementation 'com.pixplicity.easyprefs:library:1.9.0'
+
+    // MP android chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }
 
 

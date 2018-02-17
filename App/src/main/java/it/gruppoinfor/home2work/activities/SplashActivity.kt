@@ -8,7 +8,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import com.arasthel.asyncjob.AsyncJob
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2workapi.model.User
 import java.net.UnknownHostException

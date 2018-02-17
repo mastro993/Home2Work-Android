@@ -9,7 +9,7 @@ import android.widget.Toast
 import com.pixplicity.easyprefs.library.Prefs
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback

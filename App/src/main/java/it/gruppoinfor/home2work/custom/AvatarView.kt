@@ -20,8 +20,25 @@ import kotlinx.android.synthetic.main.custom_avatar_view.view.*
 
 class AvatarView : RelativeLayout {
 
+    enum class Size constructor(val value: Int) {
+        SMALL(0),
+        NORMAL(1);
+
+        companion object {
+            fun fromInt(x: Int): Size {
+
+                return when (x) {
+                    0 -> SMALL
+                    else -> NORMAL
+                }
+            }
+        }
+    }
+
     private var mLastLevel: Int = 0
     private val animationTime: Long = 500
+    private var levelColor: Int = 0
+    var size: Size = Size.NORMAL
 
     constructor(context: Context) : super(context) {
 
@@ -31,13 +48,35 @@ class AvatarView : RelativeLayout {
 
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes) {
 
-        View.inflate(context, R.layout.custom_avatar_view, this)
+        val ta = context.obtainStyledAttributes(attributes, R.styleable.avatar_view_attrs, 0, 0)
+        try {
+            val ssize = ta.getInt(R.styleable.avatar_view_attrs_size, Size.NORMAL.value)
+            size = Size.fromInt(ssize)
+        } finally {
+            ta.recycle()
+        }
+
+        when (size) {
+            Size.SMALL -> View.inflate(context, R.layout.custom_avatar_view_small, this)
+            Size.NORMAL -> View.inflate(context, R.layout.custom_avatar_view, this)
+        }
 
     }
 
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
 
-        View.inflate(context, R.layout.custom_avatar_view, this)
+        val ta = context.obtainStyledAttributes(attributeSet, R.styleable.avatar_view_attrs, 0, 0)
+        try {
+            val ssize = ta.getInt(R.styleable.avatar_view_attrs_size, Size.NORMAL.value)
+            size = Size.fromInt(ssize)
+        } finally {
+            ta.recycle()
+        }
+
+        when (size) {
+            Size.SMALL -> View.inflate(context, R.layout.custom_avatar_view_small, this)
+            Size.NORMAL -> View.inflate(context, R.layout.custom_avatar_view, this)
+        }
 
     }
 
@@ -68,7 +107,7 @@ class AvatarView : RelativeLayout {
         animator.addUpdateListener { anim -> exp_level.text = anim.animatedValue.toString() }
         animator.start()
 
-        val color = getLevelColor(lvl)
+        levelColor = getLevelColor(lvl)
         val textShader = if (lvl == 100) {
             LinearGradient(
                     0f, 0f, 0f, 60f,
@@ -78,8 +117,8 @@ class AvatarView : RelativeLayout {
         } else {
             LinearGradient(
                     0f, 0f, 0f, 60f,
-                    ContextCompat.getColor(context, color),
-                    ContextCompat.getColor(context, color),
+                    ContextCompat.getColor(context, levelColor),
+                    ContextCompat.getColor(context, levelColor),
                     Shader.TileMode.CLAMP)
         }
 

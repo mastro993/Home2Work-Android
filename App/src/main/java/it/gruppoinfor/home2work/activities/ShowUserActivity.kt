@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.custom.AppBarStateChangeListener
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.User
 import it.gruppoinfor.home2workapi.model.UserProfile

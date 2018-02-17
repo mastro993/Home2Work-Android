@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">@color/green_700</color>
     <color name="colorAccent">@color/blue_500</color>
     <color name="colorAccentAlpha26">#422196F3</color>
+    <color name="colorPrimaryAlpha26">#424CAF50</color>
 
     <color name="facebookBlue">#3B5998</color>
     <color name="twitterLightBlue">#55acee</color>

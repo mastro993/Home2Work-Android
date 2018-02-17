@@ -26,8 +26,8 @@ import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
 import it.gruppoinfor.home2work.adapters.SharesAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
-import it.gruppoinfor.home2work.user.Const
-import it.gruppoinfor.home2work.user.Const.EXTRA_SHARE
+import it.gruppoinfor.home2work.utils.Const
+import it.gruppoinfor.home2work.utils.Const.EXTRA_SHARE
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.LatLng
@@ -144,11 +144,11 @@ class SharesFragment : Fragment() {
             ongoingShareVisibility = View.VISIBLE
 
             ongoing_share_view.setShare(mOngoingShare!!)
-            (context as MainActivity).setBadge(2, "In corso")
+            (context as MainActivity).setBadge(Const.SHARES_TAB, "In corso")
 
         } else {
             ongoingShareVisibility = View.GONE
-            (context as MainActivity).setBadge(2, "")
+            (context as MainActivity).setBadge(Const.SHARES_TAB, "")
         }
 
         // Applico la visibilità solo alla fine dei controlli

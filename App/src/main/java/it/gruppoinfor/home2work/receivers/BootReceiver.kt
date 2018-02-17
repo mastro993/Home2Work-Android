@@ -15,7 +15,7 @@ import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.SplashActivity
 import it.gruppoinfor.home2work.services.LocationService
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2workapi.model.User
 

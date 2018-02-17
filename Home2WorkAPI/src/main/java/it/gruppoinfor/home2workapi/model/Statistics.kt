@@ -2,9 +2,7 @@ package it.gruppoinfor.home2workapi.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-
 import java.io.Serializable
-import java.util.Date
 
 class Statistics : Serializable {
 
@@ -12,21 +10,27 @@ class Statistics : Serializable {
     @SerializedName("Shares")
     @Expose
     var shares: Int = 0
+    @SerializedName("GuestShares")
+    @Expose
+    var guestShares: Int = 0
+    @SerializedName("HostShares")
+    @Expose
+    var hostShares: Int = 0
     @SerializedName("MonthShares")
     @Expose
     var monthShares: Int = 0
-    @SerializedName("LastMonthShares")
+    @SerializedName("MonthSharesAvg")
     @Expose
-    var lastMonthShares: Int = 0
+    var monthSharesAvg: Float = 0f
     @SerializedName("SharedDistance")
     @Expose
     var sharedDistance: Int = 0
     @SerializedName("MonthSharedDistance")
     @Expose
     var monthSharedDistance: Int = 0
-    @SerializedName("LastMonthSharedDistance")
+    @SerializedName("MonthSharedDistanceAvg")
     @Expose
-    var lastMonthSharedDistance: Int = 0
+    var monthSharedDistanceAvg: Float = 0f
     @SerializedName("GlobalRanks")
     @Expose
     var globalRanks: Rank = Rank()

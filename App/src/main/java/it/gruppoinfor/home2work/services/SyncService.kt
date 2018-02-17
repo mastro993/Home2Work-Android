@@ -10,7 +10,7 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.database.RoutePointRepo
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.RouteLocation

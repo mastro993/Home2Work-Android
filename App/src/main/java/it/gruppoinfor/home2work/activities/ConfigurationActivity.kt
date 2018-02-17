@@ -33,7 +33,7 @@ import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter
 import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter
-import it.gruppoinfor.home2work.user.Const
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.AddressConverter
 import it.gruppoinfor.home2work.utils.ImageUtils
