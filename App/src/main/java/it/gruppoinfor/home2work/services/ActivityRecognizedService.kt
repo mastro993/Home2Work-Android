@@ -2,8 +2,6 @@ package it.gruppoinfor.home2work.services
 
 import android.app.IntentService
 import android.content.Intent
-import android.util.Log
-
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.DetectedActivity
 
@@ -80,12 +78,12 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
         private const val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
         private const val MAX_STILL_STATUS_COUNT = 2
 
-        fun hasResult(intent: Intent): Boolean {
-            return intent.hasExtra(DrivingActivity::class.java.simpleName)
+        fun hasResult(intent: Intent?): Boolean {
+            return intent?.hasExtra(DrivingActivity::class.java.simpleName) ?: false
         }
 
-        fun extractResult(intent: Intent): DrivingActivity {
-            return intent.getSerializableExtra(DrivingActivity::class.java.simpleName) as DrivingActivity
+        fun extractResult(intent: Intent?): DrivingActivity {
+            return intent?.getSerializableExtra(DrivingActivity::class.java.simpleName) as DrivingActivity
         }
     }
 }

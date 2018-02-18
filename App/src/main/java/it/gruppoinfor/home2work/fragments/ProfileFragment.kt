@@ -24,10 +24,14 @@ import android.view.ViewGroup
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.utils.EntryXComparator
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import es.dmoral.toasty.Toasty
@@ -271,7 +275,17 @@ class ProfileFragment : Fragment() {
         chart_activity.setDrawGridBackground(false)
         chart_activity.maxHighlightDistance = 300f
         chart_activity.animateY(1400, Easing.EasingOption.EaseInOutQuad)
-        chart_activity.xAxis.isEnabled = false
+
+        chart_activity.xAxis.isEnabled = true
+        chart_activity.xAxis.axisLineColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+        chart_activity.xAxis.labelCount = 6
+        chart_activity.xAxis.granularity = 1f
+        chart_activity.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        chart_activity.xAxis.setDrawGridLines(false)
+        chart_activity.xAxis.valueFormatter = ActivityXAxisValueFormatter()
+        chart_activity.xAxis.textColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+        chart_activity.xAxis.setAvoidFirstLastClipping(true)
+
         chart_activity.axisLeft.isEnabled = false
         chart_activity.axisRight.isEnabled = false
 
@@ -338,10 +352,11 @@ class ProfileFragment : Fragment() {
         text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), mProfile.stats.monthSharesAvg)
 
         // Attività
-        // TODO attività ultimi 6 mesi
+        val stats = mProfile.stats
+        text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance / 1000f)
         // TODO mese più attivo
-        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), mProfile.stats.monthSharedDistance)
-        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), mProfile.stats.monthSharedDistanceAvg)
+        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance / 1000f)
+        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg / 1000f)
 
     }
 
@@ -353,7 +368,6 @@ class ProfileFragment : Fragment() {
         s.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)), 0, "${mProfile.stats.shares}".length, 0)
         chart_shares.centerText = s
 
-        // TODO ottenere numero di condivisioni da driver o guest
         val entriesPie = ArrayList<PieEntry>()
         entriesPie.add(PieEntry(mProfile.stats.hostShares.toFloat(), "Driver"))
         entriesPie.add(PieEntry(mProfile.stats.guestShares.toFloat(), "Guest"))
@@ -383,11 +397,22 @@ class ProfileFragment : Fragment() {
         colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
 
         val entries = ArrayList<Entry>()
-        for (i in 1..6) {
-            // turn your data into Entry objects
-            val random = Math.floor(1 + Random().nextDouble() * (50 - 1))
-            entries.add(Entry(i.toFloat(), random.toFloat(), "Ciao"))
+        val cal = Calendar.getInstance()
+        val thisMonth = cal.get(Calendar.MONTH)
+
+        for (i in 5 downTo 0) {
+
+            var month = thisMonth - i
+            if (month < 0) month += 12
+
+            val activity = mProfile.activity.find { it.month == month + 1 }
+            val entry = Entry(5 - i.toFloat(), activity?.distance?.toFloat()?.div(1000f)
+                    ?: 0f)
+            entries.add(entry)
+
         }
+
+        Collections.sort(entries, EntryXComparator())
 
         val dataSet = LineDataSet(entries, "Label") // add entries to dataset
         dataSet.color = ContextCompat.getColor(context!!, R.color.colorAccent)
@@ -423,6 +448,19 @@ class ProfileFragment : Fragment() {
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(i)
 
+    }
+
+    class ActivityXAxisValueFormatter : IAxisValueFormatter {
+        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+
+            val cal = Calendar.getInstance()
+            val thisMonth = cal.get(Calendar.MONTH)
+            var month = thisMonth - (5 - value.toInt())
+            if (month < 0) month += 12
+
+            cal.set(Calendar.MONTH, month)
+            return SimpleDateFormat("MMM", Locale.ITALY).format(cal.time).toUpperCase()
+        }
     }
 
 

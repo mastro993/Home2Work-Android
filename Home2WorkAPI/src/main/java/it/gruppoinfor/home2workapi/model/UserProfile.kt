@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 class UserProfile : Serializable {
 
@@ -17,7 +18,7 @@ class UserProfile : Serializable {
     @SerializedName("Stats")
     @Expose
     var stats: Statistics = Statistics()
-    @SerializedName("Achievements")
+    @SerializedName("Activity")
     @Expose
-    var achievements: List<Achievement>? = null
+    var activity: List<MonthActivity> = ArrayList<MonthActivity>()
 }
