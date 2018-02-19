@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -22,7 +23,6 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.utils.Const.EXTRA_MATCH
 import it.gruppoinfor.home2work.utils.Const.EXTRA_USER
@@ -55,7 +55,7 @@ class MatchActivity : AppCompatActivity() {
             match = intent.getSerializableExtra(EXTRA_MATCH) as Match
             initUI()
         } else {
-            Toasty.error(this, getString(R.string.activity_match_error)).show()
+            Toast.makeText(this, R.string.activity_match_error, Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -164,7 +164,7 @@ class MatchActivity : AppCompatActivity() {
 
         override fun onRoutingFailure(e: RouteException) {
 
-            Toasty.error(mContext, mContext.getString(R.string.activity_match_error)).show()
+            Toast.makeText(mContext, R.string.activity_match_error, Toast.LENGTH_SHORT).show()
             finish()
 
         }

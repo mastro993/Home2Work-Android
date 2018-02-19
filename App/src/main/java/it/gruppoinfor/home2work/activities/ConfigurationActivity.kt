@@ -30,12 +30,11 @@ import com.stepstone.stepper.Step
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.CompanySpinnerAdapter
-import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.AddressConverter
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.ImageUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Address
@@ -103,6 +102,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
     }
 
     override fun onError(verificationError: VerificationError) {
+
+        Toast.makeText(this, verificationError.errorMessage, Toast.LENGTH_SHORT).show()
 
     }
 
@@ -213,8 +214,6 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-
-            Toasty.warning(context!!, error.errorMessage).show()
 
         }
 
@@ -340,8 +339,6 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
         override fun onError(error: VerificationError) {
 
-            Toasty.warning(context!!, error.errorMessage).show()
-
         }
 
         private fun setHomeLocation(latLng: LatLng) {
@@ -402,7 +399,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
                             setHomeLocation(latLng)
                         }, OnFailureListener {
-                    Toasty.warning(context!!, getString(R.string.activity_configuration_address_error), Toast.LENGTH_LONG).show()
+                    Toast.makeText(context!!, R.string.activity_configuration_address_error, Toast.LENGTH_SHORT).show()
                 })
             }
 
@@ -448,8 +445,6 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun onError(error: VerificationError) {
-
-            Toasty.warning(context!!, error.errorMessage).show()
 
         }
 
@@ -552,7 +547,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                     callback.goToNextStep()
                 }, OnFailureListener {
                     callback.stepperLayout.hideProgress()
-                    Toasty.error(context!!, getString(R.string.activity_configuration_avatar_upload_error)).show()
+                    Toast.makeText(context!!, R.string.activity_configuration_avatar_upload_error, Toast.LENGTH_SHORT).show()
                 })
 
             }
@@ -599,7 +594,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
         override fun onError(error: VerificationError) {
 
-            Toasty.warning(context!!, error.errorMessage).show()
+            //Toasty.warning(context!!, error.errorMessage).show()
 
         }
 

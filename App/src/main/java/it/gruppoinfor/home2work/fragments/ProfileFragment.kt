@@ -21,6 +21,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.github.mikephil.charting.animation.Easing
@@ -34,7 +35,6 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.EditProfileActivity
 import it.gruppoinfor.home2work.activities.MainActivity
@@ -133,7 +133,7 @@ class ProfileFragment : Fragment() {
                     materialDialog.dismiss()
                 }
                         , OnFailureListener {
-                    Toasty.error(context!!, getString(R.string.activity_edit_profile_avatar_upload_error)).show()
+                    Toast.makeText(context!!, R.string.activity_edit_profile_avatar_upload_error, Toast.LENGTH_SHORT).show()
                     materialDialog.dismiss()
                 })
 
@@ -292,7 +292,6 @@ class ProfileFragment : Fragment() {
         chart_activity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 // TODO dialog con informazioni
-                Toasty.info(context!!, e.toString()).show()
             }
 
             override fun onNothingSelected() {
@@ -324,7 +323,7 @@ class ProfileFragment : Fragment() {
             refreshActivityChart()
             refreshSharesChart()
         }, OnFailureListener {
-            Toasty.error(context!!, "Impossibile ottenere informazioni del profilo al momento").show()
+            Toast.makeText(context!!, "Impossibile ottenere informazioni del profilo al momento", Toast.LENGTH_SHORT).show()
             swipe_refresh_layout.isRefreshing = false
         })
 

@@ -7,9 +7,9 @@ import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.custom.AppBarStateChangeListener
 import it.gruppoinfor.home2work.utils.Const
@@ -37,7 +37,7 @@ class ShowUserActivity : AppCompatActivity() {
             initUI()
             refreshData()
         } else {
-            Toasty.error(this, getString(R.string.activity_show_user_error)).show()
+            Toast.makeText(this, R.string.activity_show_user_error, Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -110,7 +110,7 @@ class ShowUserActivity : AppCompatActivity() {
             mProfile = userProfile
             refreshUI()
         }, OnFailureListener {
-            Toasty.error(this@ShowUserActivity, "Impossibile ottenere informazioni dell'utente al momento").show()
+            Toast.makeText(this, "Impossibile ottenere informazioni dell'utente al momento", Toast.LENGTH_SHORT).show()
             swipe_refresh_layout.isRefreshing = false
         })
 

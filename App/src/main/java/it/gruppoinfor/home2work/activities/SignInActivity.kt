@@ -7,10 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.pixplicity.easyprefs.library.Prefs
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback
 import it.gruppoinfor.home2workapi.model.User
@@ -54,9 +53,12 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
         super.onStart()
 
         when (intent.extras?.getInt(Const.CODE_AUTH)) {
-            Const.CODE_ERROR -> Toasty.error(this, getString(R.string.activity_signin_error), Toast.LENGTH_SHORT, true).show()
-            Const.CODE_EXPIRED_TOKEN -> Toasty.warning(this, getString(R.string.activity_signin_session_expired), Toast.LENGTH_SHORT, true).show()
-            Const.CODE_NO_INTERNET -> Toasty.error(this, getString(R.string.activity_signin_no_internet), Toast.LENGTH_SHORT, true).show()
+            Const.CODE_ERROR ->
+                Toast.makeText(this, R.string.activity_signin_error, Toast.LENGTH_SHORT).show()
+            Const.CODE_EXPIRED_TOKEN ->
+                Toast.makeText(this, R.string.activity_signin_session_expired, Toast.LENGTH_SHORT).show()
+            Const.CODE_NO_INTERNET ->
+                Toast.makeText(this, R.string.activity_signin_no_internet, Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -81,21 +83,21 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
     override fun onInvalidCredential() {
 
         enableLogin()
-        Toasty.error(this@SignInActivity, getString(R.string.activity_signin_login_failed), Toast.LENGTH_SHORT, true).show()
+        Toast.makeText(this@SignInActivity, R.string.activity_signin_login_failed, Toast.LENGTH_SHORT).show()
 
     }
 
     override fun onLoginError() {
         enableLogin()
-        Toasty.error(this@SignInActivity, getString(R.string.activity_signin_server_error), Toast.LENGTH_SHORT, true).show()
+        Toast.makeText(this@SignInActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onError(throwable: Throwable) {
         enableLogin()
         if (throwable is UnknownHostException) {
-            Toasty.error(this@SignInActivity, getString(R.string.activity_signin_no_internet), Toast.LENGTH_SHORT, true).show()
+            Toast.makeText(this@SignInActivity, R.string.activity_signin_no_internet, Toast.LENGTH_SHORT).show()
         } else {
-            Toasty.error(this@SignInActivity, getString(R.string.activity_signin_server_error), Toast.LENGTH_SHORT, true).show()
+            Toast.makeText(this@SignInActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
         }
     }
 

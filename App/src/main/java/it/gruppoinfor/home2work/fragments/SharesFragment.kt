@@ -13,13 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
@@ -92,7 +92,7 @@ class SharesFragment : Fragment() {
             val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
             checkShareCode(shareId, latLng)
         } else
-            Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code))
+            Toast.makeText(context!!, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
 
     }
 
@@ -233,12 +233,8 @@ class SharesFragment : Fragment() {
             mFusedLocationClient.lastLocation.addOnSuccessListener { joinLocation ->
 
                 when {
-                    joinLocation == null -> {
-                        Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
-                        materialDialog.dismiss()
-                    }
-                    hostLocation.distanceTo(joinLocation) > 500 -> {
-                        Toasty.error(context!!, context!!.getString(R.string.activity_ongoing_share_invalid_code)).show()
+                    joinLocation == null || hostLocation.distanceTo(joinLocation) > 500 -> {
+                        Toast.makeText(context!!, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                     }
                     else -> HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, OnSuccessListener { share ->
@@ -247,7 +243,7 @@ class SharesFragment : Fragment() {
                         intent.putExtra(EXTRA_SHARE, share)
                         context!!.startActivity(intent)
                     }, OnFailureListener { e ->
-                        Toasty.error(context!!, context!!.getString(R.string.activity_signin_server_error)).show()
+                        Toast.makeText(context!!, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                         e.printStackTrace()
                     })
@@ -278,7 +274,7 @@ class SharesFragment : Fragment() {
             context!!.startActivity(intent)
         }, OnFailureListener {
             materialDialog.dismiss()
-            Toasty.error(context!!, context!!.getString(R.string.fragment_share_dialog_new_error)).show()
+            Toast.makeText(context!!, R.string.fragment_share_dialog_new_error, Toast.LENGTH_SHORT).show()
         })
 
     }

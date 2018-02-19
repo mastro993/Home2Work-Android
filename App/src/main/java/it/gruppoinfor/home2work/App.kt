@@ -5,7 +5,6 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ApplicationInfo
-import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.facebook.stetho.Stetho
 import com.pixplicity.easyprefs.library.Prefs
 import com.squareup.leakcanary.LeakCanary
@@ -19,7 +18,7 @@ class App : Application() {
         super.onCreate()
 
         initLeakCanary() // LaakCanary
-        initCaoc() // Caoc
+        //initCaoc() // Caoc
         initStetho() // Stetho
         initPrefsManager() // EasyPrefs
 
@@ -46,7 +45,7 @@ class App : Application() {
 
     }
 
-    private fun initCaoc() {
+/*    private fun initCaoc() {
 
         CaocConfig.Builder.create()
                 //.backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
@@ -62,7 +61,7 @@ class App : Application() {
                 //.eventListener(new YourCustomEventListener()) //default: null
                 .apply()
 
-    }
+    }*/
 
     private fun initPrefsManager() {
 

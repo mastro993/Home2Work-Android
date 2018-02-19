@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.MatchActivity
@@ -158,7 +158,7 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
                     HomeToWorkClient.getInstance().editMatch(matchItem, OnSuccessListener {
                         matchList.removeAt(position)
                         matchesAdapter.remove(position)
-                    }, OnFailureListener { Toasty.success(context!!, context!!.getString(R.string.item_match_dialog_hide_error)).show() })
+                    }, OnFailureListener { Toast.makeText(context!!, R.string.item_match_dialog_hide_error, Toast.LENGTH_SHORT).show() })
 
 
                 }

@@ -18,13 +18,13 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
-import es.dmoral.toasty.Toasty
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.ShareGuestsAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
@@ -159,7 +159,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
             val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
             checkShareCode(shareId, latLng)
         } else
-            Toasty.error(this, getString(R.string.activity_ongoing_share_invalid_code))
+            Toast.makeText(this, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
 
     }
 
@@ -196,7 +196,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
                     if (location == null) {
                         qrCodeDialog!!.hide()
-                        Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_code_unavailable)).show()
+                        Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_code_unavailable, Toast.LENGTH_SHORT).show()
                     } else {
                         val latlngString = "${location.latitude},${location.longitude}"
 
@@ -207,11 +207,11 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                                 loadingView.visibility = View.INVISIBLE
                             } catch (e: Exception) {
                                 qrCodeDialog!!.hide()
-                                Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_code_unavailable)).show()
+                                Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_code_unavailable, Toast.LENGTH_SHORT).show()
                             }
                         }, OnFailureListener {
                             qrCodeDialog!!.hide()
-                            Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_code_unavailable)).show()
+                            Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_code_unavailable, Toast.LENGTH_SHORT).show()
                         })
                     }
 
@@ -236,11 +236,11 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
                 HomeToWorkClient.getInstance().finishShare(mShare, OnSuccessListener {
                     loadingDialog!!.dismiss()
-                    Toasty.success(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_dialog_completition_success)).show()
+                    Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_dialog_completition_success, Toast.LENGTH_SHORT).show()
                     finish()
                 }, OnFailureListener { e ->
                     loadingDialog!!.dismiss()
-                    Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_dialog_completition_error)).show()
+                    Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_dialog_completition_error, Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
                 })
             }
@@ -320,7 +320,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                         materialDialog.dismiss()
                         finish()
                     }, OnFailureListener { e ->
-                        Toasty.error(this@OngoingShareActivity, getString(R.string.activity_signin_server_error)).show()
+                        Toast.makeText(this@OngoingShareActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                         e.printStackTrace()
                     })
@@ -348,7 +348,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                         materialDialog.dismiss()
                         finish()
                     }, OnFailureListener { e ->
-                        Toasty.error(this@OngoingShareActivity, getString(R.string.activity_signin_server_error)).show()
+                        Toast.makeText(this@OngoingShareActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                         e.printStackTrace()
                     })
@@ -377,7 +377,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                 .show()
 
         if (mShare.id != shareID) {
-            Toasty.error(this, getString(R.string.activity_ongoing_share_check_wrong_code)).show()
+            Toast.makeText(this, R.string.activity_ongoing_share_check_wrong_code, Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -388,22 +388,22 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
                 when {
                     endLocation == null -> {
-                        Toasty.error(this, getString(R.string.activity_ongoing_share_check_error)).show()
+                        Toast.makeText(this, R.string.activity_ongoing_share_check_error, Toast.LENGTH_SHORT).show()
                         loadingDialog!!.dismiss()
 
                     }
                     hostLocation.distanceTo(endLocation) > 500 -> {
-                        Toasty.error(this, getString(R.string.activity_ongoing_share_check_wrong_code)).show()
+                        Toast.makeText(this, R.string.activity_ongoing_share_check_wrong_code, Toast.LENGTH_SHORT).show()
                         loadingDialog!!.dismiss()
 
                     }
                     else -> HomeToWorkClient.getInstance().completeShare(mShare, endLocation, OnSuccessListener {
                         loadingDialog!!.dismiss()
                         finish()
-                        Toasty.success(this, getString(R.string.activity_ongoing_share_check_success)).show()
+                        Toast.makeText(this, R.string.activity_ongoing_share_check_success, Toast.LENGTH_SHORT).show()
                     }, OnFailureListener { e ->
                         loadingDialog!!.dismiss()
-                        Toasty.error(this@OngoingShareActivity, getString(R.string.activity_ongoing_share_check_error)).show()
+                        Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_check_error, Toast.LENGTH_SHORT).show()
                         e.printStackTrace()
                     })
                 }
