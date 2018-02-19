@@ -6,12 +6,12 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
-import com.arasthel.asyncjob.AsyncJob
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.model.User
 import java.net.UnknownHostException
+
 
 class SplashActivity : AppCompatActivity() {
 
@@ -43,43 +43,31 @@ class SplashActivity : AppCompatActivity() {
 
     private fun initApp() {
 
-        AsyncJob.doInBackground {
-
-            // Mostra il logo per un secondo
-            try {
-                Thread.sleep(1000)
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
+        SessionManager.loadSession(this, object : SessionManager.SessionCallback {
+            override fun onValidSession(user: User) {
+                val i: Intent = if (user.isConfigured) {
+                    Intent(this@SplashActivity, MainActivity::class.java)
+                } else {
+                    Intent(this@SplashActivity, ConfigurationActivity::class.java)
+                }
+                startActivity(i)
+                finish()
             }
 
-            // Controlla se una sessione è presente
-            SessionManager.loadSession(this, object : SessionManager.SessionCallback {
-                override fun onValidSession(user: User) {
-                    val i: Intent = if (user.isConfigured) {
-                        Intent(this@SplashActivity, MainActivity::class.java)
-                    } else {
-                        Intent(this@SplashActivity, ConfigurationActivity::class.java)
-                    }
-                    startActivity(i)
-                    finish()
+            override fun onInvalidSession(code: Int, throwable: Throwable?) {
+                val intent = Intent(this@SplashActivity, SignInActivity::class.java)
+                when (code) {
+                    Const.CODE_INVALID_CREDENTIALS -> intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
+                    else ->
+                        if (throwable is UnknownHostException)
+                            intent.putExtra(Const.CODE_AUTH, Const.CODE_NO_INTERNET)
+                        else
+                            intent.putExtra(Const.CODE_AUTH, Const.CODE_ERROR)
                 }
-
-                override fun onInvalidSession(code: Int, throwable: Throwable?) {
-                    val intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                    when (code) {
-                        Const.CODE_INVALID_CREDENTIALS -> intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
-                        else ->
-                            if (throwable is UnknownHostException)
-                                intent.putExtra(Const.CODE_AUTH, Const.CODE_NO_INTERNET)
-                            else
-                                intent.putExtra(Const.CODE_AUTH, Const.CODE_ERROR)
-                    }
-                    startActivity(intent)
-                    finish()
-                }
-            })
-
-        }
+                startActivity(intent)
+                finish()
+            }
+        })
     }
 
 }
