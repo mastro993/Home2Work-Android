@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -184,7 +185,7 @@ class SharesFragment : Fragment() {
 
         HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
 
-            mOngoingShare = shares.first { share -> share.status == Share.Status.CREATED }
+            mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
 
             if (mOngoingShare?.host == HomeToWorkClient.user ||
                     mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
