@@ -58,6 +58,8 @@ class SplashActivity : AppCompatActivity() {
                 val intent = Intent(this@SplashActivity, SignInActivity::class.java)
                 when (code) {
                     Const.CODE_INVALID_CREDENTIALS -> intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
+                    Const.CODE_NO_CREDENTIALS -> {
+                    }
                     else ->
                         if (throwable is UnknownHostException)
                             intent.putExtra(Const.CODE_AUTH, Const.CODE_NO_INTERNET)

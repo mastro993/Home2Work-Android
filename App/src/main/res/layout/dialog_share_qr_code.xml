@@ -20,16 +20,14 @@
         android:layout_height="300dp"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:background="@color/white"
         android:visibility="invisible">
 
-        <com.wang.avi.AVLoadingIndicatorView
-            style="@style/AVLoadingIndicatorView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ProgressBar
+            android:layout_width="@dimen/loading_progressbar_size"
+            android:layout_height="@dimen/loading_progressbar_size"
             android:layout_gravity="center"
-            app:indicatorColor="@color/colorAccent"
-            app:indicatorName="BallGridPulseIndicator" />
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorAccent" />
 
     </FrameLayout>
 

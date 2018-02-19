@@ -77,16 +77,29 @@
             android:textAllCaps="false"
             android:textColor="@color/light_bg_dark_hint_text" />
 
-        <Button
-            android:id="@+id/sign_in_button"
-            style="@style/Widget.AppCompat.Button.Colored"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:text="@string/activity_signin_button"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            android:visibility="visible" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/sign_in_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:text="@string/activity_signin_button"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:layout_width="@dimen/loading_progressbar_size"
+                android:layout_height="@dimen/loading_progressbar_size"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/colorAccent" />
+
+        </RelativeLayout>
 
 
     </LinearLayout>

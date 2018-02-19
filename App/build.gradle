@@ -58,9 +58,6 @@ dependencies {
     // RXJava
     implementation 'android.arch.persistence.room:rxjava2:1.0.0'
 
-    // loading view
-    implementation 'com.wang.avi:library:2.1.3'
-
     // Material stepper
     implementation 'com.stepstone.stepper:material-stepper:3.2.0'
 
@@ -72,9 +69,6 @@ dependencies {
 1
     // AHBottomNavigation
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
-
-    // Materialnumberpciker
-    implementation 'biz.kasual:materialnumberpicker:1.2.1'
 
     // Zxing
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
@@ -100,7 +94,7 @@ dependencies {
     //Easyprefs
     implementation 'com.pixplicity.easyprefs:library:1.9.0'
 
-    // MP android chart
+    // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }
 

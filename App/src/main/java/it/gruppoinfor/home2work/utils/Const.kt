@@ -27,6 +27,7 @@ object Const {
     const val CODE_INVALID_CREDENTIALS = 4
     const val CODE_LOGIN_ERROR = 5
     const val CODE_SERVER_ERROR = 6
+    const val CODE_NO_CREDENTIALS = 7
 
     // Permessi
     const val PERMISSION_FINE_LOCATION = 0

@@ -50,7 +50,7 @@ object SessionManager {
         val token = prefs.getString(PREFS_TOKEN, "")
 
         if (email.isEmpty() || token.isEmpty()) {
-            callback.onInvalidSession(0, null)
+            callback.onInvalidSession(Const.CODE_NO_CREDENTIALS, null)
             return
         }
 

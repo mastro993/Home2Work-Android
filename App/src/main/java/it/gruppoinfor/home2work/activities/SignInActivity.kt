@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.pixplicity.easyprefs.library.Prefs
@@ -35,8 +36,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
                 email_edit_text.isEnabled = false
                 password_edit_text.isEnabled = false
 
-                sign_in_button.isEnabled = false
-                sign_in_button!!.text = "Accesso in corso"
+                sign_in_button.visibility = View.INVISIBLE
 
                 val email = email_edit_text.text.toString()
                 val password = password_edit_text.text.toString()
@@ -103,8 +103,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
     private fun enableLogin() {
 
-        sign_in_button.isEnabled = true
-        sign_in_button.text = "Accedi"
+        sign_in_button.visibility = View.VISIBLE
         email_edit_text.isEnabled = true
         password_edit_text.isEnabled = true
 

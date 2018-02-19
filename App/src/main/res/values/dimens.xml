@@ -11,5 +11,6 @@
     <dimen name="list_items_spacing">6dp</dimen>
     <dimen name="list_padding">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="loading_progressbar_size">32dp</dimen>
 
 </resources>
