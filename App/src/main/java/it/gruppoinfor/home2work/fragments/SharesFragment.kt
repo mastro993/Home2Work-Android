@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
-import com.annimon.stream.Stream
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -185,30 +184,12 @@ class SharesFragment : Fragment() {
 
         HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
 
-            mOngoingShare = null
+            mOngoingShare = shares.first { share -> share.status == Share.Status.CREATED }
 
-            val ongoingShareOptional = Stream.of(shares)
-                    .filter { value -> value.status == Share.Status.CREATED }
-                    .findFirst()
+            if (mOngoingShare?.host == HomeToWorkClient.user ||
+                    mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
 
-            if (ongoingShareOptional.isPresent) {
-
-                val ongoingShare = ongoingShareOptional.get()
-
-                // Controllo se l'utente è host o guest della condivisione
-                if (ongoingShare.host == HomeToWorkClient.user) {
-                    mOngoingShare = ongoingShare
-                    shares.remove(ongoingShare)
-                } else {
-                    // Se è guest controllo se ha completato la condivisione o è ancora in corso
-                    val shareGuestOptional = Stream.of(ongoingShare.guests)
-                            .filter { value -> value.user == HomeToWorkClient.user && value.status == Guest.Status.JOINED }
-                            .findFirst()
-                    if (shareGuestOptional.isPresent) {
-                        mOngoingShare = ongoingShare
-                        shares.remove(ongoingShare)
-                    }
-                }
+                shares.remove(mOngoingShare!!)
 
             }
 

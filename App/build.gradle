@@ -98,6 +98,11 @@ dependencies {
         transitive = false
     }
 
+    // Material progressbar
+    implementation('me.zhanghai.android.materialprogressbar:library:1.4.1') {
+        transitive = false
+    }
+
     // CustomActivityOnCrash
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
 

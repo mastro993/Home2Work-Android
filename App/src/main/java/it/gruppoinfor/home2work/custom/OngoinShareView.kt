@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import com.annimon.stream.Stream
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
 import it.gruppoinfor.home2work.utils.Const
@@ -35,7 +34,8 @@ class OngoinShareView : FrameLayout {
 
     fun setShare(share: Share) {
 
-        val guestSize = Stream.of(share.guests).filter { value -> value.status != Guest.Status.CANCELED }.count()
+        val guestSize = share.guests.count { guest -> guest.status != Guest.Status.CANCELED }
+
         text_ongoin_share_guests.text = guestSize.toString()
 
         if (share.type == Share.Type.DRIVER) {

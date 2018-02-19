@@ -102,13 +102,14 @@
 
             </RelativeLayout>
 
-            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            <ProgressBar
                 android:id="@+id/progress_bar"
-                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="18dp"
+                android:layout_marginBottom="8dp"
                 android:progress="67"
-                app:mpb_progressStyle="horizontal" />
+                android:progressDrawable="@drawable/progressbar_drawable" />
 
         </LinearLayout>
 

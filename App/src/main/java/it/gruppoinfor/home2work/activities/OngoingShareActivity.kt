@@ -20,7 +20,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
-import com.annimon.stream.Stream
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -364,12 +363,8 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
     private fun enableCompleteButton(): Boolean {
 
         if (mShare.guests.size == 0) return false
-
-        val shareGuestStream = Stream.of(mShare.guests)
-
-        val shareGuestOptional = shareGuestStream.filter { value -> value.status == Guest.Status.JOINED }.findFirst()
-
-        return !shareGuestOptional.isPresent
+        val uncompletedGuests = mShare.guests.find { guest -> guest.status == Guest.Status.JOINED }
+        return uncompletedGuests == null
 
     }
 
