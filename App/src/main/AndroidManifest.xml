@@ -144,7 +144,6 @@
             android:name=".activities.ShowUserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.Main2Activity"></activity>
     </application>
 
 </manifest>
