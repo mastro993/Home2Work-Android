@@ -86,18 +86,77 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initUI()
-        initSharesChart()
-        initActivityChart()
-        refreshData()
+        loading_view.visibility = View.VISIBLE
 
-    }
+        appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
+            override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+                when (state) {
+                    AppBarStateChangeListener.State.COLLAPSED -> if (toolbar_layout.alpha < 1.0f) {
+                        toolbar_layout.visibility = View.VISIBLE
+                        toolbar_layout.animate()
+                                //.translationY(toolbarLayout.getHeight())
+                                .alpha(1.0f)
+                                .setListener(null)
+                    }
+                    AppBarStateChangeListener.State.IDLE -> if (toolbar_layout.alpha > 0.0f) {
+                        toolbar_layout.animate()
+                                .translationY(0f)
+                                .alpha(0.0f)
+                                .setListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator) {
+                                        super.onAnimationEnd(animation)
+                                        toolbar_layout.visibility = View.GONE
+                                    }
+                                })
+                    }
+                    AppBarStateChangeListener.State.EXPANDED -> {
+                    }
+                }
 
-        if (isVisibleToUser) refreshData()
+            }
+        })
+        profile_options_button.setOnClickListener {
 
-        super.setUserVisibleHint(isVisibleToUser)
+            MaterialDialog.Builder(context!!)
+                    .items(*context!!.resources.getStringArray(R.array.fragment_profile_options))
+                    .itemsCallback { _, _, position, _ ->
+                        when (position) {
+                            0 -> startActivity(Intent(activity, EditProfileActivity::class.java))
+                            1 -> startActivity(Intent(activity, SettingsActivity::class.java))
+                            2 -> {
+                                val builder = AlertDialog.Builder(context!!)
+                                builder.setTitle(R.string.dialog_logout_title)
+                                builder.setMessage(R.string.dialog_logout_content)
+                                builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
+
+                                    SessionManager.clearSession(context!!)
+                                    val i = Intent(context, SignInActivity::class.java)
+                                    i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(i)
+
+                                }
+                                builder.setNegativeButton(R.string.dialog_logout_decline, null)
+                                builder.show()
+                            }
+                        }
+                    }
+                    .show()
+
+        }
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = true
+            refreshProfile()
+        }
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
+
+        initHeaderUI()
+        initSharesUI()
+        initActivityUI()
+        initFooterUI()
+
+        refreshProfile()
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -154,36 +213,7 @@ class ProfileFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun initUI() {
-
-        appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
-            override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
-
-                when (state) {
-                    AppBarStateChangeListener.State.COLLAPSED -> if (toolbar_layout.alpha < 1.0f) {
-                        toolbar_layout.visibility = View.VISIBLE
-                        toolbar_layout.animate()
-                                //.translationY(toolbarLayout.getHeight())
-                                .alpha(1.0f)
-                                .setListener(null)
-                    }
-                    AppBarStateChangeListener.State.IDLE -> if (toolbar_layout.alpha > 0.0f) {
-                        toolbar_layout.animate()
-                                .translationY(0f)
-                                .alpha(0.0f)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator) {
-                                        super.onAnimationEnd(animation)
-                                        toolbar_layout.visibility = View.GONE
-                                    }
-                                })
-                    }
-                    AppBarStateChangeListener.State.EXPANDED -> {
-                    }
-                }
-
-            }
-        })
+    private fun initHeaderUI() {
 
         avatar_view.setOnClickListener {
             MaterialDialog.Builder(context!!)
@@ -200,48 +230,17 @@ class ProfileFragment : Fragment() {
                     }
                     .show()
         }
-
-        profile_options_button.setOnClickListener {
-            MaterialDialog.Builder(context!!)
-                    .items(*context!!.resources.getStringArray(R.array.fragment_profile_options))
-                    .itemsCallback { _, _, position, _ ->
-                        when (position) {
-                            0 -> startActivity(Intent(activity, EditProfileActivity::class.java))
-                            1 -> startActivity(Intent(activity, SettingsActivity::class.java))
-                            2 -> {
-                                val builder = AlertDialog.Builder(context!!)
-                                builder.setTitle(R.string.dialog_logout_title)
-                                builder.setMessage(R.string.dialog_logout_content)
-                                builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ -> logout() }
-                                builder.setNegativeButton(R.string.dialog_logout_decline, null)
-                                builder.show()
-                            }
-                        }
-                    }
-                    .show()
-        }
-
-        swipe_refresh_layout.setOnRefreshListener {
-            swipe_refresh_layout.isRefreshing = true
-            refreshData()
-        }
-
-        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
-
         avatar_view.setAvatarURL(HomeToWorkClient.user?.avatarURL)
         avatar_view_small.setAvatarURL(HomeToWorkClient.user?.avatarURL)
 
         name_text_view.text = HomeToWorkClient.user.toString()
         job_text_view.text = HomeToWorkClient.user?.company.toString()
-        text_name_small.text = HomeToWorkClient.user.toString()
 
-        val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
-        val strDt = simpleDate.format(HomeToWorkClient.user?.regdate)
-        text_regdate.text = strDt
+        text_name_small.text = HomeToWorkClient.user.toString()
 
     }
 
-    private fun initSharesChart() {
+    private fun initSharesUI() {
 
         // TODO rimuovere valore se 0 %
 
@@ -263,7 +262,7 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun initActivityChart() {
+    private fun initActivityUI() {
 
         // TODO marker con info mese selezionato
 
@@ -304,6 +303,14 @@ class ProfileFragment : Fragment() {
 
     }
 
+    private fun initFooterUI() {
+
+        val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
+        val strDt = simpleDate.format(HomeToWorkClient.user?.regdate)
+        text_regdate.text = strDt
+
+    }
+
     private fun selectImageIntent() {
 
         val intent = Intent()
@@ -314,28 +321,37 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun refreshData() {
+    private fun refreshProfile() {
 
         HomeToWorkClient.getInstance().getUserProfile(OnSuccessListener { userProfile ->
-            swipe_refresh_layout.isRefreshing = false
+
             mProfile = userProfile
-            refreshUI()
-            refreshActivityChart()
-            refreshSharesChart()
+            refreshHeader()
+            refreshExp()
+            refreshShares()
+            refreshActivity()
+
+            swipe_refresh_layout.isRefreshing = false
+            loading_view.visibility = View.GONE
+
         }, OnFailureListener {
+
             Toast.makeText(context!!, "Impossibile ottenere informazioni del profilo al momento", Toast.LENGTH_SHORT).show()
             swipe_refresh_layout.isRefreshing = false
+
         })
 
     }
 
-    private fun refreshUI() {
+    private fun refreshHeader() {
 
-        // Avatar
         avatar_view.setLevel(mProfile.exp.level)
         avatar_view_small.setLevel(mProfile.exp.level)
 
-        // Exp
+    }
+
+    private fun refreshExp() {
+
         val anim = ProgressBarAnimation(progress_exp, mExpOld.progress, mProfile.exp.progress)
         anim.duration = 500
         progress_exp.startAnimation(anim)
@@ -345,21 +361,13 @@ class ProfileFragment : Fragment() {
 
         mExpOld = mProfile.exp
 
-        // Condivisioni
+    }
+
+    private fun refreshShares() {
+
         text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
         text_month_shares_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), mProfile.stats.monthShares)
         text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), mProfile.stats.monthSharesAvg)
-
-        // Attività
-        val stats = mProfile.stats
-        text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance / 1000f)
-        // TODO mese più attivo
-        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance / 1000f)
-        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg / 1000f)
-
-    }
-
-    private fun refreshSharesChart() {
 
         val s = SpannableString("${mProfile.stats.shares}\ncondivisioni effettuate")
         s.setSpan(RelativeSizeSpan(2.1f), 0, "${mProfile.stats.shares}".length, 0)
@@ -390,7 +398,13 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun refreshActivityChart() {
+    private fun refreshActivity() {
+
+        val stats = mProfile.stats
+        text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance / 1000f)
+        // TODO mese più attivo
+        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance / 1000f)
+        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg / 1000f)
 
         val colors = ArrayList<Int>()
         colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
@@ -435,17 +449,6 @@ class ProfileFragment : Fragment() {
         val lineData = LineData(dataSet)
         chart_activity.data = lineData
         chart_activity.invalidate()
-
-    }
-
-    private fun logout() {
-
-        SessionManager.clearSession(context!!)
-
-        // Avvio Activity di login
-        val i = Intent(context, SignInActivity::class.java)
-        i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(i)
 
     }
 

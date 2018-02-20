@@ -135,7 +135,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
             return 4
         }
 
-
     }
 
 
