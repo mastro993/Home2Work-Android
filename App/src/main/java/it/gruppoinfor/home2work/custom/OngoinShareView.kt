@@ -32,13 +32,13 @@ class OngoinShareView : FrameLayout {
 
     }
 
-    fun setShare(share: Share) {
+    fun setShare(share: Share?) {
 
-        val guestSize = share.guests.count { guest -> guest.status != Guest.Status.CANCELED }
+        val guestSize = share?.guests?.count { guest -> guest.status != Guest.Status.CANCELED }
 
         text_ongoin_share_guests.text = guestSize.toString()
 
-        if (share.type == Share.Type.DRIVER) {
+        if (share?.type == Share.Type.DRIVER) {
 
             text_ongoing_share_info.setText(R.string.layout_ongoing_share_host)
 

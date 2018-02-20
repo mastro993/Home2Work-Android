@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,6 @@ import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.Share
 import kotlinx.android.synthetic.main.fragment_shares.*
-import kotlinx.android.synthetic.main.layout_share_empty.*
 import java.util.*
 
 class SharesFragment : Fragment() {
@@ -52,28 +50,35 @@ class SharesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loading_view.visibility = View.VISIBLE
+
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
-            refreshData()
+            refreshShares()
         }
 
         shares_recycler_view.isNestedScrollingEnabled = false
 
-    }
+        fab_new_share.setOnClickListener {
 
-    override fun onResume() {
-        super.onResume()
+            MaterialDialog.Builder(context!!)
+                    .title(R.string.fragment_share_dialog_new_title)
+                    .items(R.array.fragment_share_dialog_new_share_options)
+                    .itemsCallback { _, _, position, _ ->
 
-        refreshData()
+                        when (position) {
+                            0 -> createShare()
+                            1 -> joinShare()
+                        }
 
-    }
+                    }
+                    .show()
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        }
 
-        if (isVisibleToUser && mShareList.size == 0) refreshData()
+        refreshShares()
 
-        super.setUserVisibleHint(isVisibleToUser)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -97,27 +102,44 @@ class SharesFragment : Fragment() {
 
     }
 
-    private fun initUI() {
+    private fun refreshShares() {
 
-        swipe_refresh_layout.isRefreshing = false
+        HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
 
-        // Utilizzo dei falg per la visivilità per evitare dei glitch durante il controllo
-        val listVisibility: Int
-        var fabVisibility: Int
-        var newShareVisibility: Int
-        val ongoingShareVisibility: Int
+            mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
+
+            if (mOngoingShare?.host == HomeToWorkClient.user ||
+                    mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
+
+                shares.remove(mOngoingShare!!)
+
+            }
+
+            mShareList.clear()
+            mShareList.addAll(shares)
+
+            refreshUI()
+
+        }, OnFailureListener {
+
+            Toast.makeText(context!!, "Impossibile ottenere lista condivsioni al momento", Toast.LENGTH_SHORT).show()
+
+            swipe_refresh_layout.isRefreshing = false
+            loading_view.visibility = View.GONE
+
+        })
+
+    }
+
+    private fun refreshUI() {
 
         if (mShareList.size == 0) {
 
-            listVisibility = View.GONE
-            fabVisibility = View.GONE
-            newShareVisibility = View.VISIBLE
+            empty_view.visibility = View.VISIBLE
 
         } else {
 
-            listVisibility = View.VISIBLE
-            fabVisibility = View.VISIBLE
-            newShareVisibility = View.GONE
+            empty_view.visibility = View.GONE
 
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
@@ -136,71 +158,58 @@ class SharesFragment : Fragment() {
                 }
             })
             shares_recycler_view.adapter = mSharesAdapter
+
         }
 
-        if (mOngoingShare != null) {
-            fabVisibility = View.GONE
-            newShareVisibility = View.GONE
-            ongoingShareVisibility = View.VISIBLE
+        if (mOngoingShare is Share) {
 
-            ongoing_share_view.setShare(mOngoingShare!!)
+            ongoing_share_view.setShare(mOngoingShare)
+
+            ongoing_share_view.visibility = View.VISIBLE
+            fab_new_share.visibility = View.GONE
+
             (context as MainActivity).setBadge(Const.SHARES_TAB, "In corso")
 
         } else {
-            ongoingShareVisibility = View.GONE
+
+            ongoing_share_view.visibility = View.GONE
+            fab_new_share.visibility = View.VISIBLE
+
             (context as MainActivity).setBadge(Const.SHARES_TAB, "")
+
         }
 
-        // Applico la visibilità solo alla fine dei controlli
-        shares_recycler_view.visibility = listVisibility
-        fab_new_share.visibility = fabVisibility
-        new_share_container_empty.visibility = newShareVisibility
-        ongoing_share_view.visibility = ongoingShareVisibility
-
-        fab_new_share.setOnClickListener {
-            newShareDialog()
-        }
-        new_share_container_empty.setOnClickListener {
-            newShareDialog()
-        }
+        swipe_refresh_layout.isRefreshing = false
+        loading_view.visibility = View.GONE
 
     }
 
-    private fun newShareDialog() {
+    private fun createShare() {
 
-        MaterialDialog.Builder(context!!)
+        val materialDialog = MaterialDialog.Builder(context!!)
                 .title(R.string.fragment_share_dialog_new_title)
-                .items(R.array.fragment_share_dialog_new_share_options)
-                .itemsCallback { _, _, position, _ ->
-                    when (position) {
-                        0 -> createShare()
-                        1 -> joinShare()
-                    }
-                }
+                .content(R.string.fragment_share_dialog_new_content)
+                .contentGravity(GravityEnum.CENTER)
+                .progress(true, 150, false)
                 .show()
 
-    }
+        HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
 
-    private fun refreshData() {
+            materialDialog.dismiss()
 
-        HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
-
-            mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
-
-            if (mOngoingShare?.host == HomeToWorkClient.user ||
-                    mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
-
-                shares.remove(mOngoingShare!!)
-
-            }
-
-            mShareList.clear()
-            mShareList.addAll(shares)
-            initUI()
+            fab_new_share!!.visibility = View.GONE
+            mOngoingShare = share
+            refreshShares()
+            val intent = Intent(activity, OngoingShareActivity::class.java)
+            intent.putExtra(EXTRA_SHARE, share)
+            context!!.startActivity(intent)
 
         }, OnFailureListener {
-            //Toasty.error(getContext(), "Impossibile ottenere lista condivsioni al momento").show();
-            initUI()
+
+            materialDialog.dismiss()
+
+            Toast.makeText(context!!, R.string.fragment_share_dialog_new_error, Toast.LENGTH_SHORT).show()
+
         })
 
     }
@@ -208,12 +217,16 @@ class SharesFragment : Fragment() {
     private fun joinShare() {
 
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+
             ActivityCompat.requestPermissions((context as MainActivity?)!!, arrayOf(Manifest.permission.CAMERA), Const.REQ_CAMERA)
+
         } else {
+
             val intentIntegrator = IntentIntegrator(activity)
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
             intentIntegrator.setOrientationLocked(false)
             intentIntegrator.initiateScan()
+
         }
 
     }
@@ -256,28 +269,5 @@ class SharesFragment : Fragment() {
 
     }
 
-    private fun createShare() {
-
-        val materialDialog = MaterialDialog.Builder(context!!)
-                .title(R.string.fragment_share_dialog_new_title)
-                .content(R.string.fragment_share_dialog_new_content)
-                .contentGravity(GravityEnum.CENTER)
-                .progress(true, 150, true)
-                .show()
-
-        HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
-            materialDialog.dismiss()
-            fab_new_share!!.visibility = View.GONE
-            mOngoingShare = share
-            initUI()
-            val intent = Intent(activity, OngoingShareActivity::class.java)
-            intent.putExtra(EXTRA_SHARE, share)
-            context!!.startActivity(intent)
-        }, OnFailureListener {
-            materialDialog.dismiss()
-            Toast.makeText(context!!, R.string.fragment_share_dialog_new_error, Toast.LENGTH_SHORT).show()
-        })
-
-    }
 
 }

@@ -137,6 +137,7 @@
         <item>Crea nuova condivisione</item>
         <item>Unisciti a condivisione</item>
     </string-array>
+    <string name="fragment_share_empty_view_text">Non hai ancora effettuato nessuna condivisione. Iniziane una nuova premendo sul bottone <b>+</b></string>
 
     <string name="dialog_logout_title">Logout</string>
     <string name="dialog_logout_content">Sei sicuro di voler uscire?</string>

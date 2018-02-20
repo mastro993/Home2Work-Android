@@ -59,9 +59,42 @@
             android:focusableInTouchMode="true"
             android:visibility="gone" />
 
-        <include
-            layout="@layout/layout_share_empty"
-            android:visibility="gone" />
+        <FrameLayout
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/window_background"
+            android:elevation="4dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:padding="48dp"
+                android:text="@string/fragment_share_empty_view_text"
+                android:textAlignment="center"
+                android:textStyle="normal" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/window_background"
+            android:elevation="4dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="@dimen/loading_progressbar_size"
+                android:layout_height="@dimen/loading_progressbar_size"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/light_bg_dark_hint_text" />
+
+        </FrameLayout>
 
     </FrameLayout>
 
