@@ -112,11 +112,14 @@
     <string name="fragment_profile_fuel">%1$s l di carburante risparmiato</string>
     <string name="fragment_profile_emission">%1$s g di CO2 evitati</string>
     <string name="fragment_profile_card_exp">Punteggio utente</string>
-    <string name="fragment_profile_card_exp_value">%,d</string>
+    <string name="fragment_profile_card_exp_value">%,d punti</string>
+    <string name="fragment_profile_card_current_lvl_exp_value">%,d</string>
+    <string name="fragment_profile_card_next_lvl_exp_value">%,d</string>
     <string name="fragment_profile_card_exp_left">%,d punti al prossimo livello</string>
     <string name="fragment_profile_card_shares">Condivisioni</string>
     <string name="fragment_profile_card_shares_distance_value">%.2f km</string>
     <string name="fragment_profile_card_shares_month">Condivisioni completate a %s</string>
+    <string name="fragment_profile_card_shares_month_rank">Classifica condivisioni di %s</string>
     <string name="fragment_profile_card_shares_month_value">%d</string>
     <string name="fragment_profile_card_shares_month_avg">Media condivisioni mensili</string>
     <string name="fragment_profile_card_shares_month_avg_value">%.2f</string>

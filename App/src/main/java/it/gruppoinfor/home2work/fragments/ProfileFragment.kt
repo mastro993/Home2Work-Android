@@ -244,7 +244,7 @@ class ProfileFragment : Fragment() {
 
         // TODO rimuovere valore se 0 %
 
-        chart_shares.setUsePercentValues(true)
+        //chart_shares.setUsePercentValues(true)
         chart_shares.description.isEnabled = false
         chart_shares.isRotationEnabled = false
         chart_shares.setEntryLabelColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
@@ -356,8 +356,9 @@ class ProfileFragment : Fragment() {
         anim.duration = 500
         progress_exp.startAnimation(anim)
 
-        text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), mProfile.exp.value)
-        text_exp_left.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_left), mProfile.exp.expForNextLevel)
+        text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), mProfile.exp.amount)
+        text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), mProfile.exp.currentLvLExp)
+        text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), mProfile.exp.nextLvlExp)
 
         mExpOld = mProfile.exp
 
@@ -381,6 +382,7 @@ class ProfileFragment : Fragment() {
 
         val pieDataSet = PieDataSet(entriesPie, null) // add entries to dataset
         pieDataSet.sliceSpace = 2f
+        pieDataSet.setDrawValues(false)
 
         val colors = ArrayList<Int>()
         colors.add(ContextCompat.getColor(context!!, R.color.colorPrimary))

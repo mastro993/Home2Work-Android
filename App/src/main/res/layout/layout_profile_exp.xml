@@ -4,50 +4,54 @@
     android:layout_height="wrap_content"
     android:background="@color/cardview_light_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:paddingBottom="24dp"
+    android:paddingEnd="26dp"
+    android:paddingStart="26dp"
+    android:paddingTop="24dp">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/text_exp_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/fragment_profile_card_exp"
-            android:textColor="@color/light_bg_dark_primary_text"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/text_exp_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/fragment_profile_card_exp_value"
-            android:textColor="@color/colorAccent"
-            android:textSize="24sp" />
-
-    </RelativeLayout>
+        android:text="@string/fragment_profile_card_exp_value"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp" />
 
     <ProgressBar
         android:id="@+id/progress_exp"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="18dp"
-        android:layout_marginBottom="8dp"
-        android:progress="@null"
+        android:layout_height="12dp"
+        android:layout_marginBottom="12dp"
+        android:progress="40"
         android:progressDrawable="@drawable/progressbar_drawable" />
 
-    <TextView
-        android:id="@+id/text_exp_left"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/fragment_profile_card_exp_left"
-        android:textSize="12sp" />
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical">
 
+        <TextView
+            android:id="@+id/text_current_lvl_exp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="@string/fragment_profile_card_current_lvl_exp_value"
+            android:textColor="@color/light_bg_dark_secondary_text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_next_lvl_exp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/fragment_profile_card_next_lvl_exp_value"
+            android:textColor="@color/light_bg_dark_secondary_text"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
 
 </LinearLayout>

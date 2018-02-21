@@ -13,12 +13,20 @@
         <item name="windowActionBar">true</item>
         <item name="android:windowBackground">@color/window_background</item>
         <item name="colorControlHighlight">@color/colorAccentAlpha26</item>
+        <item name="android:textColorPrimary">@color/light_bg_dark_primary_text</item>
+        <item name="android:textColorPrimaryInverse">@color/dark_bg_light_primary_text</item>
+        <item name="android:textColorSecondary">@color/light_bg_dark_secondary_text</item>
+        <item name="android:textColorSecondaryInverse">@color/dark_bg_light_secondary_text</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <!--<item name="android:statusBarColor">@color/colorPrimary</item>-->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:textColorPrimary">@color/light_bg_dark_primary_text</item>
+        <item name="android:textColorPrimaryInverse">@color/dark_bg_light_primary_text</item>
+        <item name="android:textColorSecondary">@color/light_bg_dark_secondary_text</item>
+        <item name="android:textColorSecondaryInverse">@color/dark_bg_light_secondary_text</item>
     </style>
 
     <style name="LightEditText" parent="Widget.AppCompat.EditText">
