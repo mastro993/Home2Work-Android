@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.ShareGuestsAdapter
+import it.gruppoinfor.home2work.fragments.SharesFragment
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.QREncoder
@@ -310,6 +311,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                 .title("Annulla condivisione")
                 .content("Sei sicuro di voler annullare la condivisione corrente? Tutti i progressi verranno persi")
                 .onPositive { _, _ ->
+
                     val materialDialog = MaterialDialog.Builder(this@OngoingShareActivity)
                             .content(R.string.activity_ongoing_share_cancel_dialog_content)
                             .contentGravity(GravityEnum.CENTER)
@@ -317,13 +319,18 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                             .show()
 
                     HomeToWorkClient.getInstance().cancelShare(mShare, OnSuccessListener {
+
                         materialDialog.dismiss()
                         finish()
+
                     }, OnFailureListener { e ->
+
                         Toast.makeText(this@OngoingShareActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                         e.printStackTrace()
+
                     })
+
                 }
                 .positiveText("Conferma")
                 .negativeText("Indietro")
@@ -337,6 +344,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                 .title("Annulla condivisione")
                 .content("Sei sicuro di voler annullare la condivisione corrente? Tutti i progressi verranno persi")
                 .onPositive { _, _ ->
+
                     val materialDialog = MaterialDialog.Builder(this@OngoingShareActivity)
                             .content(R.string.activity_ongoing_share_leave_dialog_content)
                             .contentGravity(GravityEnum.CENTER)
@@ -345,18 +353,22 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
 
                     HomeToWorkClient.getInstance().leaveShare(mShare, OnSuccessListener {
+
                         materialDialog.dismiss()
                         finish()
+
                     }, OnFailureListener { e ->
+
                         Toast.makeText(this@OngoingShareActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                         e.printStackTrace()
+
                     })
+
                 }
                 .positiveText("Conferma")
                 .negativeText("Indietro")
                 .show()
-
 
     }
 

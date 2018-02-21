@@ -20,6 +20,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
+import com.google.zxing.integration.android.IntentResult
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.OngoingShareActivity
@@ -92,13 +93,18 @@ class SharesFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
 
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (scanResult != null) {
-            val stringData = scanResult.contents.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        if (scanResult is IntentResult) {
+
+            val stringData = scanResult.contents.split(",")
             val shareId = java.lang.Long.parseLong(stringData[0])
             val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
             checkShareCode(shareId, latLng)
-        } else
-            Toast.makeText(context!!, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
+
+        } else if (requestCode == 0) {
+
+            refreshUI()
+
+        }
 
     }
 
@@ -107,6 +113,7 @@ class SharesFragment : Fragment() {
         HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
 
             mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
+
 
             if (mOngoingShare?.host == HomeToWorkClient.user ||
                     mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
@@ -126,6 +133,8 @@ class SharesFragment : Fragment() {
 
             swipe_refresh_layout.isRefreshing = false
             loading_view.visibility = View.GONE
+
+            it.printStackTrace()
 
         })
 
@@ -164,6 +173,13 @@ class SharesFragment : Fragment() {
         if (mOngoingShare is Share) {
 
             ongoing_share_view.setShare(mOngoingShare)
+            ongoing_share_view.setOnClickListener {
+
+                val intent = Intent(context, OngoingShareActivity::class.java)
+                intent.putExtra(Const.EXTRA_SHARE, mOngoingShare)
+                startActivity(intent)
+
+            }
 
             ongoing_share_view.visibility = View.VISIBLE
             fab_new_share.visibility = View.GONE
@@ -268,6 +284,5 @@ class SharesFragment : Fragment() {
         }
 
     }
-
 
 }

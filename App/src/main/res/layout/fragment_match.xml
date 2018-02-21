@@ -6,43 +6,69 @@
     android:background="@color/window_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <android.support.v4.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingBottom="48dp"
-            android:paddingTop="8dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/no_matches_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:text="@string/fragment_matches_empty"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                android:visibility="gone" />
-
-            <android.support.v7.widget.RecyclerView
-                android:background="@color/white"
-                android:elevation="@dimen/cardview_default_elevation"
-                android:id="@+id/matches_recycler_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:visibility="visible" />
+                android:orientation="vertical"
+                android:paddingBottom="48dp"
+                android:paddingTop="8dp">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/no_matches_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:text="@string/fragment_matches_empty"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:background="@color/white"
+                    android:elevation="@dimen/cardview_default_elevation"
+                    android:id="@+id/matches_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:visibility="visible" />
+
+            </LinearLayout>
 
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
+
+        <FrameLayout
+            android:id="@+id/loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/window_background"
+            android:elevation="4dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="@dimen/loading_progressbar_size"
+                android:layout_height="@dimen/loading_progressbar_size"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/light_bg_dark_hint_text" />
+
+        </FrameLayout>
+
+
+    </FrameLayout>
+
+
 
 </android.support.v4.widget.SwipeRefreshLayout>

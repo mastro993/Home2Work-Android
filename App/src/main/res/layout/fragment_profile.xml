@@ -79,7 +79,7 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <include layout="@layout/fragment_profile_header" />
+            <include layout="@layout/layout_profile_header" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -109,15 +109,15 @@
                     android:orientation="vertical"
                     android:paddingBottom="48dp">
 
-                    <include layout="@layout/fragment_profile_exp" />
+                    <include layout="@layout/layout_profile_exp" />
 
                     <include layout="@layout/horizontal_divider" />
 
-                    <include layout="@layout/fragment_profile_shares" />
+                    <include layout="@layout/layout_profile_shares" />
 
                     <include layout="@layout/horizontal_divider" />
 
-                    <include layout="@layout/fragment_profile_activity" />
+                    <include layout="@layout/layout_profile_activity" />
 
                     <include layout="@layout/horizontal_divider" />
 

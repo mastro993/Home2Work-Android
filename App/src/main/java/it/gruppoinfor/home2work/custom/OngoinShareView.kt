@@ -1,13 +1,11 @@
 package it.gruppoinfor.home2work.custom
 
 import android.content.Context
-import android.content.Intent
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.activities.OngoingShareActivity
-import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.Share
 import kotlinx.android.synthetic.main.layout_share_ongoing.view.*
@@ -48,13 +46,10 @@ class OngoinShareView : FrameLayout {
             layout_guests_number.visibility = View.GONE
         }
 
-        val extra = Const.EXTRA_SHARE
+    }
 
-        share_item_ongoing_container.setOnClickListener {
-            val intent = Intent(context, OngoingShareActivity::class.java)
-            intent.putExtra(extra, share)
-            context.startActivity(intent)
-        }
-
+    override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+        super.performClick()
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
     }
 }

@@ -50,10 +50,10 @@ import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Experience
 import it.gruppoinfor.home2workapi.model.UserProfile
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile_activity.*
-import kotlinx.android.synthetic.main.fragment_profile_exp.*
-import kotlinx.android.synthetic.main.fragment_profile_header.*
-import kotlinx.android.synthetic.main.fragment_profile_shares.*
+import kotlinx.android.synthetic.main.layout_profile_activity.*
+import kotlinx.android.synthetic.main.layout_profile_exp.*
+import kotlinx.android.synthetic.main.layout_profile_header.*
+import kotlinx.android.synthetic.main.layout_profile_shares.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

@@ -24,7 +24,7 @@ import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.fragment_match.*
 
-class MatchFragment : Fragment(), ItemClickCallbacks {
+class MatchFragment : Fragment() {
 
     private lateinit var matchesAdapter: MatchAdapter
 
@@ -41,67 +41,33 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loading_view.visibility = View.VISIBLE
+
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
-            refreshData()
+            refreshMatches()
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        refreshData()
+        refreshMatches()
 
     }
 
-    override fun onItemClick(view: View, position: Int) {
-
-        val match = matchList[position]
-        if (match.score == 0) {
-            showMatchUserProfile(position)
-        } else {
-            if (match.isNew) {
-                match.isNew = false
-                matchesAdapter.notifyItemChanged(position)
-                refreshBadgeCounter()
-            }
-            val matchIntent = Intent(context, MatchActivity::class.java)
-            matchIntent.putExtra(Const.EXTRA_MATCH, matchList[position])
-            startActivity(matchIntent)
-        }
-
-    }
-
-    override fun onLongItemClick(view: View, position: Int): Boolean {
-
-        val options = arrayOf("Mostra profilo utente", "Nascondi")
-
-        MaterialDialog.Builder(context!!)
-                .items(*options)
-                .itemsCallback { _, _, p, _ ->
-                    when (p) {
-                        0 -> showMatchUserProfile(position)
-                        1 -> startActivity(Intent(activity, SettingsActivity::class.java))
-                        2 -> showHideMatchDialog(position)
-                    }
-                }
-                .show()
-
-
-        return true
-    }
-
-    private fun refreshData() {
+    private fun refreshMatches() {
 
         HomeToWorkClient.getInstance().getUserMatches(OnSuccessListener { matches ->
+
             matchList = matches
             refreshBadgeCounter()
             refreshList()
-            swipe_refresh_layout.isRefreshing = false
+
         }, OnFailureListener {
+
             swipe_refresh_layout.isRefreshing = false
+            loading_view.visibility = View.GONE
+
+            it.printStackTrace()
+
         })
 
     }
@@ -124,7 +90,49 @@ class MatchFragment : Fragment(), ItemClickCallbacks {
         matchesAdapter = MatchAdapter(context!!, matchList)
         matchesAdapter.notifyDataSetChanged()
         matches_recycler_view.adapter = matchesAdapter
-        matchesAdapter.setItemClickCallbacks(this)
+        matchesAdapter.setItemClickCallbacks(object : ItemClickCallbacks {
+
+            override fun onItemClick(view: View, position: Int) {
+
+                val match = matchList[position]
+                if (match.score == 0) {
+                    showMatchUserProfile(position)
+                } else {
+                    if (match.isNew) {
+                        match.isNew = false
+                        matchesAdapter.notifyItemChanged(position)
+                        refreshBadgeCounter()
+                    }
+                    val matchIntent = Intent(context, MatchActivity::class.java)
+                    matchIntent.putExtra(Const.EXTRA_MATCH, matchList[position])
+                    startActivity(matchIntent)
+                }
+
+            }
+
+            override fun onLongItemClick(view: View, position: Int): Boolean {
+
+                val options = arrayOf("Mostra profilo utente", "Nascondi")
+
+                MaterialDialog.Builder(context!!)
+                        .items(*options)
+                        .itemsCallback { _, _, p, _ ->
+                            when (p) {
+                                0 -> showMatchUserProfile(position)
+                                1 -> startActivity(Intent(activity, SettingsActivity::class.java))
+                                2 -> showHideMatchDialog(position)
+                            }
+                        }
+                        .show()
+
+
+                return true
+            }
+
+        })
+
+        swipe_refresh_layout.isRefreshing = false
+        loading_view.visibility = View.GONE
 
     }
 
