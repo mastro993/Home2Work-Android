@@ -15,6 +15,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
@@ -157,6 +159,8 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
             mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
 
+            Answers.getInstance().logCustom(CustomEvent("Inizio tracking posizione"))
+
             isTracking = true
         }
 
@@ -169,6 +173,8 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         }
 
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+
+        Answers.getInstance().logCustom(CustomEvent("Fine tracking posizione"))
 
         isTracking = false
 

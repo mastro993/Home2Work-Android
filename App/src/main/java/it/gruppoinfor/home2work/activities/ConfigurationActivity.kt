@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -46,7 +48,6 @@ import kotlinx.android.synthetic.main.fragment_conf_home.*
 import kotlinx.android.synthetic.main.fragment_conf_job.*
 import kotlinx.android.synthetic.main.fragment_conf_name.*
 import kotlinx.android.synthetic.main.fragment_conf_propic.*
-import kotlinx.android.synthetic.main.fragment_conf_social.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -78,6 +79,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                 builder.setMessage(R.string.dialog_logout_content)
                 builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
 
+                    Answers.getInstance().logCustom(CustomEvent("Configurazione annullata"))
+
                     SessionManager.clearSession(this@ConfigurationActivity)
                     val intent = Intent(this@ConfigurationActivity, SignInActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -94,6 +97,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
     }
 
     override fun onCompleted(completeButton: View) {
+
+        Answers.getInstance().logCustom(CustomEvent("Configurazione completata"))
 
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
@@ -136,8 +141,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                 2 -> ConfigurationFragmentHome()
                 3 -> ConfigurationFragmentJob()
                 4 -> ConfigurationFragmentAvatar()
-                5 -> ConfigurationFragmentSocial()
-                6 -> ConfigurationFragmentComplete()
+                5 -> ConfigurationFragmentComplete()
                 else -> ConfigurationFragmentStart()
             }
 
@@ -150,7 +154,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun getCount(): Int {
-            return 7
+            return 6
         }
 
         companion object {
@@ -167,6 +171,9 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         }
 
         override fun verifyStep(): VerificationError? {
+
+            Answers.getInstance().logCustom(CustomEvent("Inizio configurazione"))
+
             return null
         }
 
@@ -203,7 +210,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                 return VerificationError(getString(R.string.activity_configuration_surname_error))
             }
 
-            HomeToWorkClient.user?.name = input_name.text.toString().trim { it <= ' ' }
+            HomeToWorkClient.user?.name_ = input_name.text.toString().trim { it <= ' ' }
             HomeToWorkClient.user?.surname = input_surname.text.toString().trim { it <= ' ' }
 
             return null
@@ -219,7 +226,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
         private fun initUI() {
 
-            input_name.setText(HomeToWorkClient.user!!.name)
+            input_name.setText(HomeToWorkClient.user!!.name_)
             input_surname.setText(HomeToWorkClient.user!!.surname)
 
         }
@@ -562,42 +569,6 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
             callback.goToPrevStep()
 
         }
-    }
-
-    class ConfigurationFragmentSocial : Fragment(), Step {
-
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-            return inflater.inflate(R.layout.fragment_conf_social, container, false)
-        }
-
-        override fun verifyStep(): VerificationError? {
-
-            if (!facebookInput.text.isEmpty())
-                HomeToWorkClient.user?.facebook = facebookInput.text.toString()
-
-            if (!twitterInput.text.isEmpty())
-                HomeToWorkClient.user?.twitter = twitterInput.text.toString()
-
-            if (!telegramInput.text.isEmpty())
-                HomeToWorkClient.user?.telegram = telegramInput.text.toString()
-
-            return if (facebookInput.text.isEmpty() && twitterInput!!.text.isEmpty() && telegramInput!!.text.isEmpty()) {
-                VerificationError("Inserisci almeno un metodo di contatto")
-            } else null
-
-        }
-
-        override fun onSelected() {
-
-        }
-
-        override fun onError(error: VerificationError) {
-
-            //Toasty.warning(context!!, error.errorMessage).show()
-
-        }
-
     }
 
     class ConfigurationFragmentComplete : Fragment(), BlockingStep {

@@ -61,7 +61,7 @@ class HomeToWorkClient private constructor() {
                             user = userResponse.body()
                             loginCallback.onLoginSuccess(user!!)
                         }
-                        else -> loginCallback.onLoginError()
+                        else -> loginCallback.onError(null)
                     }
                 }, { loginCallback.onError(it) })
 

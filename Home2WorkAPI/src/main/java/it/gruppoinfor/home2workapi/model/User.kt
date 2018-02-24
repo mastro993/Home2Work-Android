@@ -3,12 +3,13 @@ package it.gruppoinfor.home2workapi.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.stfalcon.chatkit.commons.models.IUser
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import java.io.Serializable
 import java.util.*
 
 
-class User : Serializable {
+class User : Serializable, IUser {
 
     @SerializedName("UserID")
     @Expose
@@ -21,7 +22,7 @@ class User : Serializable {
     var token: String = ""
     @SerializedName("Name")
     @Expose
-    var name: String = ""
+    var name_: String = ""
     @SerializedName("Surname")
     @Expose
     var surname: String = ""
@@ -37,15 +38,6 @@ class User : Serializable {
     @SerializedName("Configured")
     @Expose
     var isConfigured: Boolean = false
-    @SerializedName("Facebook")
-    @Expose
-    var facebook: String = ""
-    @SerializedName("Twitter")
-    @Expose
-    var twitter: String = ""
-    @SerializedName("Telegram")
-    @Expose
-    var telegram: String = ""
     @SerializedName("Regdate")
     @Expose
     var regdate: Date = Date()
@@ -54,7 +46,7 @@ class User : Serializable {
         get() = "${HomeToWorkClient.AVATAR_BASE_URL}$id.jpg"
 
     private val formattedName: String
-        get() = "$name $surname"
+        get() = "$name_ $surname"
 
     override fun toString(): String {
         return formattedName
@@ -62,9 +54,28 @@ class User : Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (other is User) {
-            val user = other as User?
-            return id == user!!.id
+            return id == other.id
         }
         return false
     }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    // Metodi interfaccia Chat Kit
+
+    override fun getId(): String {
+        return id.toString()
+    }
+
+    override fun getName(): String {
+        return formattedName
+    }
+
+    override fun getAvatar(): String {
+        return avatarURL
+    }
+
+
 }

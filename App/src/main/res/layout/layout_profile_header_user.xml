@@ -34,7 +34,22 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
         android:text="Azienda"
-        android:textColor="@color/dark_bg_light_secondary_text"
-        android:textSize="12sp" />
+        android:textColor="@color/dark_bg_light_secondary_text" />
+
+    <Button
+        android:id="@+id/button_send_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/job_text_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_button_send_message"
+        android:clickable="true"
+        android:focusable="true"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_mail_white"
+        android:includeFontPadding="false"
+        android:text="Invia un messaggio"
+        android:textColor="@color/dark_bg_light_primary_text" />
 
 </RelativeLayout>

@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.pixplicity.easyprefs.library.Prefs
@@ -62,7 +64,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     override fun onPageSelected(position: Int) {
 
-        if (position == 3)
+        if (position == Const.PROFILE_TAB)
             supportActionBar?.hide()
         else
             supportActionBar?.show()
@@ -75,10 +77,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     private fun initUI() {
 
-        val homeTab = AHBottomNavigationItem(R.string.activity_main_tab_home, R.drawable.ic_home, R.color.colorPrimaryDark)
-        val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_match, R.color.colorPrimary)
-        val sharesTab = AHBottomNavigationItem(R.string.activity_main_tab_shares, R.drawable.ic_car_side, R.color.light_blue_300)
-        val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_user, R.color.colorAccent)
+        val homeTab = AHBottomNavigationItem(R.string.activity_main_tab_home, R.drawable.ic_nav_home, R.color.colorPrimaryDark)
+        val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_nav_match, R.color.colorPrimary)
+        val sharesTab = AHBottomNavigationItem(R.string.activity_main_tab_shares, R.drawable.ic_nav_shares, R.color.light_blue_300)
+        val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_nav_profile, R.color.colorAccent)
 
         bottom_navigation.removeAllItems()
         bottom_navigation.addItem(homeTab)
@@ -132,7 +134,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
         override fun getCount(): Int {
 
-            return 4
+            return 5
         }
 
     }

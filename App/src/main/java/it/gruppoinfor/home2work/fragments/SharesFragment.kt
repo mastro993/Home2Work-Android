@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.fragments
 
-
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,6 +15,8 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -66,6 +67,7 @@ class SharesFragment : Fragment() {
             MaterialDialog.Builder(context!!)
                     .title(R.string.fragment_share_dialog_new_title)
                     .items(R.array.fragment_share_dialog_new_share_options)
+                    .itemsColor(ContextCompat.getColor(context!!, R.color.light_bg_dark_secondary_text))
                     .itemsCallback { _, _, position, _ ->
 
                         when (position) {
@@ -211,6 +213,8 @@ class SharesFragment : Fragment() {
 
         HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
 
+            Answers.getInstance().logCustom(CustomEvent("Nuova condivisione"))
+
             materialDialog.dismiss()
 
             fab_new_share!!.visibility = View.GONE
@@ -268,6 +272,9 @@ class SharesFragment : Fragment() {
                         materialDialog.dismiss()
                     }
                     else -> HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, OnSuccessListener { share ->
+
+                        Answers.getInstance().logCustom(CustomEvent("Unione a condivisione"))
+
                         materialDialog.dismiss()
                         val intent = Intent(activity, OngoingShareActivity::class.java)
                         intent.putExtra(EXTRA_SHARE, share)

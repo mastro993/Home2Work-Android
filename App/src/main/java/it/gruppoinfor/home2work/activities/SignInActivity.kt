@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.LoginEvent
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.user.SessionManager
@@ -16,6 +19,7 @@ import it.gruppoinfor.home2workapi.interfaces.LoginCallback
 import it.gruppoinfor.home2workapi.model.User
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import java.net.UnknownHostException
+
 
 class SignInActivity : AppCompatActivity(), LoginCallback {
 
@@ -65,6 +69,15 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
     override fun onLoginSuccess(user: User) {
 
+        // Crashlytics log
+        Answers.getInstance().logLogin(LoginEvent()
+                .putMethod("Form")
+                .putSuccess(true))
+
+        Crashlytics.setUserIdentifier(user.id.toString())
+        Crashlytics.setUserEmail(user.email)
+        Crashlytics.setUserName(user.toString())
+
         Prefs.putString(PREFS_EMAIL, user.email)
 
         SessionManager.storeSession(this, HomeToWorkClient.user)
@@ -87,12 +100,13 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
     }
 
-    override fun onLoginError() {
-        enableLogin()
-        Toast.makeText(this@SignInActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
-    }
+    override fun onError(throwable: Throwable?) {
 
-    override fun onError(throwable: Throwable) {
+        // Crashlytics log
+        Answers.getInstance().logLogin(LoginEvent()
+                .putMethod("Form")
+                .putSuccess(false))
+
         enableLogin()
         if (throwable is UnknownHostException) {
             Toast.makeText(this@SignInActivity, R.string.activity_signin_no_internet, Toast.LENGTH_SHORT).show()

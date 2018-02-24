@@ -5,18 +5,18 @@
     <item
         android:id="@+id/action_edit_profile"
         android:title="Modifica profilo"
-        app:actionLayout="@layout/layout_message_icon"
+        app:actionLayout="@layout/custom_inbox_icon"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_settings"
         android:title="Impostazioni"
-        app:actionLayout="@layout/layout_message_icon"
+        app:actionLayout="@layout/custom_inbox_icon"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_logout"
         android:title="Esci"
-        app:actionLayout="@layout/layout_message_icon"
+        app:actionLayout="@layout/custom_inbox_icon"
         app:showAsAction="never" />
 
 </menu>

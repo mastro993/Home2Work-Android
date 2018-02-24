@@ -6,7 +6,7 @@
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter"
         android:title="Filtra matches"
+        android:visible="false"
         app:showAsAction="ifRoom" />
-
 
 </menu>

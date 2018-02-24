@@ -19,8 +19,7 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingBottom="48dp"
-                android:paddingTop="8dp">
+                android:paddingBottom="48dp">
 
                 <TextView
                     android:id="@+id/no_matches_view"

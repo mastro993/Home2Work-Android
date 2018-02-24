@@ -2,6 +2,9 @@ package it.gruppoinfor.home2work.user
 
 import android.content.Context
 import android.content.Intent
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.LoginEvent
 import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
@@ -9,6 +12,7 @@ import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback
 import it.gruppoinfor.home2workapi.model.User
+import java.net.UnknownHostException
 
 
 /**
@@ -56,7 +60,18 @@ object SessionManager {
 
         HomeToWorkClient.getInstance().login(email, token, true, object : LoginCallback {
             override fun onLoginSuccess(user: User) {
+
+                // Crashlytics log
+                Answers.getInstance().logLogin(LoginEvent()
+                        .putMethod("Token")
+                        .putSuccess(true))
+
+                Crashlytics.setUserIdentifier(user.id.toString())
+                Crashlytics.setUserEmail(user.email)
+                Crashlytics.setUserName(user.toString())
+
                 callback.onValidSession(user)
+
             }
 
             override fun onInvalidCredential() {
@@ -64,12 +79,19 @@ object SessionManager {
                 callback.onInvalidSession(Const.CODE_INVALID_CREDENTIALS, null)
             }
 
-            override fun onLoginError() {
-                callback.onInvalidSession(Const.CODE_LOGIN_ERROR, null)
-            }
+            override fun onError(throwable: Throwable?) {
 
-            override fun onError(throwable: Throwable) {
-                callback.onInvalidSession(Const.CODE_SERVER_ERROR, throwable)
+                // Crashlytics log
+                Answers.getInstance().logLogin(LoginEvent()
+                        .putMethod("Token")
+                        .putSuccess(false))
+
+                if (throwable is UnknownHostException) {
+                    callback.onInvalidSession(Const.CODE_SERVER_ERROR, throwable)
+                } else {
+                    callback.onInvalidSession(Const.CODE_LOGIN_ERROR, null)
+                }
+
             }
         })
     }

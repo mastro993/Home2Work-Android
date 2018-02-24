@@ -13,14 +13,11 @@ import android.support.design.widget.AppBarLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
@@ -36,13 +33,10 @@ import com.github.mikephil.charting.utils.EntryXComparator
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.activities.EditProfileActivity
 import it.gruppoinfor.home2work.activities.MainActivity
 import it.gruppoinfor.home2work.activities.SettingsActivity
-import it.gruppoinfor.home2work.activities.SignInActivity
 import it.gruppoinfor.home2work.custom.AppBarStateChangeListener
 import it.gruppoinfor.home2work.custom.ProgressBarAnimation
-import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const.REQ_CODE_AVATAR
 import it.gruppoinfor.home2work.utils.Const.REQ_CODE_EXTERNAL_STORAGE
 import it.gruppoinfor.home2work.utils.ImageUtils
@@ -116,34 +110,9 @@ class ProfileFragment : Fragment() {
 
             }
         })
-        profile_options_button.setOnClickListener {
 
-            MaterialDialog.Builder(context!!)
-                    .items(*context!!.resources.getStringArray(R.array.fragment_profile_options))
-                    .itemsCallback { _, _, position, _ ->
-                        when (position) {
-                            0 -> startActivity(Intent(activity, EditProfileActivity::class.java))
-                            1 -> startActivity(Intent(activity, SettingsActivity::class.java))
-                            2 -> {
-                                val builder = AlertDialog.Builder(context!!)
-                                builder.setTitle(R.string.dialog_logout_title)
-                                builder.setMessage(R.string.dialog_logout_content)
-                                builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
+        profile_options_button.setOnClickListener { startActivity(Intent(activity, SettingsActivity::class.java)) }
 
-                                    SessionManager.clearSession(context!!)
-                                    val i = Intent(context, SignInActivity::class.java)
-                                    i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    startActivity(i)
-
-                                }
-                                builder.setNegativeButton(R.string.dialog_logout_decline, null)
-                                builder.show()
-                            }
-                        }
-                    }
-                    .show()
-
-        }
         swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
             refreshProfile()
@@ -211,6 +180,11 @@ class ProfileFragment : Fragment() {
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_profile, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun initHeaderUI() {

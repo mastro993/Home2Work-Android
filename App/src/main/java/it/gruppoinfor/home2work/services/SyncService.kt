@@ -6,12 +6,14 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.IBinder
 import android.util.Log
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.database.RoutePointRepo
-import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.RouteLocation
 import it.gruppoinfor.home2workapi.model.User
@@ -60,9 +62,15 @@ class SyncService : Service() {
 
     private fun syncRoutePoints(routeLocationList: List<RouteLocation>) {
 
-        HomeToWorkClient.getInstance().uploadLocation(mUser.id, routeLocationList, OnSuccessListener
-        { mRoutePointRepo.deleteAllUserLocations(mUser.id) }
-                , OnFailureListener { e -> Log.e(this::class.java.name, "Sincronizzazione fallita", Throwable(e)) })
+        HomeToWorkClient.getInstance().uploadLocation(mUser.id, routeLocationList,
+                OnSuccessListener {
+
+                    Answers.getInstance().logCustom(CustomEvent("Sincronizzazione posizioni"))
+
+                    mRoutePointRepo.deleteAllUserLocations(mUser.id)
+
+                },
+                OnFailureListener { e -> Log.e(this::class.java.name, "Sincronizzazione fallita", Throwable(e)) })
 
     }
 

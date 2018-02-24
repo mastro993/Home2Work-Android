@@ -6,6 +6,7 @@
     <string name="activity_main_tab_matches">Matches</string>
     <string name="activity_main_tab_profile">Profilo</string>
     <string name="activity_main_tab_shares">Condivisioni</string>
+    <string name="activity_main_tab_messages">Messaggi</string>
 
     <string name="activity_configuration_title">Configurazione</string>
     <string name="activity_configuration_start">Benvenuto! \n\nUna breve introduzione ti guiderà nella configurazione dell\'applicazione.</string>

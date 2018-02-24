@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/inbox_icon_container"
     style="@android:style/Widget.ActionButton"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
     android:layout_gravity="center"
     android:clickable="true"
     android:gravity="center"
+    android:clipToPadding="false"
     android:orientation="vertical">
 
     <ImageView
@@ -14,26 +16,23 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:gravity="center"
-        android:src="@drawable/ic_mail"
+        android:src="@drawable/ic_menu_messages"
         android:tint="@color/white" />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/messages_counter_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@id/messages_image_view"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignEnd="@id/messages_image_view"
         android:layout_alignTop="@id/messages_image_view"
-        android:layout_marginRight="-3dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginEnd="-5dp"
+        android:layout_marginTop="-5dp"
         android:background="@drawable/shape_rounder_square"
         android:gravity="center"
-        android:minWidth="17sp"
-        android:paddingBottom="2dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
-        android:paddingTop="1dp"
-        android:text="@null"
+        android:includeFontPadding="false"
+        android:text="3"
         android:textColor="#ffffffff"
-        android:textSize="11sp"
+        android:textSize="12sp"
         android:textStyle="bold" />
+
 </RelativeLayout>

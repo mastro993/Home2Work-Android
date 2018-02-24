@@ -21,13 +21,15 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
+import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.adapters.ShareGuestsAdapter
-import it.gruppoinfor.home2work.fragments.SharesFragment
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.QREncoder
@@ -298,8 +300,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
         job_text_view.text = mShare.host.company.toString()
 
         avatar_view.setAvatarURL(mShare.host.avatarURL)
-        // TODO mettere immagine normale senza avatar view
-        //avatarView.setLevel(mShare.getHost().getExp());
+        avatar_view.setLevel(null)
 
         button_complete_share.isEnabled = true
 
@@ -319,6 +320,9 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                             .show()
 
                     HomeToWorkClient.getInstance().cancelShare(mShare, OnSuccessListener {
+
+                        Answers.getInstance().logCustom(CustomEvent("Condivisione annullata"))
+
 
                         materialDialog.dismiss()
                         finish()
@@ -353,6 +357,8 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
 
                     HomeToWorkClient.getInstance().leaveShare(mShare, OnSuccessListener {
+
+                        Answers.getInstance().logCustom(CustomEvent("Unione a ondivisione annullata"))
 
                         materialDialog.dismiss()
                         finish()
@@ -410,6 +416,18 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
                     }
                     else -> HomeToWorkClient.getInstance().completeShare(mShare, endLocation, OnSuccessListener {
+
+                        val userId = HomeToWorkClient.user?.id
+                        if (userId == mShare.host.id) {
+                            val sharedDistance = it.guests.sumBy { it.distance } / 1000f
+                            Answers.getInstance().logCustom(CustomEvent("Condivisione conclusa")
+                                    .putCustomAttribute("Distanza totale condivisa", sharedDistance))
+                        } else {
+                            val sharedDistance = it.guests.last { it.user.id == userId }.distance / 1000f
+                            Answers.getInstance().logCustom(CustomEvent("Condivisione completata")
+                                    .putCustomAttribute("Distanza condivisa", sharedDistance))
+                        }
+
                         loadingDialog!!.dismiss()
                         finish()
                         Toast.makeText(this, R.string.activity_ongoing_share_check_success, Toast.LENGTH_SHORT).show()

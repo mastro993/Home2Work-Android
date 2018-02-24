@@ -97,45 +97,53 @@ class AvatarView : RelativeLayout {
 
     fun setLevel(level: Int?) {
 
-        if (level == null) return
+        if (level == null) {
 
-        val lvl = Math.min(100, level)
+            level_container.visibility = View.GONE
 
-        val animator = ValueAnimator.ofInt(mLastLevel, lvl)
-        animator.duration = animationTime
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.addUpdateListener { anim -> exp_level.text = anim.animatedValue.toString() }
-        animator.start()
-
-        levelColor = getLevelColor(lvl)
-        val textShader = if (lvl == 100) {
-            LinearGradient(
-                    0f, 0f, 0f, 60f,
-                    ContextCompat.getColor(context, R.color.colorAccent),
-                    ContextCompat.getColor(context, R.color.colorPrimary),
-                    Shader.TileMode.CLAMP)
         } else {
-            LinearGradient(
-                    0f, 0f, 0f, 60f,
-                    ContextCompat.getColor(context, levelColor),
-                    ContextCompat.getColor(context, levelColor),
-                    Shader.TileMode.CLAMP)
+
+            level_container.visibility = View.VISIBLE
+
+            val lvl = Math.min(100, level)
+
+            val animator = ValueAnimator.ofInt(mLastLevel, lvl)
+            animator.duration = animationTime
+            animator.interpolator = AccelerateDecelerateInterpolator()
+            animator.addUpdateListener { anim -> exp_level.text = anim.animatedValue.toString() }
+            animator.start()
+
+            levelColor = getLevelColor(lvl)
+            val textShader = if (lvl == 100) {
+                LinearGradient(
+                        0f, 0f, 0f, 60f,
+                        ContextCompat.getColor(context, R.color.colorAccent),
+                        ContextCompat.getColor(context, R.color.colorPrimary),
+                        Shader.TileMode.CLAMP)
+            } else {
+                LinearGradient(
+                        0f, 0f, 0f, 60f,
+                        ContextCompat.getColor(context, levelColor),
+                        ContextCompat.getColor(context, levelColor),
+                        Shader.TileMode.CLAMP)
+            }
+
+            exp_level.paint.shader = textShader
+
+            if (mLastLevel < lvl) {
+                val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
+                        level_container,
+                        PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                        PropertyValuesHolder.ofFloat("scaleY", 1.2f))
+                scaleDown.duration = 250
+                scaleDown.repeatCount = 1
+                scaleDown.repeatMode = ObjectAnimator.REVERSE
+                scaleDown.start()
+            }
+
+            mLastLevel = lvl
+
         }
-
-        exp_level.paint.shader = textShader
-
-        if (mLastLevel < lvl) {
-            val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
-                    level_container,
-                    PropertyValuesHolder.ofFloat("scaleX", 1.2f),
-                    PropertyValuesHolder.ofFloat("scaleY", 1.2f))
-            scaleDown.duration = 250
-            scaleDown.repeatCount = 1
-            scaleDown.repeatMode = ObjectAnimator.REVERSE
-            scaleDown.start()
-        }
-
-        mLastLevel = lvl
 
     }
 

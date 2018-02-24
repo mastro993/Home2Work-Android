@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
@@ -51,6 +49,11 @@ class MatchFragment : Fragment() {
 
         refreshMatches()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_match, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun refreshMatches() {

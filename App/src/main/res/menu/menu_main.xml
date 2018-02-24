@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:mContext="com.infor.fleetupht.view.ProfileActivity">
     <item
         android:id="@+id/action_messages"
         android:icon="@drawable/ic_menu_messages"
         android:orderInCategory="100"
+        app:actionLayout="@layout/custom_inbox_icon"
         android:title="Messaggi"
-        app:actionLayout="@layout/action_view_inbox_icon"
         app:showAsAction="always" />
-
 </menu>

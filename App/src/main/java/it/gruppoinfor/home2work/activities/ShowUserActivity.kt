@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -33,7 +34,7 @@ import it.gruppoinfor.home2workapi.model.User
 import it.gruppoinfor.home2workapi.model.UserProfile
 import kotlinx.android.synthetic.main.activity_show_user.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
-import kotlinx.android.synthetic.main.layout_profile_header.*
+import kotlinx.android.synthetic.main.layout_profile_header_user.*
 import kotlinx.android.synthetic.main.layout_profile_shares.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -54,12 +55,16 @@ class ShowUserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         if (intent.hasExtra(Const.EXTRA_USER)) {
+
             mUser = intent.getSerializableExtra(Const.EXTRA_USER) as User
             initUI()
             refreshProfile()
+
         } else {
+
             Toast.makeText(this, R.string.activity_show_user_error, Toast.LENGTH_SHORT).show()
             finish()
+
         }
 
     }
@@ -124,6 +129,8 @@ class ShowUserActivity : AppCompatActivity() {
         initSharesUI()
         initActivityUI()
         initFooterUI()
+
+        button_send_message.setOnClickListener { startActivity(Intent(this, InboxActivity::class.java)) }
 
     }
 
@@ -235,6 +242,7 @@ class ShowUserActivity : AppCompatActivity() {
 
         val pieDataSet = PieDataSet(entriesPie, null) // add entries to dataset
         pieDataSet.sliceSpace = 2f
+        pieDataSet.setDrawValues(false)
 
         val colors = ArrayList<Int>()
         colors.add(ContextCompat.getColor(this, R.color.colorPrimary))

@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -8,8 +9,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
+import com.crashlytics.android.Crashlytics
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -18,6 +21,8 @@ class SettingsActivity : AppCompatActivity() {
 
     private val trackingSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
         get() = CompoundButton.OnCheckedChangeListener { _, b ->
+
+            Crashlytics.setBool("Tracking attivo", b)
 
             if (!b) {
                 val builder = AlertDialog.Builder(this)
@@ -43,6 +48,8 @@ class SettingsActivity : AppCompatActivity() {
         get() = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
 
+                Crashlytics.setBool("Data sync", i != 1)
+
                 Prefs.putBoolean(Const.PREF_SYNC_WITH_DATA, i != 1)
 
             }
@@ -55,9 +62,9 @@ class SettingsActivity : AppCompatActivity() {
     private val notificationSwitchCheckedChangeListener: CompoundButton.OnCheckedChangeListener
         get() = CompoundButton.OnCheckedChangeListener { _, b ->
 
+            Crashlytics.setBool("Notifiche abilitate", b)
+
             Prefs.putBoolean(Const.PREF_NOTIFICATIONS, b)
-            check_notifications_match.isEnabled = b
-            check_notifications_news.isEnabled = b
 
         }
 
@@ -106,14 +113,22 @@ class SettingsActivity : AppCompatActivity() {
         switch_notifications.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS, true)
         switch_notifications.setOnCheckedChangeListener(notificationSwitchCheckedChangeListener)
 
-        check_notifications_news.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS_NEWS, true)
-        check_notifications_news.setOnCheckedChangeListener { _, b ->
-            Prefs.putBoolean(Const.PREF_NOTIFICATIONS_NEWS, b)
-        }
+        button_logout.setOnClickListener {
 
-        check_notifications_match.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS_MATCHES, true)
-        check_notifications_match.setOnCheckedChangeListener { _, b ->
-            Prefs.putBoolean(Const.PREF_NOTIFICATIONS_MATCHES, b)
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(R.string.dialog_logout_title)
+            builder.setMessage(R.string.dialog_logout_content)
+            builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
+
+                SessionManager.clearSession(this)
+                val i = Intent(this, SignInActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(i)
+
+            }
+            builder.setNegativeButton(R.string.dialog_logout_decline, null)
+            builder.show()
+
         }
 
     }

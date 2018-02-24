@@ -2,15 +2,19 @@ package it.gruppoinfor.home2work
 
 import android.app.Application
 import android.content.ContextWrapper
+import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
 import com.pixplicity.easyprefs.library.Prefs
 import com.squareup.leakcanary.LeakCanary
+import io.fabric.sdk.android.Fabric
 
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Fabric.with(this, Crashlytics())
 
         initLeakCanary() // LeakCanary
         initStetho() // Stetho

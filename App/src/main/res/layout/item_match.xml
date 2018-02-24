@@ -45,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:lines="1"
                 android:text="Annamaria Della Ragione"
-                android:textColor="@color/light_bg_dark_primary_text" />
+                android:textColor="@color/light_bg_dark_primary_text"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/match_user_job_view"
@@ -53,8 +54,7 @@
                 android:layout_height="wrap_content"
                 android:lines="1"
                 android:text="Azienda A"
-                android:textColor="@color/colorAccent"
-                android:textSize="12sp" />
+                android:textColor="@color/colorAccent" />
 
             <TextView
                 android:id="@+id/home_view"
@@ -62,10 +62,10 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="4dp"
                 android:drawableStart="@drawable/ic_match_item_location"
-                android:lines="1"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
                 android:text="Città"
-                android:textColor="@color/light_bg_dark_secondary_text"
-                android:textSize="12sp" />
+                android:textColor="@color/light_bg_dark_secondary_text" />
 
         </LinearLayout>
 
