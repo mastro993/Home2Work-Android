@@ -10,16 +10,16 @@ import java.util.*
 
 class Message : IMessage {
 
-    @SerializedName("mId")
+    @SerializedName("Id")
     @Expose
     var messageId: String = ""
-    @SerializedName("text")
+    @SerializedName("Text")
     @Expose
     var messageText: String = ""
-    @SerializedName("date")
+    @SerializedName("Date")
     @Expose
     var messageDate: Date = Date()
-    @SerializedName("user")
+    @SerializedName("User")
     @Expose
     var messageUser: User = User()
 
