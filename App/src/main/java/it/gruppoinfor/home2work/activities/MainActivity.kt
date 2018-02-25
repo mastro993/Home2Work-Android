@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     }
 
-    fun setBadge(itemPosition: Int, title: String) {
+    fun setNavigationBadge(itemPosition: Int, title: String) {
 
         bottom_navigation.setNotification(title, itemPosition)
 

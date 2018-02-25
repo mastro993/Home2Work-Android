@@ -1,19 +1,13 @@
 package it.gruppoinfor.home2work.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-import android.widget.RelativeLayout
-import android.widget.TextView
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.activities.InboxActivity
 import it.gruppoinfor.home2work.custom.InboxIcon
 
 
 class HomeFragment : Fragment() {
-
-    private var inboxIcon: InboxIcon? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +32,11 @@ class HomeFragment : Fragment() {
         val item = menu.findItem(R.id.action_messages)
         inboxIcon = item.actionView as InboxIcon
 
-        inboxIcon?.setCount(45)
+        inboxIcon.setCount(4)
+    }
+
+    companion object {
+        lateinit var inboxIcon: InboxIcon
     }
 
 

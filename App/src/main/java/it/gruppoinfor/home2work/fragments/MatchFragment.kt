@@ -142,7 +142,7 @@ class MatchFragment : Fragment() {
     protected fun refreshBadgeCounter() {
         val newMatches = matchList.count { it.isNew }
 
-        (context as MainActivity).setBadge(Const.MATCHES_TAB, if (newMatches > 0) newMatches.toString() else "")
+        (context as MainActivity).setNavigationBadge(Const.MATCHES_TAB, if (newMatches > 0) newMatches.toString() else "")
     }
 
     private fun showMatchUserProfile(position: Int) {

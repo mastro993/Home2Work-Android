@@ -186,14 +186,14 @@ class SharesFragment : Fragment() {
             ongoing_share_view.visibility = View.VISIBLE
             fab_new_share.visibility = View.GONE
 
-            (context as MainActivity).setBadge(Const.SHARES_TAB, "In corso")
+            (context as MainActivity).setNavigationBadge(Const.SHARES_TAB, "In corso")
 
         } else {
 
             ongoing_share_view.visibility = View.GONE
             fab_new_share.visibility = View.VISIBLE
 
-            (context as MainActivity).setBadge(Const.SHARES_TAB, "")
+            (context as MainActivity).setNavigationBadge(Const.SHARES_TAB, "")
 
         }
 
