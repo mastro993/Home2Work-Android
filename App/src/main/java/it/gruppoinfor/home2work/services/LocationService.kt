@@ -19,14 +19,15 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
+import it.gruppoinfor.home2work.App
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.database.RoutePointEntity
-import it.gruppoinfor.home2work.database.RoutePointRepo
+import it.gruppoinfor.home2work.model.UserLocation
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.User
 import java.util.concurrent.TimeUnit
+
 
 class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
@@ -182,14 +183,15 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
     private fun saveLocation(location: Location) {
 
-        val routePointEntity = RoutePointEntity()
-        val latLng = LatLng(location.latitude, location.longitude)
-        routePointEntity.latLng = latLng
-        routePointEntity.timestamp = System.currentTimeMillis() / 1000L
-        routePointEntity.userId = mUser.id
+        val userLocationBox = App.boxStore.boxFor(UserLocation::class.java)
 
-        val routePointRepo = RoutePointRepo(this)
-        routePointRepo.insert(routePointEntity)
+        val userLocation = UserLocation()
+        val latLng = LatLng(location.latitude, location.longitude)
+        userLocation.latLng = latLng
+        userLocation.timestamp = System.currentTimeMillis() / 1000L
+        userLocation.userId = mUser.id
+
+        userLocationBox.put(userLocation)
 
     }
 

@@ -8,7 +8,7 @@ import java.util.*
 
 class Match : Serializable {
 
-    @SerializedName("MatchID")
+    @SerializedName("MatchId")
     @Expose
     var matchID: Long = 0
     @SerializedName("Guest")

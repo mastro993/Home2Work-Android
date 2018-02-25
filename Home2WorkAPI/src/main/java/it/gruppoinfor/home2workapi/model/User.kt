@@ -11,7 +11,7 @@ import java.util.*
 
 class User : Serializable, IUser {
 
-    @SerializedName("UserID")
+    @SerializedName("UserId")
     @Expose
     var id: Long = 0
     @SerializedName("Email")

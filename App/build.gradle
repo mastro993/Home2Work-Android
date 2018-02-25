@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
+apply plugin: 'io.objectbox'
 
 android {
     compileSdkVersion 27
@@ -18,6 +20,7 @@ android {
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
+            multiDexEnabled true
         }
         release {
             minifyEnabled true
@@ -56,9 +59,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'org.jetbrains:annotations:15.0'
 
+    // ObjectBox Database
+    compile "io.objectbox:objectbox-android:$objectboxVersion"
+    compile "io.objectbox:objectbox-kotlin:$objectboxVersion"
+    kapt "io.objectbox:objectbox-processor:$objectboxVersion"
+
     // Room Database
-    implementation 'android.arch.persistence.room:runtime:1.0.0'
-    kapt "android.arch.persistence.room:compiler:1.0.0"
+    //implementation 'android.arch.persistence.room:runtime:1.0.0'
+    //kapt "android.arch.persistence.room:compiler:1.0.0"
 
     // RXJava
     implementation 'android.arch.persistence.room:rxjava2:1.0.0'
@@ -113,7 +121,4 @@ dependencies {
 
 
 apply plugin: 'com.google.gms.google-services'
-repositories {
-    mavenCentral()
-}
 apply plugin: 'kotlin-android-extensions'

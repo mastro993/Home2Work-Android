@@ -11,7 +11,9 @@ import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.pixplicity.easyprefs.library.Prefs
-import it.gruppoinfor.home2work.database.RoutePointRepo
+import it.gruppoinfor.home2work.App
+import it.gruppoinfor.home2work.model.UserLocation
+import it.gruppoinfor.home2work.model.UserLocation_
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
@@ -23,13 +25,10 @@ import java.util.*
 class SyncService : Service() {
 
     private val routeLocations = ArrayList<RouteLocation>()
-    private lateinit var mRoutePointRepo: RoutePointRepo
     private lateinit var mUser: User
 
     override fun onCreate() {
         super.onCreate()
-
-        mRoutePointRepo = RoutePointRepo(this)
 
         SessionManager.loadSession(this, object : SessionManager.SessionCallback {
             override fun onValidSession(user: User) {
@@ -46,17 +45,18 @@ class SyncService : Service() {
 
     fun sync() {
 
-        mRoutePointRepo.getAllUserLocations(
-                OnSuccessListener { routePointEntities ->
-                    for (routePointEntity in routePointEntities) {
-                        val routeLocation = RouteLocation()
-                        routeLocation.latLng = routePointEntity.latLng
-                        routeLocation.date = Date(routePointEntity.timestamp * 1000)
-                        routeLocations.add(routeLocation)
-                    }
+        val userLocationBox = App.boxStore.boxFor(UserLocation::class.java)
+        val userLocations = userLocationBox.query().equal(UserLocation_.userId, HomeToWorkClient.user!!.id).build().find()
 
-                    if (routeLocations.size > 0) syncRoutePoints(routeLocations)
-                }, OnFailureListener { it.printStackTrace() })
+        userLocations.forEach {
+            val routeLocation = RouteLocation()
+            routeLocation.latLng = it.latLng
+            routeLocation.date = Date(it.timestamp * 1000)
+            routeLocations.add(routeLocation)
+        }
+
+        if (routeLocations.size > 0) syncRoutePoints(routeLocations)
+
 
     }
 
@@ -67,7 +67,8 @@ class SyncService : Service() {
 
                     Answers.getInstance().logCustom(CustomEvent("Sincronizzazione posizioni"))
 
-                    mRoutePointRepo.deleteAllUserLocations(mUser.id)
+                    val userLocationBox = App.boxStore.boxFor(UserLocation::class.java)
+                    userLocationBox.query().equal(UserLocation_.userId, HomeToWorkClient.user!!.id).build().remove()
 
                 },
                 OnFailureListener { e -> Log.e(this::class.java.name, "Sincronizzazione fallita", Throwable(e)) })

@@ -7,6 +7,8 @@ import com.facebook.stetho.Stetho
 import com.pixplicity.easyprefs.library.Prefs
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
+import io.objectbox.BoxStore
+import it.gruppoinfor.home2work.model.MyObjectBox
 
 
 class App : Application() {
@@ -14,7 +16,11 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // Fabric
         Fabric.with(this, Crashlytics())
+
+        // Instanza ObjectBox
+        boxStore = MyObjectBox.builder().androidContext(this).build()
 
         initLeakCanary() // LeakCanary
         initStetho() // Stetho
@@ -52,6 +58,10 @@ class App : Application() {
                 .setUseDefaultSharedPreference(true)
                 .build()
 
+    }
+
+    companion object {
+        lateinit var boxStore: BoxStore
     }
 
 

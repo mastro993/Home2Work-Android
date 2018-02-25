@@ -11,10 +11,10 @@ import java.io.Serializable
 
 class LatLng : Serializable {
 
-    @SerializedName("latitude")
+    @SerializedName("Latitude")
     @Expose
     var lat: Double = 0.0
-    @SerializedName("longitude")
+    @SerializedName("Longitude")
     @Expose
     var lng: Double = 0.0
 
