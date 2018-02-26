@@ -67,7 +67,6 @@ class MatchFragment : Fragment() {
         }, OnFailureListener {
 
             swipe_refresh_layout.isRefreshing = false
-            loading_view.visibility = View.GONE
 
             it.printStackTrace()
 

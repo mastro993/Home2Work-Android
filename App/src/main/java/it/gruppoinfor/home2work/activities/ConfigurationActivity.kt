@@ -210,7 +210,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                 return VerificationError(getString(R.string.activity_configuration_surname_error))
             }
 
-            HomeToWorkClient.user?.name_ = input_name.text.toString().trim { it <= ' ' }
+            HomeToWorkClient.user?.name = input_name.text.toString().trim { it <= ' ' }
             HomeToWorkClient.user?.surname = input_surname.text.toString().trim { it <= ' ' }
 
             return null
@@ -226,7 +226,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
         private fun initUI() {
 
-            input_name.setText(HomeToWorkClient.user!!.name_)
+            input_name.setText(HomeToWorkClient.user!!.name)
             input_surname.setText(HomeToWorkClient.user!!.surname)
 
         }

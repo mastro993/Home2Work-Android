@@ -82,8 +82,6 @@ class MatchAdapter(private val mContext: Context, private val matches: ArrayList
 
         if (match.score == 0) holder.scoreText.visibility = View.INVISIBLE
 
-        if (position == 0) holder.divider.visibility = View.GONE
-
         holder.userAvatar.setOnClickListener {
             val userIntent = Intent(mContext, ShowUserActivity::class.java)
             userIntent.putExtra("user", match.host)

@@ -1,6 +1,8 @@
 package it.gruppoinfor.home2workapi
 
 import io.reactivex.Observable
+import it.gruppoinfor.home2workapi.inbox.Chat
+import it.gruppoinfor.home2workapi.inbox.Message
 import it.gruppoinfor.home2workapi.model.*
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -127,6 +129,26 @@ internal interface EndpointInterface {
     fun getUserProfile(
             @Path("id") userId: Long?
     ): Observable<Response<UserProfile>>
+
+    @GET("user/{id}/chatlist")
+    fun getUserChatList(
+            @Path("id") userId: Long?
+    ): Observable<Response<List<Chat>>>
+
+    @GET("user/{userId}/chat/{chatId}")
+    fun getChatMessages(
+            @Path("userId") userId: Long?,
+            @Path("chatId") chatId: String?
+    ): Observable<Response<List<Message>>>
+
+    @FormUrlEncoded
+    @POST("user/{userId}/chat/{chatId}")
+    fun sendMessage(
+            @Path("userId") userId: Long?,
+            @Path("chatId") chatId: String?,
+            @Field("toId") toId: String?,
+            @Field("text") text: String?
+    ): Observable<Response<ResponseBody>>
 
 
 }

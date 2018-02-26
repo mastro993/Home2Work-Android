@@ -49,10 +49,6 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
-    //Room
-    compile 'android.arch.persistence.room:runtime:1.0.0'
-    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
-
     // AsyncJob
     compile 'com.arasthel:asyncjob-library:1.0.3'
 

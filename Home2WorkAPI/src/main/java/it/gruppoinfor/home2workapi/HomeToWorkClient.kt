@@ -7,11 +7,14 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.gson.GsonBuilder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import it.gruppoinfor.home2workapi.inbox.Chat
+import it.gruppoinfor.home2workapi.inbox.Message
 import it.gruppoinfor.home2workapi.interfaces.LoginCallback
 import it.gruppoinfor.home2workapi.model.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -77,7 +80,7 @@ class HomeToWorkClient {
         if (fcmToken == null) return
 
         mAPI.setFCMToken(user!!.id, fcmToken)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ _ -> }, { it.printStackTrace() })
 
@@ -115,7 +118,7 @@ class HomeToWorkClient {
     fun getUserMatches(onSuccessListener: OnSuccessListener<ArrayList<Match>>, onFailureListener: OnFailureListener) {
 
         mAPI.getMatches(user!!.id)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listResponse ->
 
@@ -330,7 +333,7 @@ class HomeToWorkClient {
     fun refreshUser(onSuccessListener: OnSuccessListener<Void>, onFailureListener: OnFailureListener) {
 
         mAPI.getUser(user!!.id)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userResponse ->
 
@@ -353,7 +356,7 @@ class HomeToWorkClient {
     fun getUserShares(onSuccessListener: OnSuccessListener<ArrayList<Share>>, onFailureListener: OnFailureListener) {
 
         mAPI.getShares(user!!.id)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listResponse ->
 
@@ -434,7 +437,7 @@ class HomeToWorkClient {
     fun getUser(uID: Long?, onSuccessListener: OnSuccessListener<Void>, onFailureListener: OnFailureListener) {
 
         mAPI.getUser(uID)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userResponse ->
 
@@ -457,7 +460,7 @@ class HomeToWorkClient {
     fun getUserProfile(userId: Long?, onSuccessListener: OnSuccessListener<UserProfile>, onFailureListener: OnFailureListener) {
 
         mAPI.getUserProfile(userId)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userResponse ->
 
@@ -465,6 +468,55 @@ class HomeToWorkClient {
                         onSuccessListener.onSuccess(userResponse.body())
                     } else
                         onFailureListener.onFailure(Exception("Response code: " + userResponse.code()))
+
+                }, { it.printStackTrace() })
+
+    }
+
+    fun refreshUserChatList(onSuccessListener: OnSuccessListener<List<Chat>>, onFailureListener: OnFailureListener) {
+
+        mAPI.getUserChatList(user?.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+
+                    if (response.code() == 200) {
+                        chatList = response.body()
+                        onSuccessListener.onSuccess(response.body())
+                    } else
+                        onFailureListener.onFailure(Exception("Response code: " + response.code()))
+
+                }, { it.printStackTrace() })
+
+    }
+
+    fun getChatMessageList(chatId: String, onSuccessListener: OnSuccessListener<List<Message>>, onFailureListener: OnFailureListener) {
+
+        mAPI.getChatMessages(HomeToWorkClient.user?.id, chatId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+
+                    if (response.code() == 200) {
+                        onSuccessListener.onSuccess(response.body())
+                    } else
+                        onFailureListener.onFailure(Exception("Response code: " + response.code()))
+
+                }, { it.printStackTrace() })
+
+    }
+
+    fun sendMessage(chatId: String, toId: String, text: String, onSuccessListener: OnSuccessListener<Response<ResponseBody>>, onFailureListener: OnFailureListener) {
+
+        mAPI.sendMessage(HomeToWorkClient.user?.id, chatId, toId, text)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+
+                    if (response.code() == 200) {
+                        onSuccessListener.onSuccess(response)
+                    } else
+                        onFailureListener.onFailure(Exception("Response code: " + response.code()))
 
                 }, { it.printStackTrace() })
 
@@ -486,6 +538,9 @@ class HomeToWorkClient {
         }
 
         var user: User? = null
+            private set
+
+        var chatList: List<Chat>? = null
             private set
     }
 

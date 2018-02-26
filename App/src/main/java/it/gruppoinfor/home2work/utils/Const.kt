@@ -42,14 +42,16 @@ object Const {
     const val SHARE_JOIN_REQUEST = "SHARE_JOIN_REQUEST"
     const val SHARE_COMPLETE_REQUEST = "SHARE_COMPLETE_REQUEST"
     const val SHARE_DETACH_REQUEST = "SHARE_COMPLETE_REQUEST"
+    const val NEW_MESSAGE_RECEIVED = "NEW_MESSAGE_RECEIVED"
 
     // Extras
     const val EXTRA_SHARE = "extra_share"
     const val EXTRA_USER = "extra_user"
     const val EXTRA_MATCH = "extra_match"
+    const val EXTRA_CHAT = "extra_chat"
 
     // API
-    const val GOOGLE_API_KEY = "AIzaSyCh8NUxxBR-ayyEq_EGFUU1JFVVFVwUq-I"
+    const val GOOGLE_API_KEY = " AIzaSyB9U5__DMs2on7xXkYG0-1Ll9vC2YXW1Wo "
 
 
 }

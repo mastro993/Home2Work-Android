@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2workapi.model
 
-import android.arch.persistence.room.Ignore
 import android.location.Location
 
 import com.google.gson.annotations.Expose
@@ -21,8 +20,7 @@ class LatLng : Serializable {
     constructor() {
         // Empty constructor
     }
-
-    @Ignore
+    
     constructor(lat: Double, lng: Double) {
         this.lat = lat
         this.lng = lng

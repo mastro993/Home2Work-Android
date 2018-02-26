@@ -7,10 +7,10 @@ import android.view.View
 import android.widget.RelativeLayout
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.InboxActivity
+import it.gruppoinfor.home2workapi.inbox.Chat
 import kotlinx.android.synthetic.main.custom_inbox_icon.view.*
 
 class InboxIcon : RelativeLayout {
-
 
     constructor(context: Context) : super(context) {
 
@@ -47,6 +47,7 @@ class InboxIcon : RelativeLayout {
             messages_counter_text_view.visibility = View.INVISIBLE
         }
     }
+
 }
 
 

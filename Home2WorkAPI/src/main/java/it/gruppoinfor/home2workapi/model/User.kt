@@ -3,13 +3,12 @@ package it.gruppoinfor.home2workapi.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.stfalcon.chatkit.commons.models.IUser
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import java.io.Serializable
 import java.util.*
 
 
-class User : Serializable, IUser {
+class User : Serializable {
 
     @SerializedName("UserId")
     @Expose
@@ -22,7 +21,7 @@ class User : Serializable, IUser {
     var token: String = ""
     @SerializedName("Name")
     @Expose
-    var name_: String = ""
+    var name: String = ""
     @SerializedName("Surname")
     @Expose
     var surname: String = ""
@@ -46,7 +45,7 @@ class User : Serializable, IUser {
         get() = "${HomeToWorkClient.AVATAR_BASE_URL}$id.jpg"
 
     private val formattedName: String
-        get() = "$name_ $surname"
+        get() = "$name $surname"
 
     override fun toString(): String {
         return formattedName
@@ -61,20 +60,6 @@ class User : Serializable, IUser {
 
     override fun hashCode(): Int {
         return id.hashCode()
-    }
-
-    // Metodi interfaccia Chat Kit
-
-    override fun getId(): String {
-        return id.toString()
-    }
-
-    override fun getName(): String {
-        return formattedName
-    }
-
-    override fun getAvatar(): String {
-        return avatarURL
     }
 
 

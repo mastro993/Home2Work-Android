@@ -136,6 +136,11 @@
             android:label="Messaggi"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activities.ChatActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="Messaggi"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_ongoing_share_title"
@@ -149,7 +154,7 @@
             android:name=".activities.ShowUserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MessageActivity"></activity>
+
     </application>
 
 </manifest>

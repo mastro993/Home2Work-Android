@@ -95,7 +95,7 @@
 
     <string name="activity_show_user_error">Impossibile visualizzare informazioni utente</string>
 
-    <string name="fragment_matches_empty">Non ci sono ancora abbastanza dati per trovare match. Abbiamo però rilevato persone nelle vicinanze che lavorano dove te. Prova a contattarle!</string>
+    <string name="fragment_matches_empty">Non ci sono ancora abbastanza dati per trovare dei match per te. In attesa prova a contattare queste persone!</string>
 
     <string-array name="fragment_profile_options">
         <item>Modifica profilo</item>

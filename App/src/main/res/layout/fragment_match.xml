@@ -3,7 +3,6 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <FrameLayout
@@ -21,22 +20,32 @@
                 android:orientation="vertical"
                 android:paddingBottom="48dp">
 
-                <TextView
+                <RelativeLayout
                     android:id="@+id/no_matches_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="8dp"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:text="@string/fragment_matches_empty"
-                    android:textSize="12sp"
-                    android:textStyle="italic"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_no_match_info"
+                        android:text="@string/fragment_matches_empty"
+                        android:textColor="@color/light_bg_dark_secondary_text"
+                        android:visibility="visible" />
+
+                    <include
+                        android:id="@+id/item_match_divider"
+                        layout="@layout/horizontal_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
 
                 <android.support.v7.widget.RecyclerView
-                    android:background="@color/white"
-                    android:elevation="@dimen/cardview_default_elevation"
                     android:id="@+id/matches_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -67,7 +76,6 @@
 
 
     </FrameLayout>
-
 
 
 </android.support.v4.widget.SwipeRefreshLayout>

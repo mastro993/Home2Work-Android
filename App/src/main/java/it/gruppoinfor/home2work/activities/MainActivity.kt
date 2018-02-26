@@ -9,10 +9,10 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.fragments.HomeFragment
@@ -22,7 +22,10 @@ import it.gruppoinfor.home2work.fragments.SharesFragment
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
 import it.gruppoinfor.home2work.utils.Const
+import it.gruppoinfor.home2workapi.HomeToWorkClient
+import it.gruppoinfor.home2workapi.HomeToWorkClient.Companion.chatList
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.custom_inbox_icon.*
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 

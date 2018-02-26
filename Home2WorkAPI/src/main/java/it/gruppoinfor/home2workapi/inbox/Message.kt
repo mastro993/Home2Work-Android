@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.commons.models.IUser
-import it.gruppoinfor.home2workapi.model.User
+import java.io.Serializable
 import java.util.*
 
 
-class Message : IMessage {
+class Message : IMessage, Serializable {
 
     @SerializedName("Id")
     @Expose
@@ -16,12 +16,12 @@ class Message : IMessage {
     @SerializedName("Text")
     @Expose
     var messageText: String = ""
-    @SerializedName("Date")
+    @SerializedName("Time")
     @Expose
     var messageDate: Date = Date()
-    @SerializedName("User")
+    @SerializedName("Sender")
     @Expose
-    var messageUser: User = User()
+    var messageUser: Author = Author()
 
     override fun getId(): String {
         return messageId

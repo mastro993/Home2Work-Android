@@ -134,7 +134,6 @@ class SharesFragment : Fragment() {
             Toast.makeText(context!!, "Impossibile ottenere lista condivsioni al momento", Toast.LENGTH_SHORT).show()
 
             swipe_refresh_layout.isRefreshing = false
-            loading_view.visibility = View.GONE
 
             it.printStackTrace()
 
