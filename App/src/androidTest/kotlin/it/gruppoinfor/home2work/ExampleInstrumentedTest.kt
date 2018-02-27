@@ -33,6 +33,6 @@ class ExampleInstrumentedTest {
         //assertEquals("it.gruppoinfor.home2work", appContext.getPackageName());
 
 
-        HomeToWorkClient.getInstance().getUserProfile(7L, { userProfile -> val test = userProfile }) { e -> e.printStackTrace() }
+        HomeToWorkClient.getUserProfile(7L, { userProfile -> val test = userProfile }) { e -> e.printStackTrace() }
     }
 }

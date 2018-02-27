@@ -25,7 +25,7 @@ class BootReceiver : BroadcastReceiver() {
 
     private val sessionCallback: SessionManager.SessionCallback
         get() = object : SessionManager.SessionCallback {
-            override fun onValidSession(user: User) {
+            override fun onValidSession() {
 
                 if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
                     val locationIntent = Intent(context, LocationService::class.java)

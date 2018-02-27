@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -90,6 +91,8 @@ class ChatActivity : AppCompatActivity() {
 
     private fun initUI() {
 
+        chat_loading_view.visibility = View.VISIBLE
+
         title = chat.users.first().name
 
         adapter = MessagesListAdapter(HomeToWorkClient.user?.id.toString(), ImageLoader { imageView, url ->
@@ -116,7 +119,7 @@ class ChatActivity : AppCompatActivity() {
             input.isActivated = false
 
 
-            HomeToWorkClient.getInstance().sendMessage(chat.chatId, chat.users.first().id, message.text, OnSuccessListener {
+            HomeToWorkClient.sendMessageToChat(chat.chatId, message.text, OnSuccessListener {
 
                 adapter?.addToStart(message, true)
                 input.isActivated = true
@@ -134,9 +137,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun refreshMessages() {
-        HomeToWorkClient.getInstance().getChatMessageList(chat.chatId, OnSuccessListener {
+        HomeToWorkClient.getChatMessageList(chat.chatId, OnSuccessListener {
 
             adapter?.addToEnd(it, true)
+            chat_loading_view.visibility = View.GONE
 
         }, OnFailureListener {
 

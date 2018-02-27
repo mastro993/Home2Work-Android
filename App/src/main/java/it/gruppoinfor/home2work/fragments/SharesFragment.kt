@@ -112,7 +112,7 @@ class SharesFragment : Fragment() {
 
     private fun refreshShares() {
 
-        HomeToWorkClient.getInstance().getUserShares(OnSuccessListener { shares ->
+        HomeToWorkClient.getShareList(OnSuccessListener { shares ->
 
             mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
 
@@ -210,7 +210,7 @@ class SharesFragment : Fragment() {
                 .progress(true, 150, false)
                 .show()
 
-        HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
+        HomeToWorkClient.createNewShare(OnSuccessListener { share ->
 
             Answers.getInstance().logCustom(CustomEvent("Nuova condivisione"))
 
@@ -270,7 +270,7 @@ class SharesFragment : Fragment() {
                         Toast.makeText(context!!, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
                         materialDialog.dismiss()
                     }
-                    else -> HomeToWorkClient.getInstance().joinShare(shareID, joinLocation, OnSuccessListener { share ->
+                    else -> HomeToWorkClient.joinShare(shareID, joinLocation, OnSuccessListener { share ->
 
                         Answers.getInstance().logCustom(CustomEvent("Unione a condivisione"))
 

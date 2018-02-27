@@ -27,7 +27,7 @@ object Const {
     const val CODE_INVALID_CREDENTIALS = 4
     const val CODE_LOGIN_ERROR = 5
     const val CODE_SERVER_ERROR = 6
-    const val CODE_NO_CREDENTIALS = 7
+    const val CODE_NO_ACCESS_TOKEN = 7
 
     // Permessi
     const val PERMISSION_FINE_LOCATION = 0
@@ -41,7 +41,7 @@ object Const {
     // Codici broadcast
     const val SHARE_JOIN_REQUEST = "SHARE_JOIN_REQUEST"
     const val SHARE_COMPLETE_REQUEST = "SHARE_COMPLETE_REQUEST"
-    const val SHARE_DETACH_REQUEST = "SHARE_COMPLETE_REQUEST"
+    const val SHARE_LEAVE_REQUEST = "SHARE_LEAVE_REQUEST"
     const val NEW_MESSAGE_RECEIVED = "NEW_MESSAGE_RECEIVED"
 
     // Extras

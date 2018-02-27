@@ -316,7 +316,7 @@ class ShowUserActivity : AppCompatActivity() {
 
     private fun refreshProfile() {
 
-        HomeToWorkClient.getInstance().getUserProfile(mUser.id, OnSuccessListener { userProfile ->
+        HomeToWorkClient.getUserProfileById(mUser.id, OnSuccessListener { userProfile ->
 
             mProfile = userProfile
 

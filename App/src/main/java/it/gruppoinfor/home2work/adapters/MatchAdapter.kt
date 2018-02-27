@@ -59,7 +59,7 @@ class MatchAdapter(private val mContext: Context, private val matches: ArrayList
                 .placeholder(R.drawable.ic_avatar_placeholder)
 
         Glide.with(mContext)
-                .load(match.host.avatarURL)
+                .load(match.host?.avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
                 .into(holder.userAvatar)
@@ -74,8 +74,8 @@ class MatchAdapter(private val mContext: Context, private val matches: ArrayList
         holder.scoreText.setTextColor(color)
 
         holder.nameText.text = match.host.toString()
-        holder.jobText.text = match.host.company.toString()
-        holder.homeText.text = match.host.address.city
+        holder.jobText.text = match.host?.company.toString()
+        holder.homeText.text = match.host?.address?.city
 
         holder.container.setOnClickListener { v -> mItemClickCallbacks!!.onItemClick(v, position) }
         holder.container.setOnLongClickListener { v -> mItemClickCallbacks!!.onLongItemClick(v, position) }

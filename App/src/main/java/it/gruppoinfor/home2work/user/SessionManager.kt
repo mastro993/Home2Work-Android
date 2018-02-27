@@ -10,7 +10,8 @@ import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.interfaces.LoginCallback
+import it.gruppoinfor.home2workapi.callback.LoginCallback
+import it.gruppoinfor.home2workapi.model.ClientUser
 import it.gruppoinfor.home2workapi.model.User
 import java.net.UnknownHostException
 
@@ -23,21 +24,19 @@ import java.net.UnknownHostException
 object SessionManager {
 
     private const val PREFS_SESSION = "it.home2work.app.session"
-    private const val PREFS_TOKEN = "SESSION_TOKEN"
-    private const val PREFS_EMAIL = "SESSION_EMAIL"
+    private const val PREFS_TOKEN = "ACCESS_TOKEN"
 
-    fun storeSession(ctx: Context, user: User?) {
+    fun storeSession(ctx: Context, user: ClientUser?) {
         if (user == null) return
 
         val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
         val editor = prefs.edit()
 
-        editor.putString(PREFS_EMAIL, user.email)
-        editor.putString(PREFS_TOKEN, user.token)
+        editor.putString(PREFS_TOKEN, user.accessToken)
         editor.apply()
 
         val token = FirebaseInstanceId.getInstance().token
-        HomeToWorkClient.getInstance().setFcmToken(token)
+        HomeToWorkClient.updateFcmToken(token)
     }
 
     fun loadSession(ctx: Context, callback: SessionCallback) {
@@ -46,31 +45,30 @@ object SessionManager {
         val user: User? = HomeToWorkClient.user
 
         if (user != null) {
-            callback.onValidSession(user)
+            callback.onValidSession()
             return
         }
 
-        val email = prefs.getString(PREFS_EMAIL, "")
         val token = prefs.getString(PREFS_TOKEN, "")
 
-        if (email.isEmpty() || token.isEmpty()) {
-            callback.onInvalidSession(Const.CODE_NO_CREDENTIALS, null)
+        if (token.isEmpty()) {
+            callback.onInvalidSession(Const.CODE_NO_ACCESS_TOKEN, null)
             return
         }
 
-        HomeToWorkClient.getInstance().login(email, token, true, object : LoginCallback {
-            override fun onLoginSuccess(user: User) {
+        HomeToWorkClient.login(token, object : LoginCallback {
+            override fun onLoginSuccess() {
 
                 // Crashlytics log
                 Answers.getInstance().logLogin(LoginEvent()
                         .putMethod("Token")
                         .putSuccess(true))
 
-                Crashlytics.setUserIdentifier(user.id.toString())
-                Crashlytics.setUserEmail(user.email)
-                Crashlytics.setUserName(user.toString())
+                Crashlytics.setUserIdentifier(HomeToWorkClient.user?.id.toString())
+                Crashlytics.setUserEmail(HomeToWorkClient.user?.email)
+                Crashlytics.setUserName(HomeToWorkClient.user.toString())
 
-                callback.onValidSession(user)
+                callback.onValidSession()
 
             }
 
@@ -107,7 +105,7 @@ object SessionManager {
     }
 
     interface SessionCallback {
-        fun onValidSession(user: User)
+        fun onValidSession()
         fun onInvalidSession(code: Int, throwable: Throwable?)
     }
 

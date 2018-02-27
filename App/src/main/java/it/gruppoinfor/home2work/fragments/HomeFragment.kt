@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshInbox() {
-        HomeToWorkClient.getInstance().refreshUserChatList(OnSuccessListener {
+        HomeToWorkClient.getChatList(OnSuccessListener {
             inboxIcon.setCount(it.count { it.unreadCnt > 0 })
         }, OnFailureListener {
 

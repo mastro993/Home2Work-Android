@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2workapi.interfaces
+package it.gruppoinfor.home2workapi.callback
 
 interface ResponseCallback {
     fun onSuccess()

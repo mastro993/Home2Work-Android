@@ -31,8 +31,7 @@ class SyncService : Service() {
         super.onCreate()
 
         SessionManager.loadSession(this, object : SessionManager.SessionCallback {
-            override fun onValidSession(user: User) {
-                mUser = user
+            override fun onValidSession() {
                 if (canSync()) sync()
             }
 
@@ -62,7 +61,7 @@ class SyncService : Service() {
 
     private fun syncRoutePoints(routeLocationList: List<RouteLocation>) {
 
-        HomeToWorkClient.getInstance().uploadLocation(mUser.id, routeLocationList,
+        HomeToWorkClient.uploadLocations(mUser.id, routeLocationList,
                 OnSuccessListener {
 
                     Answers.getInstance().logCustom(CustomEvent("Sincronizzazione posizioni"))

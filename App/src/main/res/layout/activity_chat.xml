@@ -36,4 +36,22 @@
         app:inputButtonDefaultIconDisabledColor="@color/white60"
         app:showAttachmentButton="false" />
 
+
+    <FrameLayout
+        android:id="@+id/chat_loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/input"
+        android:background="@color/window_background"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="@dimen/loading_progressbar_size"
+            android:layout_height="@dimen/loading_progressbar_size"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorAccent" />
+
+    </FrameLayout>
+
 </RelativeLayout>

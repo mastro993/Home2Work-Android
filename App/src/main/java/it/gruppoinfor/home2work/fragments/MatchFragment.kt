@@ -58,7 +58,7 @@ class MatchFragment : Fragment() {
 
     private fun refreshMatches() {
 
-        HomeToWorkClient.getInstance().getUserMatches(OnSuccessListener { matches ->
+        HomeToWorkClient.getMatchList(OnSuccessListener { matches ->
 
             matchList = matches
             refreshBadgeCounter()
@@ -165,7 +165,7 @@ class MatchFragment : Fragment() {
 
                     matchItem.hidden = true
 
-                    HomeToWorkClient.getInstance().editMatch(matchItem, OnSuccessListener {
+                    HomeToWorkClient.editMatch(matchItem, OnSuccessListener {
                         matchList.removeAt(position)
                         matchesAdapter.remove(position)
                     }, OnFailureListener { Toast.makeText(context!!, R.string.item_match_dialog_hide_error, Toast.LENGTH_SHORT).show() })

@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
-import it.gruppoinfor.home2workapi.model.User
+import it.gruppoinfor.home2workapi.HomeToWorkClient
 import java.net.UnknownHostException
 
 
@@ -26,7 +26,6 @@ class SplashActivity : AppCompatActivity() {
         } else {
             initApp()
         }
-
 
 
     }
@@ -46,8 +45,8 @@ class SplashActivity : AppCompatActivity() {
     private fun initApp() {
 
         SessionManager.loadSession(this, object : SessionManager.SessionCallback {
-            override fun onValidSession(user: User) {
-                val i: Intent = if (user.isConfigured) {
+            override fun onValidSession() {
+                val i: Intent = if (HomeToWorkClient.user!!.configured) {
                     Intent(this@SplashActivity, MainActivity::class.java)
                 } else {
                     Intent(this@SplashActivity, ConfigurationActivity::class.java)
@@ -60,7 +59,7 @@ class SplashActivity : AppCompatActivity() {
                 val intent = Intent(this@SplashActivity, SignInActivity::class.java)
                 when (code) {
                     Const.CODE_INVALID_CREDENTIALS -> intent.putExtra(Const.CODE_AUTH, Const.CODE_EXPIRED_TOKEN)
-                    Const.CODE_NO_CREDENTIALS -> {
+                    Const.CODE_NO_ACCESS_TOKEN -> {
                     }
                     else ->
                         if (throwable is UnknownHostException)

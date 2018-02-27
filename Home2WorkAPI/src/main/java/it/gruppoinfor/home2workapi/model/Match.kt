@@ -13,10 +13,10 @@ class Match : Serializable {
     var matchID: Long = 0
     @SerializedName("Guest")
     @Expose
-    var guest: User = User()
+    var guest: User? = null
     @SerializedName("Host")
     @Expose
-    var host: User = User()
+    var host: User? = null
     @SerializedName("Weekdays")
     @Expose
     var weekdays: ArrayList<Int> = ArrayList(0)

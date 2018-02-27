@@ -37,14 +37,14 @@ class ShareGuestsAdapter(private val context: Context, private val guests: Array
                 .placeholder(R.drawable.ic_avatar_placeholder)
 
         Glide.with(context)
-                .load(guest.user.avatarURL)
+                .load(guest.user?.avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
                 .into(holder.userAvatar)
 
 
         holder.nameView.text = guest.user.toString()
-        holder.jobView.text = guest.user.company.toString()
+        holder.jobView.text = guest.user?.company.toString()
 
         holder.container.setOnClickListener { v -> mItemClickCallbacks!!.onItemClick(v, position) }
         holder.container.setOnLongClickListener { v -> mItemClickCallbacks!!.onLongItemClick(v, position) }

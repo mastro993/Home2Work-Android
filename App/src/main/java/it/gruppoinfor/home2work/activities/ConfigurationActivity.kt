@@ -226,8 +226,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
         private fun initUI() {
 
-            input_name.setText(HomeToWorkClient.user!!.name)
-            input_surname.setText(HomeToWorkClient.user!!.surname)
+            input_name.setText(HomeToWorkClient.user?.name)
+            input_surname.setText(HomeToWorkClient.user?.surname)
 
         }
 
@@ -401,8 +401,8 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                             newAddress.address = addr
                             newAddress.postalCode = cap
 
-                            HomeToWorkClient.user!!.location = latLng
-                            HomeToWorkClient.user!!.address = newAddress
+                            HomeToWorkClient.user?.location = latLng
+                            HomeToWorkClient.user?.address = newAddress
 
                             setHomeLocation(latLng)
                         }, OnFailureListener {
@@ -426,7 +426,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
-            HomeToWorkClient.getInstance().getCompanies(OnSuccessListener {
+            HomeToWorkClient.getCompanyList(OnSuccessListener {
                 mCompanies = it
                 val companySpinnerAdapter = CompanySpinnerAdapter(activity as Activity, mCompanies)
                 companySpinner.adapter = companySpinnerAdapter
@@ -549,7 +549,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
                 val body = MultipartBody.Part.createFormData("avatar", filename, requestFile)
 
-                HomeToWorkClient.getInstance().uploadAvatar(body, OnSuccessListener {
+                HomeToWorkClient.uploadAvatar(body, OnSuccessListener {
                     callback.stepperLayout.hideProgress()
                     callback.goToNextStep()
                 }, OnFailureListener {
@@ -599,9 +599,9 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
 
             callback.stepperLayout.showProgress(getString(R.string.activity_configuration_wait))
 
-            HomeToWorkClient.user?.isConfigured = true
+            HomeToWorkClient.user?.configured = true
 
-            HomeToWorkClient.getInstance().updateUser(
+            HomeToWorkClient.updateUser(
                     OnSuccessListener {
                         callback.complete()
                     }, OnFailureListener {

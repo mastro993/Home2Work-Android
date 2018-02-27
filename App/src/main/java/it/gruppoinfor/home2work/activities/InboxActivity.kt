@@ -136,7 +136,7 @@ class InboxActivity : AppCompatActivity() {
 
 
 
-        HomeToWorkClient.getInstance().refreshUserChatList(OnSuccessListener {
+        HomeToWorkClient.getChatList(OnSuccessListener {
             chatList = it
             dialogsListAdapter?.setItems(it)
             swipe_refresh_layout.isRefreshing = false

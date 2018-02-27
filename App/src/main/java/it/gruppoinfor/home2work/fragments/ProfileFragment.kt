@@ -155,7 +155,7 @@ class ProfileFragment : Fragment() {
                         .progress(true, 150, true)
                         .show()
 
-                HomeToWorkClient.getInstance().uploadAvatar(body, OnSuccessListener
+                HomeToWorkClient.uploadAvatar(body, OnSuccessListener
                 {
                     avatar_view.setAvatarURL(HomeToWorkClient.user?.avatarURL)
                     materialDialog.dismiss()
@@ -297,7 +297,7 @@ class ProfileFragment : Fragment() {
 
     private fun refreshProfile() {
 
-        HomeToWorkClient.getInstance().getUserProfile(OnSuccessListener { userProfile ->
+        HomeToWorkClient.getProfile(OnSuccessListener { userProfile ->
 
             mProfile = userProfile
             refreshHeader()

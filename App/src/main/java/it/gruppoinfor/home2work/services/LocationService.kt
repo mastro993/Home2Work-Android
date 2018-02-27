@@ -24,6 +24,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.model.UserLocation
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver
 import it.gruppoinfor.home2work.user.SessionManager
+import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.User
 import java.util.concurrent.TimeUnit
@@ -33,7 +34,6 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
     private var isTracking = false
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    lateinit var mUser: User
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -45,8 +45,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         super.onCreate()
 
         SessionManager.loadSession(this, object : SessionManager.SessionCallback {
-            override fun onValidSession(user: User) {
-                mUser = user
+            override fun onValidSession() {
                 startService()
             }
 
@@ -189,7 +188,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
         val latLng = LatLng(location.latitude, location.longitude)
         userLocation.latLng = latLng
         userLocation.timestamp = System.currentTimeMillis() / 1000L
-        userLocation.userId = mUser.id
+        userLocation.userId = HomeToWorkClient.user!!.id
 
         userLocationBox.put(userLocation)
 

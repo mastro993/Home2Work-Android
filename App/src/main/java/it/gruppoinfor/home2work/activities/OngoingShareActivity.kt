@@ -22,7 +22,6 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
@@ -109,7 +108,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
         )
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver,
-                IntentFilter(Const.SHARE_DETACH_REQUEST)
+                IntentFilter(Const.SHARE_LEAVE_REQUEST)
         )
 
     }
@@ -136,7 +135,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                             userIntent.putExtra("user", mShare.guests[position])
                             startActivity(userIntent)
                         }
-                        1 -> HomeToWorkClient.getInstance().expelGuest(mShare, mShare.guests[position], OnSuccessListener { share ->
+                        1 -> HomeToWorkClient.banGuestFromShare(mShare.id, mShare.guests[position].user?.id, OnSuccessListener { share ->
                             mShare = share
                             initUI()
                         }, OnFailureListener { it.printStackTrace() })
@@ -203,7 +202,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                     } else {
                         val latlngString = "${location.latitude},${location.longitude}"
 
-                        HomeToWorkClient.getInstance().createShare(OnSuccessListener { share ->
+                        HomeToWorkClient.createNewShare(OnSuccessListener { share ->
                             try {
                                 val bitmap = QREncoder.encodeText("${share.id},$latlngString")
                                 qrCodeImage.setImageBitmap(bitmap)
@@ -237,7 +236,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                         .progress(true, 150, true)
                         .show()
 
-                HomeToWorkClient.getInstance().finishShare(mShare, OnSuccessListener {
+                HomeToWorkClient.finishShare(mShare, OnSuccessListener {
                     loadingDialog!!.dismiss()
                     Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_dialog_completition_success, Toast.LENGTH_SHORT).show()
                     finish()
@@ -297,9 +296,9 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
         }
 
         name_text_view.text = mShare.host.toString()
-        job_text_view.text = mShare.host.company.toString()
+        job_text_view.text = mShare.host?.company.toString()
 
-        avatar_view.setAvatarURL(mShare.host.avatarURL)
+        avatar_view.setAvatarURL(mShare.host?.avatarURL)
         avatar_view.setLevel(null)
 
         button_complete_share.isEnabled = true
@@ -319,7 +318,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                             .progress(true, 150, true)
                             .show()
 
-                    HomeToWorkClient.getInstance().cancelShare(mShare, OnSuccessListener {
+                    HomeToWorkClient.cancelShare(mShare.id, OnSuccessListener {
 
                         Answers.getInstance().logCustom(CustomEvent("Condivisione annullata"))
 
@@ -356,7 +355,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                             .show()
 
 
-                    HomeToWorkClient.getInstance().leaveShare(mShare, OnSuccessListener {
+                    HomeToWorkClient.leaveShare(mShare, OnSuccessListener {
 
                         Answers.getInstance().logCustom(CustomEvent("Unione a ondivisione annullata"))
 
@@ -415,15 +414,15 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
                         loadingDialog!!.dismiss()
 
                     }
-                    else -> HomeToWorkClient.getInstance().completeShare(mShare, endLocation, OnSuccessListener {
+                    else -> HomeToWorkClient.completeShare(mShare, endLocation, OnSuccessListener {
 
                         val userId = HomeToWorkClient.user?.id
-                        if (userId == mShare.host.id) {
+                        if (userId == mShare.host?.id) {
                             val sharedDistance = it.guests.sumBy { it.distance } / 1000f
                             Answers.getInstance().logCustom(CustomEvent("Condivisione conclusa")
                                     .putCustomAttribute("Distanza totale condivisa", sharedDistance))
                         } else {
-                            val sharedDistance = it.guests.last { it.user.id == userId }.distance / 1000f
+                            val sharedDistance = it.guests.last { it.user?.id == userId }.distance / 1000f
                             Answers.getInstance().logCustom(CustomEvent("Condivisione completata")
                                     .putCustomAttribute("Distanza condivisa", sharedDistance))
                         }
@@ -445,7 +444,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
     private fun refreshGuests() {
 
-        HomeToWorkClient.getInstance().getShare(mShare.id, OnSuccessListener { share ->
+        HomeToWorkClient.getShare(mShare.id, OnSuccessListener { share ->
             mShare = share
             initUI()
         }, OnFailureListener { it.printStackTrace() })

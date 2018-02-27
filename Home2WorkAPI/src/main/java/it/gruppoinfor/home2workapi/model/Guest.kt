@@ -11,7 +11,7 @@ class Guest : Serializable {
     var shareId: Long = 0
     @SerializedName("User")
     @Expose
-    var user: User = User()
+    var user: User? = null
     @SerializedName("StartLocation")
     @Expose
     var startLocation: LatLng = LatLng()

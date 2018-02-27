@@ -59,7 +59,7 @@ class MatchActivity : AppCompatActivity() {
             finish()
         }
 
-        HomeToWorkClient.getInstance().editMatch(match)
+        HomeToWorkClient.editMatch(match)
 
     }
 
@@ -89,14 +89,14 @@ class MatchActivity : AppCompatActivity() {
                 .placeholder(R.drawable.ic_avatar_placeholder)
 
         Glide.with(this)
-                .load(match.host.avatarURL)
+                .load(match.host?.avatarURL)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(requestOptions)
                 .into(user_avatar)
 
         name_view.text = match.host.toString()
-        job_view.text = match.host.company.toString()
-        home_view.text = match.host.address.city
+        job_view.text = match.host?.company.toString()
+        home_view.text = match.host?.address?.city
 
         timetable_time.text = String.format(
                 resources.getString(R.string.activity_match_time),

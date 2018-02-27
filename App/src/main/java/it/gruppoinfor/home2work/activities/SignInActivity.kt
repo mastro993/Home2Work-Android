@@ -15,8 +15,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.interfaces.LoginCallback
-import it.gruppoinfor.home2workapi.model.User
+import it.gruppoinfor.home2workapi.callback.LoginCallback
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import java.net.UnknownHostException
 
@@ -45,7 +44,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
                 val email = email_edit_text.text.toString()
                 val password = password_edit_text.text.toString()
 
-                HomeToWorkClient.getInstance().login(email, password, false, this)
+                HomeToWorkClient.login(email, password, this)
 
             }
         }
@@ -67,22 +66,22 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
     }
 
-    override fun onLoginSuccess(user: User) {
+    override fun onLoginSuccess() {
 
         // Crashlytics log
         Answers.getInstance().logLogin(LoginEvent()
                 .putMethod("Form")
                 .putSuccess(true))
 
-        Crashlytics.setUserIdentifier(user.id.toString())
-        Crashlytics.setUserEmail(user.email)
-        Crashlytics.setUserName(user.toString())
+        Crashlytics.setUserIdentifier(HomeToWorkClient.user?.id.toString())
+        Crashlytics.setUserEmail(HomeToWorkClient.user?.email)
+        Crashlytics.setUserName(HomeToWorkClient.user.toString())
 
-        Prefs.putString(PREFS_EMAIL, user.email)
+        Prefs.putString(PREFS_EMAIL, HomeToWorkClient.user?.email)
 
         SessionManager.storeSession(this, HomeToWorkClient.user)
 
-        val i = if (user.isConfigured) {
+        val i = if (HomeToWorkClient.user!!.configured) {
             Intent(this@SignInActivity, MainActivity::class.java)
         } else {
             Intent(this@SignInActivity, ConfigurationActivity::class.java)

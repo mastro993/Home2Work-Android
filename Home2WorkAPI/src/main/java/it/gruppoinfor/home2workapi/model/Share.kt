@@ -13,7 +13,7 @@ class Share : Serializable {
     var id: Long = 0
     @SerializedName("Host")
     @Expose
-    var host: User = User()
+    var host: User? = null
     @SerializedName("Status")
     @Expose
     var status: Status? = null
