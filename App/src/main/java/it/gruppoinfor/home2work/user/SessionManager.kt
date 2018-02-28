@@ -6,6 +6,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.LoginEvent
 import com.google.firebase.iid.FirebaseInstanceId
+import it.gruppoinfor.home2work.services.FirebaseTokenService
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
 import it.gruppoinfor.home2work.utils.Const
@@ -35,8 +36,6 @@ object SessionManager {
         editor.putString(PREFS_TOKEN, user.accessToken)
         editor.apply()
 
-        val token = FirebaseInstanceId.getInstance().token
-        HomeToWorkClient.updateFcmToken(token)
     }
 
     fun loadSession(ctx: Context, callback: SessionCallback) {

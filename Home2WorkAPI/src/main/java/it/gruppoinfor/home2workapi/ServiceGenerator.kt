@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 internal object ServiceGenerator {
 
-    private const val API_BASE_URL = "http://home2workapi.azurewebsites.net/api/"
+    private const val API_BASE_URL = "${HomeToWorkClient.BASE_URL}/api/"
 
     private val httpClient = OkHttpClient.Builder()
             .addNetworkInterceptor(StethoInterceptor())

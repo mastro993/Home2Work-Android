@@ -16,15 +16,15 @@ import retrofit2.Response
 
 object HomeToWorkClient {
 
-    const val AVATAR_BASE_URL = "http://home2workapi.azurewebsites.net/images/avatar/"
-    const val COMPANIES_BASE_URL = "http://home2workapi.azurewebsites.net/images/companies/"
-    const val ACHIEVEMENTS_BASE_URL = "http://home2workapi.azurewebsites.net/images/achievements/"
+    const val BASE_URL_OLD = "http://home2workapi.azurewebsites.net"
+
+    const val BASE_URL = "https://hometoworkapi.azurewebsites.net"
+    const val AVATAR_BASE_URL = "$BASE_URL_OLD/images/avatar/"
+    const val COMPANIES_BASE_URL = "$BASE_URL/images/companies/"
+    const val ACHIEVEMENTS_BASE_URL = "$BASE_URL/images/achievements/"
     const val HEADER_SESSION_TOKEN = "X-User-Session-Token"
 
     var user: ClientUser? = null
-        private set
-
-    var chatList: List<Chat>? = null
         private set
 
     private var sessionToken: String = ""
@@ -75,7 +75,7 @@ object HomeToWorkClient {
                     when (response.code()) {
                         404 -> loginCallback.onInvalidCredential()
                         200 -> {
-                            
+
                             val sToken = response.headers()[HEADER_SESSION_TOKEN]
                             if (sToken == null)
                                 loginCallback.onError(null)
@@ -84,7 +84,7 @@ object HomeToWorkClient {
                                 user = response.body()!!
                                 loginCallback.onLoginSuccess()
                             }
-                            
+
                         }
                         else -> loginCallback.onError(null)
                     }
@@ -97,7 +97,7 @@ object HomeToWorkClient {
     /**
      * Imposta nel server il token unico per la FMC Platform
      */
-    fun updateFcmToken(fcmToken: String?) {
+    fun updateFcmToken(fcmToken: String?, onSuccessListener: OnSuccessListener<ResponseBody>, onFailureListener: OnFailureListener) {
 
         val service = ServiceGenerator.createService(UserService::class.java, sessionToken)
 
@@ -105,7 +105,12 @@ object HomeToWorkClient {
         service.updateFCMToken(fcmToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ _ -> }, { it.printStackTrace() })
+                .subscribe({ response ->
+                    if (response.code() == 201)
+                        onSuccessListener.onSuccess(response.body())
+                    else
+                        onFailureListener.onFailure(Exception("Response code " + response.code()))
+                }, { it.printStackTrace() })
 
     }
 
@@ -474,7 +479,7 @@ object HomeToWorkClient {
     /**
      * Effettua la sincronizzazione delle posizioni dell'utente
      */
-    fun uploadLocations(userId: Long, routeLocationList: List<RouteLocation>, onSuccessListener: OnSuccessListener<List<RouteLocation>>, onFailureListener: OnFailureListener) {
+    fun uploadLocations(routeLocationList: List<RouteLocation>, onSuccessListener: OnSuccessListener<List<RouteLocation>>, onFailureListener: OnFailureListener) {
 
         val service = ServiceGenerator.createService(UserService::class.java, sessionToken)
 
@@ -547,7 +552,6 @@ object HomeToWorkClient {
                 .subscribe({ response ->
 
                     if (response.code() == 200) {
-                        chatList = response.body()
                         onSuccessListener.onSuccess(response.body())
                     } else
                         onFailureListener.onFailure(Exception("Response code: " + response.code()))
@@ -559,7 +563,7 @@ object HomeToWorkClient {
     /**
      * Ottiene i messaggi della chat con l'id fornito
      */
-    fun getChatMessageList(chatId: String, onSuccessListener: OnSuccessListener<List<Message>>, onFailureListener: OnFailureListener) {
+    fun getChatMessageList(chatId: Long, onSuccessListener: OnSuccessListener<List<Message>>, onFailureListener: OnFailureListener) {
 
         val service = ServiceGenerator.createService(ChatService::class.java, sessionToken)
 
@@ -580,7 +584,7 @@ object HomeToWorkClient {
     /**
      * Invia un messaggio alla chat con l'id fornito
      */
-    fun sendMessageToChat(chatId: String, text: String, onSuccessListener: OnSuccessListener<Response<ResponseBody>>, onFailureListener: OnFailureListener) {
+    fun sendMessageToChat(chatId: Long, text: String, onSuccessListener: OnSuccessListener<Response<ResponseBody>>, onFailureListener: OnFailureListener) {
 
         val service = ServiceGenerator.createService(ChatService::class.java, sessionToken)
 

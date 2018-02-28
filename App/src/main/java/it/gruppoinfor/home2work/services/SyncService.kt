@@ -25,7 +25,6 @@ import java.util.*
 class SyncService : Service() {
 
     private val routeLocations = ArrayList<RouteLocation>()
-    private lateinit var mUser: User
 
     override fun onCreate() {
         super.onCreate()
@@ -61,7 +60,7 @@ class SyncService : Service() {
 
     private fun syncRoutePoints(routeLocationList: List<RouteLocation>) {
 
-        HomeToWorkClient.uploadLocations(mUser.id, routeLocationList,
+        HomeToWorkClient.uploadLocations(routeLocationList,
                 OnSuccessListener {
 
                     Answers.getInstance().logCustom(CustomEvent("Sincronizzazione posizioni"))
@@ -91,7 +90,7 @@ class SyncService : Service() {
 
         val wifiEnabled = getConnectivityType(this@SyncService) == ConnectivityManager.TYPE_WIFI
 
-        return wifiEnabled || Prefs.getBoolean(Const.PREF_SYNC_WITH_DATA, true)
+        return wifiEnabled || Prefs.getBoolean(Const.PREFS_SYNC_WITH_DATA, true)
     }
 
     override fun onBind(intent: Intent): IBinder? {

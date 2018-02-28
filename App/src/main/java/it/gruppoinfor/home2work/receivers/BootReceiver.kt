@@ -17,7 +17,6 @@ import it.gruppoinfor.home2work.activities.SplashActivity
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.user.SessionManager
-import it.gruppoinfor.home2workapi.model.User
 
 class BootReceiver : BroadcastReceiver() {
 
@@ -27,7 +26,7 @@ class BootReceiver : BroadcastReceiver() {
         get() = object : SessionManager.SessionCallback {
             override fun onValidSession() {
 
-                if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
+                if (Prefs.getBoolean(Const.PREFs_ACTIVITY_TRACKING, true)) {
                     val locationIntent = Intent(context, LocationService::class.java)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         context.startForegroundService(locationIntent)

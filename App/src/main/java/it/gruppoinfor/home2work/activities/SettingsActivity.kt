@@ -29,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
                 builder.setTitle(R.string.activity_settings_dialog_tracking_title)
                 builder.setMessage(R.string.activity_settings_dialog_tracking_content)
                 builder.setPositiveButton(R.string.activity_settings_dialog_tracking_confirm) { _, _ ->
-                    Prefs.putBoolean(Const.PREF_ACTIVITY_TRACKING, b)
+                    Prefs.putBoolean(Const.PREFs_ACTIVITY_TRACKING, b)
                     text_tracking.setText(R.string.activity_settings_tracking_disabled)
                     text_tracking.setTextColor(ContextCompat.getColor(this, R.color.red_500))
                 }
@@ -37,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
                 builder.show()
 
             } else {
-                Prefs.putBoolean(Const.PREF_ACTIVITY_TRACKING, b)
+                Prefs.putBoolean(Const.PREFs_ACTIVITY_TRACKING, b)
                 text_tracking.setText(R.string.activity_settings_tracking_enabled)
                 text_tracking.setTextColor(ContextCompat.getColor(this, R.color.light_bg_dark_secondary_text))
             }
@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 Crashlytics.setBool("Data sync", i != 1)
 
-                Prefs.putBoolean(Const.PREF_SYNC_WITH_DATA, i != 1)
+                Prefs.putBoolean(Const.PREFS_SYNC_WITH_DATA, i != 1)
 
             }
 
@@ -64,7 +64,7 @@ class SettingsActivity : AppCompatActivity() {
 
             Crashlytics.setBool("Notifiche abilitate", b)
 
-            Prefs.putBoolean(Const.PREF_NOTIFICATIONS, b)
+            Prefs.putBoolean(Const.PREFS_NOTIFICATIONS, b)
 
         }
 
@@ -94,7 +94,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun initUI() {
 
         switch_tracking.setOnCheckedChangeListener(trackingSwitchCheckedChangeListener)
-        if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
+        if (Prefs.getBoolean(Const.PREFs_ACTIVITY_TRACKING, true)) {
             switch_tracking.isChecked = true
             text_tracking.setText(R.string.activity_settings_tracking_enabled)
             text_tracking.setTextColor(ContextCompat.getColor(this, R.color.light_bg_dark_secondary_text))
@@ -104,13 +104,13 @@ class SettingsActivity : AppCompatActivity() {
             text_tracking.setTextColor(ContextCompat.getColor(this, R.color.red_500))
         }
 
-        if (Prefs.getBoolean(Const.PREF_SYNC_WITH_DATA, true))
+        if (Prefs.getBoolean(Const.PREFS_SYNC_WITH_DATA, true))
             spinner_sync_mode.setSelection(0)
         else
             spinner_sync_mode.setSelection(1)
         spinner_sync_mode.onItemSelectedListener = syncModeItemSelectedListener
 
-        switch_notifications.isChecked = Prefs.getBoolean(Const.PREF_NOTIFICATIONS, true)
+        switch_notifications.isChecked = Prefs.getBoolean(Const.PREFS_NOTIFICATIONS, true)
         switch_notifications.setOnCheckedChangeListener(notificationSwitchCheckedChangeListener)
 
         button_logout.setOnClickListener {

@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
-        if (Prefs.getBoolean(Const.PREF_ACTIVITY_TRACKING, true)) {
+        if (Prefs.getBoolean(Const.PREFs_ACTIVITY_TRACKING, true)) {
             val locationIntent = Intent(this, LocationService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(locationIntent)

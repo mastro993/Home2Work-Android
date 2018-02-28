@@ -13,13 +13,13 @@ internal interface ChatService {
 
     @GET("chat/{chatId}")
     fun getChatMessageList(
-            @Path("chatId") chatId: String?
+            @Path("chatId") chatId: Long?
     ): Observable<Response<List<Message>>>
 
     @FormUrlEncoded
     @POST("chat/{chatId}")
     fun sendMessageToChat(
-            @Path("chatId") chatId: String?,
+            @Path("chatId") chatId: Long?,
             @Field("text") text: String?
     ): Observable<Response<ResponseBody>>
 

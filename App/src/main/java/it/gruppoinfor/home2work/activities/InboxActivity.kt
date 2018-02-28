@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.activities
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -48,18 +49,17 @@ class InboxActivity : AppCompatActivity() {
         }
 
         initUI()
+
     }
 
     override fun onStart() {
         super.onStart()
 
-        // TODO aggiornamento lista per nuovo messaggio
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver,
                 IntentFilter(Const.NEW_MESSAGE_RECEIVED)
         )
 
-        inbox_loading_view.visibility = View.VISIBLE
         refreshList()
 
     }
@@ -90,7 +90,6 @@ class InboxActivity : AppCompatActivity() {
 
     private fun initUI() {
 
-        inbox_loading_view.visibility = View.VISIBLE
 
         dialogsListAdapter = DialogsListAdapter(ImageLoader { imageView, url ->
             val requestOptions = RequestOptions()
@@ -107,11 +106,11 @@ class InboxActivity : AppCompatActivity() {
 
         dialogs_list.setAdapter(dialogsListAdapter)
 
-        if (HomeToWorkClient.chatList == null) {
-            refreshList()
+        if (chatList != null) {
+            status_view.done()
+            dialogsListAdapter?.setItems(chatList)
         } else {
-            dialogsListAdapter?.setItems(HomeToWorkClient.chatList)
-            inbox_loading_view.visibility = View.GONE
+            status_view.loading()
         }
 
         dialogsListAdapter?.setOnDialogClickListener({
@@ -134,19 +133,31 @@ class InboxActivity : AppCompatActivity() {
 
     private fun refreshList() {
 
-
-
         HomeToWorkClient.getChatList(OnSuccessListener {
+
             chatList = it
             dialogsListAdapter?.setItems(it)
+
             swipe_refresh_layout.isRefreshing = false
-            inbox_loading_view.visibility = View.GONE
+            status_view.done()
+
             HomeFragment.inboxIcon.setCount(it.count { it.unreadCnt > 0 })
+
+            removeNotification()
+
         }, OnFailureListener {
-            // TODO avviso errore
+
             swipe_refresh_layout.isRefreshing = false
-            inbox_loading_view.visibility = View.GONE
+            status_view.error("Impossibile caricare lista conversazioni al momento")
+
         })
+
+    }
+
+    private fun removeNotification() {
+
+        val mNotifyMgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        mNotifyMgr.cancel(Const.MESSAGING_NOTIFICATION_ID)
 
     }
 

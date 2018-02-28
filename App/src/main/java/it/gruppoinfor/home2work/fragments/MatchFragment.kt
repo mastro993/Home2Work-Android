@@ -39,7 +39,7 @@ class MatchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loading_view.visibility = View.VISIBLE
+        status_view.loading()
 
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener {
@@ -47,7 +47,17 @@ class MatchFragment : Fragment() {
             refreshMatches()
         }
 
-        refreshMatches()
+        HomeToWorkClient.getMatchList(OnSuccessListener { matches ->
+
+            matchList = matches
+            refreshBadgeCounter()
+            refreshList()
+
+        }, OnFailureListener {
+
+            status_view.error("Impossibile ottenere lista match")
+
+        })
 
     }
 
@@ -134,7 +144,7 @@ class MatchFragment : Fragment() {
         })
 
         swipe_refresh_layout.isRefreshing = false
-        loading_view.visibility = View.GONE
+        status_view.done()
 
     }
 

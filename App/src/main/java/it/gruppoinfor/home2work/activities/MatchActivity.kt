@@ -47,7 +47,7 @@ class MatchActivity : AppCompatActivity() {
         val map = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         map.onCreate(savedInstanceState)
 
-        match_loading_view.visibility = View.VISIBLE
+        status_view.loading()
 
         map.getMapAsync(MyMapReadyCallback(this))
 
@@ -123,7 +123,7 @@ class MatchActivity : AppCompatActivity() {
 
     private fun refreshUI() {
 
-        match_loading_view.visibility = View.GONE
+        status_view.done()
         val animator = ValueAnimator.ofInt(0, match.score)
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()

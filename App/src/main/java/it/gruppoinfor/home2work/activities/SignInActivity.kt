@@ -12,6 +12,7 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.LoginEvent
 import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.services.FirebaseTokenService
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
@@ -49,7 +50,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
             }
         }
 
-        loadEmail()
+        email_edit_text.setText(Prefs.getString(Const.PREFS_EMAIL, ""))
     }
 
     override fun onStart() {
@@ -73,11 +74,15 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
                 .putMethod("Form")
                 .putSuccess(true))
 
+        // Salvo i dati dell'utente per crashalytics
         Crashlytics.setUserIdentifier(HomeToWorkClient.user?.id.toString())
         Crashlytics.setUserEmail(HomeToWorkClient.user?.email)
         Crashlytics.setUserName(HomeToWorkClient.user.toString())
 
-        Prefs.putString(PREFS_EMAIL, HomeToWorkClient.user?.email)
+        // Aggiorno il token Firebase Cloud Messaging sul server
+        FirebaseTokenService().onTokenRefresh()
+
+        Prefs.putString(Const.PREFS_EMAIL, HomeToWorkClient.user?.email)
 
         SessionManager.storeSession(this, HomeToWorkClient.user)
 
@@ -146,26 +151,6 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
         return valid
     }
 
-    private fun storeEmail() {
 
-        val prefs = getSharedPreferences(PREFS_SIGNIN, Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        editor.putString(PREFS_EMAIL, email_edit_text.text.toString())
-        editor.apply()
-
-    }
-
-    private fun loadEmail() {
-
-        val prefs = getSharedPreferences(PREFS_SIGNIN, Context.MODE_PRIVATE)
-        val email = prefs.getString(PREFS_EMAIL, "")
-        email_edit_text.setText(email)
-
-    }
-
-    companion object {
-        private const val PREFS_EMAIL = "signin_email"
-        private const val PREFS_SIGNIN = "it.home2work.app.signin"
-    }
 
 }

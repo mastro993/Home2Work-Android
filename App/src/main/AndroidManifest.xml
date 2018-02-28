@@ -21,9 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/home2work_icon" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -65,9 +73,7 @@
             android:name=".services.ActivityRecognizedService"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name=".services.FirebaseTokenService"
-            android:exported="false">
+        <service android:name=".services.FirebaseTokenService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -76,16 +82,13 @@
             android:name=".services.MessagingService"
             android:enabled="true"
             android:exported="true"
-            tools:ignore="ExportedService">
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
 
-        <activity
-            android:name="cat.ereza.customactivityoncrash.sample.CustomErrorActivity"
-            android:label="Ooooops!"
-            android:process=":error_activity" />
         <activity
             android:name=".activities.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -133,8 +136,13 @@
         <activity
             android:name=".activities.InboxActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="Messaggi"
-            android:screenOrientation="portrait" />
+            android:label="Conversazioni"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="it.gruppoinfor.hometowork.NEW_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.ChatActivity"
             android:configChanges="orientation|keyboardHidden"

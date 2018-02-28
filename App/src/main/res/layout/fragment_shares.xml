@@ -79,22 +79,10 @@
 
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/loading_view"
+        <it.gruppoinfor.home2work.custom.StatusView
+            android:id="@+id/status_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/window_background"
-            android:elevation="4dp"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:layout_width="@dimen/loading_progressbar_size"
-                android:layout_height="@dimen/loading_progressbar_size"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/light_bg_dark_hint_text" />
-
-        </FrameLayout>
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 

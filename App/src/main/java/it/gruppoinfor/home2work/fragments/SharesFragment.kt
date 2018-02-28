@@ -34,7 +34,6 @@ import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.Share
 import kotlinx.android.synthetic.main.fragment_shares.*
-import java.util.*
 
 class SharesFragment : Fragment() {
 
@@ -52,7 +51,7 @@ class SharesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loading_view.visibility = View.VISIBLE
+        status_view.loading()
 
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener {
@@ -80,7 +79,17 @@ class SharesFragment : Fragment() {
 
         }
 
-        refreshShares()
+        HomeToWorkClient.getShareList(OnSuccessListener { shares ->
+
+            refreshList(shares)
+
+        }, OnFailureListener {
+
+            status_view.error("Impossibile ottenere lista condivisioni")
+
+            it.printStackTrace()
+
+        })
 
     }
 
@@ -104,7 +113,7 @@ class SharesFragment : Fragment() {
 
         } else if (requestCode == 0) {
 
-            refreshUI()
+            refreshList(mShareList)
 
         }
 
@@ -114,20 +123,7 @@ class SharesFragment : Fragment() {
 
         HomeToWorkClient.getShareList(OnSuccessListener { shares ->
 
-            mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
-
-
-            if (mOngoingShare?.host == HomeToWorkClient.user ||
-                    mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
-
-                shares.remove(mOngoingShare!!)
-
-            }
-
-            mShareList.clear()
-            mShareList.addAll(shares)
-
-            refreshUI()
+            refreshList(shares)
 
         }, OnFailureListener {
 
@@ -141,7 +137,20 @@ class SharesFragment : Fragment() {
 
     }
 
-    private fun refreshUI() {
+    private fun refreshList(shares: ArrayList<Share>) {
+
+        mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
+
+
+        if (mOngoingShare?.host == HomeToWorkClient.user ||
+                mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
+
+            shares.remove(mOngoingShare!!)
+
+        }
+
+        mShareList.clear()
+        mShareList.addAll(shares)
 
         if (mShareList.size == 0) {
 
@@ -197,7 +206,7 @@ class SharesFragment : Fragment() {
         }
 
         swipe_refresh_layout.isRefreshing = false
-        loading_view.visibility = View.GONE
+        status_view.done()
 
     }
 

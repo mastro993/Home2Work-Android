@@ -12,7 +12,7 @@ class Chat : IDialog<Message>, Serializable {
 
     @SerializedName("Id")
     @Expose
-    var chatId: String = ""
+    var chatId: Long = 0L
     @SerializedName("User1")
     @Expose
     var user1: Author = Author()
@@ -27,7 +27,7 @@ class Chat : IDialog<Message>, Serializable {
     var unreadCnt: Int = 0
 
     override fun getId(): String {
-        return chatId
+        return chatId.toString()
     }
 
     override fun getDialogPhoto(): String {

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -29,14 +28,24 @@ import kotlinx.android.synthetic.main.activity_chat.*
 
 class ChatActivity : AppCompatActivity() {
 
-    lateinit var chat: Chat
+    private lateinit var chat: Chat
     var adapter: MessagesListAdapter<Message>? = null
 
     private val mMessageReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
 
-            // TODO ricezione nuovo messaggio
+            val chatId = intent.getLongExtra(Const.CHAT_ID, 0)
+
+            if (chat.chatId == chatId) {
+
+                val message = Message()
+                message.messageText = intent.getStringExtra(Const.TEXT)
+                message.messageUser = chat.users.first() as Author
+
+                adapter?.addToStart(message, true)
+
+            }
 
         }
 
@@ -53,9 +62,8 @@ class ChatActivity : AppCompatActivity() {
         if (intent.hasExtra(Const.EXTRA_CHAT)) {
             chat = intent.getSerializableExtra(Const.EXTRA_CHAT) as Chat
             initUI()
-            refreshMessages()
         } else {
-            // TODO avviso errore
+            Toast.makeText(this, "Chat non valida", Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -69,6 +77,8 @@ class ChatActivity : AppCompatActivity() {
                 mMessageReceiver,
                 IntentFilter(Const.NEW_MESSAGE_RECEIVED)
         )
+
+        refreshMessages()
 
     }
 
@@ -91,7 +101,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun initUI() {
 
-        chat_loading_view.visibility = View.VISIBLE
+        status_view.loading()
 
         title = chat.users.first().name
 
@@ -113,20 +123,14 @@ class ChatActivity : AppCompatActivity() {
         input.setInputListener({
 
             val message = Message()
-            message.messageText = it.toString()
+            message.messageText = it.toString().trim()
             message.messageUser = Author(HomeToWorkClient.user?.id)
-
-            input.isActivated = false
-
+            adapter?.addToStart(message, true)
 
             HomeToWorkClient.sendMessageToChat(chat.chatId, message.text, OnSuccessListener {
 
-                adapter?.addToStart(message, true)
-                input.isActivated = true
-
             }, OnFailureListener {
 
-                input.isActivated = true
                 Toast.makeText(this, "Impossibile inviare il messaggio al momento", Toast.LENGTH_SHORT).show()
 
             })
@@ -140,11 +144,11 @@ class ChatActivity : AppCompatActivity() {
         HomeToWorkClient.getChatMessageList(chat.chatId, OnSuccessListener {
 
             adapter?.addToEnd(it, true)
-            chat_loading_view.visibility = View.GONE
+            status_view.done()
 
         }, OnFailureListener {
 
-            // TODO avviso errore
+            status_view.error("Impossibile ottenere i messaggi della conversazione")
 
         })
     }
