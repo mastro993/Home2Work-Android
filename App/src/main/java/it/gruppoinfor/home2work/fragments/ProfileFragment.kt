@@ -80,51 +80,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loading_view.visibility = View.VISIBLE
-
-        appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
-            override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
-
-                when (state) {
-                    AppBarStateChangeListener.State.COLLAPSED -> if (toolbar_layout.alpha < 1.0f) {
-                        toolbar_layout.visibility = View.VISIBLE
-                        toolbar_layout.animate()
-                                //.translationY(toolbarLayout.getHeight())
-                                .alpha(1.0f)
-                                .setListener(null)
-                    }
-                    AppBarStateChangeListener.State.IDLE -> if (toolbar_layout.alpha > 0.0f) {
-                        toolbar_layout.animate()
-                                .translationY(0f)
-                                .alpha(0.0f)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator) {
-                                        super.onAnimationEnd(animation)
-                                        toolbar_layout.visibility = View.GONE
-                                    }
-                                })
-                    }
-                    AppBarStateChangeListener.State.EXPANDED -> {
-                    }
-                }
-
-            }
-        })
-
-        profile_options_button.setOnClickListener { startActivity(Intent(activity, SettingsActivity::class.java)) }
-
-        swipe_refresh_layout.setOnRefreshListener {
-            swipe_refresh_layout.isRefreshing = true
-            refreshProfile()
-        }
-        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
-
-        initHeaderUI()
-        initSharesUI()
-        initActivityUI()
-        initFooterUI()
-
-        refreshProfile()
+        initUI()
+        getProfile()
 
     }
 
@@ -187,6 +144,64 @@ class ProfileFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    private fun selectImageIntent() {
+
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent,
+                getString(R.string.activity_configuration_avatar_selection)), REQ_CODE_AVATAR)
+
+    }
+
+    private fun initUI() {
+
+        appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
+            override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
+
+                when (state) {
+                    AppBarStateChangeListener.State.COLLAPSED -> if (toolbar_layout.alpha < 1.0f) {
+                        toolbar_layout.visibility = View.VISIBLE
+                        toolbar_layout.animate()
+                                //.translationY(toolbarLayout.getHeight())
+                                .alpha(1.0f)
+                                .setListener(null)
+                    }
+                    AppBarStateChangeListener.State.IDLE -> if (toolbar_layout.alpha > 0.0f) {
+                        toolbar_layout.animate()
+                                .translationY(0f)
+                                .alpha(0.0f)
+                                .setListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator) {
+                                        super.onAnimationEnd(animation)
+                                        toolbar_layout.visibility = View.GONE
+                                    }
+                                })
+                    }
+                    AppBarStateChangeListener.State.EXPANDED -> {
+                    }
+                }
+
+            }
+        })
+
+        profile_options_button.setOnClickListener { startActivity(Intent(activity, SettingsActivity::class.java)) }
+
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = true
+            refreshProfile()
+        }
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
+
+        initHeaderUI()
+        initSharesUI()
+        initActivityUI()
+        initFooterUI()
+
+        getProfile()
+
+    }
+
     private fun initHeaderUI() {
 
         avatar_view.setOnClickListener {
@@ -215,8 +230,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initSharesUI() {
-
-        // TODO rimuovere valore se 0 %
 
         //chart_shares.setUsePercentValues(true)
         chart_shares.description.isEnabled = false
@@ -262,15 +275,15 @@ class ProfileFragment : Fragment() {
         chart_activity.axisLeft.isEnabled = false
         chart_activity.axisRight.isEnabled = false
 
-        chart_activity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+/*        chart_activity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                // TODO dialog con informazioni
+                // ...
             }
 
             override fun onNothingSelected() {
                 // ...
             }
-        })
+        })*/
 
         val legend = chart_activity.legend
         legend.isEnabled = false
@@ -285,13 +298,21 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun selectImageIntent() {
+    private fun getProfile() {
 
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent,
-                getString(R.string.activity_configuration_avatar_selection)), REQ_CODE_AVATAR)
+        status_view.loading()
+
+        HomeToWorkClient.getProfile(OnSuccessListener { userProfile ->
+
+            status_view.done()
+            mProfile = userProfile
+            refreshUI()
+
+        }, OnFailureListener {
+
+            status_view.error("Impossibile ottenere informazioni del profilo al momento")
+
+        })
 
     }
 
@@ -300,31 +321,39 @@ class ProfileFragment : Fragment() {
         HomeToWorkClient.getProfile(OnSuccessListener { userProfile ->
 
             mProfile = userProfile
-            refreshHeader()
-            refreshExp()
-            refreshShares()
-            refreshActivity()
+            refreshHeaderUI()
+            refreshExpUI()
+            refreshSharesUI()
+            refreshActivityUI()
 
             swipe_refresh_layout.isRefreshing = false
-            loading_view.visibility = View.GONE
 
         }, OnFailureListener {
 
-            Toast.makeText(context!!, "Impossibile ottenere informazioni del profilo al momento", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context!!, "Impossibile aggiornare le informazioni del profilo al momento", Toast.LENGTH_SHORT).show()
             swipe_refresh_layout.isRefreshing = false
 
         })
 
     }
 
-    private fun refreshHeader() {
+    private fun refreshUI() {
+
+        refreshHeaderUI()
+        refreshExpUI()
+        refreshSharesUI()
+        refreshActivityUI()
+
+    }
+
+    private fun refreshHeaderUI() {
 
         avatar_view.setLevel(mProfile.exp.level)
         avatar_view_small.setLevel(mProfile.exp.level)
 
     }
 
-    private fun refreshExp() {
+    private fun refreshExpUI() {
 
         val anim = ProgressBarAnimation(progress_exp, mExpOld.progress, mProfile.exp.progress)
         anim.duration = 500
@@ -338,93 +367,113 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun refreshShares() {
+    private fun refreshSharesUI() {
 
-        text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
-        text_month_shares_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), mProfile.stats.monthShares)
-        text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), mProfile.stats.monthSharesAvg)
+        if (mProfile.stats.shares > 0) {
+            text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
+            text_month_shares_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), mProfile.stats.monthShares)
+            text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), mProfile.stats.monthSharesAvg)
 
-        val s = SpannableString("${mProfile.stats.shares}\ncondivisioni effettuate")
-        s.setSpan(RelativeSizeSpan(2.1f), 0, "${mProfile.stats.shares}".length, 0)
-        s.setSpan(StyleSpan(Typeface.BOLD), 0, "${mProfile.stats.shares}".length, 0)
-        s.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)), 0, "${mProfile.stats.shares}".length, 0)
-        chart_shares.centerText = s
+            val s = SpannableString("${mProfile.stats.shares}\ncondivisioni effettuate")
+            s.setSpan(RelativeSizeSpan(2.1f), 0, "${mProfile.stats.shares}".length, 0)
+            s.setSpan(StyleSpan(Typeface.BOLD), 0, "${mProfile.stats.shares}".length, 0)
+            s.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)), 0, "${mProfile.stats.shares}".length, 0)
+            chart_shares.centerText = s
 
-        val entriesPie = ArrayList<PieEntry>()
-        entriesPie.add(PieEntry(mProfile.stats.hostShares.toFloat(), "Driver"))
-        entriesPie.add(PieEntry(mProfile.stats.guestShares.toFloat(), "Guest"))
+            val entriesPie = ArrayList<PieEntry>()
+            if (mProfile.stats.hostShares > 0) entriesPie.add(PieEntry(mProfile.stats.hostShares.toFloat(), "Driver"))
+            if (mProfile.stats.guestShares > 0) entriesPie.add(PieEntry(mProfile.stats.guestShares.toFloat(), "Guest"))
 
-        val pieDataSet = PieDataSet(entriesPie, null) // add entries to dataset
-        pieDataSet.sliceSpace = 2f
-        pieDataSet.setDrawValues(false)
+            val pieDataSet = PieDataSet(entriesPie, null) // add entries to dataset
+            pieDataSet.sliceSpace = 2f
+            pieDataSet.setDrawValues(false)
 
-        val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(context!!, R.color.colorPrimary))
-        colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
+            val colors = ArrayList<Int>()
+            colors.add(ContextCompat.getColor(context!!, R.color.colorPrimary))
+            colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
 
-        pieDataSet.colors = colors
+            pieDataSet.colors = colors
 
-        val pieData = PieData(pieDataSet)
-        pieData.setValueTextColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
-        pieData.setValueFormatter(PercentFormatter())
-        pieData.setValueTextSize(16f)
+            val pieData = PieData(pieDataSet)
+            pieData.setValueTextColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
+            pieData.setValueFormatter(PercentFormatter())
+            pieData.setValueTextSize(16f)
 
-        chart_shares.data = pieData
-        chart_shares.invalidate()
+            chart_shares.data = pieData
+            chart_shares.invalidate()
 
-    }
+            view_no_shares.visibility = View.GONE
 
-    private fun refreshActivity() {
+        } else {
 
-        val stats = mProfile.stats
-        text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance / 1000f)
-        // TODO mese più attivo
-        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance / 1000f)
-        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg / 1000f)
+            view_no_shares.visibility = View.VISIBLE
 
-        val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
-
-        val entries = ArrayList<Entry>()
-        val cal = Calendar.getInstance()
-        val thisMonth = cal.get(Calendar.MONTH)
-
-        for (i in 5 downTo 0) {
-
-            var month = thisMonth - i
-            if (month < 0) month += 12
-
-            val activity = mProfile.activity.find { it.month == month + 1 }
-            val entry = Entry(5 - i.toFloat(), activity?.distance?.toFloat()?.div(1000f)
-                    ?: 0f)
-            entries.add(entry)
 
         }
 
-        Collections.sort(entries, EntryXComparator())
+    }
 
-        val dataSet = LineDataSet(entries, "Label") // add entries to dataset
-        dataSet.color = ContextCompat.getColor(context!!, R.color.colorAccent)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-        dataSet.setDrawFilled(true)
-        dataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.drawable_activity_chart_fill)
-        dataSet.fillAlpha = 100
-        dataSet.lineWidth = 3f
-        dataSet.setDrawCircles(true)
-        dataSet.setDrawCircleHole(true)
-        dataSet.circleRadius = 6f
-        dataSet.circleHoleRadius = 4f
-        dataSet.setCircleColorHole(ContextCompat.getColor(context!!, R.color.cardview_light_background))
-        dataSet.setDrawValues(false)
-        dataSet.valueTextColor = ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)
-        dataSet.valueTextSize = 12f
-        dataSet.setDrawHorizontalHighlightIndicator(false)
-        dataSet.setDrawVerticalHighlightIndicator(false)
-        dataSet.circleColors = colors
+    private fun refreshActivityUI() {
 
-        val lineData = LineData(dataSet)
-        chart_activity.data = lineData
-        chart_activity.invalidate()
+        val stats = mProfile.stats
+
+        if (stats.sharedDistance > 0) {
+            text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance / 1000f)
+            // TODO mese più attivo
+            text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance / 1000f)
+            text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg / 1000f)
+
+            val colors = ArrayList<Int>()
+            colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
+
+            val entries = ArrayList<Entry>()
+            val cal = Calendar.getInstance()
+            val thisMonth = cal.get(Calendar.MONTH)
+
+            for (i in 5 downTo 0) {
+
+                var month = thisMonth - i
+                if (month < 0) month += 12
+
+                val activity = mProfile.activity.find { it.month == month + 1 }
+                val entry = Entry(5 - i.toFloat(), activity?.distance?.toFloat()?.div(1000f)
+                        ?: 0f)
+                entries.add(entry)
+
+            }
+
+            Collections.sort(entries, EntryXComparator())
+
+            val dataSet = LineDataSet(entries, "Label") // add entries to dataset
+            dataSet.color = ContextCompat.getColor(context!!, R.color.colorAccent)
+            dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+            dataSet.setDrawFilled(true)
+            dataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.drawable_activity_chart_fill)
+            dataSet.fillAlpha = 100
+            dataSet.lineWidth = 3f
+            dataSet.setDrawCircles(true)
+            dataSet.setDrawCircleHole(true)
+            dataSet.circleRadius = 6f
+            dataSet.circleHoleRadius = 4f
+            dataSet.setCircleColorHole(ContextCompat.getColor(context!!, R.color.cardview_light_background))
+            dataSet.setDrawValues(false)
+            dataSet.valueTextColor = ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)
+            dataSet.valueTextSize = 12f
+            dataSet.setDrawHorizontalHighlightIndicator(false)
+            dataSet.setDrawVerticalHighlightIndicator(false)
+            dataSet.circleColors = colors
+
+            val lineData = LineData(dataSet)
+            chart_activity.data = lineData
+            chart_activity.invalidate()
+
+            view_no_activity.visibility = View.GONE
+
+        } else {
+
+            view_no_activity.visibility = View.VISIBLE
+
+        }
 
     }
 

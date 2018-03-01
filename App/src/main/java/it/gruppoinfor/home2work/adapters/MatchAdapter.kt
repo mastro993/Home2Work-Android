@@ -20,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.ShowUserActivity
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
+import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.model.Match
 import kotlinx.android.synthetic.main.item_match.view.*
 
@@ -82,9 +83,11 @@ class MatchAdapter(private val mContext: Context, private val matches: ArrayList
 
         if (match.score == 0) holder.scoreText.visibility = View.INVISIBLE
 
+
+
         holder.userAvatar.setOnClickListener {
             val userIntent = Intent(mContext, ShowUserActivity::class.java)
-            userIntent.putExtra("user", match.host)
+            userIntent.putExtra(Const.EXTRA_USER, match.host)
             mContext.startActivity(userIntent)
         }
 

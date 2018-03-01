@@ -602,5 +602,25 @@ object HomeToWorkClient {
 
     }
 
+    fun newChat(recipientId: Long, onSuccessListener: OnSuccessListener<Chat>, onFailureListener: OnFailureListener) {
+
+        val service = ServiceGenerator.createService(ChatService::class.java, sessionToken)
+
+        service.newChat(recipientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+
+                    if (response.code() == 200) {
+                        onSuccessListener.onSuccess(response.body())
+                    } else
+                        onFailureListener.onFailure(Exception("Response code: " + response.code()))
+
+                }, {
+                    it.printStackTrace()
+                })
+
+    }
+
 
 }

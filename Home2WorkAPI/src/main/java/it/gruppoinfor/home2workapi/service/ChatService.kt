@@ -26,6 +26,6 @@ internal interface ChatService {
     @FormUrlEncoded
     @POST("chat/new")
     fun newChat(
-            @Field("recipientId") recipientId: String?
+            @Field("recipientId") recipientId: Long?
     ): Observable<Response<Chat>>
 }

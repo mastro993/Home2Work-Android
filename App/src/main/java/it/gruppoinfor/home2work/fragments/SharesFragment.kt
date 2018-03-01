@@ -30,7 +30,6 @@ import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.Const.EXTRA_SHARE
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Guest
 import it.gruppoinfor.home2workapi.model.LatLng
 import it.gruppoinfor.home2workapi.model.Share
 import kotlinx.android.synthetic.main.fragment_shares.*
@@ -38,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_shares.*
 class SharesFragment : Fragment() {
 
     private var mOngoingShare: Share? = null
+    private var mSharesAdapter: SharesAdapter? = null
     private val mShareList = ArrayList<Share>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,7 +51,38 @@ class SharesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        status_view.loading()
+        initUI()
+        getShares()
+
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+        if (requestCode == Const.REQ_CAMERA)
+            joinShare()
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
+        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (scanResult is IntentResult) {
+
+            val stringData = scanResult.contents.split(",")
+            val shareId = java.lang.Long.parseLong(stringData[0])
+            val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
+            checkShareCode(shareId, latLng)
+
+        } else if (requestCode == 0) {
+
+            refreshUI()
+
+        }
+
+    }
+
+    private fun initUI() {
 
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener {
@@ -79,43 +110,46 @@ class SharesFragment : Fragment() {
 
         }
 
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
+
+        shares_recycler_view.layoutManager = layoutManager
+        shares_recycler_view.layoutAnimation = animation
+
+        mSharesAdapter = SharesAdapter(context as MainActivity, mShareList)
+        mSharesAdapter?.setItemClickCallbacks(object : ItemClickCallbacks {
+            override fun onItemClick(view: View, position: Int) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onLongItemClick(view: View, position: Int): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
+
+        shares_recycler_view.adapter = mSharesAdapter
+
+
+    }
+
+    private fun getShares() {
+
+        status_view.loading()
+
         HomeToWorkClient.getShareList(OnSuccessListener { shares ->
 
-            refreshList(shares)
+            mShareList.clear()
+            mShareList.addAll(shares)
+            mSharesAdapter?.notifyDataSetChanged()
+
+            refreshUI()
 
         }, OnFailureListener {
 
             status_view.error("Impossibile ottenere lista condivisioni")
-
             it.printStackTrace()
 
         })
-
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-
-        if (requestCode == Const.REQ_CAMERA)
-            joinShare()
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-
-        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (scanResult is IntentResult) {
-
-            val stringData = scanResult.contents.split(",")
-            val shareId = java.lang.Long.parseLong(stringData[0])
-            val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
-            checkShareCode(shareId, latLng)
-
-        } else if (requestCode == 0) {
-
-            refreshList(mShareList)
-
-        }
 
     }
 
@@ -123,64 +157,29 @@ class SharesFragment : Fragment() {
 
         HomeToWorkClient.getShareList(OnSuccessListener { shares ->
 
-            refreshList(shares)
+            mShareList.clear()
+            mShareList.addAll(shares)
+            mSharesAdapter?.notifyDataSetChanged()
+
+            refreshUI()
 
         }, OnFailureListener {
 
             Toast.makeText(context!!, "Impossibile ottenere lista condivsioni al momento", Toast.LENGTH_SHORT).show()
-
             swipe_refresh_layout.isRefreshing = false
-
             it.printStackTrace()
 
         })
 
     }
 
-    private fun refreshList(shares: ArrayList<Share>) {
+    private fun refreshUI() {
 
-        mOngoingShare = shares.findLast { share -> share.status == Share.Status.CREATED }
-
-
-        if (mOngoingShare?.host == HomeToWorkClient.user ||
-                mOngoingShare?.guests?.first { guest -> guest.user == HomeToWorkClient.user && guest.status == Guest.Status.JOINED } != null) {
-
-            shares.remove(mOngoingShare!!)
-
-        }
-
-        mShareList.clear()
-        mShareList.addAll(shares)
-
-        if (mShareList.size == 0) {
-
-            empty_view.visibility = View.VISIBLE
-
-        } else {
-
-            empty_view.visibility = View.GONE
-
-            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
-
-            shares_recycler_view.layoutManager = layoutManager
-            shares_recycler_view.layoutAnimation = animation
-
-            val mSharesAdapter = SharesAdapter(context as MainActivity, mShareList)
-            mSharesAdapter.setItemClickCallbacks(object : ItemClickCallbacks {
-                override fun onItemClick(view: View, position: Int) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onLongItemClick(view: View, position: Int): Boolean {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-            })
-            shares_recycler_view.adapter = mSharesAdapter
-
-        }
+        mOngoingShare = mShareList.findLast { share -> share.status == Share.Status.CREATED }
 
         if (mOngoingShare is Share) {
+
+            mShareList.remove(mOngoingShare!!)
 
             ongoing_share_view.setShare(mOngoingShare)
             ongoing_share_view.setOnClickListener {
@@ -205,8 +204,17 @@ class SharesFragment : Fragment() {
 
         }
 
+        if (mShareList.isEmpty()) {
+
+            status_view.empty(R.string.fragment_share_empty_view_text)
+
+        } else {
+
+            status_view.done()
+
+        }
+
         swipe_refresh_layout.isRefreshing = false
-        status_view.done()
 
     }
 

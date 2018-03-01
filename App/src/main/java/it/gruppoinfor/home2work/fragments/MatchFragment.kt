@@ -24,9 +24,8 @@ import kotlinx.android.synthetic.main.fragment_match.*
 
 class MatchFragment : Fragment() {
 
-    private lateinit var matchesAdapter: MatchAdapter
-
-    private lateinit var matchList: ArrayList<Match>
+    private var matchesAdapter: MatchAdapter? = null
+    private var matchList: ArrayList<Match> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -39,25 +38,8 @@ class MatchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        status_view.loading()
-
-        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
-        swipe_refresh_layout.setOnRefreshListener {
-            swipe_refresh_layout.isRefreshing = true
-            refreshMatches()
-        }
-
-        HomeToWorkClient.getMatchList(OnSuccessListener { matches ->
-
-            matchList = matches
-            refreshBadgeCounter()
-            refreshList()
-
-        }, OnFailureListener {
-
-            status_view.error("Impossibile ottenere lista match")
-
-        })
+        initUI()
+        getMatches()
 
     }
 
@@ -66,32 +48,13 @@ class MatchFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun refreshMatches() {
+    private fun initUI() {
 
-        HomeToWorkClient.getMatchList(OnSuccessListener { matches ->
-
-            matchList = matches
-            refreshBadgeCounter()
-            refreshList()
-
-        }, OnFailureListener {
-
-            swipe_refresh_layout.isRefreshing = false
-
-            it.printStackTrace()
-
-        })
-
-    }
-
-    private fun refreshList() {
-
-        val noMatches = matchList.any { it.score == 0 }
-
-        if (noMatches)
-            no_matches_view.visibility = View.VISIBLE
-        else
-            no_matches_view.visibility = View.GONE
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = true
+            refreshMatches()
+        }
 
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
@@ -100,9 +63,10 @@ class MatchFragment : Fragment() {
         matches_recycler_view.layoutAnimation = animation
 
         matchesAdapter = MatchAdapter(context!!, matchList)
-        matchesAdapter.notifyDataSetChanged()
+
         matches_recycler_view.adapter = matchesAdapter
-        matchesAdapter.setItemClickCallbacks(object : ItemClickCallbacks {
+
+        matchesAdapter?.setItemClickCallbacks(object : ItemClickCallbacks {
 
             override fun onItemClick(view: View, position: Int) {
 
@@ -112,7 +76,7 @@ class MatchFragment : Fragment() {
                 } else {
                     if (match.isNew) {
                         match.isNew = false
-                        matchesAdapter.notifyItemChanged(position)
+                        matchesAdapter?.notifyItemChanged(position)
                         refreshBadgeCounter()
                     }
                     val matchIntent = Intent(context, MatchActivity::class.java)
@@ -143,12 +107,72 @@ class MatchFragment : Fragment() {
 
         })
 
-        swipe_refresh_layout.isRefreshing = false
-        status_view.done()
+    }
+
+    private fun getMatches() {
+
+        status_view.loading()
+
+        HomeToWorkClient.getMatchList(OnSuccessListener { matches ->
+
+            matchList.clear()
+            matchList.addAll(matches)
+            matchesAdapter?.notifyDataSetChanged()
+
+            refreshUI()
+            refreshBadgeCounter()
+
+        }, OnFailureListener {
+
+            status_view.error("Impossibile ottenere lista match al momento")
+            it.printStackTrace()
+
+        })
 
     }
 
-    protected fun refreshBadgeCounter() {
+    private fun refreshMatches() {
+
+        HomeToWorkClient.getMatchList(OnSuccessListener { matches ->
+
+            matchList.clear()
+            matchList.addAll(matches)
+            matchesAdapter?.notifyDataSetChanged()
+
+            refreshBadgeCounter()
+            refreshUI()
+
+        }, OnFailureListener {
+
+            swipe_refresh_layout.isRefreshing = false
+            Toast.makeText(context, "Impossibile aggiornare lista match al momento", Toast.LENGTH_SHORT).show()
+            it.printStackTrace()
+
+        })
+
+    }
+
+    private fun refreshUI() {
+
+        when {
+            matchList.isEmpty() -> {
+                status_view.empty("Non sono ancora disponibili dei match per te.")
+            }
+            matchList.any { it.score == 0 } -> {
+                status_view.done()
+                no_matches_view.visibility = View.VISIBLE
+            }
+            else -> {
+                status_view.done()
+                no_matches_view.visibility = View.GONE
+            }
+        }
+
+        swipe_refresh_layout.isRefreshing = false
+
+    }
+
+    fun refreshBadgeCounter() {
         val newMatches = matchList.count { it.isNew }
 
         (context as MainActivity).setNavigationBadge(Const.MATCHES_TAB, if (newMatches > 0) newMatches.toString() else "")
@@ -177,7 +201,7 @@ class MatchFragment : Fragment() {
 
                     HomeToWorkClient.editMatch(matchItem, OnSuccessListener {
                         matchList.removeAt(position)
-                        matchesAdapter.remove(position)
+                        matchesAdapter?.remove(position)
                     }, OnFailureListener { Toast.makeText(context!!, R.string.item_match_dialog_hide_error, Toast.LENGTH_SHORT).show() })
 
 

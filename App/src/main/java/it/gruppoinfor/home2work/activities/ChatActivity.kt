@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -23,12 +24,13 @@ import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.inbox.Author
 import it.gruppoinfor.home2workapi.inbox.Chat
 import it.gruppoinfor.home2workapi.inbox.Message
+import it.gruppoinfor.home2workapi.model.User
 import kotlinx.android.synthetic.main.activity_chat.*
 
 
 class ChatActivity : AppCompatActivity() {
 
-    private lateinit var chat: Chat
+    private var chat: Chat? = null
     var adapter: MessagesListAdapter<Message>? = null
 
     private val mMessageReceiver = object : BroadcastReceiver() {
@@ -37,11 +39,11 @@ class ChatActivity : AppCompatActivity() {
 
             val chatId = intent.getLongExtra(Const.CHAT_ID, 0)
 
-            if (chat.chatId == chatId) {
+            if (chat != null && chat?.chatId == chatId) {
 
                 val message = Message()
                 message.messageText = intent.getStringExtra(Const.TEXT)
-                message.messageUser = chat.users.first() as Author
+                message.messageUser = chat?.users?.first() as Author
 
                 adapter?.addToStart(message, true)
 
@@ -55,20 +57,23 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        initUI()
 
-        if (intent.hasExtra(Const.EXTRA_CHAT)) {
-            chat = intent.getSerializableExtra(Const.EXTRA_CHAT) as Chat
-            initUI()
-        } else {
-            Toast.makeText(this, "Chat non valida", Toast.LENGTH_SHORT).show()
-            finish()
+        when {
+            intent.hasExtra(Const.EXTRA_CHAT) -> {
+                chat = intent.getSerializableExtra(Const.EXTRA_CHAT) as Chat
+                title = chat?.users?.first()?.name
+                getMessages()
+            }
+            intent.hasExtra(Const.EXTRA_NEW_CHAT) -> {
+                val recipient = intent.getSerializableExtra(Const.EXTRA_NEW_CHAT)
+                title = recipient.toString()
+                newChat(recipient as User)
+            }
+            else -> invalidChat()
         }
 
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -78,11 +83,19 @@ class ChatActivity : AppCompatActivity() {
                 IntentFilter(Const.NEW_MESSAGE_RECEIVED)
         )
 
-        refreshMessages()
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
+        menuInflater.inflate(R.menu.menu_chat, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        // TODO menu
 
         when (item.itemId) {
             android.R.id.home -> {
@@ -101,9 +114,10 @@ class ChatActivity : AppCompatActivity() {
 
     private fun initUI() {
 
-        status_view.loading()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        title = chat.users.first().name
+        // TODO custom adapter
+        // https://github.com/stfalcon-studio/ChatKit/blob/master/docs/COMPONENT_MESSAGES_LIST.md
 
         adapter = MessagesListAdapter(HomeToWorkClient.user?.id.toString(), ImageLoader { imageView, url ->
             val requestOptions = RequestOptions()
@@ -117,7 +131,6 @@ class ChatActivity : AppCompatActivity() {
                     .apply(requestOptions)
                     .into(imageView)
         })
-
         messages_list.setAdapter(adapter)
 
         input.setInputListener({
@@ -127,7 +140,7 @@ class ChatActivity : AppCompatActivity() {
             message.messageUser = Author(HomeToWorkClient.user?.id)
             adapter?.addToStart(message, true)
 
-            HomeToWorkClient.sendMessageToChat(chat.chatId, message.text, OnSuccessListener {
+            HomeToWorkClient.sendMessageToChat(chat!!.chatId, message.text, OnSuccessListener {
 
             }, OnFailureListener {
 
@@ -138,19 +151,56 @@ class ChatActivity : AppCompatActivity() {
             true
         })
 
+        input.inputEditText.hint = "Scrivi un messaggio"
+
     }
 
-    private fun refreshMessages() {
-        HomeToWorkClient.getChatMessageList(chat.chatId, OnSuccessListener {
+    private fun getMessages() {
 
-            adapter?.addToEnd(it, true)
-            status_view.done()
+        status_view.loading()
+
+        HomeToWorkClient.getChatMessageList(chat!!.chatId, OnSuccessListener {list->
+
+            adapter?.addToEnd(list, true)
+            refreshUI()
 
         }, OnFailureListener {
 
             status_view.error("Impossibile ottenere i messaggi della conversazione")
+            it.printStackTrace()
 
         })
+
+    }
+
+    private fun newChat(recipient: User) {
+
+        status_view.loading()
+
+        // TODO sistemare lato server
+        HomeToWorkClient.newChat(recipient.id, OnSuccessListener {
+
+            chat = it
+            refreshUI()
+
+        }, OnFailureListener {
+
+            status_view.error("Impossibile avviare una nuova conversazione al momento")
+            it.printStackTrace()
+
+        })
+
+    }
+
+    private fun refreshUI(){
+
+        status_view.done()
+
+    }
+
+    private fun invalidChat() {
+        Toast.makeText(this, "Chat non valida", Toast.LENGTH_SHORT).show()
+        finish()
     }
 
 

@@ -130,7 +130,11 @@ class ShowUserActivity : AppCompatActivity() {
         initActivityUI()
         initFooterUI()
 
-        button_send_message.setOnClickListener { startActivity(Intent(this, InboxActivity::class.java)) }
+        button_send_message.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra(Const.EXTRA_NEW_CHAT, mUser)
+            startActivity(intent)
+        }
 
     }
 

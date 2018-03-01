@@ -9,8 +9,8 @@
 
     <it.gruppoinfor.home2work.custom.AvatarView
         android:id="@+id/avatar_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="156dp"
+        android:layout_height="156dp"
         android:layout_centerHorizontal="true"
         app:size="normal" />
 

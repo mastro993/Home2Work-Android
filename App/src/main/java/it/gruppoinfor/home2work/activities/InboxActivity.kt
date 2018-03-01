@@ -8,8 +8,9 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -34,7 +35,7 @@ class InboxActivity : AppCompatActivity() {
 
         override fun onReceive(context: Context, intent: Intent) {
 
-            refreshList()
+            refreshChatList()
 
         }
 
@@ -44,11 +45,8 @@ class InboxActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inbox)
 
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
-
         initUI()
+        getChatList()
 
     }
 
@@ -60,11 +58,18 @@ class InboxActivity : AppCompatActivity() {
                 IntentFilter(Const.NEW_MESSAGE_RECEIVED)
         )
 
-        refreshList()
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
+        menuInflater.inflate(R.menu.menu_inbox, menu)
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        // TODO menu
 
         when (item.itemId) {
             android.R.id.home -> {
@@ -90,7 +95,16 @@ class InboxActivity : AppCompatActivity() {
 
     private fun initUI() {
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = true
+            refreshChatList()
+        }
+
+        // TODO custom adapter
+        // https://github.com/stfalcon-studio/ChatKit/blob/master/docs/COMPONENT_DIALOGS_LIST.MD
         dialogsListAdapter = DialogsListAdapter(ImageLoader { imageView, url ->
             val requestOptions = RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -103,54 +117,84 @@ class InboxActivity : AppCompatActivity() {
                     .apply(requestOptions)
                     .into(imageView)
         })
-
-        dialogs_list.setAdapter(dialogsListAdapter)
-
-        if (chatList != null) {
-            status_view.done()
-            dialogsListAdapter?.setItems(chatList)
-        } else {
-            status_view.loading()
-        }
-
         dialogsListAdapter?.setOnDialogClickListener({
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra(Const.EXTRA_CHAT, it)
             startActivityForResult(intent, 0)
         })
-
         dialogsListAdapter?.setOnDialogLongClickListener({
             // TODO long click
         })
 
-        swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
-        swipe_refresh_layout.setOnRefreshListener {
-            swipe_refresh_layout.isRefreshing = true
-            refreshList()
+        dialogs_list.setAdapter(dialogsListAdapter)
+
+        if (chatList.isNotEmpty()) {
+            status_view.done()
+            dialogsListAdapter?.setItems(chatList)
+            refreshChatList()
+        } else {
+            status_view.loading()
+            getChatList()
         }
+
+
 
     }
 
-    private fun refreshList() {
+    private fun getChatList() {
 
-        HomeToWorkClient.getChatList(OnSuccessListener {
+        HomeToWorkClient.getChatList(OnSuccessListener { list ->
 
-            chatList = it
-            dialogsListAdapter?.setItems(it)
+            chatList.clear()
+            chatList.addAll(list)
+            dialogsListAdapter?.setItems(list)
 
-            swipe_refresh_layout.isRefreshing = false
-            status_view.done()
+            refreshUI()
 
-            HomeFragment.inboxIcon.setCount(it.count { it.unreadCnt > 0 })
+        }, OnFailureListener {
 
-            removeNotification()
+            status_view.error("Impossibile caricare lista conversazioni al momento")
+
+        })
+
+    }
+
+    private fun refreshChatList() {
+
+        HomeToWorkClient.getChatList(OnSuccessListener { list ->
+
+            chatList.clear()
+            chatList.addAll(list)
+            dialogsListAdapter?.setItems(list)
+
+            refreshUI()
 
         }, OnFailureListener {
 
             swipe_refresh_layout.isRefreshing = false
-            status_view.error("Impossibile caricare lista conversazioni al momento")
+            Toast.makeText(this, "Impossibile aggiornare lista conversazioni al momento", Toast.LENGTH_SHORT).show()
+            it.printStackTrace()
 
         })
+
+    }
+
+    private fun refreshUI() {
+
+        if (chatList.isNotEmpty()) {
+
+            HomeFragment.inboxIcon.setCount(chatList.count { it.unreadCnt > 0 })
+            removeNotification()
+
+            status_view.done()
+
+        } else {
+
+            status_view.empty("Non hai ancora nessuna conversazione con altri utenti")
+
+        }
+
+        swipe_refresh_layout.isRefreshing = false
 
     }
 
@@ -162,7 +206,7 @@ class InboxActivity : AppCompatActivity() {
     }
 
     companion object {
-        var chatList: List<Chat>? = null
+        var chatList: ArrayList<Chat> = ArrayList()
     }
 
 
