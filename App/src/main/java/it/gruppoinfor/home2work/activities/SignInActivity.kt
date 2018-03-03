@@ -16,12 +16,12 @@ import it.gruppoinfor.home2work.services.FirebaseTokenService
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.callback.LoginCallback
+import it.gruppoinfor.home2workapi.auth.AuthCallback
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import java.net.UnknownHostException
 
 
-class SignInActivity : AppCompatActivity(), LoginCallback {
+class SignInActivity : AppCompatActivity(), AuthCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +67,7 @@ class SignInActivity : AppCompatActivity(), LoginCallback {
 
     }
 
-    override fun onLoginSuccess() {
+    override fun onSuccess() {
 
         // Crashlytics log
         Answers.getInstance().logLogin(LoginEvent()

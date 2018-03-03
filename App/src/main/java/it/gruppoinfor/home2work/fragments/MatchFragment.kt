@@ -11,16 +11,15 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.activities.MainActivity
-import it.gruppoinfor.home2work.activities.MatchActivity
-import it.gruppoinfor.home2work.activities.SettingsActivity
-import it.gruppoinfor.home2work.activities.ShowUserActivity
+import it.gruppoinfor.home2work.activities.*
 import it.gruppoinfor.home2work.adapters.MatchAdapter
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Match
+import it.gruppoinfor.home2workapi.match.Match
 import kotlinx.android.synthetic.main.fragment_match.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.singleTop
 
 class MatchFragment : Fragment() {
 
@@ -180,10 +179,8 @@ class MatchFragment : Fragment() {
 
     private fun showMatchUserProfile(position: Int) {
 
-        val userIntent = Intent(activity, ShowUserActivity::class.java)
         val matchedUser = matchList[position].host
-        userIntent.putExtra(Const.EXTRA_USER, matchedUser)
-        startActivity(userIntent)
+        startActivity(context!!.intentFor<ShowUserActivity>(Const.EXTRA_USER to matchedUser).singleTop())
 
     }
 

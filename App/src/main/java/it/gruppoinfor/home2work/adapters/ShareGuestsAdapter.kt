@@ -13,7 +13,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
-import it.gruppoinfor.home2workapi.model.Guest
+import it.gruppoinfor.home2workapi.share.Guest
 import kotlinx.android.synthetic.main.item_share_guest.view.*
 
 class ShareGuestsAdapter(private val context: Context, private val guests: ArrayList<Guest>) : RecyclerView.Adapter<ShareGuestsAdapter.ViewHolder>() {

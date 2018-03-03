@@ -5,15 +5,13 @@ import android.content.Intent
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.LoginEvent
-import com.google.firebase.iid.FirebaseInstanceId
-import it.gruppoinfor.home2work.services.FirebaseTokenService
 import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.services.SyncService
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.callback.LoginCallback
-import it.gruppoinfor.home2workapi.model.ClientUser
-import it.gruppoinfor.home2workapi.model.User
+import it.gruppoinfor.home2workapi.auth.AuthCallback
+import it.gruppoinfor.home2workapi.auth.AuthUser
+import it.gruppoinfor.home2workapi.user.User
 import java.net.UnknownHostException
 
 
@@ -27,7 +25,7 @@ object SessionManager {
     private const val PREFS_SESSION = "it.home2work.app.session"
     private const val PREFS_TOKEN = "ACCESS_TOKEN"
 
-    fun storeSession(ctx: Context, user: ClientUser?) {
+    fun storeSession(ctx: Context, user: AuthUser?) {
         if (user == null) return
 
         val prefs = ctx.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
@@ -55,8 +53,8 @@ object SessionManager {
             return
         }
 
-        HomeToWorkClient.login(token, object : LoginCallback {
-            override fun onLoginSuccess() {
+        HomeToWorkClient.login(token, object : AuthCallback {
+            override fun onSuccess() {
 
                 // Crashlytics log
                 Answers.getInstance().logLogin(LoginEvent()

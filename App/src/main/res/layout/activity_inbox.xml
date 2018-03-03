@@ -21,7 +21,6 @@
             app:dialogUnreadBubbleBackgroundColor="@color/red_500"
             app:dialogUnreadTitleTextStyle="bold" />
 
-
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <it.gruppoinfor.home2work.custom.StatusView

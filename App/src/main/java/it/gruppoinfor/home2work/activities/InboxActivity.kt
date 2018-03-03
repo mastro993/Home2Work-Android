@@ -23,8 +23,11 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.fragments.HomeFragment
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.inbox.Chat
+import it.gruppoinfor.home2workapi.chat.Chat
 import kotlinx.android.synthetic.main.activity_inbox.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.singleTop
+
 
 class InboxActivity : AppCompatActivity() {
 
@@ -43,10 +46,19 @@ class InboxActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+       // val timings = TimingLogger("TIMING_LOGGER", "methodA")
+
+
         setContentView(R.layout.activity_inbox)
+        //timings.addSplit("SET CONTENT VIEW")
 
         initUI()
+        //timings.addSplit("initUI")
         getChatList()
+        //timings.addSplit("getchattList")
+
+        //timings.dumpToLog()
 
     }
 
@@ -118,9 +130,7 @@ class InboxActivity : AppCompatActivity() {
                     .into(imageView)
         })
         dialogsListAdapter?.setOnDialogClickListener({
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra(Const.EXTRA_CHAT, it)
-            startActivityForResult(intent, 0)
+            startActivity(intentFor<ChatActivity>(Const.EXTRA_CHAT to it).singleTop())
         })
         dialogsListAdapter?.setOnDialogLongClickListener({
             // TODO long click
@@ -136,7 +146,6 @@ class InboxActivity : AppCompatActivity() {
             status_view.loading()
             getChatList()
         }
-
 
 
     }

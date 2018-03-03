@@ -21,7 +21,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.activities.ShowUserActivity
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.Const
-import it.gruppoinfor.home2workapi.model.Match
+import it.gruppoinfor.home2workapi.match.Match
 import kotlinx.android.synthetic.main.item_match.view.*
 
 class MatchAdapter(private val mContext: Context, private val matches: ArrayList<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {

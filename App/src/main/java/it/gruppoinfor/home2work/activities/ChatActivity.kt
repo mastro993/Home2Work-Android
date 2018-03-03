@@ -21,10 +21,10 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.inbox.Author
-import it.gruppoinfor.home2workapi.inbox.Chat
-import it.gruppoinfor.home2workapi.inbox.Message
-import it.gruppoinfor.home2workapi.model.User
+import it.gruppoinfor.home2workapi.chat.Author
+import it.gruppoinfor.home2workapi.chat.Chat
+import it.gruppoinfor.home2workapi.chat.Message
+import it.gruppoinfor.home2workapi.user.User
 import kotlinx.android.synthetic.main.activity_chat.*
 
 
@@ -88,7 +88,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
-        menuInflater.inflate(R.menu.menu_chat, menu)
+        //menuInflater.inflate(R.menu.menu_chat, menu)
 
         return super.onCreateOptionsMenu(menu)
     }

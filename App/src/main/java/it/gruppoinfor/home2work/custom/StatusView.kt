@@ -10,7 +10,12 @@ import it.gruppoinfor.home2work.R
 import kotlinx.android.synthetic.main.custom_status_view.view.*
 import android.os.Build
 import android.text.Spanned
-
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
+import org.jetbrains.anko.coroutines.experimental.bg
+import java.math.BigInteger
 
 
 class StatusView : RelativeLayout {
@@ -36,57 +41,68 @@ class StatusView : RelativeLayout {
 
     fun done() {
 
-        error_view.visibility = View.GONE
+        image_error.visibility = View.GONE
         loading_view.visibility = View.GONE
-        empty_view.visibility = View.GONE
+        text_info.visibility = View.GONE
 
     }
 
     fun loading() {
 
-        error_view.visibility = View.GONE
-        empty_view.visibility = View.GONE
+        text_info.visibility = View.GONE
+        image_error.visibility = View.GONE
+
         loading_view.visibility = View.VISIBLE
 
     }
 
     fun error(errorMessage: String) {
 
-        text_error.text = fromHtml(errorMessage)
+        async(UI) {
+            val text: Deferred<Spanned> = bg { fromHtml(errorMessage) }
+            text_info.text = text.await()
+        }
 
         loading_view.visibility = View.GONE
-        empty_view.visibility = View.GONE
-        error_view.visibility = View.VISIBLE
+
+        image_error.visibility = View.VISIBLE
+        text_info.visibility = View.VISIBLE
 
     }
 
     fun error(errorMessageResource: Int) {
 
-        text_error.setText(errorMessageResource)
+        text_info.setText(errorMessageResource)
 
         loading_view.visibility = View.GONE
-        empty_view.visibility = View.GONE
-        error_view.visibility = View.VISIBLE
+
+        image_error.visibility = View.VISIBLE
+        text_info.visibility = View.VISIBLE
 
     }
 
     fun empty(emptyMessage: String) {
 
-        text_empty.text = fromHtml(emptyMessage)
+        async(UI) {
+            val text: Deferred<Spanned> = bg { fromHtml(emptyMessage) }
+            text_info.text = text.await()
+        }
 
-        error_view.visibility = View.GONE
+        image_error.visibility = View.GONE
         loading_view.visibility = View.GONE
-        empty_view.visibility = View.VISIBLE
+
+        text_info.visibility = View.VISIBLE
 
     }
 
     fun empty(emptyMessageResource: Int) {
 
-        text_empty.setText(emptyMessageResource)
+        text_info.setText(emptyMessageResource)
 
-        error_view.visibility = View.GONE
+        image_error.visibility = View.GONE
         loading_view.visibility = View.GONE
-        empty_view.visibility = View.VISIBLE
+
+        text_info.visibility = View.VISIBLE
 
     }
 

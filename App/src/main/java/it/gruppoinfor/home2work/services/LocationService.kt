@@ -1,16 +1,13 @@
 package it.gruppoinfor.home2work.services
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
-import android.os.Bundle
-import android.os.IBinder
-import android.os.Looper
-import android.os.SystemClock
+import android.os.*
+import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
@@ -25,8 +22,7 @@ import it.gruppoinfor.home2work.model.UserLocation
 import it.gruppoinfor.home2work.receivers.SyncAlarmReceiver
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.LatLng
-import it.gruppoinfor.home2workapi.model.User
+import it.gruppoinfor.home2workapi.common.LatLng
 import java.util.concurrent.TimeUnit
 
 
@@ -128,17 +124,20 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
                 AlarmManager.INTERVAL_HOUR,
                 pendingIntent)
 
-        val serviceNotification = NotificationCompat.Builder(this, "LOCATION_SERVICE_NOTIFICATION_CHANNEL")
-                .setPriority(NotificationCompat.PRIORITY_MIN)
+        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel() else ""
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+        val serviceNotification = notificationBuilder.setOngoing(true)
                 .setSmallIcon(R.drawable.home2work_icon)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 .setContentTitle("Home2Work")
                 .setContentText("Servizio di localizzazione")
-                .setOngoing(true)
                 .setShowWhen(false)
                 .build()
 
-        startForeground(1337, serviceNotification)
+        startForeground(NOTIFICATION_ID, serviceNotification)
 
     }
 
@@ -194,8 +193,24 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(): String {
+
+        val channelId = "hometowork_location_service"
+        val channelName = "Servizio di localizzazione HomeToWork"
+        val chan = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE)
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return channelId
+
+    }
+
+
     companion object {
         private val TAG = LocationService::class.java.simpleName
+        const val NOTIFICATION_ID = 2313
     }
 
 

@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -30,7 +29,7 @@ import it.gruppoinfor.home2work.utils.Const.GOOGLE_API_KEY
 import it.gruppoinfor.home2work.utils.DateFormatUtils.dateToString
 import it.gruppoinfor.home2work.utils.RouteUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Match
+import it.gruppoinfor.home2workapi.match.Match
 import kotlinx.android.synthetic.main.activity_match.*
 
 class MatchActivity : AppCompatActivity() {

@@ -4,7 +4,7 @@ package it.gruppoinfor.home2work.model
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import it.gruppoinfor.home2workapi.model.LatLng
+import it.gruppoinfor.home2workapi.common.LatLng
 
 @Entity
 data class UserLocation(var userId: Long = 0,

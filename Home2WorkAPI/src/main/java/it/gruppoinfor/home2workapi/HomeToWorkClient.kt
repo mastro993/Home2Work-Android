@@ -5,11 +5,22 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2workapi.callback.LoginCallback
-import it.gruppoinfor.home2workapi.inbox.Chat
-import it.gruppoinfor.home2workapi.inbox.Message
-import it.gruppoinfor.home2workapi.model.*
-import it.gruppoinfor.home2workapi.service.*
+import it.gruppoinfor.home2workapi.auth.AuthService
+import it.gruppoinfor.home2workapi.auth.AuthCallback
+import it.gruppoinfor.home2workapi.company.Company
+import it.gruppoinfor.home2workapi.company.CompanyService
+import it.gruppoinfor.home2workapi.chat.Chat
+import it.gruppoinfor.home2workapi.chat.ChatService
+import it.gruppoinfor.home2workapi.chat.Message
+import it.gruppoinfor.home2workapi.auth.AuthUser
+import it.gruppoinfor.home2workapi.location.Location
+import it.gruppoinfor.home2workapi.match.Match
+import it.gruppoinfor.home2workapi.match.MatchService
+import it.gruppoinfor.home2workapi.share.Share
+import it.gruppoinfor.home2workapi.share.ShareService
+import it.gruppoinfor.home2workapi.user.User
+import it.gruppoinfor.home2workapi.user.UserProfile
+import it.gruppoinfor.home2workapi.user.UserService
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -24,7 +35,7 @@ object HomeToWorkClient {
     const val ACHIEVEMENTS_BASE_URL = "$BASE_URL/images/achievements/"
     const val HEADER_SESSION_TOKEN = "X-User-Session-Token"
 
-    var user: ClientUser? = null
+    var user: AuthUser? = null
         private set
 
     private var sessionToken: String = ""
@@ -32,7 +43,7 @@ object HomeToWorkClient {
     /**
      * Effettua il login di un utente con le credenziali passate
      */
-    fun login(email: String, password: String, loginCallback: LoginCallback) {
+    fun login(email: String, password: String, authCallback: AuthCallback) {
 
         val service = ServiceGenerator.createService(AuthService::class.java)
 
@@ -41,22 +52,22 @@ object HomeToWorkClient {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
                     when (response.code()) {
-                        404 -> loginCallback.onInvalidCredential()
+                        404 -> authCallback.onInvalidCredential()
                         200 -> {
 
                             val sToken = response.headers()[HEADER_SESSION_TOKEN]
                             if (sToken == null)
-                                loginCallback.onError(null)
+                                authCallback.onError(null)
                             else {
                                 sessionToken = sToken
                                 user = response.body()!!
-                                loginCallback.onLoginSuccess()
+                                authCallback.onSuccess()
                             }
                         }
-                        else -> loginCallback.onError(null)
+                        else -> authCallback.onError(null)
                     }
                 }, {
-                    loginCallback.onError(it)
+                    authCallback.onError(it)
                 })
 
     }
@@ -64,7 +75,7 @@ object HomeToWorkClient {
     /**
      * Effettua il login di un utente tramite l'Access Token
      */
-    fun login(token: String, loginCallback: LoginCallback) {
+    fun login(token: String, authCallback: AuthCallback) {
 
         val service = ServiceGenerator.createService(AuthService::class.java)
 
@@ -73,23 +84,23 @@ object HomeToWorkClient {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
                     when (response.code()) {
-                        404 -> loginCallback.onInvalidCredential()
+                        404 -> authCallback.onInvalidCredential()
                         200 -> {
 
                             val sToken = response.headers()[HEADER_SESSION_TOKEN]
                             if (sToken == null)
-                                loginCallback.onError(null)
+                                authCallback.onError(null)
                             else {
                                 sessionToken = sToken
                                 user = response.body()!!
-                                loginCallback.onLoginSuccess()
+                                authCallback.onSuccess()
                             }
 
                         }
-                        else -> loginCallback.onError(null)
+                        else -> authCallback.onError(null)
                     }
                 }, {
-                    loginCallback.onError(it)
+                    authCallback.onError(it)
                 })
 
     }
@@ -479,11 +490,11 @@ object HomeToWorkClient {
     /**
      * Effettua la sincronizzazione delle posizioni dell'utente
      */
-    fun uploadLocations(routeLocationList: List<RouteLocation>, onSuccessListener: OnSuccessListener<List<RouteLocation>>, onFailureListener: OnFailureListener) {
+    fun uploadLocations(locationList: List<Location>, onSuccessListener: OnSuccessListener<List<Location>>, onFailureListener: OnFailureListener) {
 
         val service = ServiceGenerator.createService(UserService::class.java, sessionToken)
 
-        service.uploadLocations(routeLocationList)
+        service.uploadLocations(locationList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listResponse ->

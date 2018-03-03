@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
-import it.gruppoinfor.home2workapi.model.Achievement
 import kotlinx.android.synthetic.main.item_achievement.view.*
 import java.text.SimpleDateFormat
 import java.util.*

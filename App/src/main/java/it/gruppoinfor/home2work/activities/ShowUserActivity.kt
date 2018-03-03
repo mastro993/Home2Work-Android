@@ -29,9 +29,8 @@ import it.gruppoinfor.home2work.custom.AppBarStateChangeListener
 import it.gruppoinfor.home2work.fragments.ProfileFragment
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Experience
-import it.gruppoinfor.home2workapi.model.User
-import it.gruppoinfor.home2workapi.model.UserProfile
+import it.gruppoinfor.home2workapi.user.User
+import it.gruppoinfor.home2workapi.user.UserProfile
 import kotlinx.android.synthetic.main.activity_show_user.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
 import kotlinx.android.synthetic.main.layout_profile_header_user.*
@@ -41,7 +40,6 @@ import java.util.*
 
 class ShowUserActivity : AppCompatActivity() {
 
-    private var mExpOld: Experience = Experience()
     private lateinit var mUser: User
     private var mProfile: UserProfile = UserProfile()
 
@@ -68,7 +66,6 @@ class ShowUserActivity : AppCompatActivity() {
         }
 
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -151,8 +148,6 @@ class ShowUserActivity : AppCompatActivity() {
     }
 
     private fun initSharesUI() {
-
-        // TODO rimuovere valore se 0 %
 
         chart_shares.setUsePercentValues(true)
         chart_shares.description.isEnabled = false

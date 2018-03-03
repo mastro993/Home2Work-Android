@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2workapi.model.Guest
-import it.gruppoinfor.home2workapi.model.Share
+import it.gruppoinfor.home2workapi.share.Guest
+import it.gruppoinfor.home2workapi.share.Share
 import kotlinx.android.synthetic.main.layout_share_ongoing.view.*
 
 class OngoinShareView : FrameLayout {

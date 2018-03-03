@@ -4,7 +4,7 @@ import android.content.Context
 import android.location.Geocoder
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import it.gruppoinfor.home2workapi.model.LatLng
+import it.gruppoinfor.home2workapi.common.LatLng
 import java.io.IOException
 import java.util.*
 

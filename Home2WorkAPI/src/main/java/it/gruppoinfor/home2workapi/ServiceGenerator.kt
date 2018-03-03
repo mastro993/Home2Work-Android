@@ -3,6 +3,7 @@ package it.gruppoinfor.home2workapi
 import android.text.TextUtils
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
+import it.gruppoinfor.home2workapi.auth.AuthenticationInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory

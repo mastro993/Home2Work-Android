@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.model
 
 
 import io.objectbox.converter.PropertyConverter
-import it.gruppoinfor.home2workapi.model.LatLng
+import it.gruppoinfor.home2workapi.common.LatLng
 
 class LatLngConverter : PropertyConverter<LatLng, String> {
 

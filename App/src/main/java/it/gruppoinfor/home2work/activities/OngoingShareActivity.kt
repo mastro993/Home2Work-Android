@@ -33,10 +33,11 @@ import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.QREncoder
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Guest
-import it.gruppoinfor.home2workapi.model.LatLng
-import it.gruppoinfor.home2workapi.model.Share
+import it.gruppoinfor.home2workapi.share.Guest
+import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.share.Share
 import kotlinx.android.synthetic.main.activity_ongoing_share.*
+import java.lang.Double
 
 class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
 
@@ -158,7 +159,7 @@ class OngoingShareActivity : AppCompatActivity(), ItemClickCallbacks {
         if (scanResult != null) {
             val stringData = scanResult.contents.split(",")
             val shareId = java.lang.Long.parseLong(stringData[0])
-            val latLng = LatLng(java.lang.Double.parseDouble(stringData[1]), java.lang.Double.parseDouble(stringData[2]))
+            val latLng = LatLng(Double.parseDouble(stringData[1]), Double.parseDouble(stringData[2]))
             checkShareCode(shareId, latLng)
         } else
             Toast.makeText(this, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()

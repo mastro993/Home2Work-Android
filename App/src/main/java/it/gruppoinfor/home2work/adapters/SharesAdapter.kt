@@ -11,7 +11,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.interfaces.ItemClickCallbacks
 import it.gruppoinfor.home2work.utils.DateFormatUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Share
+import it.gruppoinfor.home2workapi.share.Share
 import kotlinx.android.synthetic.main.item_share.view.*
 import java.math.RoundingMode
 import java.text.DecimalFormat

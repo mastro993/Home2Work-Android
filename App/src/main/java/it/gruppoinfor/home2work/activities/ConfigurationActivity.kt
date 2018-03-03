@@ -39,9 +39,9 @@ import it.gruppoinfor.home2work.utils.AddressConverter
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2work.utils.ImageUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Address
-import it.gruppoinfor.home2workapi.model.Company
-import it.gruppoinfor.home2workapi.model.LatLng
+import it.gruppoinfor.home2workapi.common.Address
+import it.gruppoinfor.home2workapi.company.Company
+import it.gruppoinfor.home2workapi.common.LatLng
 import kotlinx.android.synthetic.main.activity_configuration.*
 import kotlinx.android.synthetic.main.dialog_edit_address.*
 import kotlinx.android.synthetic.main.fragment_conf_home.*
@@ -283,7 +283,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                     button_set_current_location.setOnClickListener {
                         val homeLat = location.latitude
                         val homeLon = location.longitude
-                        val currentLatLng = LatLng(homeLat, homeLon)
+                        val currentLatLng = it.gruppoinfor.home2workapi.common.LatLng(homeLat, homeLon)
                         button_set_current_location.visibility = View.INVISIBLE
                         setHomeLocation(currentLatLng)
                     }
@@ -333,7 +333,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
         override fun verifyStep(): VerificationError? {
 
             return if (homeLocation != null) {
-                HomeToWorkClient.user?.location = homeLocation!!
+                HomeToWorkClient.user?.homeLatLng = homeLocation!!
                 null
             } else {
                 VerificationError(getString(R.string.activity_configuration_company_step_warning))
@@ -401,7 +401,7 @@ class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener
                             newAddress.address = addr
                             newAddress.postalCode = cap
 
-                            HomeToWorkClient.user?.location = latLng
+                            HomeToWorkClient.user?.homeLatLng = latLng
                             HomeToWorkClient.user?.address = newAddress
 
                             setHomeLocation(latLng)

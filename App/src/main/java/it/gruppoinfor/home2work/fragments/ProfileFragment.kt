@@ -27,8 +27,6 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -41,8 +39,8 @@ import it.gruppoinfor.home2work.utils.Const.REQ_CODE_AVATAR
 import it.gruppoinfor.home2work.utils.Const.REQ_CODE_EXTERNAL_STORAGE
 import it.gruppoinfor.home2work.utils.ImageUtils
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.Experience
-import it.gruppoinfor.home2workapi.model.UserProfile
+import it.gruppoinfor.home2workapi.user.UserExp
+import it.gruppoinfor.home2workapi.user.UserProfile
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
 import kotlinx.android.synthetic.main.layout_profile_exp.*
@@ -62,7 +60,7 @@ import kotlin.collections.ArrayList
 class ProfileFragment : Fragment() {
 
     private lateinit var mProfile: UserProfile
-    private var mExpOld: Experience = Experience()
+    private var mExpOld: UserExp = UserExp()
     private var df: DecimalFormat = DecimalFormat("#,##0.00")
 
     init {

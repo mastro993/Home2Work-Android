@@ -17,14 +17,13 @@ import it.gruppoinfor.home2work.model.UserLocation_
 import it.gruppoinfor.home2work.user.SessionManager
 import it.gruppoinfor.home2work.utils.Const
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.model.RouteLocation
-import it.gruppoinfor.home2workapi.model.User
+import it.gruppoinfor.home2workapi.location.Location
 import java.util.*
 
 
 class SyncService : Service() {
 
-    private val routeLocations = ArrayList<RouteLocation>()
+    private val routeLocations = ArrayList<Location>()
 
     override fun onCreate() {
         super.onCreate()
@@ -47,7 +46,7 @@ class SyncService : Service() {
         val userLocations = userLocationBox.query().equal(UserLocation_.userId, HomeToWorkClient.user!!.id).build().find()
 
         userLocations.forEach {
-            val routeLocation = RouteLocation()
+            val routeLocation = it.gruppoinfor.home2workapi.location.Location()
             routeLocation.latLng = it.latLng
             routeLocation.date = Date(it.timestamp * 1000)
             routeLocations.add(routeLocation)
@@ -58,9 +57,9 @@ class SyncService : Service() {
 
     }
 
-    private fun syncRoutePoints(routeLocationList: List<RouteLocation>) {
+    private fun syncRoutePoints(locationList: List<Location>) {
 
-        HomeToWorkClient.uploadLocations(routeLocationList,
+        HomeToWorkClient.uploadLocations(locationList,
                 OnSuccessListener {
 
                     Answers.getInstance().logCustom(CustomEvent("Sincronizzazione posizioni"))
