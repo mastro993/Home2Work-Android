@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="24dp"
-    android:paddingEnd="26dp"
-    android:paddingStart="26dp"
-    android:paddingTop="24dp">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:elevation="@dimen/cardview_default_elevation">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingEnd="26dp"
+        android:paddingStart="26dp"
+        android:paddingTop="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,17 +26,44 @@
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chart_shares"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="320dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="-130dp"
+            android:layout_marginBottom="-120dp"
             android:clickable="false"
-            android:focusable="false" />
+            android:focusable="false"
+            android:visibility="visible" />
 
+        <FrameLayout
+            android:id="@+id/no_share_chart_data_view"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="-120dp"
+            android:background="@color/cardview_light_background"
+            android:paddingBottom="136dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0.1"
+                android:src="@drawable/ic_empty_share_chart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Ancora nessuna condivsione completata"
+                android:textAlignment="center" />
+
+
+        </FrameLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/text_month_shares"
@@ -57,7 +86,8 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -77,33 +107,58 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Record condivisioni mensili"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/text_month_shares_record_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/fragment_profile_card_shares_month_avg_value"
+                android:textColor="@color/colorAccent" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Condivisione più lunga"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/text_longest_share_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@string/fragment_profile_card_activity_this_month_value"
+                android:textColor="@color/colorAccent" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-
-    <FrameLayout
-        android:id="@+id/view_no_shares"
+    <include
+        layout="@layout/horizontal_divider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:background="@color/cardview_light_background"
-        android:visibility="visible">
+        android:layout_height="1dp" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:alpha="0.1"
-            android:src="@drawable/ic_empty_share_chart" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Nn hai completato ancora nessuna condivsione" />
-
-
-    </FrameLayout>
-
-</FrameLayout>
+</LinearLayout>

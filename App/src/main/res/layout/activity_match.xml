@@ -58,7 +58,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_marginStart="72dp"
                     android:layout_marginTop="16dp"
-                    android:layout_toRightOf="@id/user_avatar"
+                    android:layout_toEndOf="@id/user_avatar"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -168,7 +168,7 @@
         android:visibility="visible" />
 
 
-    <it.gruppoinfor.home2work.custom.StatusView
+    <it.gruppoinfor.home2work.StatusView
         android:id="@+id/status_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

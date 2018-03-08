@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_cancel_share"
         android:orderInCategory="100"
-        android:title="Annulla"
+        android:title="Interrompi"
         app:showAsAction="never" />
 </menu>

@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2workapi.share
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2workapi.share.Share
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -15,6 +14,9 @@ interface ShareService{
             @Path("id") shareId: Long?
     ): Observable<Response<Share>>
 
+    @GET("share/ongoing")
+    fun getOngoingShare(): Observable<Response<Share>>
+
     @FormUrlEncoded
     @POST("share/new")
     fun createNewShare(
@@ -25,23 +27,21 @@ interface ShareService{
     @POST("share/{shareId}/join")
     fun joinShare(
             @Path("shareId") shareId: Long,
-            @Field("homeLatLng") locationString: String
+            @Field("location") locationString: String
     ): Observable<Response<Share>>
 
     @FormUrlEncoded
     @POST("share/{shareId}/complete")
     fun completeShare(
             @Path("shareId") shareId: Long,
-            @Field("homeLatLng") locationString: String
+            @Field("location") locationString: String
     ): Observable<Response<Share>>
 
-    @FormUrlEncoded
     @POST("share/{shareId}/finish")
     fun finishShare(
             @Path("shareId") shareId: Long
     ): Observable<Response<Share>>
 
-    @FormUrlEncoded
     @POST("share/{shareId}/leave")
     fun leaveShare(
             @Path("shareId") shareId: Long
@@ -54,8 +54,7 @@ interface ShareService{
             @Field("guestId") guestId: Long
     ): Observable<Response<Share>>
 
-    @FormUrlEncoded
-    @POST("share/{shareId}/cancel")
+    @DELETE("share/{shareId}")
     fun cancelShare(
             @Path("shareId") shareId: Long?
     ): Observable<Response<ResponseBody>>

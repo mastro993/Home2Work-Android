@@ -38,7 +38,7 @@ internal interface UserService {
     @GET("user/chat")
     fun getChatList(): Observable<Response<List<Chat>>>
 
-    @POST("user/homeLatLng")
+    @POST("user/location")
     fun uploadLocations(
             @Body locations: List<Location>
     ): Observable<Response<List<Location>>>

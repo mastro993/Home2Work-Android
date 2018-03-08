@@ -57,7 +57,7 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-        <it.gruppoinfor.home2work.custom.StatusView
+        <it.gruppoinfor.home2work.StatusView
             android:id="@+id/status_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

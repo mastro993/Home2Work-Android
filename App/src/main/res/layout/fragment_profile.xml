@@ -55,7 +55,7 @@
                         android:alpha="0"
                         android:gravity="center_vertical">
 
-                        <it.gruppoinfor.home2work.custom.AvatarView
+                        <it.gruppoinfor.home2work.user.AvatarView
                             android:id="@+id/avatar_view_small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -97,44 +97,57 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <FrameLayout
+                android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:id="@+id/profile_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingBottom="48dp">
+                    android:orientation="vertical">
 
                     <include layout="@layout/layout_profile_exp" />
 
-                    <include layout="@layout/horizontal_divider" />
+                    <include layout="@layout/layout_profile_activity" />
+
+                    <include layout="@layout/layout_profile_milestone" />
 
                     <include layout="@layout/layout_profile_shares" />
 
-                    <include layout="@layout/horizontal_divider" />
+                    <Button
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_share_history"
+                        android:id="@+id/button_shares_history"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Cronologia condivisioni"
+                        android:textSize="12sp" />
 
-                    <include layout="@layout/layout_profile_activity" />
-
-                    <include layout="@layout/horizontal_divider" />
-
-<!--                    <include layout="@layout/layout_profile_ranks" />
-
-                    <include layout="@layout/horizontal_divider" />-->
+                    <include
+                        layout="@layout/horizontal_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="24dp">
+                        android:background="@color/white"
+                        android:elevation="@dimen/cardview_default_elevation"
+                        android:paddingBottom="64dp"
+                        android:paddingEnd="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingTop="24dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
                             android:text="@string/fragment_profile_registration_date"
                             android:textColor="@color/light_bg_dark_secondary_text" />
 
@@ -150,10 +163,10 @@
 
                 </LinearLayout>
 
-                <it.gruppoinfor.home2work.custom.StatusView
+                <it.gruppoinfor.home2work.StatusView
                     android:id="@+id/status_view"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp" />
+                    android:layout_height="200dp"/>
 
             </FrameLayout>
 

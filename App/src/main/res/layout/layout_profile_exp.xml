@@ -4,10 +4,18 @@
     android:layout_height="wrap_content"
     android:background="@color/cardview_light_background"
     android:orientation="vertical"
-    android:paddingBottom="24dp"
-    android:paddingEnd="26dp"
-    android:paddingStart="26dp"
-    android:paddingTop="24dp">
+    android:elevation="@dimen/cardview_default_elevation"
+    android:paddingTop="16dp">
+
+    <TextView
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/fragment_profile_card_exp"
+        android:textColor="@color/light_bg_dark_primary_text"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/text_exp_value"
@@ -17,18 +25,23 @@
         android:layout_marginBottom="16dp"
         android:text="@string/fragment_profile_card_exp_value"
         android:textColor="@color/colorAccent"
-        android:textSize="16sp" />
+        android:textSize="24sp" />
 
     <ProgressBar
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
         android:id="@+id/progress_exp"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="10dp"
         android:progress="40"
         android:progressDrawable="@drawable/progressbar_drawable" />
 
     <RelativeLayout
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -53,5 +66,7 @@
             android:textSize="12sp" />
 
     </RelativeLayout>
+
+    <include layout="@layout/horizontal_divider" />
 
 </LinearLayout>

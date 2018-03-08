@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/guest_dialog_show_profile"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_user_profile"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Mostra profilo utente" />
+
+    <TextView
+        android:id="@+id/guest_dialog_ban"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_ban_user"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Espelli dalla condivisione" />
+
+
+</LinearLayout>

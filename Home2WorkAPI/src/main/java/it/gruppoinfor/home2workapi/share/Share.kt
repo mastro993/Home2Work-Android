@@ -28,7 +28,7 @@ class Share : Serializable {
     @Expose
     var guests = ArrayList<Guest>()
 
-    enum class Status private constructor(val value: Int) {
+    enum class Status constructor(val value: Int) {
 
         @SerializedName("0")
         CREATED(0),
@@ -38,7 +38,7 @@ class Share : Serializable {
         CANCELED(2)
     }
 
-    enum class Type private constructor(val value: Int) {
+    enum class Type constructor(val value: Int) {
         @SerializedName("0")
         DRIVER(0),
 

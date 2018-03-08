@@ -1,12 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="Typos">
 
     <string name="app_name">Home2Work</string>
+    <string name="empty"> </string>
 
     <string name="activity_main_tab_home">Home</string>
+    <string name="activity_main_tab_ranks">Classifiche</string>
+    <string name="activity_main_tab_new_share">Share</string>
     <string name="activity_main_tab_matches">Matches</string>
     <string name="activity_main_tab_profile">Profilo</string>
     <string name="activity_main_tab_shares">Condivisioni</string>
-    <string name="activity_main_tab_messages">Messaggi</string>
 
     <string name="activity_configuration_title">Configurazione</string>
     <string name="activity_configuration_start">Benvenuto! \n\nUna breve introduzione ti guiderà nella configurazione dell\'applicazione.</string>
@@ -113,7 +115,7 @@
     <string name="fragment_profile_fuel">%1$s l di carburante risparmiato</string>
     <string name="fragment_profile_emission">%1$s g di CO2 evitati</string>
     <string name="fragment_profile_card_exp">Punteggio utente</string>
-    <string name="fragment_profile_card_exp_value">%,d punti</string>
+    <string name="fragment_profile_card_exp_value">%,d</string>
     <string name="fragment_profile_card_current_lvl_exp_value">%,d</string>
     <string name="fragment_profile_card_next_lvl_exp_value">%,d</string>
     <string name="fragment_profile_card_exp_left">%,d punti al prossimo livello</string>
@@ -136,7 +138,7 @@
     <string name="fragment_share_dialog_new_title">Nuova condivisione</string>
     <string name="fragment_share_dialog_new_content">Creazione di una condivisione in corso.</string>
     <string name="fragment_share_dialog_join_content">Unione alla condivisione in corso.</string>
-    <string name="fragment_share_dialog_new_error">Creazione di una condivisione in corso.</string>
+    <string name="fragment_share_dialog_new_error">Impossibile creare una nuova condivisione.</string>
     <string-array name="fragment_share_dialog_new_share_options">
         <item>Crea nuova condivisione</item>
         <item>Unisciti a condivisione</item>
@@ -175,6 +177,9 @@
     <string name="customactivityoncrash_error_activity_error_details_copy">Copia dettagli</string>
     <string name="customactivityoncrash_error_activity_error_details_copied">Dettagli copiati nella clipboard</string>
     <string name="customactivityoncrash_error_activity_error_details_clipboard_label">Informazioni errore</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

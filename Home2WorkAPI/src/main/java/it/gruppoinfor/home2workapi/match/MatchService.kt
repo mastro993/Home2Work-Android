@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2workapi.match
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2workapi.match.Match
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

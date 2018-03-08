@@ -4,12 +4,13 @@
     package="it.gruppoinfor.home2work">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".App"
@@ -21,7 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -31,7 +31,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -43,7 +42,7 @@
             android:value="46d1717c516ccf9648149cf19412063e5dace7cf" />
 
         <receiver
-            android:name=".receivers.BootReceiver"
+            android:name=".BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -56,30 +55,32 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".receivers.SyncAlarmReceiver"
+            android:name=".SyncAlarmReceiver"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedReceiver" />
 
         <service
-            android:name=".services.LocationService"
+            android:name=".tracking.LocationService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
-            android:name=".services.SyncService"
+            android:name=".tracking.SyncService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
-            android:name=".services.ActivityRecognizedService"
+            android:name=".tracking.ActivityRecognizedService"
             android:enabled="true"
             android:exported="false" />
-        <service android:name=".services.FirebaseTokenService">
+        <service
+            android:name=".firebase.FirebaseTokenService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".services.MessagingService"
+            android:name=".firebase.MessagingService"
             android:enabled="true"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -90,7 +91,7 @@
         </service>
 
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.FullScreen">
@@ -101,25 +102,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.SignInActivity"
+            android:name=".SignInActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_signin_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.GradientTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activities.ConfigurationActivity"
+            android:name=".configuration.ConfigurationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_configuration_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.FullScreen" />
         <activity
-            android:name=".activities.MatchActivity"
+            android:name=".matches.MatchInfoActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_match_title"
             android:screenOrientation="portrait" />
@@ -129,27 +130,28 @@
             android:label="@string/activity_edit_profile_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".user.SettingsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_settings_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.InboxActivity"
+            android:name=".chat.ChatListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Conversazioni"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="it.gruppoinfor.hometowork.NEW_MESSAGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ChatActivity"
+            android:name=".chat.ChatActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Messaggi"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.OngoingShareActivity"
+            android:name=".share.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_ongoing_share_title"
             android:screenOrientation="portrait"
@@ -159,10 +161,10 @@
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
         <activity
-            android:name=".activities.ShowUserActivity"
+            android:name=".user.UserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".share.SharesActivity"></activity>
     </application>
 
 </manifest>

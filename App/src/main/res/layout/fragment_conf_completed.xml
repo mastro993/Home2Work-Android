@@ -26,4 +26,5 @@
         android:textAlignment="center"
         android:textColor="@color/dark_bg_light_primary_text"
         android:textSize="21sp" />
+
 </LinearLayout>

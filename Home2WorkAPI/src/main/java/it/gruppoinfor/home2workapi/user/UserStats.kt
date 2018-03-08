@@ -7,36 +7,37 @@ import java.io.Serializable
 class UserStats : Serializable {
 
 
-    @SerializedName("Shares")
+    @SerializedName("TotalShares")
     @Expose
-    var shares: Int = 0
-    @SerializedName("GuestShares")
+    var totalShares: Int = 0
+    @SerializedName("TotalGuestShares")
     @Expose
-    var guestShares: Int = 0
-    @SerializedName("HostShares")
+    var totalGuestShares: Int = 0
+    @SerializedName("TotalHostShares")
     @Expose
-    var hostShares: Int = 0
+    var totalHostShares: Int = 0
     @SerializedName("MonthShares")
     @Expose
     var monthShares: Int = 0
-    @SerializedName("MonthSharesAvg")
+    @SerializedName("MonthlySharesAvg")
     @Expose
-    var monthSharesAvg: Float = 0f
-    @SerializedName("SharedDistance")
+    var monthlySharesAvg: Float = 0f
+    @SerializedName("TotalSharedDistance")
     @Expose
     var sharedDistance: Int = 0
     @SerializedName("MonthSharedDistance")
     @Expose
     var monthSharedDistance: Int = 0
-    @SerializedName("MonthSharedDistanceAvg")
+    @SerializedName("MonthlySharedDistanceAvg")
     @Expose
     var monthSharedDistanceAvg: Float = 0f
-    @SerializedName("GlobalRanks")
+    @SerializedName("BestMonthShares")
     @Expose
-    var globalRanks: UserRanks = UserRanks()
-    @SerializedName("CompanyRanks")
+    var bestMonthShares: Int = 0
+    @SerializedName("LongestShare")
     @Expose
-    var companyRanks: UserRanks = UserRanks()
+    var longestShare: Float = 0f
+
 
     companion object {
 

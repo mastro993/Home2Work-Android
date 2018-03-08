@@ -32,6 +32,7 @@
     </FrameLayout>
 
     <TextView
+        android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/qr_code_image_view"

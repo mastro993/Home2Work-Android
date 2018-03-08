@@ -27,7 +27,7 @@ class Guest : Serializable {
     @Expose
     var distance: Int = 0
 
-    enum class Status private constructor(val value: Int) {
+    enum class Status constructor(val value: Int) {
 
         @SerializedName("0")
         JOINED(0),

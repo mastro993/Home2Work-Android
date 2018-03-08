@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@id/gps_icon"
+                android:layout_toEndOf="@id/gps_icon"
                 android:gravity="center_vertical"
                 android:text="Tracking posizione" />
 
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@id/sync_icon"
+                android:layout_toEndOf="@id/sync_icon"
                 android:gravity="center_vertical"
                 android:text="Sincronizzazione" />
 

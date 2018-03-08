@@ -21,5 +21,5 @@ class UserProfile : Serializable {
     var stats: UserStats = UserStats()
     @SerializedName("Activity")
     @Expose
-    var activity: List<MonthActivity> = ArrayList<MonthActivity>()
+    var activity: List<MonthActivity> = ArrayList()
 }

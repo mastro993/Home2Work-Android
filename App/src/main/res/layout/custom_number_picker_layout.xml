@@ -15,7 +15,7 @@
         android:textStyle="bold"
         android:text="—"/>
 
-    <TextView
+    <EditText
         android:layout_width="70dp"
         android:background="@android:color/white"
         android:layout_height="match_parent"

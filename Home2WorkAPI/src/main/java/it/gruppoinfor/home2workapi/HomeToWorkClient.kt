@@ -5,14 +5,14 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2workapi.auth.AuthService
 import it.gruppoinfor.home2workapi.auth.AuthCallback
-import it.gruppoinfor.home2workapi.company.Company
-import it.gruppoinfor.home2workapi.company.CompanyService
+import it.gruppoinfor.home2workapi.auth.AuthService
+import it.gruppoinfor.home2workapi.auth.AuthUser
 import it.gruppoinfor.home2workapi.chat.Chat
 import it.gruppoinfor.home2workapi.chat.ChatService
 import it.gruppoinfor.home2workapi.chat.Message
-import it.gruppoinfor.home2workapi.auth.AuthUser
+import it.gruppoinfor.home2workapi.company.Company
+import it.gruppoinfor.home2workapi.company.CompanyService
 import it.gruppoinfor.home2workapi.location.Location
 import it.gruppoinfor.home2workapi.match.Match
 import it.gruppoinfor.home2workapi.match.MatchService
@@ -36,6 +36,9 @@ object HomeToWorkClient {
     const val HEADER_SESSION_TOKEN = "X-User-Session-Token"
 
     var user: AuthUser? = null
+        private set
+
+    var ongoingShare: Share? = null
         private set
 
     private var sessionToken: String = ""
@@ -117,7 +120,7 @@ object HomeToWorkClient {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
-                    if (response.code() == 201)
+                    if (response.code() == 200)
                         onSuccessListener.onSuccess(response.body())
                     else
                         onFailureListener.onFailure(Exception("Response code " + response.code()))
@@ -269,6 +272,30 @@ object HomeToWorkClient {
     }
 
     /**
+     * Ottiene la condivisione in corso
+     */
+    fun getOngoingShare(onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
+
+        val service = ServiceGenerator.createService(ShareService::class.java, sessionToken)
+
+        service.getOngoingShare()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ shareResponse ->
+
+                    if (shareResponse.code() == 200) {
+
+                        ongoingShare = shareResponse.body()
+                        onSuccessListener.onSuccess(shareResponse.body())
+
+                    } else
+                        onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
+
+                }, { it.printStackTrace() })
+
+    }
+
+    /**
      * Crea una nuova condivisione sul server e la avvia
      */
     fun createNewShare(onSuccessListener: OnSuccessListener<Share>, onFailureListener: OnFailureListener) {
@@ -280,9 +307,12 @@ object HomeToWorkClient {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
 
-                    if (shareResponse.code() == 200)
+                    if (shareResponse.code() == 200) {
+
+                        ongoingShare = shareResponse.body()
                         onSuccessListener.onSuccess(shareResponse.body())
-                    else
+
+                    } else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
@@ -301,9 +331,10 @@ object HomeToWorkClient {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
 
-                    if (shareResponse.code() == 200)
+                    if (shareResponse.code() == 200) {
+                        ongoingShare = null
                         onSuccessListener.onSuccess(shareResponse.body())
-                    else
+                    } else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
@@ -322,9 +353,10 @@ object HomeToWorkClient {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ shareResponse ->
 
-                    if (shareResponse.code() == 200)
+                    if (shareResponse.code() == 200) {
+                        ongoingShare = null
                         onSuccessListener.onSuccess(shareResponse.body())
-                    else
+                    } else
                         onFailureListener.onFailure(Exception("Response code " + shareResponse.code()))
 
                 }, { it.printStackTrace() })
