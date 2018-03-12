@@ -30,17 +30,17 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import com.pixplicity.easyprefs.library.Prefs
-import it.gruppoinfor.home2work.user.SettingsActivity
+import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.home.HomeFragment
-import it.gruppoinfor.home2work.matches.MatchFragment
-import it.gruppoinfor.home2work.user.UserProfileFragment
+import it.gruppoinfor.home2work.user.ProfileFragment
 import it.gruppoinfor.home2work.ranks.RanksFragment
+import it.gruppoinfor.home2work.matches.MatchesFragment
 import it.gruppoinfor.home2work.tracking.LocationService
 import it.gruppoinfor.home2work.firebase.MessagingService
-import it.gruppoinfor.home2work.tracking.SyncService
-import it.gruppoinfor.home2work.share.OngoingShareActivity
+import it.gruppoinfor.home2work.tracking.SyncJobService
+import it.gruppoinfor.home2work.shares.OngoingShareActivity
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.LatLng
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.intentFor
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        startService(Intent(this, SyncService::class.java))
+        startService(Intent(this, SyncJobService::class.java))
 
         initUI()
 
@@ -140,11 +140,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
-        val homeTab = AHBottomNavigationItem(R.string.activity_main_tab_home, R.drawable.ic_nav_home, R.color.colorPrimaryDark)
-        val ranksTab = AHBottomNavigationItem(R.string.activity_main_tab_ranks, R.drawable.ic_trophy, R.color.colorPrimaryDark)
+        val homeTab = AHBottomNavigationItem(R.string.activity_main_tab_home, R.drawable.ic_navigation_home, R.color.colorPrimaryDark)
+        val ranksTab = AHBottomNavigationItem(R.string.activity_main_tab_ranks, R.drawable.ic_navigation_ranks, R.color.colorPrimaryDark)
         val newShareButton = AHBottomNavigationItem(R.string.empty, R.drawable.ic_empty, R.color.teal_200) // Placeholder
-        val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_nav_match, R.color.light_green_400)
-        val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_nav_profile, R.color.colorAccent)
+        val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_navigation_match, R.color.light_green_400)
+        val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_navigation_account, R.color.colorAccent)
 
         bottom_navigation.removeAllItems()
 
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
         bottom_navigation.addItem(profileTab)
 
         bottom_navigation.accentColor = ContextCompat.getColor(this, R.color.colorAccent)
-        bottom_navigation.inactiveColor = ContextCompat.getColor(this, R.color.light_bg_dark_hint_text)
+        bottom_navigation.inactiveColor = ContextCompat.getColor(this, R.color.light_bg_dark_disabled_text)
         bottom_navigation.isForceTint = true
 
         bottom_navigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
@@ -305,8 +305,8 @@ class MainActivity : AppCompatActivity() {
             return when (position) {
                 HOME_TAB -> HomeFragment()
                 RANKS_TAB -> RanksFragment()
-                MATCHES_TAB -> MatchFragment()
-                PROFILE_TAB -> UserProfileFragment()
+                MATCHES_TAB -> MatchesFragment()
+                PROFILE_TAB -> ProfileFragment()
                 else -> HomeFragment()
             }
         }

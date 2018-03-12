@@ -15,10 +15,10 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.App
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.utils.SessionManager
-import it.gruppoinfor.home2work.SyncAlarmReceiver
+import it.gruppoinfor.home2work.auth.SessionManager
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.LatLng
+import org.jetbrains.anko.intentFor
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -132,7 +132,7 @@ class LocationService : Service() {
         val syncPendingIntent = PendingIntent.getBroadcast(
                 this,
                 0,
-                Intent(this, SyncAlarmReceiver::class.java),
+                intentFor<SyncJobService>(SyncJobService.KEY_USER_ID to HomeToWorkClient.user?.id),
                 0
         )
 
@@ -206,7 +206,7 @@ class LocationService : Service() {
         val userLocation = UserLocation()
         val latLng = LatLng(location.latitude, location.longitude)
         userLocation.latLng = latLng
-        userLocation.timestamp = System.currentTimeMillis() / 1000L
+        userLocation.timestamp = System.currentTimeMillis().div(1000L)
         userLocation.userId = HomeToWorkClient.user!!.id
 
         userLocationBox.put(userLocation)

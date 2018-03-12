@@ -36,10 +36,10 @@
         app:inputButtonDefaultIconDisabledColor="@color/white60"
         app:showAttachmentButton="false" />
 
-
-    <it.gruppoinfor.home2work.StatusView
+    <it.gruppoinfor.home2work.common.StatusView
         android:id="@+id/status_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/input" />
 
 </RelativeLayout>

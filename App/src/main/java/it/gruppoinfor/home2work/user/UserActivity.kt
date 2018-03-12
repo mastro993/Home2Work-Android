@@ -11,7 +11,6 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -19,55 +18,42 @@ import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.EntryXComparator
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import it.gruppoinfor.home2work.Constants
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivity
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.user.User
+import it.gruppoinfor.home2work.chat.ChatActivityArgs
 import it.gruppoinfor.home2workapi.user.UserProfile
-import kotlinx.android.synthetic.main.activity_show_user.*
+import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
 import kotlinx.android.synthetic.main.layout_profile_header.*
 import kotlinx.android.synthetic.main.layout_profile_shares.*
-import org.jetbrains.anko.intentFor
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UserActivity : AppCompatActivity() {
+class UserActivity : AppCompatActivity(), UserView {
 
-    private lateinit var mUser: User
-    private var mProfile: UserProfile = UserProfile()
+    private lateinit var mUserPresenter: UserPresenter
+
+    private val args by lazy {
+        UserActivityArgs.deserializeFrom(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_show_user)
+        setContentView(R.layout.activity_user)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        if (intent.hasExtra(Constants.EXTRA_USER)) {
+        mUserPresenter = UserPresenterImpl(this, args.userId)
 
-            mUser = intent.getSerializableExtra(Constants.EXTRA_USER) as User
-            initUI()
-            getProfile()
+        initUI()
 
-        } else {
-
-            Toast.makeText(this, R.string.activity_show_user_error, Toast.LENGTH_SHORT).show()
-            finish()
-
-        }
+        mUserPresenter.onCreate()
 
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -82,8 +68,6 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-
-        status_view.loading()
 
         appBar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout, state: AppBarStateChangeListener.State) {
@@ -118,40 +102,51 @@ class UserActivity : AppCompatActivity() {
             }
         })
 
-        swipe_refresh_layout.setOnRefreshListener {
-            swipe_refresh_layout.isRefreshing = true
-            refreshProfile()
-        }
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
-
-        initHeaderUI()
-        initSharesUI()
-        initActivityUI()
-        initFooterUI()
+        swipe_refresh_layout.setOnRefreshListener { mUserPresenter.onRefresh() }
 
         button_send_message.setOnClickListener {
-            startActivity(intentFor<ChatActivity>(ChatActivity.EXTRA_NEW_CHAT to mUser))
+            ChatActivityArgs(
+                    chatId = 0L,
+                    recipientId = args.userId,
+                    recipientName = args.userName
+            ).launch(this)
         }
 
+        // Header
+        text_name_small.text = args.userName
+        avatar_view_small.setAvatarURL(args.userAvatarUrl)
+        avatar_view.setAvatarURL(args.userAvatarUrl)
+        name_text_view.text = args.userName
+        job_text_view.text = args.userCompanyName
 
-    }
+        // Attività
+        chart_activity.setViewPortOffsets(16f, 0f, 16f, 0f)
+        chart_activity.description.isEnabled = false
+        chart_activity.isDragEnabled = false
+        chart_activity.setPinchZoom(false)
+        chart_activity.setScaleEnabled(false)
+        chart_activity.setDrawGridBackground(false)
+        chart_activity.maxHighlightDistance = 300f
+        chart_activity.animateY(1400, Easing.EasingOption.EaseInOutQuad)
+        chart_activity.xAxis.isEnabled = true
+        chart_activity.xAxis.axisLineColor = ContextCompat.getColor(this, R.color.colorAccent)
+        chart_activity.xAxis.labelCount = 6
+        chart_activity.xAxis.granularity = 1f
+        chart_activity.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        chart_activity.xAxis.setDrawGridLines(false)
+        chart_activity.xAxis.valueFormatter = ProfileFragment.ActivityXAxisValueFormatter()
+        chart_activity.xAxis.textColor = ContextCompat.getColor(this, R.color.colorAccent)
+        chart_activity.xAxis.setAvoidFirstLastClipping(true)
+        chart_activity.axisLeft.isEnabled = true
+        chart_activity.axisLeft.axisLineColor = ContextCompat.getColor(this, R.color.colorAccent)
+        chart_activity.axisLeft.labelCount = 3
+        chart_activity.axisLeft.gridColor = ContextCompat.getColor(this, R.color.colorAccentAlpha26)
+        chart_activity.axisLeft.textColor = ContextCompat.getColor(this, R.color.colorAccent)
+        chart_activity.axisRight.isEnabled = false
+        chart_activity.legend.isEnabled = false
 
-    private fun initHeaderUI() {
-
-        avatar_view.setAvatarURL(mUser.avatarURL)
-        avatar_view_small.setAvatarURL(mUser.avatarURL)
-
-        name_text_view.text = mUser.toString()
-        text_name_small.text = mUser.toString()
-
-        job_text_view.text = mUser.company.toString()
-
-
-    }
-
-    private fun initSharesUI() {
-
-
+        // Condivisioni
         chart_shares.setUsePercentValues(true)
         chart_shares.description.isEnabled = false
         chart_shares.isRotationEnabled = false
@@ -170,115 +165,107 @@ class UserActivity : AppCompatActivity() {
 
     }
 
-    private fun initActivityUI() {
+    override fun setProfileData(userProfile: UserProfile) {
 
-        // TODO marker con info mese selezionato
+        status_view.done()
+        profile_container.visibility = View.VISIBLE
 
-        chart_activity.setViewPortOffsets(0f, 0f, 0f, 0f)
-        chart_activity.description.isEnabled = false
-        chart_activity.isDragEnabled = false
-        chart_activity.setPinchZoom(false)
-        chart_activity.setScaleEnabled(false)
-        chart_activity.setDrawGridBackground(false)
-        chart_activity.maxHighlightDistance = 300f
-        chart_activity.animateY(1400, Easing.EasingOption.EaseInOutQuad)
+        // Header
+        val exp = userProfile.exp
+        avatar_view.setLevel(exp.level)
+        avatar_view_small.setLevel(exp.level)
 
-        chart_activity.xAxis.isEnabled = true
-        chart_activity.xAxis.axisLineColor = ContextCompat.getColor(this, R.color.colorAccent)
-        chart_activity.xAxis.labelCount = 6
-        chart_activity.xAxis.granularity = 1f
-        chart_activity.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        chart_activity.xAxis.setDrawGridLines(false)
-        chart_activity.xAxis.valueFormatter = UserProfileFragment.ActivityXAxisValueFormatter()
-        chart_activity.xAxis.textColor = ContextCompat.getColor(this, R.color.colorAccent)
-        chart_activity.xAxis.setAvoidFirstLastClipping(true)
+        val stats = userProfile.stats
 
-        chart_activity.axisLeft.isEnabled = false
-        chart_activity.axisRight.isEnabled = false
-
-        chart_activity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                // TODO dialog con informazioni
-            }
-
-            override fun onNothingSelected() {
-                // ...
-            }
-        })
-
-        val legend = chart_activity.legend
-        legend.isEnabled = false
-
-    }
-
-    private fun initFooterUI() {
-
+        // Footer
         val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
-        val strDt = simpleDate.format(mUser.regdate)
+        val strDt = simpleDate.format(userProfile.regdate)
         text_regdate.text = strDt
 
-    }
+        // Attività
+        text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance.div(1000f))
+        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance.div(1000f))
+        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg.div(1000f))
 
-    private fun getProfile() {
+        if (stats.sharedDistance > 0) {
 
-        status_view.loading()
-        profile_container.visibility = View.GONE
+            val colors = ArrayList<Int>()
+            colors.add(ContextCompat.getColor(this, R.color.colorAccent))
 
-        HomeToWorkClient.getUserProfileById(mUser.id,OnSuccessListener { userProfile ->
+            val dataSets = ArrayList<ILineDataSet>()
 
-            status_view.done()
-            profile_container.visibility = View.VISIBLE
-            mProfile = userProfile
-            refreshUI()
+            val activityEntries = ArrayList<Entry>()
+            val avgEntries = ArrayList<Entry>()
 
-        }, OnFailureListener {
+            val thisMonth = Calendar.getInstance().get(Calendar.MONTH)
 
-            status_view.error("Impossibile ottenere informazioni del profilo al momento")
-            profile_container.visibility = View.VISIBLE
+            for (i in 5 downTo 0) {
 
-        })
+                var month = thisMonth - i
+                if (month < 0) month += 12
 
-    }
+                val activity = userProfile.activity.find { it.month == month + 1 }
+                val activityEntry = Entry(5 - i.toFloat(), activity?.distance?.toFloat()?.div(1000f)
+                        ?: 0f)
+                val avgEntry = Entry(5 - i.toFloat(), stats.monthSharedDistanceAvg.div(1000f))
 
-    private fun refreshProfile() {
+                activityEntries.add(activityEntry)
+                avgEntries.add(avgEntry)
 
-        HomeToWorkClient.getUserProfileById(mUser.id, OnSuccessListener { userProfile ->
+            }
 
-            mProfile = userProfile
-            refreshHeaderUI()
-            refreshSharesUI()
-            refreshActivityUI()
+            // Grafico media
+            Collections.sort(avgEntries, EntryXComparator())
+            val avgDataSet = LineDataSet(avgEntries, "Media")
+            avgDataSet.color = ContextCompat.getColor(this, R.color.colorPrimary)
+            avgDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+            avgDataSet.setDrawFilled(true)
+            avgDataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.bg_chart_activity_avg_fill)
+            avgDataSet.fillAlpha = 100
+            avgDataSet.lineWidth = 3f
+            avgDataSet.setDrawCircles(false)
+            avgDataSet.setDrawValues(false)
+            avgDataSet.setDrawHorizontalHighlightIndicator(false)
+            avgDataSet.setDrawVerticalHighlightIndicator(false)
+            avgDataSet.enableDashedLine(20f, 15f, 0f)
+            dataSets.add(avgDataSet)
 
-            swipe_refresh_layout.isRefreshing = false
+            // Grafico attività
+            Collections.sort(activityEntries, EntryXComparator())
+            val activityDataSet = LineDataSet(activityEntries, "Attività")
+            activityDataSet.color = ContextCompat.getColor(this, R.color.colorAccent)
+            activityDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            activityDataSet.setDrawFilled(true)
+            activityDataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.bg_chart_activity_fill)
+            activityDataSet.fillAlpha = 100
+            activityDataSet.lineWidth = 3f
+            activityDataSet.setDrawCircles(true)
+            activityDataSet.setDrawCircleHole(true)
+            activityDataSet.circleRadius = 6f
+            activityDataSet.circleHoleRadius = 4f
+            activityDataSet.setCircleColorHole(ContextCompat.getColor(this, R.color.cardview_light_background))
+            activityDataSet.setDrawValues(false)
+            activityDataSet.valueTextColor = ContextCompat.getColor(this, R.color.light_bg_dark_primary_text)
+            activityDataSet.valueTextSize = 12f
+            activityDataSet.setDrawHorizontalHighlightIndicator(false)
+            activityDataSet.setDrawVerticalHighlightIndicator(false)
+            activityDataSet.circleColors = colors
+            dataSets.add(activityDataSet)
 
-        }, OnFailureListener {
 
-            Toast.makeText(this, "Impossibile aggiornare le informazioni del profilo al momento", Toast.LENGTH_SHORT).show()
-            swipe_refresh_layout.isRefreshing = false
+            val lineData = LineData(dataSets)
+            chart_activity.data = lineData
+            chart_activity.invalidate()
 
-        })
+            no_activity_chart_data_view.visibility = View.GONE
+            chart_activity.visibility = View.VISIBLE
 
-    }
+        } else {
+            no_activity_chart_data_view.visibility = View.VISIBLE
+            chart_activity.visibility = View.GONE
+        }
 
-    private fun refreshUI() {
-
-        refreshHeaderUI()
-        refreshSharesUI()
-        refreshActivityUI()
-
-    }
-
-    private fun refreshHeaderUI() {
-
-        avatar_view.setLevel(mProfile.exp.level)
-        avatar_view_small.setLevel(mProfile.exp.level)
-
-    }
-
-    private fun refreshSharesUI() {
-
-        val stats = mProfile.stats
-
+        // Condivisioni
         text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
         text_month_shares_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), stats.monthShares)
         text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), stats.monthlySharesAvg)
@@ -325,95 +312,28 @@ class UserActivity : AppCompatActivity() {
 
         }
 
-    }
 
-    private fun refreshActivityUI() {
-
-        val stats = mProfile.stats
-
-        text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", stats.sharedDistance.div(1000f))
-        text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistance.div(1000f))
-        text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), stats.monthSharedDistanceAvg.div(1000f))
-
-        if (stats.sharedDistance > 0) {
-
-            val colors = ArrayList<Int>()
-            colors.add(ContextCompat.getColor(this, R.color.colorAccent))
-
-            val dataSets = ArrayList<ILineDataSet>()
-
-            val activityEntries = ArrayList<Entry>()
-            val avgEntries = ArrayList<Entry>()
-
-            val thisMonth = Calendar.getInstance().get(Calendar.MONTH)
-
-            for (i in 5 downTo 0) {
-
-                var month = thisMonth - i
-                if (month < 0) month += 12
-
-                val activity = mProfile.activity.find { it.month == month + 1 }
-                val activityEntry = Entry(5 - i.toFloat(), activity?.distance?.toFloat()?.div(1000f)
-                        ?: 0f)
-                val avgEntry = Entry(5 - i.toFloat(), stats.monthSharedDistanceAvg.div(1000f))
-
-                activityEntries.add(activityEntry)
-                avgEntries.add(avgEntry)
-
-            }
-
-            // Grafico media
-            Collections.sort(avgEntries, EntryXComparator())
-            val avgDataSet = LineDataSet(avgEntries, "Media")
-            avgDataSet.color = ContextCompat.getColor(this, R.color.colorPrimary)
-            avgDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-            avgDataSet.setDrawFilled(true)
-            avgDataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.drawable_activity_chart_avg_fill)
-            avgDataSet.fillAlpha = 100
-            avgDataSet.lineWidth = 3f
-            avgDataSet.setDrawCircles(false)
-            avgDataSet.setDrawValues(false)
-            avgDataSet.setDrawHorizontalHighlightIndicator(false)
-            avgDataSet.setDrawVerticalHighlightIndicator(false)
-            dataSets.add(avgDataSet)
-
-            // Grafico attività
-            Collections.sort(activityEntries, EntryXComparator())
-            val activityDataSet = LineDataSet(activityEntries, "Attività")
-            activityDataSet.color = ContextCompat.getColor(this, R.color.colorAccent)
-            activityDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-            activityDataSet.setDrawFilled(true)
-            activityDataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.drawable_activity_chart_fill)
-            activityDataSet.fillAlpha = 100
-            activityDataSet.lineWidth = 3f
-            activityDataSet.setDrawCircles(true)
-            activityDataSet.setDrawCircleHole(true)
-            activityDataSet.circleRadius = 6f
-            activityDataSet.circleHoleRadius = 4f
-            activityDataSet.setCircleColorHole(ContextCompat.getColor(this, R.color.cardview_light_background))
-            activityDataSet.setDrawValues(false)
-            activityDataSet.valueTextColor = ContextCompat.getColor(this, R.color.light_bg_dark_primary_text)
-            activityDataSet.valueTextSize = 12f
-            activityDataSet.setDrawHorizontalHighlightIndicator(false)
-            activityDataSet.setDrawVerticalHighlightIndicator(false)
-            activityDataSet.circleColors = colors
-            dataSets.add(activityDataSet)
-
-
-            val lineData = LineData(dataSets)
-            chart_activity.data = lineData
-            chart_activity.invalidate()
-
-            no_activity_chart_data_view.visibility = View.GONE
-            chart_activity.visibility = View.VISIBLE
-
-        } else {
-
-            no_activity_chart_data_view.visibility = View.VISIBLE
-            chart_activity.visibility = View.GONE
-
-        }
 
     }
 
+    override fun onLoading() {
+        status_view.loading()
+        profile_container.visibility = View.GONE
+    }
+
+    override fun onLoadingError(errorMessage: String) {
+        status_view.error(errorMessage)
+    }
+
+    override fun onRefresh() {
+        swipe_refresh_layout.isRefreshing = true
+    }
+
+    override fun onRefreshDone() {
+        swipe_refresh_layout.isRefreshing = false
+    }
+
+    override fun showErrorMessage(errorMessage: String) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+    }
 }

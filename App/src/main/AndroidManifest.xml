@@ -54,20 +54,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".SyncAlarmReceiver"
-            android:enabled="true"
-            android:exported="true"
-            tools:ignore="ExportedReceiver" />
 
         <service
             android:name=".tracking.LocationService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
-            android:name=".tracking.SyncService"
-            android:enabled="true"
-            android:stopWithTask="false" />
+            android:name=".tracking.SyncJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
         <service
             android:name=".tracking.ActivityRecognizedService"
             android:enabled="true"
@@ -107,7 +102,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".auth.SignInActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_signin_title"
             android:screenOrientation="portrait"
@@ -130,12 +125,12 @@
             android:label="@string/activity_edit_profile_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_settings_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".chat.ChatListActivity"
+            android:name=".chat.InboxActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Conversazioni"
             android:screenOrientation="portrait">
@@ -151,7 +146,7 @@
             android:label="Messaggi"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".share.OngoingShareActivity"
+            android:name=".shares.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_ongoing_share_title"
             android:screenOrientation="portrait"
@@ -164,7 +159,9 @@
             android:name=".user.UserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".share.SharesActivity"></activity>
+        <activity android:name=".shares.SharesActivity"
+            android:screenOrientation="portrait"
+            android:label="Condivisioni"/>
     </application>
 
 </manifest>

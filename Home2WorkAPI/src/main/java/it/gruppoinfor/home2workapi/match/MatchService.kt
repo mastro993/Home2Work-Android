@@ -8,18 +8,17 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
-internal interface MatchService {
-
+interface MatchService {
 
 
     @GET("match/{id}")
     fun getMatchById(
             @Path("id") id: Long?
-    ): Observable<Response<Match>>
+    ): Observable<Match>
 
     @PUT("match")
     fun editMatch(
             @Body match: Match
-    ): Observable<Response<Match>>
+    ): Observable<Match>
 
 }

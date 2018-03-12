@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import it.gruppoinfor.home2workapi.user.User
 import java.io.Serializable
-import java.sql.Timestamp
 import java.util.*
 
 class Share : Serializable {
@@ -18,9 +17,9 @@ class Share : Serializable {
     @SerializedName("Status")
     @Expose
     var status: Status? = null
-    @SerializedName("Date")
+    @SerializedName("Time")
     @Expose
-    var date: Timestamp = Timestamp(0)
+    var date: Date? = null
     @SerializedName("Type")
     @Expose
     var type: Type? = null

@@ -6,13 +6,15 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
-import it.gruppoinfor.home2work.utils.SessionManager
+import it.gruppoinfor.home2work.auth.SignInActivity
 import it.gruppoinfor.home2work.configuration.ConfigurationActivity
+import it.gruppoinfor.home2work.tracking.SyncJobService
+import it.gruppoinfor.home2work.auth.SessionManager
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import java.net.UnknownHostException
 
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : AppCompatActivity(), SessionManager.SessionCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +25,7 @@ class SplashActivity : AppCompatActivity() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.PERMISSION_FINE_LOCATION)
         } else {
-            initApp()
+            SessionManager.loadSession(this, this)
         }
 
 
@@ -33,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
 
         if (requestCode == Constants.PERMISSION_FINE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                initApp()
+                SessionManager.loadSession(this, this)
             else
                 finish()
         }
@@ -41,35 +43,38 @@ class SplashActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun initApp() {
+    override fun onValidSession() {
 
-        SessionManager.loadSession(this, object : SessionManager.SessionCallback {
-            override fun onValidSession() {
-                val i: Intent = if (HomeToWorkClient.user!!.configured) {
-                    Intent(this@SplashActivity, MainActivity::class.java)
-                } else {
-                    Intent(this@SplashActivity, ConfigurationActivity::class.java)
-                }
-                startActivity(i)
-                finish()
-            }
 
-            override fun onInvalidSession(code: Int, throwable: Throwable?) {
-                val intent = Intent(this@SplashActivity, SignInActivity::class.java)
-                when (code) {
-                    SignInActivity.CODE_INVALID_CREDENTIALS -> intent.putExtra(SignInActivity.CODE_AUTH, SignInActivity.CODE_EXPIRED_TOKEN)
-                    SignInActivity.CODE_NO_ACCESS_TOKEN -> {
-                    }
-                    else ->
-                        if (throwable is UnknownHostException)
-                            intent.putExtra(SignInActivity.CODE_AUTH, SignInActivity.CODE_NO_INTERNET)
-                        else
-                            intent.putExtra(SignInActivity.CODE_AUTH, SignInActivity.CODE_ERROR)
-                }
-                startActivity(intent)
-                finish()
-            }
-        })
+        SyncJobService.schedule(this@SplashActivity, HomeToWorkClient.user!!.id)
+
+        val i: Intent = if (HomeToWorkClient.user!!.configured) {
+            Intent(this@SplashActivity, MainActivity::class.java)
+        } else {
+            Intent(this@SplashActivity, ConfigurationActivity::class.java)
+        }
+        startActivity(i)
+        finish()
+
     }
+
+    override fun onInvalidSession(code: Int, throwable: Throwable?) {
+
+        val intent = Intent(this@SplashActivity, SignInActivity::class.java)
+        when (code) {
+            SignInActivity.CODE_INVALID_CREDENTIALS -> intent.putExtra(SignInActivity.CODE_AUTH, SignInActivity.CODE_EXPIRED_TOKEN)
+            SignInActivity.CODE_NO_ACCESS_TOKEN -> {
+            }
+            else ->
+                if (throwable is UnknownHostException)
+                    intent.putExtra(SignInActivity.CODE_AUTH, SignInActivity.CODE_NO_INTERNET)
+                else
+                    intent.putExtra(SignInActivity.CODE_AUTH, SignInActivity.CODE_ERROR)
+        }
+        startActivity(intent)
+        finish()
+
+    }
+
 
 }

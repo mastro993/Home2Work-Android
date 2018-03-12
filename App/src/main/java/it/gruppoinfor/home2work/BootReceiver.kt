@@ -12,9 +12,9 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import com.pixplicity.easyprefs.library.Prefs
 
-import it.gruppoinfor.home2work.user.SettingsActivity
+import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.tracking.LocationService
-import it.gruppoinfor.home2work.utils.SessionManager
+import it.gruppoinfor.home2work.auth.SessionManager
 
 class BootReceiver : BroadcastReceiver() {
 

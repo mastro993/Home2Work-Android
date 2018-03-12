@@ -3,10 +3,10 @@ package it.gruppoinfor.home2workapi.user
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import it.gruppoinfor.home2workapi.Address
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.LatLng
 import it.gruppoinfor.home2workapi.company.Company
-import it.gruppoinfor.home2workapi.common.Address
 import java.io.Serializable
 import java.util.*
 

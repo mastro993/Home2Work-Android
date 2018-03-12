@@ -1,12 +1,9 @@
 package it.gruppoinfor.home2workapi
 
-import android.text.TextUtils
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
-import it.gruppoinfor.home2workapi.auth.AuthenticationInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -25,24 +22,19 @@ internal object ServiceGenerator {
             .baseUrl(API_BASE_URL)
             .client(httpClient.build())
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create())
 
     private var retrofit = builder.build()
 
     fun <S> createService(serviceClass: Class<S>): S {
-        return createService(serviceClass, "")
-    }
+        val interceptor = AuthenticationInterceptor()
 
-    fun <S> createService(serviceClass: Class<S>, sessionToken: String): S {
-        if (!TextUtils.isEmpty(sessionToken)) {
-            val interceptor = AuthenticationInterceptor(sessionToken)
+        if (!httpClient.interceptors().contains(interceptor)) {
+            httpClient.addInterceptor(interceptor)
 
-            if (!httpClient.interceptors().contains(interceptor)) {
-                httpClient.addInterceptor(interceptor)
-
-                builder.client(httpClient.build())
-                retrofit = builder.build()
-            }
+            builder.client(httpClient.build())
+            retrofit = builder.build()
         }
 
         return retrofit.create(serviceClass)

@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -24,9 +27,9 @@ import com.stepstone.stepper.VerificationError
 import it.gruppoinfor.home2work.Constants
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.utils.AddressConverter
+import it.gruppoinfor.home2workapi.Address
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.common.Address
-import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.LatLng
 import kotlinx.android.synthetic.main.dialog_edit_address.*
 import kotlinx.android.synthetic.main.fragment_conf_home.*
 
@@ -44,45 +47,47 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        homeLocation = HomeToWorkClient.user?.homeLatLng
+
         button_set_address.setOnClickListener {
+
+            var addr: String? = HomeToWorkClient.user?.address?.address
+            var city: String? = HomeToWorkClient.user?.address?.city
+            var cap: String? = HomeToWorkClient.user?.address?.postalCode
 
             val dialog = AlertDialog.Builder(context!!)
                     .setTitle("Inserisci un indirizzo")
                     .setView(R.layout.dialog_edit_address)
                     //.setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton(android.R.string.ok, { dialog, _ ->
+                    .setPositiveButton(android.R.string.ok, { d, _ ->
 
                         var valid = true
 
-                        val addr = address_input.text.toString()
-                        val city = city_input.text.toString()
-                        val cap = cap_input.text.toString()
-
-                        if (addr.isEmpty()) {
+                        if (addr.isNullOrEmpty()) {
                             address_input.error = getString(R.string.activity_configuration_address_warning_address)
                             valid = false
                         }
 
-                        if (city.isEmpty()) {
+                        if (city.isNullOrEmpty()) {
                             cap_input.error = getString(R.string.activity_configuration_address_warning_CAP)
                             valid = false
                         }
 
-                        if (cap.isEmpty()) {
+                        if (cap.isNullOrEmpty()) {
                             city_input.error = getString(R.string.activity_configuration_address_warning_city)
                             valid = false
                         }
 
                         if (valid) {
 
-                            dialog.dismiss()
+                            d.dismiss()
 
                             AddressConverter.addressToLatLng(context!!, "$addr, $city $cap",
                                     OnSuccessListener { latLng ->
                                         val newAddress = Address()
-                                        newAddress.city = city
-                                        newAddress.address = addr
-                                        newAddress.postalCode = cap
+                                        newAddress.city = city!!
+                                        newAddress.address = addr!!
+                                        newAddress.postalCode = cap!!
 
                                         HomeToWorkClient.user?.homeLatLng = latLng
                                         HomeToWorkClient.user?.address = newAddress
@@ -93,16 +98,57 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
                             })
                         }
 
-                    })
+                    }).show()
 
-            address_input.setText(HomeToWorkClient.user?.address?.address)
-            cap_input.setText(HomeToWorkClient.user?.address?.postalCode)
-            city_input.setText(HomeToWorkClient.user?.address?.city)
+            dialog.address_input.setText(addr)
+            dialog.cap_input.setText(cap)
+            dialog.city_input.setText(city)
 
-            dialog.show()
+            dialog.address_input.addTextChangedListener(object : TextWatcher{
+                override fun afterTextChanged(p0: Editable?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    addr=p0.toString()
+                }
+            })
+            dialog.city_input.addTextChangedListener(object : TextWatcher{
+                override fun afterTextChanged(p0: Editable?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    city=p0.toString()
+                }
+            })
+
+            dialog.cap_input.addTextChangedListener(object : TextWatcher{
+                override fun afterTextChanged(p0: Editable?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    cap=p0.toString()
+                }
+            })
+
 
 
         }
+
 
         map_view.onCreate(savedInstanceState)
         map_view.getMapAsync(this)
@@ -136,6 +182,7 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constants.PERMISSION_FINE_LOCATION)
 
         }
+
 
     }
 
@@ -176,7 +223,7 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
             HomeToWorkClient.user?.homeLatLng = homeLocation!!
             null
         } else {
-            VerificationError(getString(R.string.activity_configuration_company_step_warning))
+            VerificationError("Devi impostare il tuo indirizzo di casa prima di poter continuare")
         }
     }
 

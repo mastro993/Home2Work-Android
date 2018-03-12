@@ -3,19 +3,27 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionGroup="false"
+    android:clipChildren="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <FrameLayout
+        android:transitionGroup="false"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clipChildren="false">
 
         <android.support.v4.widget.NestedScrollView
+            android:transitionGroup="false"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipChildren="false">
 
             <LinearLayout
+                android:transitionGroup="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:paddingBottom="48dp">
@@ -23,7 +31,9 @@
                 <RelativeLayout
                     android:id="@+id/no_matches_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -49,7 +59,9 @@
                     android:id="@+id/matches_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:transitionGroup="false"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -57,7 +69,7 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-        <it.gruppoinfor.home2work.StatusView
+        <it.gruppoinfor.home2work.common.StatusView
             android:id="@+id/status_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

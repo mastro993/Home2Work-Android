@@ -9,10 +9,10 @@
         <item name="actionMenuTextColor">@color/light_bg_dark_primary_text</item>
         <item name="android:actionMenuTextColor">@color/light_bg_dark_primary_text</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowActivityTransitions">true</item>
         <item name="popupMenuStyle">@style/Base.Widget.AppCompat.Light.PopupMenu</item>
         <item name="windowActionBar">true</item>
         <item name="android:windowBackground">@color/white</item>
-        <item name="colorControlHighlight">@color/colorAccentAlpha26</item>
         <item name="android:textColorPrimary">@color/light_bg_dark_primary_text</item>
         <item name="android:textColorPrimaryInverse">@color/dark_bg_light_primary_text</item>
         <item name="android:textColorSecondary">@color/light_bg_dark_secondary_text</item>
@@ -67,4 +67,13 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="FullScreenDialogStyle" parent="AppTheme.NoActionBar">
+        <!--<item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>-->
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slideup</item>
+        <item name="android:windowExitAnimation">@anim/slidedown</item>
+    </style>
 </resources>

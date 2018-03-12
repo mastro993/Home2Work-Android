@@ -1,19 +1,17 @@
 package it.gruppoinfor.home2work.utils
 
 
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 object DateFormatUtils {
 
-    fun formatDate(timestamp: Timestamp?): String {
+    fun formatDate(startDate: Date?): String {
 
-        if (timestamp == null) return ""
+        if (startDate == null) return ""
 
         val endDate = Date()
-        val startDate = Date(timestamp.time)
 
         //milliseconds
         var difference = endDate.time - startDate.time

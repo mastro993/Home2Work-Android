@@ -61,12 +61,12 @@ class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if (requestCode == Constants.REQ_CAMERA && resultCode == Activity.RESULT_OK) {
             try {
 
-                val selectedImageUri = data.data
+                val selectedImageUri = data?.data
                 val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, selectedImageUri)
                 propic = ImageUtils.shrinkBitmap(bitmap, 300)
                 propicView!!.setImageBitmap(propic)

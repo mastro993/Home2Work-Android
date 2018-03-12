@@ -12,8 +12,8 @@ import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.MainActivity
-import it.gruppoinfor.home2work.utils.SessionManager
-import it.gruppoinfor.home2work.SignInActivity
+import it.gruppoinfor.home2work.auth.SessionManager
+import it.gruppoinfor.home2work.auth.SignInActivity
 import kotlinx.android.synthetic.main.activity_configuration.*
 
 class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener {

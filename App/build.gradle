@@ -7,7 +7,7 @@ apply plugin: 'io.objectbox'
 android {
 
     compileSdkVersion 27
-    buildToolsVersion "27.0.1"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "it.gruppoinfor.home2work"
@@ -82,7 +82,8 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
     implementation 'com.pixplicity.easyprefs:library:1.9.0' //Easyprefs
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3' // MPAndroidChart
-    compile 'com.github.stfalcon:chatkit:0.2.2' // Chatkit
+    implementation 'com.github.stfalcon:chatkit:0.2.2' // Chatkit
+    implementation 'org.greenrobot:eventbus:3.1.1' // Eventbus
     api project(path: ':Home2WorkAPI') // HomeToWork API
 
 

@@ -3,14 +3,18 @@ package it.gruppoinfor.home2work.matches
 import android.Manifest
 import android.animation.ValueAnimator
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.transition.Explode
+import android.transition.Fade
+import android.transition.Transition
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -22,45 +26,37 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.Constants.EXTRA_MATCH
-import it.gruppoinfor.home2work.Constants.EXTRA_USER
 import it.gruppoinfor.home2work.Constants.GOOGLE_API_KEY
-import it.gruppoinfor.home2work.user.UserActivity
+import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.user.UserActivityArgs
 import it.gruppoinfor.home2work.utils.DateFormatUtils.dateToString
 import it.gruppoinfor.home2work.utils.RouteUtils
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.match.Match
 import kotlinx.android.synthetic.main.activity_match.*
-import org.jetbrains.anko.intentFor
 
 class MatchInfoActivity : AppCompatActivity() {
 
     private lateinit var googleMap: GoogleMap
-    private lateinit var match: Match
+
+    private val args by lazy {
+        MatchInfoActivityArgs.deserializeFrom(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_match)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val map = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        map.onCreate(savedInstanceState)
+        //val map = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        //map.onCreate(savedInstanceState)
 
         status_view.loading()
 
-        map.getMapAsync(MyMapReadyCallback(this))
+        //map.getMapAsync(MyMapReadyCallback(this))
 
-        if (intent.hasExtra(EXTRA_MATCH)) {
-            match = intent.getSerializableExtra(EXTRA_MATCH) as Match
-            initUI()
-        } else {
-            Toast.makeText(this, R.string.activity_match_error, Toast.LENGTH_SHORT).show()
-            finish()
-        }
 
-        HomeToWorkClient.editMatch(match)
+        //initUI()
+
+        window.enterTransition = Fade()
 
     }
 
@@ -73,13 +69,28 @@ class MatchInfoActivity : AppCompatActivity() {
             }
         }
 
+
+
         return super.onOptionsItemSelected(item)
     }
 
     private fun initUI() {
 
+        val match = args.match
+
         profile_container.setOnClickListener {
-            startActivity(intentFor<UserActivity>(EXTRA_USER to match.host))
+
+            val user = match.host!!
+
+            UserActivityArgs(
+                    userId = user.id,
+                    userName = user.toString(),
+                    userAvatarUrl = user.avatarURL,
+                    userCompanyId = user.company.id,
+                    userCompanyName = user.company.name
+            ).launch(this)
+
+
         }
 
         val requestOptions = RequestOptions()
@@ -97,7 +108,7 @@ class MatchInfoActivity : AppCompatActivity() {
         job_view.text = match.host?.company.toString()
         home_view.text = match.host?.address?.city
 
-        timetable_time.text = String.format(
+        /*timetable_time.text = String.format(
                 resources.getString(R.string.activity_match_time),
                 dateToString(match.startTime),
                 dateToString(match.endTime)
@@ -105,7 +116,7 @@ class MatchInfoActivity : AppCompatActivity() {
 
         val days = ArrayList<String>()
         match.weekdays.mapTo(days) { resources.getStringArray(R.array.giorni)[it] }
-        timetable_weekdays.text = TextUtils.join(", ", days)
+        timetable_weekdays.text = TextUtils.join(", ", days)*/
 
     }
 
@@ -122,14 +133,16 @@ class MatchInfoActivity : AppCompatActivity() {
 
     private fun refreshUI() {
 
+        val match = args.match
+
         status_view.done()
-        val animator = ValueAnimator.ofInt(0, match.score)
+        val animator = ValueAnimator.ofInt(0, match.getScore())
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.addUpdateListener { valueAnimator -> score_text.text = "${valueAnimator.animatedValue}" }
         animator.start()
 
-        val color = getScoreColor(match.score)
+        val color = getScoreColor(match.getScore())
         score_text.setTextColor(color)
 
     }
@@ -138,6 +151,8 @@ class MatchInfoActivity : AppCompatActivity() {
 
         override fun onMapReady(gmap: GoogleMap) {
 
+            val match = args.match
+
             googleMap = gmap
             googleMap.uiSettings.isMyLocationButtonEnabled = false
 
@@ -145,8 +160,8 @@ class MatchInfoActivity : AppCompatActivity() {
                 MapsInitializer.initialize(mContext)
 
                 val matchWaypoints = ArrayList<com.google.android.gms.maps.model.LatLng>()
-                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match.startLocation.lat, match.startLocation.lng))
-                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match.endLocation.lat, match.endLocation.lng))
+               /* matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match.startLocation.lat, match.startLocation.lng))
+                matchWaypoints.add(com.google.android.gms.maps.model.LatLng(match.endLocation.lat, match.endLocation.lng))*/
 
                 val matchRouting = Routing.Builder()
                         .travelMode(AbstractRouting.TravelMode.WALKING)
@@ -174,6 +189,8 @@ class MatchInfoActivity : AppCompatActivity() {
 
         override fun onRoutingSuccess(arrayList: ArrayList<Route>, i: Int) {
 
+            val match = args.match
+
             val route = arrayList[0]
 
             val polyOptions = PolylineOptions()
@@ -185,7 +202,7 @@ class MatchInfoActivity : AppCompatActivity() {
 
             val latLngBounds = RouteUtils.getRouteBounds(route.points)
 
-            googleMap.addMarker(MarkerOptions()
+            /*googleMap.addMarker(MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     .position(com.google.android.gms.maps.model.LatLng(match.startLocation.lat, match.startLocation.lng))
                     .title("Casa")
@@ -195,7 +212,7 @@ class MatchInfoActivity : AppCompatActivity() {
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     .position(com.google.android.gms.maps.model.LatLng(match.endLocation.lat, match.endLocation.lng))
                     .title("Lavoro")
-            )
+            )*/
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100))
 

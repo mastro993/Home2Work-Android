@@ -5,7 +5,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import it.gruppoinfor.home2work.share.OngoingShareActivity
+import it.gruppoinfor.home2work.shares.OngoingShareActivity
 import it.gruppoinfor.home2workapi.share.Guest
 import it.gruppoinfor.home2workapi.share.Share
 import kotlinx.android.synthetic.main.layout_share_ongoing.view.*

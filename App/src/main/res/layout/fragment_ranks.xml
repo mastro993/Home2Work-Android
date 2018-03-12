@@ -5,10 +5,10 @@
     tools:context=".ranks.RanksFragment">
 
     <ImageView
-        android:alpha="0.1"
-        android:src="@drawable/ic_trophy"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:alpha="0.05"
+        android:src="@drawable/ic_trophy_placeholder" />
 
 </FrameLayout>

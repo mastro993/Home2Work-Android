@@ -1,8 +1,8 @@
 package it.gruppoinfor.home2workapi.user
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2workapi.chat.Chat
 import it.gruppoinfor.home2workapi.auth.AuthUser
+import it.gruppoinfor.home2workapi.chat.Chat
 import it.gruppoinfor.home2workapi.location.Location
 import it.gruppoinfor.home2workapi.match.Match
 import it.gruppoinfor.home2workapi.share.Share
@@ -12,13 +12,13 @@ import retrofit2.Response
 import retrofit2.http.*
 
 
-internal interface UserService {
+interface UserService {
 
     @GET("user")
     fun get(): Observable<Response<AuthUser>>
 
     @PUT("user")
-    fun edit(@Body user: User): Observable<Response<AuthUser>>
+    fun edit(@Body user: User): Observable<AuthUser>
 
     @Multipart
     @POST("user/avatar")
@@ -33,10 +33,10 @@ internal interface UserService {
     ): Observable<Response<ResponseBody>>
 
     @GET("user/profile")
-    fun getProfile(): Observable<Response<UserProfile>>
+    fun getProfile(): Observable<UserProfile>
 
     @GET("user/chat")
-    fun getChatList(): Observable<Response<List<Chat>>>
+    fun getChatList(): Observable<List<Chat>>
 
     @POST("user/location")
     fun uploadLocations(
@@ -44,14 +44,10 @@ internal interface UserService {
     ): Observable<Response<List<Location>>>
 
     @GET("user/match")
-    fun getMatchList(): Observable<Response<ArrayList<Match>>>
+    fun getMatchList(): Observable<ArrayList<Match>>
 
     @GET("user/share")
-    fun getShareList(): Observable<Response<ArrayList<Share>>>
-
-
-    // ####################################################################
-
+    fun getShareList(): Observable<List<Share>>
 
     @GET("user/{id}")
     fun getUserById(
@@ -59,8 +55,7 @@ internal interface UserService {
     ): Observable<Response<User>>
 
     @GET("user/{id}/profile")
-    fun getUserProfileById(@Path("id") id: Long?): Observable<Response<UserProfile>>
-
+    fun getUserProfileById(@Path("id") id: Long?): Observable<UserProfile>
 
 
 }

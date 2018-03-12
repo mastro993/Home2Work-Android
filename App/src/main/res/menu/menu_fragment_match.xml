@@ -2,11 +2,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:mContext="com.infor.fleetupht.view.ProfileActivity">
+
     <item
-        android:id="@+id/action_filter"
-        android:icon="@drawable/ic_filter"
-        android:title="Filtra matches"
         android:visible="false"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/action_match_sort"
+        android:icon="@drawable/ic_match_sort"
+        android:title="Filtra matches"
+        app:showAsAction="always" />
+
+    <item
+        android:visible="false"
+        android:id="@+id/action_match_settings"
+        android:icon="@drawable/ic_match_settings"
+        android:title="Preferenze matches"
+        app:showAsAction="always" />
 
 </menu>

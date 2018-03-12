@@ -1,93 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_match_container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/match_item_container"
     android:layout_width="match_parent"
-    android:layout_height="86dp"
+    android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical"
+    android:transitionGroup="true">
 
-    <ImageView
-        android:id="@+id/match_user_avatar"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/ic_avatar_placeholder"
-        tools:ignore="ContentDescription" />
-
-    <include
-        android:id="@+id/new_badge"
-        layout="@layout/badge_new"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:layout_alignEnd="@id/match_user_avatar"
-        android:layout_alignTop="@id/match_user_avatar"
-        android:layout_marginEnd="2dp"
-        android:layout_marginTop="2dp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@id/match_user_avatar"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/match_user_name_view"
+        <ImageView
+            android:id="@+id/match_user_avatar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_avatar_placeholder"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/new_badge"
+            layout="@layout/badge_new"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignEnd="@id/match_user_avatar"
+            android:layout_alignTop="@id/match_user_avatar"
+            android:layout_gravity="center"
+            android:layout_marginEnd="-2dp"
+            android:layout_marginTop="-2dp"
+            android:src="@drawable/bg_badge_new" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:text="Annamaria Della Ragione"
-            android:textColor="@color/light_bg_dark_primary_text"
-            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="72dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_host_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="Annamaria Della Ragione"
+                android:textColor="@color/light_bg_dark_primary_text"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:textColor="@color/colorAccent"
+                android:id="@+id/text_host_job"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:lines="1"
+                android:text="Azienda A" />
+
+            <TextView
+                android:id="@+id/text_host_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="Di {località}" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_match_score"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_match_score"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="10%"
+            android:textColor="@color/red_500"
+            android:textSize="21sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/match_user_job_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:text="Azienda A"
-            android:textColor="@color/colorAccent" />
 
-        <TextView
-            android:id="@+id/home_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="4dp"
-            android:drawableStart="@drawable/ic_match_item_location"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:text="Città"
-            android:textColor="@color/light_bg_dark_secondary_text" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/score_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:text="100%"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    </RelativeLayout>
 
     <include
         android:id="@+id/item_match_divider"
         layout="@layout/horizontal_divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_height="1dp" />
 
-</RelativeLayout>
+</LinearLayout>
 

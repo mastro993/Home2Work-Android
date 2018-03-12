@@ -2,7 +2,7 @@ package it.gruppoinfor.home2workapi.share
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.LatLng
 import it.gruppoinfor.home2workapi.user.User
 import java.io.Serializable
 

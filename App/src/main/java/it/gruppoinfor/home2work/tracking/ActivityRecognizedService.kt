@@ -9,9 +9,6 @@ import timber.log.Timber
 
 class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
-    private var isDriving = false
-    private var stillStatusCounter = 0
-
     override fun onHandleIntent(intent: Intent?) {
 
         if (ActivityRecognitionResult.hasResult(intent)) {
@@ -41,12 +38,12 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
                                 stillStatusCounter++
 
-                                if (stillStatusCounter >= ActivityRecognizedService.Companion.MAX_STILL_STATUS_COUNT){
+                                if (stillStatusCounter >= ActivityRecognizedService.MAX_STILL_STATUS_COUNT){
                                     Timber.i("Utente fermo")
                                     stopDrivingActivity()
                                 }
                                 else
-                                    Timber.i("Utente fermo. Guida automaticamente terminata tra ${ActivityRecognizedService.Companion.MAX_STILL_STATUS_COUNT - stillStatusCounter}")
+                                    Timber.i("Utente fermo. Guida automaticamente terminata tra ${ActivityRecognizedService.MAX_STILL_STATUS_COUNT - stillStatusCounter}")
                             }
 
                         }
@@ -91,6 +88,9 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         private const val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
         private const val MAX_STILL_STATUS_COUNT = 2
+
+        private var isDriving = false
+        private var stillStatusCounter = 0
 
         fun hasResult(intent: Intent?): Boolean {
             return intent?.hasExtra(DrivingActivity::class.java.simpleName) ?: false

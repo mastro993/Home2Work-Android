@@ -156,6 +156,61 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/match_info_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <ProgressBar
+            android:id="@+id/match_home_score_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="72dp"
+            android:progress="40"
+            android:progressDrawable="@drawable/progressbar_drawable" />
+
+        <ProgressBar
+            android:id="@+id/match_job_score_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_below="@id/match_home_score_progressbar"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="72dp"
+            android:progress="40"
+            android:progressDrawable="@drawable/progressbar_drawable" />
+
+        <ProgressBar
+            android:id="@+id/match_time_score_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_below="@id/match_job_score_progressbar"
+            android:layout_marginStart="72dp"
+            android:progress="40"
+            android:progressDrawable="@drawable/progressbar_drawable" />
+
+        <LinearLayout
+            android:layout_below="@id/match_time_score_progressbar"
+            android:gravity="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="Invia un messaggio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
     <Button
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
@@ -168,7 +223,7 @@
         android:visibility="visible" />
 
 
-    <it.gruppoinfor.home2work.StatusView
+    <it.gruppoinfor.home2work.common.StatusView
         android:id="@+id/status_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

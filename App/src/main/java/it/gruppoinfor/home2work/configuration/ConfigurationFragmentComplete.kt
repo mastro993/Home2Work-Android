@@ -10,6 +10,9 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.stepstone.stepper.BlockingStep
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 
@@ -43,12 +46,18 @@ class ConfigurationFragmentComplete : Fragment(), BlockingStep {
 
         HomeToWorkClient.user?.configured = true
 
-        HomeToWorkClient.updateUser(
-                OnSuccessListener {
+        HomeToWorkClient.getUserService().edit(HomeToWorkClient.user!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn {
+                    null
+                }
+                .subscribe({
                     callback.complete()
-                }, OnFailureListener {
-            callback.stepperLayout.hideProgress()
-        })
+                }, {
+                    callback.stepperLayout.hideProgress()
+                })
+
 
     }
 

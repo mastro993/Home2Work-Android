@@ -16,7 +16,9 @@ import android.support.v4.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatListActivity
+import it.gruppoinfor.home2work.chat.InboxActivity
+import it.gruppoinfor.home2work.chat.NewMessageEvent
+import org.greenrobot.eventbus.EventBus
 
 
 class MessagingService : FirebaseMessagingService() {
@@ -47,10 +49,9 @@ class MessagingService : FirebaseMessagingService() {
         val type = remoteMessage.data[TYPE]
         when (type) {
             NEW_MESSAGE_RECEIVED -> {
-                val intent = Intent(type)
-                intent.putExtra(CHAT_ID, remoteMessage.data[CHAT_ID]?.toLong())
-                intent.putExtra(TEXT, remoteMessage.data[TEXT])
-                broadcaster.sendBroadcast(intent)
+                val chatId = remoteMessage.data[CHAT_ID]?.toLong()!!
+                val text = remoteMessage.data[TEXT]!!
+                EventBus.getDefault().post(NewMessageEvent(chatId, text))
             }
             else -> {
                 val intent = Intent(type)
@@ -68,7 +69,7 @@ class MessagingService : FirebaseMessagingService() {
         when (type) {
             NEW_MESSAGE_RECEIVED -> {
 
-                val resultIntent = Intent(this, ChatListActivity::class.java)
+                val resultIntent = Intent(this, InboxActivity::class.java)
                 val pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
                 val mNotifyMgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

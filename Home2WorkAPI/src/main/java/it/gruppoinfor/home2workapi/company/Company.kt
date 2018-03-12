@@ -2,8 +2,8 @@ package it.gruppoinfor.home2workapi.company
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import it.gruppoinfor.home2workapi.common.Address
-import it.gruppoinfor.home2workapi.common.LatLng
+import it.gruppoinfor.home2workapi.Address
+import it.gruppoinfor.home2workapi.LatLng
 
 import java.io.Serializable
 
