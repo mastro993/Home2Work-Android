@@ -17,12 +17,12 @@ import it.gruppoinfor.home2work.configuration.ConfigurationActivity
 import it.gruppoinfor.home2work.firebase.FirebaseTokenService
 import it.gruppoinfor.home2work.tracking.SyncJobService
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.auth.AuthCallback
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import java.net.UnknownHostException
 
 
-class SignInActivity : AppCompatActivity(), AuthCallback {
+class SignInActivity : AppCompatActivity(), SignInView {
+
+    private var mSignInPresenter: SignInPresenter = SignInPresenterImpl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +46,22 @@ class SignInActivity : AppCompatActivity(), AuthCallback {
                 val email = email_edit_text.text.toString()
                 val password = password_edit_text.text.toString()
 
-                HomeToWorkClient.login(email, password, this)
+                mSignInPresenter.login(email, password)
 
             }
         }
 
         email_edit_text.setText(Prefs.getString(PREFS_EMAIL, ""))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mSignInPresenter.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mSignInPresenter.onPause()
     }
 
     override fun onStart() {
@@ -68,8 +78,7 @@ class SignInActivity : AppCompatActivity(), AuthCallback {
 
     }
 
-    override fun onSuccess() {
-
+    override fun onLoginSuccess() {
         SyncJobService.schedule(this, HomeToWorkClient.user!!.id)
 
         // Crashlytics log
@@ -97,29 +106,19 @@ class SignInActivity : AppCompatActivity(), AuthCallback {
 
         startActivity(i)
         finish()
-
     }
 
-    override fun onInvalidCredential() {
-
-        enableLogin()
-        Toast.makeText(this@SignInActivity, R.string.activity_signin_login_failed, Toast.LENGTH_SHORT).show()
-
-    }
-
-    override fun onError(throwable: Throwable?) {
-
+    override fun onError() {
         // Crashlytics log
         Answers.getInstance().logLogin(LoginEvent()
                 .putMethod("Form")
                 .putSuccess(false))
 
         enableLogin()
-        if (throwable is UnknownHostException) {
-            Toast.makeText(this@SignInActivity, R.string.activity_signin_no_internet, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this@SignInActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
-        }
+    }
+
+    override fun showErrorMessage(errorMessage: String) {
+        Toast.makeText(this@SignInActivity, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     private fun enableLogin() {

@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -27,7 +26,7 @@ import com.stepstone.stepper.VerificationError
 import it.gruppoinfor.home2work.Constants
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.utils.AddressConverter
-import it.gruppoinfor.home2workapi.Address
+import it.gruppoinfor.home2workapi.FullAddress
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.LatLng
 import kotlinx.android.synthetic.main.dialog_edit_address.*
@@ -84,7 +83,7 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
 
                             AddressConverter.addressToLatLng(context!!, "$addr, $city $cap",
                                     OnSuccessListener { latLng ->
-                                        val newAddress = Address()
+                                        val newAddress = FullAddress()
                                         newAddress.city = city!!
                                         newAddress.address = addr!!
                                         newAddress.postalCode = cap!!

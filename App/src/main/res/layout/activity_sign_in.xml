@@ -35,14 +35,14 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/email_input_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@string/activity_signin_email">
 
             <EditText
                 android:id="@+id/email_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="16dp"
-                android:hint="@string/activity_signin_email"
                 android:inputType="textEmailAddress"
                 android:paddingBottom="16dp" />
 
@@ -52,14 +52,14 @@
             android:id="@+id/password_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:hint="@string/activity_signin_password">
 
             <EditText
                 android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="16dp"
-                android:hint="@string/activity_signin_password"
                 android:inputType="textPassword"
                 android:paddingBottom="16dp" />
 

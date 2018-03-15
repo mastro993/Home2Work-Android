@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_company_spinner.view.*
 
 
 @Suppress("NAME_SHADOWING")
-class CompanySpinnerAdapter(private val activity: Activity, private val companies: ArrayList<Company>) : ArrayAdapter<Company>(activity, R.layout.item_company_spinner, R.id.company_name, companies) {
+class CompanySpinnerAdapter(private val activity: Activity, private val companies: List<Company>) : ArrayAdapter<Company>(activity, R.layout.item_company_spinner, R.id.company_name, companies) {
 
     override fun getDropDownView(position: Int, view: View?, parent: ViewGroup): View {
 

@@ -13,7 +13,6 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
@@ -22,6 +21,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.EntryXComparator
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.ChatActivityArgs
+import it.gruppoinfor.home2work.extensions.showToast
 import it.gruppoinfor.home2workapi.user.UserProfile
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
@@ -313,7 +313,6 @@ class UserActivity : AppCompatActivity(), UserView {
         }
 
 
-
     }
 
     override fun onLoading() {
@@ -334,6 +333,6 @@ class UserActivity : AppCompatActivity(), UserView {
     }
 
     override fun showErrorMessage(errorMessage: String) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        showToast(errorMessage)
     }
 }

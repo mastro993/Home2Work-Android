@@ -7,13 +7,13 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="Città">
 
         <EditText
             android:id="@+id/city_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Città"
             android:inputType="textCapWords"
             android:lines="1" />
 
@@ -21,13 +21,13 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="CAP">
 
         <EditText
             android:id="@+id/cap_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="CAP"
             android:inputType="number"
             android:lines="1" />
 
@@ -35,13 +35,13 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="Indirizzo">
 
         <EditText
             android:id="@+id/address_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Indirizzo"
             android:inputType="textMultiLine" />
 
     </android.support.design.widget.TextInputLayout>

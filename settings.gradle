@@ -1,1 +1,1 @@
-include ':App', ':Home2WorkAPI'
+include ':App', ':API'

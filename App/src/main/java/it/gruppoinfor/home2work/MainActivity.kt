@@ -1,20 +1,17 @@
 package it.gruppoinfor.home2work
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -24,43 +21,40 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import com.pixplicity.easyprefs.library.Prefs
-import it.gruppoinfor.home2work.settings.SettingsActivity
+import it.gruppoinfor.home2work.firebase.NewMessageEvent
+import it.gruppoinfor.home2work.firebase.OngoingShareEvent
 import it.gruppoinfor.home2work.home.HomeFragment
-import it.gruppoinfor.home2work.user.ProfileFragment
-import it.gruppoinfor.home2work.ranks.RanksFragment
 import it.gruppoinfor.home2work.matches.MatchesFragment
-import it.gruppoinfor.home2work.tracking.LocationService
-import it.gruppoinfor.home2work.firebase.MessagingService
-import it.gruppoinfor.home2work.tracking.SyncJobService
+import it.gruppoinfor.home2work.ranks.RanksFragment
+import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.shares.OngoingShareActivity
+import it.gruppoinfor.home2work.tracking.LocationService
+import it.gruppoinfor.home2work.user.ProfileFragment
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.LatLng
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
 import org.jetbrains.anko.intentFor
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
-    private val mMessageReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-
-            refreshOngoingShareView()
-
-        }
-
-    }
+    private val mMainPresenter: MainPresenter = MainPresenterImpl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // TODO avvio servizio tracking
         if (Prefs.getBoolean(SettingsActivity.PREFS_ACTIVITY_TRACKING, true)) {
             val locationIntent = Intent(this, LocationService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -70,31 +64,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        startService(Intent(this, SyncJobService::class.java))
-
         initUI()
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
-        refreshOngoingShareView()
+        mMainPresenter.onResume()
 
-        HomeToWorkClient.getOngoingShare(OnSuccessListener {
-            refreshOngoingShareView()
-        }, OnFailureListener {
-
-        })
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver,
-                IntentFilter(MessagingService.SHARE_COMPLETE_REQUEST)
-        )
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver,
-                IntentFilter(MessagingService.SHARE_LEAVE_REQUEST)
-        )
+        EventBus.getDefault().register(this)
 
     }
 
@@ -104,14 +83,16 @@ class MainActivity : AppCompatActivity() {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
 
-        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (scanResult is IntentResult) {
+        if (data != null) {
+            val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+            if (scanResult is IntentResult) {
 
-            val stringData = scanResult.contents.split(",")
-            val shareId = java.lang.Long.parseLong(stringData[0])
-            val latLng = LatLng(stringData[1].toDouble(), stringData[2].toDouble())
-            checkShareCode(shareId, latLng)
+                val stringData = scanResult.contents.split(",")
+                val shareId = java.lang.Long.parseLong(stringData[0])
+                val latLng = LatLng(stringData[1].toDouble(), stringData[2].toDouble())
+                checkShareCode(shareId, latLng)
 
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -125,13 +106,27 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun refreshOngoingShareView() {
+    override fun onShareCreated() {
+        Answers.getInstance().logCustom(CustomEvent("Condivisione creata"))
+        startActivity(intentFor<OngoingShareActivity>())
+    }
+
+    override fun onShareJoined() {
+        Answers.getInstance().logCustom(CustomEvent("Unione a condivisione"))
+        startActivity(intentFor<OngoingShareActivity>())
+    }
+
+    override fun showError(errorMessage: String) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onOngoingShareRefresh() {
         if (HomeToWorkClient.ongoingShare != null) {
             ongoing_share_progress_bar.visibility = View.VISIBLE
             button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_car))
         } else {
             ongoing_share_progress_bar.visibility = View.GONE
-            button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_plus))
+            button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_car))
         }
     }
 
@@ -188,14 +183,14 @@ class MainActivity : AppCompatActivity() {
 
                 sheetView.find<TextView>(R.id.new_share_dialog_create_new).setOnClickListener {
                     dialog.dismiss()
-                    createShare()
+                    mMainPresenter.newShare()
                 }
                 sheetView.find<TextView>(R.id.new_share_dialog_join).setOnClickListener {
                     dialog.dismiss()
                     joinShare()
                 }
             } else {
-                startActivity(intentFor<OngoingShareActivity>(Constants.EXTRA_SHARE to HomeToWorkClient.ongoingShare))
+                startActivity(intentFor<OngoingShareActivity>())
             }
 
         }
@@ -233,22 +228,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun createShare() {
-
-
-        HomeToWorkClient.createNewShare(OnSuccessListener { share ->
-
-            Answers.getInstance().logCustom(CustomEvent("Nuova condivisione"))
-            startActivity(intentFor<OngoingShareActivity>(Constants.EXTRA_SHARE to share))
-
-        }, OnFailureListener {
-
-            Toast.makeText(this, R.string.fragment_share_dialog_new_error, Toast.LENGTH_SHORT).show()
-
-        })
-
-    }
-
     private fun joinShare() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
@@ -266,36 +245,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun checkShareCode(shareID: Long?, hostLocation: LatLng) {
+    private fun checkShareCode(shareId: Long, hostLatLng: LatLng) {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
+            val locationRequest = LocationRequest.create()
+            locationRequest.numUpdates = 1
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
             val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            mFusedLocationClient.lastLocation.addOnSuccessListener { joinLocation ->
 
-                when {
-                    joinLocation == null || hostLocation.distanceTo(joinLocation) > 500 -> {
-
-                        Toast.makeText(this, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
-
-                    }
-                    else -> HomeToWorkClient.joinShare(shareID, joinLocation, OnSuccessListener { share ->
-
-                        Answers.getInstance().logCustom(CustomEvent("Unione a condivisione"))
-                        startActivity(intentFor<OngoingShareActivity>(Constants.EXTRA_SHARE to share))
-
-                    }, OnFailureListener { e ->
-
-                        Toast.makeText(this, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-
-                    })
+            mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val joinLocation = locationResult.lastLocation
+                    mMainPresenter.joinShare(shareId, hostLatLng, joinLocation)
+                    mFusedLocationClient.removeLocationUpdates(this)
                 }
-
-            }
+            }, Looper.myLooper())
 
         }
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onMessageEvent(event: OngoingShareEvent) {
+
+        mMainPresenter.getOngoingShare()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+        mMainPresenter.onPause()
     }
 
     private inner class PagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {

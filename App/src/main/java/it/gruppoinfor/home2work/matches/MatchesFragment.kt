@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.matches
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
@@ -9,10 +8,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import android.widget.Toast
 import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.ChatActivityArgs
+import it.gruppoinfor.home2work.extensions.showToast
 import it.gruppoinfor.home2work.user.UserActivityArgs
 import it.gruppoinfor.home2workapi.match.Match
 import kotlinx.android.synthetic.main.fragment_match.*
@@ -61,7 +60,7 @@ class MatchesFragment : Fragment(), MatchesView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_match_sort -> {
                 // TODO ordine match
             }
@@ -113,7 +112,7 @@ class MatchesFragment : Fragment(), MatchesView {
     }
 
     override fun showErrorMessage(errorMessage: String) {
-        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+        showToast(errorMessage)
     }
 
     override fun onEmptyList() {
@@ -212,13 +211,11 @@ class MatchesFragment : Fragment(), MatchesView {
 
         }
 
-        if(match.getScore() == 0){
+        if (match.getScore() == 0) {
             sheetView.find<TextView>(R.id.match_dialog_hide).visibility = View.GONE
         }
 
     }
-
-
 
 
 }

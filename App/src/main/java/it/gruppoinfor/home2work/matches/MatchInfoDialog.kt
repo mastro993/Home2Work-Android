@@ -55,7 +55,7 @@ class MatchInfoDialog constructor(context: Context, private val match: Match) : 
                 .into(match_user_avatar)
 
         text_host_name.text = host.toString()
-        text_host_home.text = "Da ${host.address?.city}"
+        text_host_home.text = "Da ${host.address.city}"
         text_host_job.text = host.company.toString()
 
         text_home_score.text = "${match.homeScore}%"

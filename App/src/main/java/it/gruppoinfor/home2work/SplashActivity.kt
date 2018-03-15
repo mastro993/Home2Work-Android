@@ -6,10 +6,12 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.auth.SignInActivity
 import it.gruppoinfor.home2work.configuration.ConfigurationActivity
 import it.gruppoinfor.home2work.tracking.SyncJobService
 import it.gruppoinfor.home2work.auth.SessionManager
+import it.gruppoinfor.home2work.firebase.FirebaseTokenService
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import java.net.UnknownHostException
 
@@ -47,6 +49,7 @@ class SplashActivity : AppCompatActivity(), SessionManager.SessionCallback {
 
 
         SyncJobService.schedule(this@SplashActivity, HomeToWorkClient.user!!.id)
+        FirebaseTokenService.sync(FirebaseInstanceId.getInstance().token)
 
         val i: Intent = if (HomeToWorkClient.user!!.configured) {
             Intent(this@SplashActivity, MainActivity::class.java)

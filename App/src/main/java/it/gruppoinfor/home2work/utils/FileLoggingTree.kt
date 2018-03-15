@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class FileLoggingTree(var context: Context) : Timber.DebugTree() {
+class FileLoggingTree : Timber.DebugTree() {
 
     private val logsFile: File = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/HomeToWork/Logs")
 

@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.*
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.InboxIconView
-import it.gruppoinfor.home2work.chat.NewMessageEvent
+import it.gruppoinfor.home2work.firebase.NewMessageEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

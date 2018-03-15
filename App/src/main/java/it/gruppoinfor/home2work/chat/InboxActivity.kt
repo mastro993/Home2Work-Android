@@ -14,7 +14,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.extensions.showToast
 import it.gruppoinfor.home2work.firebase.MessagingService
+import it.gruppoinfor.home2work.firebase.NewMessageEvent
 import it.gruppoinfor.home2workapi.chat.Chat
 import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
@@ -89,7 +91,7 @@ class InboxActivity : AppCompatActivity(), InboxView {
     override fun showErrorMessage(errorMessage: String) {
 
         swipe_refresh_layout.isRefreshing = false
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        showToast(errorMessage)
 
     }
 

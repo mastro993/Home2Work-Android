@@ -31,8 +31,9 @@ import com.github.mikephil.charting.utils.EntryXComparator
 import it.gruppoinfor.home2work.Constants.REQ_CODE_AVATAR
 import it.gruppoinfor.home2work.Constants.REQ_CODE_EXTERNAL_STORAGE
 import it.gruppoinfor.home2work.MainActivity
-import it.gruppoinfor.home2work.ProgressBarAnimation
+import it.gruppoinfor.home2work.common.ProgressBarAnimation
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.extensions.showToast
 import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.shares.SharesActivity
 import it.gruppoinfor.home2workapi.HomeToWorkClient
@@ -72,9 +73,11 @@ class ProfileFragment : Fragment(), ProfileView {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == REQ_CODE_AVATAR && resultCode == RESULT_OK) {
-            mProfilePresenter.uploadAvatar(context!!, data.data)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(data!=null){
+            if (requestCode == REQ_CODE_AVATAR && resultCode == RESULT_OK) {
+                mProfilePresenter.uploadAvatar(context!!, data.data)
+            }
         }
     }
 
@@ -272,7 +275,7 @@ class ProfileFragment : Fragment(), ProfileView {
     }
 
     override fun showErrorMessage(errorMessage: String) {
-        Toast.makeText(context!!, errorMessage, Toast.LENGTH_LONG).show()
+        showToast(errorMessage)
     }
 
     override fun onAvatarUploaded() {

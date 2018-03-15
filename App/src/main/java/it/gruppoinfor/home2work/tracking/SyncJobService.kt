@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.tracking
 
+import android.annotation.SuppressLint
 import android.app.job.JobInfo
 import android.app.job.JobParameters
 import android.app.job.JobScheduler
@@ -14,6 +15,7 @@ import com.crashlytics.android.answers.CustomEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.pixplicity.easyprefs.library.Prefs
+import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.App
 import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2workapi.HomeToWorkClient
@@ -56,24 +58,22 @@ class SyncJobService : JobService() {
         return false
     }
 
+    @SuppressLint("CheckResult")
     private fun syncRoutePoints(locationList: List<Location>) {
 
         Timber.i("Sincronizzazione di ${locationList.size} posizioni utente")
 
-        HomeToWorkClient.uploadLocations(locationList,
-                OnSuccessListener {
-
+        HomeToWorkClient.getUserService().uploadLocations(locationList)
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn { null }
+                .subscribe({
                     Timber.i("Sincronizzazione completata")
                     Answers.getInstance().logCustom(CustomEvent("Sincronizzazione posizioni"))
 
                     val userLocationBox = App.boxStore.boxFor(UserLocation::class.java)
                     userLocationBox.query().equal(UserLocation_.userId, HomeToWorkClient.user!!.id).build().remove()
-
-                },
-                OnFailureListener { e ->
-
-                    Timber.e(e, "Sincronizzazione fallita")
-
+                },{
+                    Timber.e(it, "Sincronizzazione fallita")
                 })
 
     }

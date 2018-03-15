@@ -3,7 +3,6 @@
 
     <item
         android:id="@+id/action_messages"
-        android:icon="@drawable/ic_menu_messages"
         android:orderInCategory="100"
         android:title="Messaggi"
         app:actionLayout="@layout/action_view_inbox_icon"

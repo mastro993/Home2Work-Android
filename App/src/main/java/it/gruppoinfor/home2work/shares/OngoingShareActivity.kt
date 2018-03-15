@@ -1,16 +1,13 @@
 package it.gruppoinfor.home2work.shares
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -24,51 +21,65 @@ import android.widget.TextView
 import android.widget.Toast
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.zxing.integration.android.IntentIntegrator
-import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.user.UserActivity
-import it.gruppoinfor.home2work.firebase.MessagingService
 import it.gruppoinfor.home2work.Constants
-import it.gruppoinfor.home2work.utils.QREncoder
+import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.extensions.showToast
+import it.gruppoinfor.home2work.firebase.NewMessageEvent
+import it.gruppoinfor.home2work.firebase.OngoingShareEvent
+import it.gruppoinfor.home2work.user.UserActivity
+import it.gruppoinfor.home2work.user.UserActivityArgs
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.LatLng
 import it.gruppoinfor.home2workapi.share.Guest
 import it.gruppoinfor.home2workapi.share.Share
 import kotlinx.android.synthetic.main.activity_ongoing_share.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
 import org.jetbrains.anko.intentFor
 
-class OngoingShareActivity : AppCompatActivity() {
+class OngoingShareActivity : AppCompatActivity(), OngoingShareView {
 
+    private val mOngoingSharePresenter: OngoingSharePresenter = OngoingSharePresenterImpl(this)
+    private var mGuestsAdapter: GuestAdapter? = null
     private lateinit var mShare: Share
     private var qrCodeDialog: BottomSheetDialog? = null
 
-    private val mMessageReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-
-            if (qrCodeDialog != null) qrCodeDialog?.dismiss()
-            refreshGuests()
-
-        }
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_ongoing_share)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mShare = intent.getSerializableExtra(Constants.EXTRA_SHARE) as Share
+        mShare = HomeToWorkClient.ongoingShare!!
         initUI()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        mOngoingSharePresenter.onResume()
+
+
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+
+        mOngoingSharePresenter.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -97,27 +108,12 @@ class OngoingShareActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStart() {
-        super.onStart()
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onMessageEvent(event: OngoingShareEvent) {
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver,
-                IntentFilter(MessagingService.SHARE_JOIN_REQUEST)
-        )
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver,
-                IntentFilter(MessagingService.SHARE_COMPLETE_REQUEST)
-        )
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver,
-                IntentFilter(MessagingService.SHARE_LEAVE_REQUEST)
-        )
+        qrCodeDialog?.dismiss()
+        mOngoingSharePresenter.refreshGuests()
 
-    }
-
-    override fun onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
-        super.onStop()
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -128,8 +124,10 @@ class OngoingShareActivity : AppCompatActivity() {
             val shareId = java.lang.Long.parseLong(stringData[0])
             val latLng = LatLng(stringData[1].toDouble(), stringData[2].toDouble())
             checkShareCode(shareId, latLng)
-        } else
-            Toast.makeText(this, R.string.activity_ongoing_share_invalid_code, Toast.LENGTH_SHORT).show()
+        } else{
+            showToast(R.string.activity_ongoing_share_invalid_code)
+        }
+
 
     }
 
@@ -159,41 +157,37 @@ class OngoingShareActivity : AppCompatActivity() {
 
             loadingView.visibility = View.VISIBLE
 
-
             qrCodeDialog?.show()
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
+
+                val locationRequest = LocationRequest.create()
+                locationRequest.numUpdates = 1
+                locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
                 val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-                mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
 
-                    if (location == null) {
-                        qrCodeDialog?.dismiss()
-                        Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_code_unavailable, Toast.LENGTH_SHORT).show()
-                    } else {
-                        val latlngString = "${location.latitude},${location.longitude}"
+                loadingView.visibility = View.VISIBLE
 
-                        HomeToWorkClient.createNewShare(OnSuccessListener { share ->
-                            try {
-                                val bitmap = QREncoder.encodeText("${share.id},$latlngString")
-                                qrCodeImage.setImageBitmap(bitmap)
-                                loadingView.visibility = View.INVISIBLE
-                            } catch (e: Exception) {
-                                qrCodeDialog?.dismiss()
-                                Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_code_unavailable, Toast.LENGTH_SHORT).show()
-                            }
-                        }, OnFailureListener {
+                mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        val joinLocation = locationResult.lastLocation
+                        val qrCodeBitmap = mOngoingSharePresenter.getShareQRCode(joinLocation)
+                        if (qrCodeBitmap != null) {
+                            qrCodeImage.setImageBitmap(qrCodeBitmap)
+                            loadingView.visibility = View.INVISIBLE
+                        } else {
                             qrCodeDialog?.dismiss()
-                            Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_code_unavailable, Toast.LENGTH_SHORT).show()
-                        })
+                        }
+                        mFusedLocationClient.removeLocationUpdates(this)
                     }
+                }, Looper.myLooper())
 
-                }
 
             }
 
         }
-
 
         button_complete_share.setOnClickListener {
             if (mShare.guests.size == 0) {
@@ -205,73 +199,20 @@ class OngoingShareActivity : AppCompatActivity() {
 
             } else {
 
-                HomeToWorkClient.finishShare(mShare, OnSuccessListener {
-                    Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_dialog_completition_success, Toast.LENGTH_SHORT).show()
-                    finish()
-                }, OnFailureListener { e ->
-                    Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_dialog_completition_error, Toast.LENGTH_SHORT).show()
-                    e.printStackTrace()
-                })
+                mOngoingSharePresenter.finishShare()
 
             }
         }
 
-        if (mShare.guests.size == 0) {
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation)
 
-            empty_view.visibility = View.VISIBLE
-            header_view.visibility = View.GONE
-            guests_recycler_view.visibility = View.GONE
+        guests_recycler_view.layoutManager = layoutManager
+        guests_recycler_view.layoutAnimation = animation
 
-        } else {
+        mGuestsAdapter = GuestAdapter(this, this)
 
-            empty_view.visibility = View.GONE
-            header_view.visibility = View.VISIBLE
-            guests_recycler_view.visibility = View.VISIBLE
-
-            val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-            val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation)
-
-            guests_recycler_view.layoutManager = layoutManager
-            guests_recycler_view.layoutAnimation = animation
-
-            val mShareGuestsAdapter = GuestAdapter(this, mShare.guests)
-
-            mShareGuestsAdapter.getClickPosition().subscribe {position ->
-
-                startActivity(intentFor<UserActivity>(Constants.EXTRA_USER to mShare.guests[position]))
-
-            }
-            mShareGuestsAdapter.getLongClickPosition().subscribe {position ->
-
-                val dialog = BottomSheetDialog(this)
-                val sheetView = layoutInflater.inflate(R.layout.dialog_guest_options, null)
-
-                dialog.setContentView(sheetView)
-                dialog.show()
-
-                sheetView.find<TextView>(R.id.guest_dialog_show_profile).setOnClickListener {
-                    dialog.dismiss()
-                    startActivity(intentFor<UserActivity>(Constants.EXTRA_USER to mShare.guests[position].user))
-                }
-                sheetView.find<TextView>(R.id.guest_dialog_ban).setOnClickListener {
-                    dialog.dismiss()
-                    HomeToWorkClient.banGuestFromShare(mShare.id, mShare.guests[position].user?.id, OnSuccessListener { share ->
-                        mShare = share
-                        initUI()
-                    }, OnFailureListener { it.printStackTrace() })
-                }
-
-                sheetView.find<TextView>(R.id.guest_dialog_ban).visibility = if (mShare.guests[position].status == Guest.Status.CANCELED) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
-
-            }
-
-            guests_recycler_view.adapter = mShareGuestsAdapter
-
-        }
+        guests_recycler_view.adapter = mGuestsAdapter
 
         button_complete_share.isEnabled = enableCompleteButton()
 
@@ -294,7 +235,7 @@ class OngoingShareActivity : AppCompatActivity() {
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
                 intentIntegrator.setPrompt(getString(R.string.activity_ongoing_share_dialog_qr_prompt))
                 intentIntegrator.setOrientationLocked(false)
-
+                intentIntegrator.initiateScan()
             }
         }
 
@@ -315,17 +256,7 @@ class OngoingShareActivity : AppCompatActivity() {
                 .setMessage("Sei sicuro di voler interrompere la condivisione corrente? Tutti i progressi verranno persi")
                 .setPositiveButton(android.R.string.yes, { _, _ ->
 
-                    HomeToWorkClient.cancelShare(mShare.id, OnSuccessListener {
-
-                        Answers.getInstance().logCustom(CustomEvent("Condivisione annullata"))
-                        finish()
-
-                    }, OnFailureListener { e ->
-
-                        Toast.makeText(this@OngoingShareActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-
-                    })
+                    mOngoingSharePresenter.cancelOngoingShare()
 
                 })
                 .setNegativeButton(android.R.string.no, null)
@@ -341,17 +272,7 @@ class OngoingShareActivity : AppCompatActivity() {
                 .setMessage("Sei sicuro di voler uscire dala condivisione corrente? Tutti i progressi verranno persi")
                 .setPositiveButton(android.R.string.yes, { _, _ ->
 
-                    HomeToWorkClient.leaveShare(mShare, OnSuccessListener {
-
-                        Answers.getInstance().logCustom(CustomEvent("Unione a ondivisione annullata"))
-                        finish()
-
-                    }, OnFailureListener { e ->
-
-                        Toast.makeText(this@OngoingShareActivity, R.string.activity_signin_server_error, Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-
-                    })
+                    mOngoingSharePresenter.leaveOngoingShare()
 
                 })
                 .setNegativeButton(android.R.string.no, null)
@@ -376,53 +297,91 @@ class OngoingShareActivity : AppCompatActivity() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
+            val locationRequest = LocationRequest.create()
+            locationRequest.numUpdates = 1
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
             val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            mFusedLocationClient.lastLocation.addOnSuccessListener { endLocation ->
 
-                when {
-                    endLocation == null -> {
-                        Toast.makeText(this, R.string.activity_ongoing_share_check_error, Toast.LENGTH_SHORT).show()
-                    }
-                    hostLocation.distanceTo(endLocation) > 500 -> {
-                        Toast.makeText(this, R.string.activity_ongoing_share_check_wrong_code, Toast.LENGTH_SHORT).show()
-                    }
-                    else -> HomeToWorkClient.completeShare(mShare, endLocation, OnSuccessListener {
 
-                        val userId = HomeToWorkClient.user?.id
-                        if (userId == mShare.host?.id) {
-                            val sharedDistance = it.guests.sumBy { it.distance } / 1000f
-                            Answers.getInstance().logCustom(CustomEvent("Condivisione conclusa")
-                                    .putCustomAttribute("Distanza totale condivisa", sharedDistance))
-                        } else {
-                            val sharedDistance = it.guests.last { it.user?.id == userId }.distance / 1000f
-                            Answers.getInstance().logCustom(CustomEvent("Condivisione completata")
-                                    .putCustomAttribute("Distanza condivisa", sharedDistance))
-                        }
-
-                        finish()
-                        Toast.makeText(this, R.string.activity_ongoing_share_check_success, Toast.LENGTH_SHORT).show()
-
-                    }, OnFailureListener { e ->
-
-                        Toast.makeText(this@OngoingShareActivity, R.string.activity_ongoing_share_check_error, Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-
-                    })
+            mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val endLocation = locationResult.lastLocation
+                    mOngoingSharePresenter.completeShare(hostLocation,endLocation)
+                    mFusedLocationClient.removeLocationUpdates(this)
                 }
-
-            }
+            }, Looper.myLooper())
 
         }
     }
 
-    private fun refreshGuests() {
+    override fun setGuests(share: Share) {
 
-        HomeToWorkClient.getShare(mShare.id, OnSuccessListener { share ->
-            mShare = share
-            initUI()
-        }, OnFailureListener { it.printStackTrace() })
+        if(share.guests.size > 0){
+            empty_view.visibility = View.GONE
+            header_view.visibility = View.VISIBLE
+            guests_recycler_view.visibility = View.VISIBLE
+        } else {
+            empty_view.visibility = View.VISIBLE
+            header_view.visibility = View.GONE
+            guests_recycler_view.visibility = View.GONE
+        }
+
+        mShare = share
+        mGuestsAdapter?.setItems(share.guests)
+        mGuestsAdapter?.notifyDataSetChanged()
+    }
+
+    override fun onGuestBanned() {
+        mOngoingSharePresenter.refreshGuests()
+    }
+
+    override fun onGuestClick(position: Int, guest: Guest) {
+        val user = guest.user!!
+        UserActivityArgs(
+                userId = user.id,
+                userName = user.toString(),
+                userAvatarUrl = user.avatarURL,
+                userCompanyId = user.company.id,
+                userCompanyName = user.company.name
+        ).launch(this)
 
     }
 
+    override fun onGuestLongClick(position: Int, guest: Guest) {
+        val dialog = BottomSheetDialog(this)
+        val sheetView = layoutInflater.inflate(R.layout.dialog_guest_options, null)
+
+        dialog.setContentView(sheetView)
+        dialog.show()
+
+        sheetView.find<TextView>(R.id.guest_dialog_show_profile).setOnClickListener {
+            dialog.dismiss()
+            startActivity(intentFor<UserActivity>(Constants.EXTRA_USER to guest.user))
+        }
+        sheetView.find<TextView>(R.id.guest_dialog_ban).setOnClickListener {
+            dialog.dismiss()
+            mOngoingSharePresenter.banGuest(guest.user?.id!!)
+        }
+
+        sheetView.find<TextView>(R.id.guest_dialog_ban).visibility = if (guest.status == Guest.Status.CANCELED || guest.status == Guest.Status.COMPLETED) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    override fun showErrorMessage(errorMessage: String) {
+        showToast(errorMessage)
+    }
+
+    override fun onShareCanceled() {
+        finish()
+    }
+
+    override fun onShareCompleted() {
+        showToast("Condivisione completata con successo!")
+        finish()
+    }
 
 }

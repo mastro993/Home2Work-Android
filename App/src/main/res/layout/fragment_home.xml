@@ -4,11 +4,10 @@
     android:layout_height="match_parent"
     tools:context=".ranks.RanksFragment">
 
-    <ImageView
+    <TextView
+        android:gravity="center"
+        android:text="To do..."
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:alpha="0.05"
-        android:src="@drawable/ic_home_placeholder" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

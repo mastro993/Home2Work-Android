@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.stepstone.stepper.BlockingStep
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.Constants
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.utils.ImageUtils
@@ -107,7 +109,7 @@ class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
         } else {
             callback.stepperLayout.showProgress(getString(R.string.activity_configuration_avatar_upload))
 
-            val file = ImageUtils.bitmapToFile(context!!, propic!!)
+            val file = ImageUtils.bitmapToFile(context!!.cacheDir, propic!!)
             val decodedAvatar = ImageUtils.decodeFile(file.path)
             val decodedFile = File(decodedAvatar)
 
@@ -120,13 +122,17 @@ class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
 
             val body = MultipartBody.Part.createFormData("avatar", filename, requestFile)
 
-            HomeToWorkClient.uploadAvatar(body, OnSuccessListener {
-                callback.stepperLayout.hideProgress()
-                callback.goToNextStep()
-            }, OnFailureListener {
-                callback.stepperLayout.hideProgress()
-                Toast.makeText(context!!, R.string.activity_configuration_avatar_upload_error, Toast.LENGTH_SHORT).show()
-            })
+            HomeToWorkClient.getUserService().uploadAvatar(body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn { null }
+                    .subscribe({
+                        callback.stepperLayout.hideProgress()
+                        callback.goToNextStep()
+                    }, {
+                        callback.stepperLayout.hideProgress()
+                        Toast.makeText(context!!, R.string.activity_configuration_avatar_upload_error, Toast.LENGTH_SHORT).show()
+                    })
 
         }
     }

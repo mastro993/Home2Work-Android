@@ -35,14 +35,6 @@
         android:layout_weight="1"
         android:animateLayoutChanges="true" />
 
-    <it.gruppoinfor.home2work.OngoinShareView
-        android:id="@+id/ongoing_share_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:focusableInTouchMode="true"
-        android:visibility="gone" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,6 +67,7 @@
             android:indeterminateTint="@color/colorAccent"
             android:indeterminate="true"
             android:elevation="10dp"
+            android:visibility="gone"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-17dp"
             android:layout_width="73dp"

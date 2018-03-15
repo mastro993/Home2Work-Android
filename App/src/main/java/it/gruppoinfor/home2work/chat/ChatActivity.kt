@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.firebase.NewMessageEvent
 import it.gruppoinfor.home2workapi.HomeToWorkClient
 import it.gruppoinfor.home2workapi.chat.Author
 import it.gruppoinfor.home2workapi.chat.Message

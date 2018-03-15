@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work
 
 import android.app.Application
-import android.content.Context
 import android.content.ContextWrapper
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
@@ -36,7 +35,7 @@ class App : Application() {
 
     private fun initTimber() {
         if (BuildConfig.DEBUG) {
-            Timber.plant(FileLoggingTree(this))
+            Timber.plant(FileLoggingTree())
         }
     }
 

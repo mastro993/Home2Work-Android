@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.utils
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Environment
 import android.webkit.MimeTypeMap
@@ -97,9 +96,7 @@ object ImageUtils {
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
 
-    fun bitmapToFile(context: Context, bitmap: Bitmap): File {
-
-        val filesDir = context.cacheDir
+    fun bitmapToFile(filesDir: File, bitmap: Bitmap): File {
         val imageFile = File(filesDir, "avatar.png")
         val fos: FileOutputStream
 

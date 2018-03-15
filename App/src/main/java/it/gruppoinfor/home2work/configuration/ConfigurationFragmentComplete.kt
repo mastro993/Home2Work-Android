@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.configuration
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -40,6 +41,7 @@ class ConfigurationFragmentComplete : Fragment(), BlockingStep {
 
     }
 
+    @SuppressLint("CheckResult")
     override fun onCompleteClicked(callback: StepperLayout.OnCompleteClickedCallback) {
 
         callback.stepperLayout.showProgress(getString(R.string.activity_configuration_wait))

@@ -36,7 +36,7 @@
         android:layout_height="12dp"
         android:layout_marginBottom="10dp"
         android:progress="40"
-        android:progressDrawable="@drawable/progressbar_drawable" />
+        android:progressDrawable="@drawable/bg_progressbar_drawable" />
 
     <RelativeLayout
         android:layout_marginStart="26dp"

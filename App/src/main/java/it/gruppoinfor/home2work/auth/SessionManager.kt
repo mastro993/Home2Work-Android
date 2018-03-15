@@ -1,17 +1,19 @@
 package it.gruppoinfor.home2work.auth
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.LoginEvent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.tracking.LocationService
 import it.gruppoinfor.home2work.tracking.SyncJobService
 import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.auth.AuthCallback
+import it.gruppoinfor.home2workapi.RetrofitException
 import it.gruppoinfor.home2workapi.auth.AuthUser
 import it.gruppoinfor.home2workapi.user.User
-import java.net.UnknownHostException
 
 
 /**
@@ -35,6 +37,7 @@ object SessionManager {
 
     }
 
+    @SuppressLint("CheckResult")
     fun loadSession(context: Context, callback: SessionCallback) {
         val prefs = context.getSharedPreferences(PREFS_SESSION, Context.MODE_PRIVATE)
 
@@ -52,43 +55,47 @@ object SessionManager {
             return
         }
 
-        HomeToWorkClient.login(token, object : AuthCallback {
-            override fun onSuccess() {
+        HomeToWorkClient.getAuthService().login(token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn { null }
+                .subscribe({
 
-                // Crashlytics log
-                Answers.getInstance().logLogin(LoginEvent()
-                        .putMethod("Token")
-                        .putSuccess(true))
+                    HomeToWorkClient.user = it
 
-                Crashlytics.setUserIdentifier(HomeToWorkClient.user?.id.toString())
-                Crashlytics.setUserEmail(HomeToWorkClient.user?.email)
-                Crashlytics.setUserName(HomeToWorkClient.user.toString())
+                    // Crashlytics log
+                    Answers.getInstance().logLogin(LoginEvent()
+                            .putMethod("Token")
+                            .putSuccess(true))
 
-                callback.onValidSession()
+                    Crashlytics.setUserIdentifier(HomeToWorkClient.user?.id.toString())
+                    Crashlytics.setUserEmail(HomeToWorkClient.user?.email)
+                    Crashlytics.setUserName(HomeToWorkClient.user.toString())
 
-            }
+                    callback.onValidSession()
 
-            override fun onInvalidCredential() {
-                clearSession(context)
-                callback.onInvalidSession(SignInActivity.CODE_INVALID_CREDENTIALS, null)
-            }
+                }, {
 
-            override fun onError(throwable: Throwable?) {
-                clearSession(context)
-                // Crashlytics log
-                Answers.getInstance().logLogin(LoginEvent()
-                        .putMethod("Token")
-                        .putSuccess(false))
+                    clearSession(context)
+                    Answers.getInstance().logLogin(LoginEvent()
+                            .putMethod("Token")
+                            .putSuccess(false))
 
-                if (throwable is UnknownHostException) {
-                    callback.onInvalidSession(SignInActivity.CODE_SERVER_ERROR, throwable)
-                } else {
-                    callback.onInvalidSession(SignInActivity.CODE_LOGIN_ERROR, null)
-                }
+                    when ((it as RetrofitException).kind) {
+                        RetrofitException.Kind.NETWORK -> {
+                            callback.onInvalidSession(SignInActivity.CODE_LOGIN_ERROR, null)
+                        }
+                        RetrofitException.Kind.HTTP -> {
+                            callback.onInvalidSession(SignInActivity.CODE_INVALID_CREDENTIALS, null)
+                        }
+                        RetrofitException.Kind.UNEXPECTED -> {
+                            callback.onInvalidSession(SignInActivity.CODE_SERVER_ERROR, it)
+                        }
+                    }
+                })
 
-            }
-        })
     }
+
 
     fun clearSession(context: Context) {
         context.stopService(Intent(context, LocationService::class.java))

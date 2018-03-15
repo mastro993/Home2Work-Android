@@ -166,9 +166,6 @@ class LocationService : Service() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            mFusedLocationClient.lastLocation.addOnSuccessListener({
-                this.saveLocation(it)
-            })
 
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY

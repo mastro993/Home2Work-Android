@@ -12,24 +12,19 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.InboxActivity
-import it.gruppoinfor.home2work.chat.NewMessageEvent
 import org.greenrobot.eventbus.EventBus
 
 
 class MessagingService : FirebaseMessagingService() {
 
 
-    private lateinit var broadcaster: LocalBroadcastManager
 
     override fun onCreate() {
         super.onCreate()
-
-        broadcaster = LocalBroadcastManager.getInstance(this)
 
     }
 
@@ -53,9 +48,12 @@ class MessagingService : FirebaseMessagingService() {
                 val text = remoteMessage.data[TEXT]!!
                 EventBus.getDefault().post(NewMessageEvent(chatId, text))
             }
+            SHARE_JOIN, SHARE_COMPLETED, SHARE_CANCELED, SHARE_LEAVED, SHARE_BAN -> {
+                EventBus.getDefault().post(OngoingShareEvent())
+            }
             else -> {
-                val intent = Intent(type)
-                broadcaster.sendBroadcast(intent)
+                //val intent = Intent(type)
+                //broadcaster.sendBroadcast(intent)
             }
         }
     }
@@ -90,6 +88,27 @@ class MessagingService : FirebaseMessagingService() {
                 mNotifyMgr.notify(MESSAGING_NOTIFICATION_ID, notification)
 
             }
+            SHARE_CANCELED, SHARE_LEAVED, SHARE_BAN -> {
+
+
+                val mNotifyMgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel() else ""
+                val notificationBuilder = NotificationCompat.Builder(this, channelId)
+                val notification = notificationBuilder.setAutoCancel(true)
+                        .setSmallIcon(R.drawable.home2work_icon)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(Notification.CATEGORY_MESSAGE)
+                        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                        .setContentTitle(remoteMessage.notification?.title)
+                        .setContentText(remoteMessage.notification?.body)
+                        .setVibrate(longArrayOf(0))
+                        .build()
+
+
+                mNotifyMgr.notify(MESSAGING_NOTIFICATION_ID, notification)
+
+            }
             NEW_MATCHES -> {
             }
         }
@@ -118,10 +137,11 @@ class MessagingService : FirebaseMessagingService() {
         const val MATCHES_CHANNELL = "MATCHES_CHANNEL"
         const val MESSAGING_CHANNELL = "MESSAGING_CHANNEL"
         const val MESSAGING_NOTIFICATION_ID = 3433
-        const val SHARE_JOIN_REQUEST = "SHARE_JOIN_REQUEST"
-        const val SHARE_COMPLETE_REQUEST = "SHARE_COMPLETE_REQUEST"
-        const val SHARE_LEAVE_REQUEST = "SHARE_LEAVE_REQUEST"
-        const val SHARE_DELETED_REQUEST = "SHARE_DELETED_REQUEST"
+        const val SHARE_JOIN = "SHARE_JOIN"
+        const val SHARE_COMPLETED = "SHARE_COMPLETED"
+        const val SHARE_LEAVED = "SHARE_LEAVED"
+        const val SHARE_CANCELED = "SHARE_CANCELED"
+        const val SHARE_BAN = "SHARE_BAN"
         const val NEW_MESSAGE_RECEIVED = "NEW_MESSAGE"
         const val NEW_MATCHES = "NEW_MATCHES"
     }

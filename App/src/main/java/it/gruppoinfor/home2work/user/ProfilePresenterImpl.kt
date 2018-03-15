@@ -74,7 +74,7 @@ class ProfilePresenterImpl constructor(private val profileView: ProfileView) : P
             val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
             val propic = ImageUtils.shrinkBitmap(bitmap, 300)
 
-            val file = ImageUtils.bitmapToFile(context, propic)
+            val file = ImageUtils.bitmapToFile(context.cacheDir, propic)
             val decodedAvatar = ImageUtils.decodeFile(file.path)
             val decodedFile = File(decodedAvatar)
 

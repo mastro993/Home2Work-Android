@@ -30,12 +30,12 @@
         android:layout_marginTop="-6dp"
         android:layout_alignEnd="@id/messages_image_view"
         android:layout_alignTop="@id/messages_image_view"
-        android:background="@drawable/shape_rounder_square"
+        android:background="@drawable/bg_inbox_icon_text"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="3"
         android:textColor="#ffffffff"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:textStyle="bold" />
 
 </RelativeLayout>

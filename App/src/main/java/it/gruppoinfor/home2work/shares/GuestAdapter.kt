@@ -12,15 +12,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2workapi.share.Guest
 import kotlinx.android.synthetic.main.item_share_guest.view.*
 
-class GuestAdapter(private val context: Context, private val guests: ArrayList<Guest>) : RecyclerView.Adapter<GuestAdapter.ViewHolder>() {
+class GuestAdapter(private val context: Context, private val ongoingShareView: OngoingShareView) : RecyclerView.Adapter<GuestAdapter.ViewHolder>() {
 
-    private val onClickSubject: PublishSubject<Int> = PublishSubject.create()
-    private val onLongClickSubject: PublishSubject<Int> = PublishSubject.create()
+    private val guests: ArrayList<Guest> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -49,18 +47,29 @@ class GuestAdapter(private val context: Context, private val guests: ArrayList<G
         holder.jobView.text = guest.user?.company.toString()
 
         holder.container.setOnClickListener {
-            onClickSubject.onNext(position)
+            ongoingShareView.onGuestClick(position, guest)
         }
         holder.container.setOnLongClickListener {
-            onLongClickSubject.onNext(position)
+            ongoingShareView.onGuestLongClick(position, guest)
             true
         }
 
-        if (guest.status == Guest.Status.COMPLETED) {
-            holder.viewStatusCompleted.visibility = View.VISIBLE
-        } else if (guest.status == Guest.Status.CANCELED) {
-            holder.viewStatusLeaved.visibility = View.VISIBLE
-            holder.itemView.alpha = 0.7f
+        when {
+            guest.status == Guest.Status.COMPLETED -> {
+                holder.viewStatusCompleted.visibility = View.VISIBLE
+                holder.viewStatusLeaved.visibility = View.GONE
+                holder.itemView.alpha = 1.0f
+            }
+            guest.status == Guest.Status.CANCELED -> {
+                holder.viewStatusCompleted.visibility = View.GONE
+                holder.viewStatusLeaved.visibility = View.VISIBLE
+                holder.itemView.alpha = 0.6f
+            }
+            else -> {
+                holder.viewStatusCompleted.visibility = View.GONE
+                holder.viewStatusLeaved.visibility = View.GONE
+                holder.itemView.alpha = 1.0f
+            }
         }
 
     }
@@ -70,12 +79,10 @@ class GuestAdapter(private val context: Context, private val guests: ArrayList<G
         return guests.size
     }
 
-    fun getClickPosition(): Observable<Int> {
-        return onClickSubject
-    }
-
-    fun getLongClickPosition(): Observable<Int> {
-        return onLongClickSubject
+    fun setItems(guests: List<Guest>) {
+        this.guests.clear()
+        this.guests.addAll(guests)
+        notifyDataSetChanged()
     }
 
 
