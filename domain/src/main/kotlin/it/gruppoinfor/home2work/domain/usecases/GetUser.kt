@@ -6,7 +6,7 @@ import it.gruppoinfor.home2work.domain.entities.User
 import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
 
-class GetUserDetails(
+class GetUser(
         transformer: Transformer<User>,
         private val userRepository: UserRepository
 ) : UseCase<User>(transformer) {
@@ -19,7 +19,7 @@ class GetUserDetails(
         val userId = data?.get(PARAM_USER_ID)
 
         userId?.let {
-            return userRepository.getUserDetails(userId as Long)
+            return userRepository.getUser(userId as Long)
         } ?: return Observable.error(IllegalArgumentException("userId must be provided."))
 
     }

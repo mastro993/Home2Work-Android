@@ -45,6 +45,10 @@ dependencies {
 
     implementation rootProject.ext.objectBox
     kapt rootProject.ext.objectBoxProcessor
+    
+    implementation rootProject.ext.chatKit
+    implementation rootProject.ext.stetho
+    implementation rootProject.ext.stethoInterceptor
 
 
     testImplementation rootProject.ext.junit

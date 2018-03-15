@@ -5,14 +5,23 @@ ext {
     testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 
     androidSupportLibVersion = "27.0.2"
+
     objectBox = "io.objectbox:objectbox-kotlin:$objectboxVersion"
     objectBoxProcessor = "io.objectbox:objectbox-processor:$objectboxVersion"
+
     rxJava = "io.reactivex.rxjava2:rxjava:2.1.7"
+
     dagger = "com.google.dagger:dagger:2.13"
     daggerCompiler = "com.google.dagger:dagger-compiler:2.13"
+
     retrofit = "com.squareup.retrofit2:retrofit:2.3.0"
     retrofitGsonConverter = "com.squareup.retrofit2:converter-gson:2.3.0"
     retrofitRxJava2Adapter = "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+
+    chatKit = "com.github.stfalcon:chatkit:0.2.2"
+
+    stetho = "com.facebook.stetho:stetho:1.5.0"
+    stethoInterceptor = "com.facebook.stetho:stetho-okhttp3:1.5.0"
 
     // Testing
     junit = "junit:junit:4.12"
@@ -20,8 +29,3 @@ ext {
     androidTestRunner = "com.android.support.test:runner:1.0.1"
 }
 
-ext.android_support_version = '27.1.0'
-ext.kotlin_version = '1.2.30'
-ext.objectboxVersion = '1.4.1'
-ext.anko_version = '0.10.1'
-ext.fabric_version = '1.25.1'
