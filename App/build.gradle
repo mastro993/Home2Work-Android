@@ -86,6 +86,8 @@ dependencies {
     // Objectbox
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     kapt "io.objectbox:objectbox-processor:$objectboxVersion"
+
+    // Leakecanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 
     // Retrofit
