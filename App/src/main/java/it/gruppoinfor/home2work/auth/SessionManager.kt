@@ -8,12 +8,11 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.LoginEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.api.RetrofitException
 import it.gruppoinfor.home2work.tracking.LocationService
 import it.gruppoinfor.home2work.tracking.SyncJobService
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.RetrofitException
-import it.gruppoinfor.home2workapi.auth.AuthUser
-import it.gruppoinfor.home2workapi.user.User
+import it.gruppoinfor.home2work.user.User
 
 
 /**

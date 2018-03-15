@@ -4,9 +4,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.api.RetrofitException
 import it.gruppoinfor.home2work.firebase.FirebaseTokenService
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.RetrofitException
 
 class SignInPresenterImpl constructor(private val signInView: SignInView) : SignInPresenter {
 

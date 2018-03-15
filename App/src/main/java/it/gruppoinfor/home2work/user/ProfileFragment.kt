@@ -19,7 +19,6 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -28,17 +27,13 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.EntryXComparator
-import it.gruppoinfor.home2work.Constants.REQ_CODE_AVATAR
-import it.gruppoinfor.home2work.Constants.REQ_CODE_EXTERNAL_STORAGE
-import it.gruppoinfor.home2work.MainActivity
-import it.gruppoinfor.home2work.common.ProgressBarAnimation
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.common.ProgressBarAnimation
 import it.gruppoinfor.home2work.extensions.showToast
+import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.settings.SettingsActivity
-import it.gruppoinfor.home2work.shares.SharesActivity
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.user.UserExp
-import it.gruppoinfor.home2workapi.user.UserProfile
+import it.gruppoinfor.home2work.share.SharesActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
 import kotlinx.android.synthetic.main.layout_profile_exp.*
@@ -52,6 +47,9 @@ import kotlin.collections.ArrayList
 
 
 class ProfileFragment : Fragment(), ProfileView {
+
+    val REQ_CODE_EXTERNAL_STORAGE = 2
+    val REQ_CODE_AVATAR = 1
 
     private val mProfilePresenter: ProfilePresenter = ProfilePresenterImpl(this)
     private var mExpOld: UserExp = UserExp()
@@ -74,7 +72,7 @@ class ProfileFragment : Fragment(), ProfileView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(data!=null){
+        if (data != null) {
             if (requestCode == REQ_CODE_AVATAR && resultCode == RESULT_OK) {
                 mProfilePresenter.uploadAvatar(context!!, data.data)
             }

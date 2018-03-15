@@ -4,17 +4,17 @@
     tools:mContext="com.infor.fleetupht.view.ProfileActivity">
 
     <item
-        android:visible="false"
         android:id="@+id/action_match_sort"
         android:icon="@drawable/ic_match_sort"
         android:title="Filtra matches"
+        android:visible="false"
         app:showAsAction="always" />
 
     <item
-        android:visible="false"
         android:id="@+id/action_match_settings"
         android:icon="@drawable/ic_match_settings"
         android:title="Preferenze matches"
+        android:visible="false"
         app:showAsAction="always" />
 
 </menu>

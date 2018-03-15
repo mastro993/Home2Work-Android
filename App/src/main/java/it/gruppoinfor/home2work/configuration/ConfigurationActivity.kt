@@ -4,16 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.auth.SessionManager
 import it.gruppoinfor.home2work.auth.SignInActivity
+import it.gruppoinfor.home2work.main.MainActivity
 import kotlinx.android.synthetic.main.activity_configuration.*
 
 class ConfigurationActivity : AppCompatActivity(), StepperLayout.StepperListener {

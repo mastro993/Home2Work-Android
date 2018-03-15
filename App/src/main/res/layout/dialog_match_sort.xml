@@ -5,10 +5,10 @@
     android:padding="16dp">
 
     <TextView
-        android:layout_marginBottom="8dp"
-        android:text="Ordine match"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Ordine match" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -18,21 +18,21 @@
 
         <RadioButton
             android:id="@+id/sort_username"
-            android:text="Utente"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Utente" />
 
         <RadioButton
             android:id="@+id/sort_score"
-            android:text="Punteggio"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Punteggio" />
 
         <RadioButton
             android:id="@+id/sort_company"
-            android:text="Azienda"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Azienda" />
 
 
     </RadioGroup>

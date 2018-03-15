@@ -5,18 +5,18 @@
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
     android:layout_gravity="center"
-    android:focusable="true"
-    android:clickable="true"
     android:animateLayoutChanges="true"
+    android:clickable="true"
     android:clipToPadding="false"
+    android:focusable="true"
     android:orientation="vertical">
 
     <ImageView
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:id="@+id/messages_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_margin="0dp"
         android:gravity="center"
         android:src="@drawable/ic_inbox"
@@ -25,17 +25,17 @@
     <TextView
         android:id="@+id/messages_counter_text_view"
         android:layout_width="21dp"
-        android:layout_marginEnd="-6dp"
         android:layout_height="21dp"
-        android:layout_marginTop="-6dp"
         android:layout_alignEnd="@id/messages_image_view"
         android:layout_alignTop="@id/messages_image_view"
+        android:layout_marginEnd="-6dp"
+        android:layout_marginTop="-6dp"
         android:background="@drawable/bg_inbox_icon_text"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="3"
         android:textColor="#ffffffff"
-        android:visibility="invisible"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
 </RelativeLayout>

@@ -3,15 +3,12 @@ package it.gruppoinfor.home2work.user
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.api.RetrofitException
 import it.gruppoinfor.home2work.utils.ImageUtils
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.RetrofitException
-import it.gruppoinfor.home2workapi.user.UserProfile
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -104,7 +101,7 @@ class ProfilePresenterImpl constructor(private val profileView: ProfileView) : P
         }
     }
 
-    private fun uploadError(exception: RetrofitException){
+    private fun uploadError(exception: RetrofitException) {
         val errorMessage = "Impossibile caricare l'avatar. " + when (exception.kind) {
             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"

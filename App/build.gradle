@@ -88,6 +88,25 @@ dependencies {
     kapt "io.objectbox:objectbox-processor:$objectboxVersion"
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    // OkHttp3
+    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+
+    // Stetho
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+
+    // RxAndroid
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+
     // Leakcanary
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -101,9 +120,6 @@ dependencies {
 
     // Glide
     implementation 'com.facebook.stetho:stetho:1.5.0'
-
-    // Stetho
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
     // Material stepper
     implementation 'com.stepstone.stepper:material-stepper:3.2.0'
@@ -127,9 +143,8 @@ dependencies {
     // Eventbus
     implementation 'org.greenrobot:eventbus:3.1.1'
 
-    // HomeToWork API
-    api project(path: ':API')
 }
+
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android-extensions'
 repositories {

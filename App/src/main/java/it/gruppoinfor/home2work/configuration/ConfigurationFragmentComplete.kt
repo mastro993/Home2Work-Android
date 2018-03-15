@@ -6,16 +6,13 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.stepstone.stepper.BlockingStep
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2workapi.HomeToWorkClient
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 
 class ConfigurationFragmentComplete : Fragment(), BlockingStep {
 

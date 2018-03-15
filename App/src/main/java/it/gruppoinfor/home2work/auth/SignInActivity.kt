@@ -11,12 +11,12 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.LoginEvent
 import com.pixplicity.easyprefs.library.Prefs
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 import it.gruppoinfor.home2work.configuration.ConfigurationActivity
 import it.gruppoinfor.home2work.firebase.FirebaseTokenService
+import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.tracking.SyncJobService
-import it.gruppoinfor.home2workapi.HomeToWorkClient
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
 

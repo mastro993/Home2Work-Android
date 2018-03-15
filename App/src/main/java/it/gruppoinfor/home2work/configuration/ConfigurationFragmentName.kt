@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2workapi.HomeToWorkClient
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 import kotlinx.android.synthetic.main.fragment_conf_name.*
 
 class ConfigurationFragmentName : Fragment(), Step {

@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.utils
 
-import android.content.Context
 import android.os.Environment
 import android.util.Log
 import timber.log.Timber

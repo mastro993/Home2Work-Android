@@ -5,7 +5,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService
 import com.pixplicity.easyprefs.library.Prefs
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2workapi.HomeToWorkClient
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 import timber.log.Timber
 
 

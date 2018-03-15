@@ -1,7 +1,5 @@
 package it.gruppoinfor.home2work.user
 
-import it.gruppoinfor.home2workapi.user.UserProfile
-
 
 interface UserView {
 

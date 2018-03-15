@@ -7,19 +7,13 @@ import android.app.job.JobScheduler
 import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.PersistableBundle
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.pixplicity.easyprefs.library.Prefs
 import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.App
-import it.gruppoinfor.home2work.settings.SettingsActivity
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.location.Location
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.location.Location
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -72,7 +66,7 @@ class SyncJobService : JobService() {
 
                     val userLocationBox = App.boxStore.boxFor(UserLocation::class.java)
                     userLocationBox.query().equal(UserLocation_.userId, HomeToWorkClient.user!!.id).build().remove()
-                },{
+                }, {
                     Timber.e(it, "Sincronizzazione fallita")
                 })
 
@@ -106,7 +100,7 @@ class SyncJobService : JobService() {
 
         }
 
-        fun remove(context: Context){
+        fun remove(context: Context) {
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.cancel(ID)
         }

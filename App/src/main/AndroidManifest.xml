@@ -42,7 +42,7 @@
             android:value="46d1717c516ccf9648149cf19412063e5dace7cf" />
 
         <receiver
-            android:name=".BootReceiver"
+            android:name=".boot.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -61,8 +61,8 @@
             android:stopWithTask="false" />
         <service
             android:name=".tracking.SyncJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".tracking.ActivityRecognizedService"
             android:enabled="true"
@@ -97,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -115,7 +115,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.FullScreen" />
         <activity
-            android:name=".matches.MatchInfoActivity"
+            android:name=".match.MatchInfoActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_match_title"
             android:screenOrientation="portrait" />
@@ -146,7 +146,7 @@
             android:label="Messaggi"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".shares.OngoingShareActivity"
+            android:name=".share.OngoingShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_ongoing_share_title"
             android:screenOrientation="portrait"
@@ -159,9 +159,10 @@
             android:name=".user.UserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".shares.SharesActivity"
-            android:screenOrientation="portrait"
-            android:label="Condivisioni"/>
+        <activity
+            android:name=".share.SharesActivity"
+            android:label="Condivisioni"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -43,7 +43,7 @@ class InboxIconView : RelativeLayout {
             messages_counter_text_view.visibility = View.VISIBLE
             messages_counter_text_view.text = "$unread"
         } else {
-           // messages_image_view.visibility = View.VISIBLE
+            // messages_image_view.visibility = View.VISIBLE
             messages_counter_text_view.visibility = View.INVISIBLE
         }
     }

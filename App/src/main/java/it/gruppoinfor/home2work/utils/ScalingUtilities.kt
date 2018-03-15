@@ -1,13 +1,9 @@
 package it.gruppoinfor.home2work.utils
 
 import android.content.res.Resources
-import android.graphics.Bitmap
+import android.graphics.*
 import android.graphics.Bitmap.Config
-import android.graphics.BitmapFactory
 import android.graphics.BitmapFactory.Options
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
 
 /**
  * Class containing static utility methods for bitmap decoding and scaling

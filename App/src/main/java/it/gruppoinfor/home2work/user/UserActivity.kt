@@ -22,7 +22,6 @@ import com.github.mikephil.charting.utils.EntryXComparator
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.ChatActivityArgs
 import it.gruppoinfor.home2work.extensions.showToast
-import it.gruppoinfor.home2workapi.user.UserProfile
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.layout_profile_activity.*
 import kotlinx.android.synthetic.main.layout_profile_header.*

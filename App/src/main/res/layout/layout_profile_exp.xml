@@ -3,16 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/cardview_light_background"
-    android:orientation="vertical"
     android:elevation="@dimen/cardview_default_elevation"
+    android:orientation="vertical"
     android:paddingTop="16dp">
 
     <TextView
-        android:layout_marginStart="26dp"
-        android:layout_marginEnd="26dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginStart="26dp"
         android:text="@string/fragment_profile_card_exp"
         android:textColor="@color/light_bg_dark_primary_text"
         android:textStyle="bold" />
@@ -28,23 +28,23 @@
         android:textSize="24sp" />
 
     <ProgressBar
-        android:layout_marginStart="26dp"
-        android:layout_marginEnd="26dp"
         android:id="@+id/progress_exp"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginBottom="10dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginStart="26dp"
         android:progress="40"
         android:progressDrawable="@drawable/bg_progressbar_drawable" />
 
     <RelativeLayout
-        android:layout_marginStart="26dp"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginStart="26dp"
         android:gravity="center_vertical">
 
         <TextView

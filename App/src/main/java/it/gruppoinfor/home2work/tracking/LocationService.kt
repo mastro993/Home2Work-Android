@@ -15,9 +15,9 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.App
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 import it.gruppoinfor.home2work.auth.SessionManager
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.LatLng
+import it.gruppoinfor.home2work.location.LatLng
 import org.jetbrains.anko.intentFor
 import timber.log.Timber
 import java.util.concurrent.TimeUnit

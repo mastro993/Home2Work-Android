@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.chat
 
 import it.gruppoinfor.home2work.firebase.NewMessageEvent
-import it.gruppoinfor.home2workapi.chat.Message
 
 
 interface ChatPresenter {

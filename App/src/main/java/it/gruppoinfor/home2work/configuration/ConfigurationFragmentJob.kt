@@ -12,8 +12,8 @@ import com.stepstone.stepper.VerificationError
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.company.Company
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.company.Company
 import kotlinx.android.synthetic.main.fragment_conf_job.*
 
 class ConfigurationFragmentJob : Fragment(), Step {

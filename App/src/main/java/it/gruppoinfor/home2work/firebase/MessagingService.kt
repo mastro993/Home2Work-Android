@@ -22,7 +22,6 @@ import org.greenrobot.eventbus.EventBus
 class MessagingService : FirebaseMessagingService() {
 
 
-
     override fun onCreate() {
         super.onCreate()
 

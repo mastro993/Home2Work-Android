@@ -154,14 +154,14 @@
         </RelativeLayout>
 
         <TextView
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginBottom="16dp"
             android:text="Medie e record relativi agli ultimi 6 mesi"
             android:textColor="@color/light_bg_dark_hint_text"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

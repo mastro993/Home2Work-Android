@@ -3,7 +3,7 @@ package it.gruppoinfor.home2work.home
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2workapi.HomeToWorkClient
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 
 class HomePresenterImpl constructor(private val homeView: HomeView) : HomePresenter {
 
@@ -20,7 +20,7 @@ class HomePresenterImpl constructor(private val homeView: HomeView) : HomePresen
                     emptyList()
                 }
                 .subscribe({
-                    homeView.refreshInboxCounter(it.count { chat -> chat.unreadCnt > 0 })
+                    homeView.refreshInboxCounter(it.count {it.unreadCnt > 0 })
                 }))
 
     }
@@ -38,7 +38,7 @@ class HomePresenterImpl constructor(private val homeView: HomeView) : HomePresen
                     emptyList()
                 }
                 .subscribe({
-                    homeView.refreshInboxCounter(it.count { chat -> chat.unreadCnt > 0 })
+                    homeView.refreshInboxCounter(it.count { it.unreadCnt > 0 })
                 }))
 
     }

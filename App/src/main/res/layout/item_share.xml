@@ -44,9 +44,9 @@
         android:id="@+id/text_share_datetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
         android:text="23/01/2017 alle 9:00"
         android:textColor="@color/light_bg_dark_secondary_text"
         android:textSize="12sp" />
@@ -54,9 +54,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:baselineAligned="false"
         android:gravity="center"
         android:weightSum="3">
@@ -73,8 +73,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/ic_share_guests" />
 
             <LinearLayout
@@ -104,8 +104,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:background="@drawable/bg_match_score"
             android:padding="8dp">
@@ -114,8 +114,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/ic_share_distance" />
 
             <LinearLayout
@@ -158,8 +158,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/ic_share_xp" />
 
             <LinearLayout

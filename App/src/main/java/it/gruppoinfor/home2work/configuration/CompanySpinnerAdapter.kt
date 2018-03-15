@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2workapi.company.Company
+import it.gruppoinfor.home2work.company.Company
 import kotlinx.android.synthetic.main.item_company_spinner.view.*
 
 

@@ -11,10 +11,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 import it.gruppoinfor.home2work.firebase.NewMessageEvent
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.chat.Author
-import it.gruppoinfor.home2workapi.chat.Message
 import kotlinx.android.synthetic.main.activity_chat.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

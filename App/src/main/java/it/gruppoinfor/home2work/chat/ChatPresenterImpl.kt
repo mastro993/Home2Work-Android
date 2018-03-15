@@ -3,11 +3,9 @@ package it.gruppoinfor.home2work.chat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.api.RetrofitException
 import it.gruppoinfor.home2work.firebase.NewMessageEvent
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.RetrofitException
-import it.gruppoinfor.home2workapi.chat.Author
-import it.gruppoinfor.home2workapi.chat.Message
 
 
 class ChatPresenterImpl constructor(private val chatView: ChatView) : ChatPresenter {

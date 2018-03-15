@@ -13,17 +13,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.stepstone.stepper.BlockingStep
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2work.Constants
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
 import it.gruppoinfor.home2work.utils.ImageUtils
-import it.gruppoinfor.home2workapi.HomeToWorkClient
 import kotlinx.android.synthetic.main.fragment_conf_propic.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -31,6 +28,8 @@ import okhttp3.RequestBody
 import java.io.File
 
 class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
+
+    val REQ_CAMERA = 3
 
     private var propic: Bitmap? = null
     private var uploaded = false
@@ -59,13 +58,13 @@ class ConfigurationFragmentAvatar : Fragment(), BlockingStep {
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent,
-                getString(R.string.activity_configuration_avatar_selection)), Constants.REQ_CAMERA)
+                getString(R.string.activity_configuration_avatar_selection)), REQ_CAMERA)
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode == Constants.REQ_CAMERA && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQ_CAMERA && resultCode == Activity.RESULT_OK) {
             try {
 
                 val selectedImageUri = data?.data

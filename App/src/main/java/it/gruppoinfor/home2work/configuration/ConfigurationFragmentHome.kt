@@ -23,16 +23,17 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
-import it.gruppoinfor.home2work.Constants
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.location.FullAddress
+import it.gruppoinfor.home2work.location.LatLng
 import it.gruppoinfor.home2work.utils.AddressConverter
-import it.gruppoinfor.home2workapi.FullAddress
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.LatLng
 import kotlinx.android.synthetic.main.dialog_edit_address.*
 import kotlinx.android.synthetic.main.fragment_conf_home.*
 
 class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
+
+    val PERMISSION_FINE_LOCATION = 0
 
     private lateinit var googleMap: GoogleMap
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -48,11 +49,13 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
 
         homeLocation = HomeToWorkClient.user?.homeLatLng
 
+
         button_set_address.setOnClickListener {
 
             var addr: String? = HomeToWorkClient.user?.address?.address
             var city: String? = HomeToWorkClient.user?.address?.city
             var cap: String? = HomeToWorkClient.user?.address?.postalCode
+
 
             val dialog = AlertDialog.Builder(context!!)
                     .setTitle("Inserisci un indirizzo")
@@ -103,7 +106,7 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
             dialog.cap_input.setText(cap)
             dialog.city_input.setText(city)
 
-            dialog.address_input.addTextChangedListener(object : TextWatcher{
+            dialog.address_input.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
@@ -113,10 +116,10 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    addr=p0.toString()
+                    addr = p0.toString()
                 }
             })
-            dialog.city_input.addTextChangedListener(object : TextWatcher{
+            dialog.city_input.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
@@ -126,11 +129,11 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    city=p0.toString()
+                    city = p0.toString()
                 }
             })
 
-            dialog.cap_input.addTextChangedListener(object : TextWatcher{
+            dialog.cap_input.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
@@ -140,10 +143,9 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    cap=p0.toString()
+                    cap = p0.toString()
                 }
             })
-
 
 
         }
@@ -178,7 +180,7 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
 
         } else {
 
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constants.PERMISSION_FINE_LOCATION)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_FINE_LOCATION)
 
         }
 
@@ -187,7 +189,7 @@ class ConfigurationFragmentHome : Fragment(), Step, OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        if (requestCode == Constants.PERMISSION_FINE_LOCATION) {
+        if (requestCode == PERMISSION_FINE_LOCATION) {
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setUpMap()
             }

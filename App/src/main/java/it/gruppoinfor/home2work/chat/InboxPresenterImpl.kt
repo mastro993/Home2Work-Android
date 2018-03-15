@@ -3,9 +3,8 @@ package it.gruppoinfor.home2work.chat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.RetrofitException
-import it.gruppoinfor.home2workapi.chat.Chat
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.api.RetrofitException
 
 
 class InboxPresenterImpl constructor(private val inboxView: InboxView) : InboxPresenter {

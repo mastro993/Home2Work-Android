@@ -4,8 +4,8 @@ package it.gruppoinfor.home2work.tracking
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import it.gruppoinfor.home2work.location.LatLng
 import it.gruppoinfor.home2work.utils.LatLngConverter
-import it.gruppoinfor.home2workapi.LatLng
 
 @Entity
 data class UserLocation(var userId: Long = 0,

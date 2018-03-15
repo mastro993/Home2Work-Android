@@ -3,9 +3,8 @@ package it.gruppoinfor.home2work.user
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import it.gruppoinfor.home2workapi.HomeToWorkClient
-import it.gruppoinfor.home2workapi.RetrofitException
-import it.gruppoinfor.home2workapi.user.UserProfile
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.api.RetrofitException
 
 
 class UserPresenterImpl constructor(private val userView: UserView, private val userId: Long) : UserPresenter {

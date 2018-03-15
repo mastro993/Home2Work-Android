@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -17,7 +16,6 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.extensions.showToast
 import it.gruppoinfor.home2work.firebase.MessagingService
 import it.gruppoinfor.home2work.firebase.NewMessageEvent
-import it.gruppoinfor.home2workapi.chat.Chat
 import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

@@ -38,11 +38,10 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
                                 stillStatusCounter++
 
-                                if (stillStatusCounter >= ActivityRecognizedService.MAX_STILL_STATUS_COUNT){
+                                if (stillStatusCounter >= ActivityRecognizedService.MAX_STILL_STATUS_COUNT) {
                                     Timber.i("Utente fermo")
                                     stopDrivingActivity()
-                                }
-                                else
+                                } else
                                     Timber.i("Utente fermo. Guida automaticamente terminata tra ${ActivityRecognizedService.MAX_STILL_STATUS_COUNT - stillStatusCounter}")
                             }
 

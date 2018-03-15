@@ -7,16 +7,19 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.iid.FirebaseInstanceId
+import it.gruppoinfor.home2work.api.HomeToWorkClient
+import it.gruppoinfor.home2work.auth.SessionManager
 import it.gruppoinfor.home2work.auth.SignInActivity
 import it.gruppoinfor.home2work.configuration.ConfigurationActivity
-import it.gruppoinfor.home2work.tracking.SyncJobService
-import it.gruppoinfor.home2work.auth.SessionManager
 import it.gruppoinfor.home2work.firebase.FirebaseTokenService
-import it.gruppoinfor.home2workapi.HomeToWorkClient
+import it.gruppoinfor.home2work.main.MainActivity
+import it.gruppoinfor.home2work.tracking.SyncJobService
 import java.net.UnknownHostException
 
 
 class SplashActivity : AppCompatActivity(), SessionManager.SessionCallback {
+
+    val PERMISSION_FINE_LOCATION = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +28,7 @@ class SplashActivity : AppCompatActivity(), SessionManager.SessionCallback {
 
         // Controllo dei permessi
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.PERMISSION_FINE_LOCATION)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_FINE_LOCATION)
         } else {
             SessionManager.loadSession(this, this)
         }
@@ -35,7 +38,7 @@ class SplashActivity : AppCompatActivity(), SessionManager.SessionCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-        if (requestCode == Constants.PERMISSION_FINE_LOCATION) {
+        if (requestCode == PERMISSION_FINE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 SessionManager.loadSession(this, this)
             else

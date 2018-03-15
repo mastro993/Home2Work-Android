@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_messages"
         android:orderInCategory="100"
-        app:actionLayout="@layout/custom_inbox_icon"
         android:title="Messaggi"
+        app:actionLayout="@layout/custom_inbox_icon"
         app:showAsAction="always" />
 </menu>

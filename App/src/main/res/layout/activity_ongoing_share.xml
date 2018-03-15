@@ -29,12 +29,12 @@
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
-        android:animateLayoutChanges="true"
         android:id="@+id/host_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/buttons_layout"
         android:layout_below="@id/appbar"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
         android:visibility="visible">
 

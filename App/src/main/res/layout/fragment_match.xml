@@ -3,30 +3,30 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionGroup="false"
     android:clipChildren="false"
+    android:transitionGroup="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <FrameLayout
-        android:transitionGroup="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false">
+        android:clipChildren="false"
+        android:transitionGroup="false">
 
         <android.support.v4.widget.NestedScrollView
-            android:transitionGroup="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false">
+            android:clipChildren="false"
+            android:transitionGroup="false">
 
             <LinearLayout
-                android:transitionGroup="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingBottom="48dp">
+                android:paddingBottom="48dp"
+                android:transitionGroup="false">
 
                 <RelativeLayout
                     android:id="@+id/no_matches_view"
