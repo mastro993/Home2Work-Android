@@ -1,10 +1,10 @@
 package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
+import it.gruppoinfor.home2work.domain.common.Transformer
 
 
-abstract class UseCase<T>(private val transformer: ObservableTransformer<T, T>) {
+abstract class UseCase<T>(private val transformer: Transformer<T>) {
 
     abstract fun createObservable(data: Map<String, Any>? = null): Observable<T>
 
