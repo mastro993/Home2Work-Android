@@ -5,6 +5,6 @@ data class AddressEntity(
         val city: String,
         val district: String,
         val postalCode: String,
-        val street: String,
+        val street: String?,
         val number: Int
 )

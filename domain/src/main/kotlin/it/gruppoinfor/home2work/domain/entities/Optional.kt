@@ -1,8 +1,6 @@
 package it.gruppoinfor.home2work.domain.entities
 
-/**
- * Created by feder on 16/03/2018.
- */
+
 class Optional<out T>(val value: T? = null) {
 
     companion object {

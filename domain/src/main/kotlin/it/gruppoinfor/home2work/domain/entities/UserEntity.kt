@@ -7,10 +7,9 @@ data class UserEntity(
         val email: String,
         val name: String,
         val surname: String,
-        val homeLatLng: LatLngEntity,
-        val address: AddressEntity,
-        val company: CompanyEntity,
+        val homeLatLng: LatLngEntity?,
+        val address: AddressEntity?,
+        val company: CompanyEntity?,
         val regdate: Date,
-        val accessToken: String, // TODO Trovare un modo per poterne fare a meno
         val configured: Boolean
 )

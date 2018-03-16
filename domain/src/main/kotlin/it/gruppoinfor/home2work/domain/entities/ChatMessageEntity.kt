@@ -5,7 +5,7 @@ import java.util.*
 
 
 class ChatMessageEntity(
-        val id: String,
+        val id: Long,
         val chatId: Long,
         val text: String,
         val date: Date,

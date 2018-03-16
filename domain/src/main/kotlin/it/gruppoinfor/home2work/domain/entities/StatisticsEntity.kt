@@ -1,6 +1,6 @@
 package it.gruppoinfor.home2work.domain.entities
 
-data class UserStatsEntity(
+data class StatisticsEntity(
         val totalShares: Int,
         val totalGuestShares: Int,
         val totalHostShares: Int,
