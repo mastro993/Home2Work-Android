@@ -2,17 +2,15 @@ package it.gruppoinfor.home2work.domain.entities
 
 import java.util.*
 
-data class ClientUser(
+data class UserEntity(
         val id: Long,
         val email: String,
         val name: String,
         val surname: String,
-        val homeLatLng: LatLng,
-        val address: Address,
-        val company: Company,
+        val homeLatLng: LatLngEntity,
+        val address: AddressEntity,
+        val company: CompanyEntity,
         val regdate: Date,
-        val accessToken: String,
+        val accessToken: String, // TODO Trovare un modo per poterne fare a meno
         val configured: Boolean
-) {
-    val formattedName: String = "$name $surname"
-}
+)

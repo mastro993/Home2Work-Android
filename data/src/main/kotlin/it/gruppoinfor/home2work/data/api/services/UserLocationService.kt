@@ -1,13 +1,13 @@
 package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.domain.entities.Location
+import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface UserLocationService {
     @POST("user/location")
     fun uploadLocations(
-            @Body locations: List<Location>
-    ): Observable<List<Location>>
+            @Body userLocations: List<UserLocationEntity>
+    ): Observable<List<UserLocationEntity>>
 }

@@ -1,10 +1,11 @@
 package it.gruppoinfor.home2work.domain.entities
 
-data class Guest(
+data class GuestEntity(
+        val id: Long,
         val shareId: Long,
-        val user: User,
-        val startLocation: LatLng,
-        val endLocation: LatLng,
+        val user: UserEntity,
+        val startLocation: LatLngEntity,
+        val endLocation: LatLngEntity,
         val status: Status,
         val distance: Int
 ) {

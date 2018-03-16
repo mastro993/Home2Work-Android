@@ -1,6 +1,6 @@
 package it.gruppoinfor.home2work.domain.entities
 
-data class UserRanks(
+data class UserRanksEntity(
         val shares: Int,
         val monthShares: Int,
         val monthSharesAvg: Int,

@@ -1,9 +1,8 @@
 apply from: 'dependencies.gradle'
 
 buildscript {
-    ext.android_support_version = '27.1.0'
     ext.kotlin_version = '1.2.30'
-    ext.objectboxVersion = '1.4.1'
+    ext.objectboxVersion = '1.4.4'
     ext.anko_version = '0.10.1'
     ext.fabric_version = '1.25.1'
     repositories {

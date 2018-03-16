@@ -2,10 +2,11 @@ package it.gruppoinfor.home2work.domain.interfaces
 
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.domain.entities.Match
+import it.gruppoinfor.home2work.domain.entities.MatchEntity
+import it.gruppoinfor.home2work.domain.entities.Optional
 
 interface MatchRepository {
-    fun getUserMatchList(userId: Long): Observable<List<Match>>
-    fun getMatch(matchId: Long): Observable<Match>
-    fun editMatch(match: Match): Observable<Boolean>
+    fun getMatchList(): Observable<List<MatchEntity>>
+    fun getMatch(matchId: Long): Observable<Optional<MatchEntity>>
+    fun editMatch(match: MatchEntity): Observable<Boolean>
 }

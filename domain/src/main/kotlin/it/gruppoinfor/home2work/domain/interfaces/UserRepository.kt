@@ -1,16 +1,16 @@
 package it.gruppoinfor.home2work.domain.interfaces
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.domain.entities.ClientUser
-import it.gruppoinfor.home2work.domain.entities.User
-import it.gruppoinfor.home2work.domain.entities.UserProfile
+import it.gruppoinfor.home2work.domain.entities.Optional
+import it.gruppoinfor.home2work.domain.entities.UserEntity
+import it.gruppoinfor.home2work.domain.entities.UserProfileEntity
 
 
 interface UserRepository {
-    fun login(email: String, password: String): Observable<ClientUser>
-    fun login(token: String): Observable<ClientUser>
-    fun getProfile(): Observable<UserProfile>
-    fun getUser(userId: Long): Observable<User>
-    fun getUserList(): Observable<List<User>>
-    fun getUserProfile(userId: Long): Observable<UserProfile>
+    fun login(email: String, password: String): Observable<Optional<UserEntity>>
+    fun login(token: String): Observable<Optional<UserEntity>>
+    fun getProfile(): Observable<UserProfileEntity>
+    fun getUser(userId: Long): Observable<Optional<UserEntity>>
+    fun getUserList(): Observable<List<UserEntity>>
+    fun getUserProfile(userId: Long): Observable<UserProfileEntity>
 }

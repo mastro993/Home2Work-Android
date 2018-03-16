@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">data</string>
+    <string name="api_base_url">https://hometoworkapi.azurewebsites.net</string>
+    <string name="avatar_folder_url">http://home2workapi.azurewebsites.net/images/avatar</string>
+    <string name="companies_folder_url">https://hometoworkapi.azurewebsites.net/images/companies</string>
 </resources>

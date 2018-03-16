@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.objectbox'
 
 android {
     compileSdkVersion 27
@@ -31,29 +32,29 @@ android {
 
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    dependencies {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        implementation 'com.android.support:appcompat-v7:27.1.0'
+        androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    kapt rootProject.ext.daggerCompiler
-    implementation rootProject.ext.dagger
-    implementation rootProject.ext.rxJava
-    implementation rootProject.ext.retrofit
-    implementation rootProject.ext.retrofitGsonConverter
-    implementation rootProject.ext.retrofitRxJava2Adapter
+        kapt rootProject.ext.daggerCompiler
+        implementation rootProject.ext.dagger
+        implementation rootProject.ext.rxJava
+        implementation rootProject.ext.retrofit
+        implementation rootProject.ext.retrofitGsonConverter
+        implementation rootProject.ext.retrofitRxJava2Adapter
 
-    implementation rootProject.ext.objectBox
-    kapt rootProject.ext.objectBoxProcessor
-    
-    implementation rootProject.ext.chatKit
-    implementation rootProject.ext.stetho
-    implementation rootProject.ext.stethoInterceptor
+        implementation rootProject.ext.objectBox
+        kapt rootProject.ext.objectBoxProcessor
+
+        implementation rootProject.ext.chatKit
+        implementation rootProject.ext.stetho
+        implementation rootProject.ext.stethoInterceptor
 
 
-    testImplementation rootProject.ext.junit
-    testImplementation rootProject.ext.mockito
-    androidTestImplementation rootProject.ext.androidTestRunner
+        testImplementation rootProject.ext.junit
+        testImplementation rootProject.ext.mockito
+        androidTestImplementation rootProject.ext.androidTestRunner
 
-    implementation project(':domain')
-}
+        implementation project(':domain')
+    }

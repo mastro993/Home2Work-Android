@@ -2,15 +2,13 @@ package it.gruppoinfor.home2work.domain.entities
 
 import java.util.*
 
-data class Share(
-
+data class ShareEntity(
         val id: Long,
-        val host: User,
+        val host: UserEntity,
         val status: Status,
         val date: Date,
         val type: Type,
-        val guests: ArrayList<Guest>
-
+        val guests: List<GuestEntity>
 ) {
 
     enum class Status constructor(val value: Int) {

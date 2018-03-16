@@ -2,20 +2,27 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
-import it.gruppoinfor.home2work.domain.entities.UserProfile
+import it.gruppoinfor.home2work.domain.entities.UserEntity
+import it.gruppoinfor.home2work.domain.entities.UserProfileEntity
 import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
 
 class GetUserProfile(
-        transformer: Transformer<UserProfile>,
+        transformer: Transformer<UserProfileEntity>,
         private val userRepository: UserRepository
-) : UseCase<UserProfile>(transformer) {
+) : UseCase<UserProfileEntity>(transformer) {
 
     companion object {
         private const val PARAM_USER_ID = "param:userId"
     }
 
-    override fun createObservable(data: Map<String, Any>?): Observable<UserProfile> {
+    fun getById(userId: Long): Observable<UserProfileEntity> {
+        val data = HashMap<String, Long>()
+        data[PARAM_USER_ID] = userId
+        return observable(data)
+    }
+
+    override fun createObservable(data: Map<String, Any>?): Observable<UserProfileEntity> {
         val userId = data?.get(PARAM_USER_ID)
 
         userId?.let {

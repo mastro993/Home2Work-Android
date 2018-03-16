@@ -1,8 +1,8 @@
 package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.chat.Chat
-import it.gruppoinfor.home2work.chat.Message
+import it.gruppoinfor.home2work.domain.entities.ChatEntity
+import it.gruppoinfor.home2work.chat.ChatMessageEntity
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -13,7 +13,7 @@ interface ChatService {
     @GET("chat/{chatId}")
     fun getChatMessageList(
             @Path("chatId") chatId: Long?
-    ): Observable<List<Message>>
+    ): Observable<List<ChatMessageEntity>>
 
     @FormUrlEncoded
     @POST("chat/{chatId}")
@@ -26,8 +26,8 @@ interface ChatService {
     @POST("chat/new")
     fun newChat(
             @Field("recipientId") recipientId: Long?
-    ): Observable<Chat>
+    ): Observable<ChatEntity>
 
     @GET("user/chat")
-    fun getChatList(): Observable<List<Chat>>
+    fun getChatList(): Observable<List<ChatEntity>>
 }

@@ -1,43 +1,44 @@
 package it.gruppoinfor.home2work.api
 
 
-import it.gruppoinfor.home2work.chat.Chat
+import it.gruppoinfor.home2work.domain.entities.ChatEntity
+import it.gruppoinfor.home2work.data.api.ServiceGenerator
 import it.gruppoinfor.home2work.data.api.services.*
-import it.gruppoinfor.home2work.domain.entities.ClientUser
-import it.gruppoinfor.home2work.domain.entities.Share
+import it.gruppoinfor.home2work.domain.entities.UserEntity
+import it.gruppoinfor.home2work.domain.entities.ShareEntity
 
 object HomeToWorkClient {
 
-    var user: ClientUser? = null
+    var user: UserEntity? = null
 
-    var ongoingShare: Share? = null
+    var ongoingShare: ShareEntity? = null
 
-    var inbox: ArrayList<Chat> = ArrayList()
+    var inbox: ArrayList<ChatEntity> = ArrayList()
 
     internal var sessionToken: String = ""
 
     fun getAuthService(): AuthService {
-        return it.gruppoinfor.home2work.data.api.ServiceGenerator.createService(AuthService::class.java)
+        return ServiceGenerator.createService(AuthService::class.java)
     }
 
     fun getChatService(): ChatService {
-        return it.gruppoinfor.home2work.data.api.ServiceGenerator.createService(ChatService::class.java)
+        return ServiceGenerator.createService(ChatService::class.java)
     }
 
     fun getCompanyService(): CompanyService {
-        return it.gruppoinfor.home2work.data.api.ServiceGenerator.createService(CompanyService::class.java)
+        return ServiceGenerator.createService(CompanyService::class.java)
     }
 
     fun getMatchService(): MatchService {
-        return it.gruppoinfor.home2work.data.api.ServiceGenerator.createService(MatchService::class.java)
+        return ServiceGenerator.createService(MatchService::class.java)
     }
 
     fun getShareService(): ShareService {
-        return it.gruppoinfor.home2work.data.api.ServiceGenerator.createService(ShareService::class.java)
+        return ServiceGenerator.createService(ShareService::class.java)
     }
 
     fun getUserService(): UserService {
-        return it.gruppoinfor.home2work.data.api.ServiceGenerator.createService(UserService::class.java)
+        return ServiceGenerator.createService(UserService::class.java)
     }
 
 

@@ -2,10 +2,9 @@ package it.gruppoinfor.home2work.domain.entities
 
 import java.util.*
 
-data class Match(
-
-        var matchId: Long,
-        var host: User,
+data class MatchEntity(
+        var id: Long,
+        var host: UserEntity,
         var homeScore: Int,
         var jobScore: Int,
         var timeScore: Int,
@@ -14,5 +13,4 @@ data class Match(
         var distance: Int,
         var isNew: Boolean,
         var isHidden: Boolean
-
 )

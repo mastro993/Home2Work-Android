@@ -1,6 +1,6 @@
 package it.gruppoinfor.home2work.domain.entities
 
-data class UserExperience(
+data class UserExperienceEntity(
         val level: Int,
         val amount: Int,
         val currentLvLExp: Int,

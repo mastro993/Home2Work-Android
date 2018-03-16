@@ -2,16 +2,17 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
-import it.gruppoinfor.home2work.domain.entities.UserProfile
+import it.gruppoinfor.home2work.domain.entities.LatLngEntity
+import it.gruppoinfor.home2work.domain.entities.UserProfileEntity
 import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
 
 class GetProfile(
-        transformer: Transformer<UserProfile>,
+        transformer: Transformer<UserProfileEntity>,
         private val userRepository: UserRepository
-) : UseCase<UserProfile>(transformer) {
+) : UseCase<UserProfileEntity>(transformer) {
 
-    override fun createObservable(data: Map<String, Any>?): Observable<UserProfile> {
+    override fun createObservable(data: Map<String, Any>?): Observable<UserProfileEntity> {
         return userRepository.getProfile()
     }
 

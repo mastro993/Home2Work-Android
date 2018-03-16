@@ -2,21 +2,29 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
-import it.gruppoinfor.home2work.domain.entities.ClientUser
+import it.gruppoinfor.home2work.domain.entities.Optional
+import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
 
 class UserLogin(
-        transformer: Transformer<ClientUser>,
+        transformer: Transformer<Optional<UserEntity>>,
         private val userRepository: UserRepository
-) : UseCase<ClientUser>(transformer) {
+) : UseCase<Optional<UserEntity>>(transformer) {
 
     companion object {
         private const val PARAM_EMAIL = "param:email"
         private const val PARAM_PASSWORD = "param:password"
     }
 
-    override fun createObservable(data: Map<String, Any>?): Observable<ClientUser> {
+    fun login(email: String, password: String): Observable<Optional<UserEntity>> {
+        val data = HashMap<String, String>()
+        data[PARAM_EMAIL] = email
+        data[PARAM_PASSWORD] = password
+        return observable(data)
+    }
+
+    override fun createObservable(data: Map<String, Any>?): Observable<Optional<UserEntity>> {
         val email = data?.get(PARAM_EMAIL)
         val password = data?.get(PARAM_PASSWORD)
 

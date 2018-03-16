@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
 import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 
-class LeaveCurrentShare(
+class LeaveShare(
         transformer: Transformer<Boolean>,
         private val shareRepository: ShareRepository
 ) : UseCase<Boolean>(transformer) {

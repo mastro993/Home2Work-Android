@@ -4,7 +4,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'io.objectbox'
 android {
-    flavorDimensions "default"
     signingConfigs {
         config {
             keyAlias 'infor'
@@ -42,17 +41,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    productFlavors {
-        Infor {
-            minSdkVersion 21
-            applicationId 'it.gruppoinfor.home2work'
-            targetSdkVersion 27
-            versionCode 12
-            versionName '1.18.3'
-            versionNameSuffix '-INFOR'
-            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-        }
-    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -66,10 +54,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation "com.android.support:appcompat-v7:$android_support_version"
-    implementation "com.android.support:design:$android_support_version"
-    implementation "com.android.support:cardview-v7:$android_support_version"
-    implementation "com.android.support:support-v4:$android_support_version"
+    implementation "com.android.support:appcompat-v7:27.1.0"
+    implementation "com.android.support:design:27.1.0"
+    implementation "com.android.support:cardview-v7:27.1.0"
+    implementation "com.android.support:support-v4:27.1.0"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
@@ -90,8 +78,8 @@ dependencies {
     implementation "io.objectbox:objectbox-android:$objectboxVersion"
 
     // Objectbox
-    implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
-    kapt "io.objectbox:objectbox-processor:$objectboxVersion"
+    //implementation rootProject.ext.objectBox
+    //kapt rootProject.ext.objectBoxProcessor
 
     // Leakecanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'

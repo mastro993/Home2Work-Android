@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.location
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import io.objectbox.annotation.Entity
 import java.io.Serializable
 import java.util.*
 

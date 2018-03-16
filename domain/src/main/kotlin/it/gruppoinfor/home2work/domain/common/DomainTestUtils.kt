@@ -1,9 +1,8 @@
 package it.gruppoinfor.home2work.domain.common
 
-import it.gruppoinfor.home2work.domain.entities.Address
-import it.gruppoinfor.home2work.domain.entities.Company
-import it.gruppoinfor.home2work.domain.entities.LatLng
-import it.gruppoinfor.home2work.domain.entities.User
+import it.gruppoinfor.home2work.domain.entities.AddressEntity
+import it.gruppoinfor.home2work.domain.entities.CompanyEntity
+import it.gruppoinfor.home2work.domain.entities.LatLngEntity
 import java.util.*
 
 
@@ -11,8 +10,8 @@ class DomainTestUtils {
 
     companion object {
 
-        fun getTestAddress(seed: Any? = null): Address {
-            return Address(
+        fun getTestAddress(seed: Any? = null): AddressEntity {
+            return AddressEntity(
                     city = "Citta' $seed",
                     postalCode = "00000",
                     address = "Indirizzo $seed"
@@ -20,13 +19,13 @@ class DomainTestUtils {
             )
         }
 
-        fun getTestLocation(): LatLng {
-            return LatLng(0.0, 0.0)
+        fun getTestLocation(): LatLngEntity {
+            return LatLngEntity(0.0, 0.0)
         }
 
 
-        fun getTestCompany(id: Long): Company {
-            return Company(
+        fun getTestCompany(id: Long): CompanyEntity {
+            return CompanyEntity(
                     id = id,
                     name = "Azienda$id",
                     location = getTestLocation(),
@@ -51,7 +50,7 @@ class DomainTestUtils {
             return (0L..4L).map { getTestUser(it) }
         }
 
-        fun generateCompanyList(): List<Company> {
+        fun generateCompanyList(): List<CompanyEntity> {
             return (0L..4L).map { getTestCompany(it) }
         }
     }
