@@ -1,7 +1,9 @@
 package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
+import it.gruppoinfor.home2work.data.entities.MatchData
 import it.gruppoinfor.home2work.domain.entities.MatchEntity
+import it.gruppoinfor.home2work.domain.entities.Optional
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -14,13 +16,13 @@ interface MatchService {
     @GET("match/{id}")
     fun getMatchById(
             @Path("id") id: Long?
-    ): Observable<MatchEntity>
+    ): Observable<Optional<MatchData>>
 
     @PUT("match")
     fun editMatch(
-            @Body match: MatchEntity
-    ): Observable<MatchEntity>
+            @Body match: MatchData
+    ): Observable<Boolean>
 
     @GET("user/match")
-    fun getMatchList(): Observable<ArrayList<MatchEntity>>
+    fun getMatchList(): Observable<ArrayList<MatchData>>
 }

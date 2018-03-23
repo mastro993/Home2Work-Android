@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/qr_code_image_view"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:contentDescription="QR Code condivisione" />
+
+    <FrameLayout
+        android:id="@+id/loading_view"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:visibility="invisible">
+
+        <ProgressBar
+            android:layout_width="@dimen/loading_progressbar_size"
+            android:layout_height="@dimen/loading_progressbar_size"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorAccent" />
+
+    </FrameLayout>
+
+    <TextView
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/qr_code_image_view"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Inquadrando questo codice con la loro applicazione i passeggeri potranno partecipare alla condivisione."
+        android:textAlignment="center" />
+
+</RelativeLayout>

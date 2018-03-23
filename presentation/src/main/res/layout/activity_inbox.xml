@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
+
+    <it.gruppoinfor.home2work.views.ScreenStateView
+        android:id="@+id/status_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <com.stfalcon.chatkit.dialogs.DialogsList
+            android:id="@+id/dialogs_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:dialogDividerLeftPadding="0dp"
+            app:dialogMessageTextSize="17sp"
+            app:dialogTitleTextStyle="bold"
+            app:dialogUnreadBubbleBackgroundColor="@color/red_500"
+            app:dialogUnreadTitleTextStyle="bold" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</FrameLayout>

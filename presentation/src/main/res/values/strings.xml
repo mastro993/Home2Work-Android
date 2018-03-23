@@ -1,3 +1,195 @@
-<resources>
-    <string name="app_name">presentation</string>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="Typos">
+
+    <string name="app_name">Home2Work</string>
+    <string name="empty"> </string>
+
+    <string name="activity_main_tab_home">Home</string>
+    <string name="activity_main_tab_ranks">Classifiche</string>
+    <string name="activity_main_tab_new_share">Share</string>
+    <string name="activity_main_tab_matches">Matches</string>
+    <string name="activity_main_tab_profile">Profilo</string>
+    <string name="activity_main_tab_shares">Condivisioni</string>
+
+    <string name="activity_configuration_title">Configurazione</string>
+    <string name="activity_configuration_start">Benvenuto! \n\nUna breve introduzione ti guiderà nella configurazione dell\'applicazione.</string>
+    <string name="activity_configuration_name_title">Nome</string>
+    <string name="activity_configuration_name">Nome</string>
+    <string name="activity_configuration_surname">Cognome</string>
+    <string name="activity_configuration_name_warning">Inserisci un nome</string>
+    <string name="activity_configuration_name_error">Nome non valido</string>
+    <string name="activity_configuration_surname_warning">Inserisci un cognome</string>
+    <string name="activity_configuration_surname_error">Cognome non valido</string>
+    <string name="activity_configuration_address_title">Dove abiti?</string>
+    <string name="activity_configuration_address_input">Inserisci indirizzo manualmente</string>
+    <string name="activity_configuration_current_location">Usa posizione corrente</string>
+    <string name="activity_configuration_address_warning_address">Inserisci un indirizzo valido</string>
+    <string name="activity_configuration_address_warning_city">Inserisci una città o un paese</string>
+    <string name="activity_configuration_address_warning_CAP">Inserisci un CAP valido</string>
+    <string name="activity_configuration_address_error">Nessun indirizzo trovato con le informazioni inserite</string>
+    <string name="activity_configuration_address_save">Salva</string>
+    <string name="activity_configuration_address_discard">Cancella</string>
+    <string name="activity_configuration_address_step_warning">Devi impostare un indirizzo di casa prima di poter continuare</string>
+    <string name="activity_configuration_company_title">Dove lavori?</string>
+    <string name="activity_configuration_company_step_warning">Devi selezionare un\'azienda prima di poter continuare</string>
+    <string name="activity_configuration_avatar_title">Inserisci una tua foto</string>
+    <string name="activity_configuration_avatar_selection">Seleziona una foto</string>
+    <string name="activity_configuration_avatar_upload">Upload avatar in corso</string>
+    <string name="activity_configuration_avatar_upload_error">Errore durante l\'upload dell\'avatar</string>
+    <string name="activity_configuration_social_title">Come possono contattarti gli utenti?</string>
+    <string name="activity_configuration_social_fb">Facebook</string>
+    <string name="activity_configuration_social_tw">Twitter</string>
+    <string name="activity_configuration_social_tg">Telegram</string>
+    <string name="activity_configuration_wait">Completamento configurazione in corso</string>
+    <string name="activity_configuration_completed">Il tuo profilo è pronto!\n Puoi cominciare ad usare FleetUp</string>
+
+    <string name="activity_settings_tracking_disabled">Tracking posizione disattivato</string>
+    <string name="activity_settings_tracking_enabled">Tracking posizione attivato</string>
+
+    <string name="activity_edit_profile_title">Modifica informazioni</string>
+    <string name="activity_edit_profile_avatar_upload_error">Errore durante l\'upload dell\'avatar</string>
+
+    <string name="activity_match_title">Dettagli match</string>
+    <string name="activity_match_error">Impossibile visualizzare informazioni match</string>
+    <string name="activity_match_time">%1$s - %2$s</string>
+
+    <string name="activity_ongoing_share_title">Condivisione in corso</string>
+    <string-array name="activity_ongoing_share_user_options">
+        <item>Mostra profilo</item>
+        <item>Espelli</item>
+    </string-array>
+    <string-array name="activity_ongoing_share_user_options_leaved">
+        <item>Mostra profilo</item>
+    </string-array>
+    <string name="activity_ongoing_dialog_share_code_title">Codice condivisione</string>
+    <string name="activity_ongoing_share_invalid_code">Codice non valido</string>
+    <string name="activity_ongoing_share_code_unavailable">Impossibile ottenere QR Code al momento</string>
+    <string name="activity_ongoing_share_dialog_completition_error_title">Impossibile completare</string>
+    <string name="activity_ongoing_share_dialog_completition_error_content">Non puoi segnalare come completata una condivisione senza passeggeri</string>
+    <string name="activity_ongoing_share_dialog_completition">Completamento in corso</string>
+    <string name="activity_ongoing_share_dialog_completition_success">Condivisione completata con successo</string>
+    <string name="activity_ongoing_share_dialog_completition_error">Errore durante la verifica della condivisione</string>
+    <string name="activity_ongoing_share_dialog_qr_prompt">Inquadra il codice della condivisione per completarla</string>
+    <string name="activity_ongoing_share_check">Verifica condivisione in corso</string>
+    <string name="activity_ongoing_share_check_error">Impossibile verificare codice al momento</string>
+    <string name="activity_ongoing_share_check_success">Condivisione completata con successo</string>
+    <string name="activity_ongoing_share_check_wrong_code">Codice errato</string>
+    <string name="activity_ongoing_share_cancel_dialog_content">Eliminazione condivisione in corso</string>
+    <string name="activity_ongoing_share_leave_dialog_content">Abbandono della condivisione in corso</string>
+
+    <string name="activity_settings_title">Preferenze</string>
+    <string name="activity_settings_dialog_tracking_title">Disattivazione tracking</string>
+    <string name="activity_settings_dialog_tracking_content">Disattivando il tracking la tua posizione non sarà più registrata, ma Home2Work non potrà più segnalarti match. Disattivare la funzione?</string>
+    <string name="activity_settings_dialog_tracking_confirm">Disattiva</string>
+    <string name="activity_settings_dialog_tracking_discard">Annulla</string>
+
+    <string name="activity_signin_title">Accedi</string>
+    <string name="activity_signin_no_internet">Nessun accesso alla rete</string>
+    <string name="activity_signin_error">Errore durante il login</string>
+    <string name="activity_signin_login_failed">Dati inseriti non validi</string>
+    <string name="activity_signin_session_expired">Sessione scaduta. Rieffettua il login</string>
+    <string name="activity_signin_server_error">Errore di comunicazione con il server. Ritenta più tardi o contatta l\'amministratore del sistema</string>
+    <string name="activity_signin_email_error">L\'email inserita non è valida</string>
+    <string name="activity_signin_password_error">La password inserita deve essere lunga almeno 6 caratteri</string>
+    <string name="activity_signin_button">Accedi</string>
+    <string name="activity_signin_lost_pass">Password dimenticata</string>
+    <string name="activity_signin_email">Email</string>
+    <string name="activity_signin_password">Password</string>
+
+    <string name="activity_show_user_error">Impossibile visualizzare informazioni utente</string>
+
+    <string name="fragment_matches_empty">Non ci sono ancora abbastanza dati per trovare dei match per te. In attesa prova a contattare queste persone!</string>
+
+    <string-array name="fragment_profile_options">
+        <item>Modifica profilo</item>
+        <item>Preferenze</item>
+        <item>Esci</item>
+    </string-array>
+    <string name="fragment_profile_avatar_title">Immagine del profilo</string>
+    <string-array name="fragment_profile_avatar_options">
+        <item>Modifica</item>
+    </string-array>
+    <string name="fragment_profile_avatar_upload">Caricamento avatar in corso</string>
+    <string name="fragment_profile_regdate">Iscritto dal %1$s</string>
+    <string name="fragment_profile_stats_shares">%1$d condivisioni auto</string>
+    <string name="fragment_profile_stats_distance">%1$s km condivisi</string>
+    <string name="fragment_profile_fuel">%1$s l di carburante risparmiato</string>
+    <string name="fragment_profile_emission">%1$s g di CO2 evitati</string>
+    <string name="fragment_profile_card_exp">Punteggio utente</string>
+    <string name="fragment_profile_card_exp_value">%,d</string>
+    <string name="fragment_profile_card_current_lvl_exp_value">%,d</string>
+    <string name="fragment_profile_card_next_lvl_exp_value">%,d</string>
+    <string name="fragment_profile_card_exp_left">%,d punti al prossimo livello</string>
+    <string name="fragment_profile_card_shares">Condivisioni</string>
+    <string name="fragment_profile_card_shares_distance_value">%.2f km</string>
+    <string name="fragment_profile_card_shares_month">Condivisioni completate a %s</string>
+    <string name="fragment_profile_card_shares_month_rank">Classifica condivisioni di %s</string>
+    <string name="fragment_profile_card_shares_month_value">%d</string>
+    <string name="fragment_profile_card_shares_month_avg">Media condivisioni mensili</string>
+    <string name="fragment_profile_card_shares_month_avg_value">%.2f</string>
+    <string name="fragment_profile_card_activity">Attività</string>
+    <string name="fragment_profile_card_activity_sub">Ultimi 6 mesi</string>
+    <string name="fragment_profile_card_activity_this_month">Questo mese</string>
+    <string name="fragment_profile_card_activity_best_month">Mese migliore</string>
+    <string name="fragment_profile_card_activity_this_month_value">%.2f km</string>
+    <string name="fragment_profile_card_activity_best_month_value">%1$s con %2$.2f km totali</string>
+
+    <string name="fragment_profile_registration_date">Iscrizione</string>
+
+    <string name="fragment_share_dialog_new_title">Nuova condivisione</string>
+    <string name="fragment_share_dialog_new_content">Creazione di una condivisione in corso.</string>
+    <string name="fragment_share_dialog_join_content">Unione alla condivisione in corso.</string>
+    <string name="fragment_share_dialog_new_error">Impossibile creare una nuova condivisione.</string>
+    <string-array name="fragment_share_dialog_new_share_options">
+        <item>Crea nuova condivisione</item>
+        <item>Unisciti a condivisione</item>
+    </string-array>
+    <string name="fragment_share_empty_view_text">Non hai ancora effettuato nessuna condivisione. Iniziane una nuova premendo sul bottone <b>+</b></string>
+
+    <string name="dialog_logout_title">Logout</string>
+    <string name="dialog_logout_content">Sei sicuro di voler uscire?</string>
+    <string name="dialog_logout_confirm">Esci</string>
+    <string name="dialog_logout_decline">Annulla</string>
+    <string name="dialog_logout_success">Logout avvenuto con successo</string>
+
+    <string name="item_match_dialog_hide_title">Nascondi match</string>
+    <string name="item_match_dialog_hide_content">Nascondendo questo match non avrai più la possibilità di visualizzarlo. Sei sicuro di voler continuare?</string>
+    <string name="item_match_dialog_hide_confirm">Nascondi match</string>
+    <string name="item_match_dialog_hide_cancel">Annulla</string>
+    <string name="item_match_dialog_hide_success">Match nascosto</string>
+    <string name="item_match_dialog_hide_error">Impossibile rimuovere il match al momento, riprova più tardi</string>
+
+    <string name="layout_ongoing_share_host">Stai condividendo la tua auto</string>
+    <string name="layout_ongoing_share_guest">Stai partecipando ad una condivisione</string>
+
+    <!-- Altro -->
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="company">Azienda</string>
+    <string name="home">Casa</string>
+    <string name="title_activity_share">ShareActivity</string>
+
+    <!-- CustomActivityOnCrash -->
+    <string name="customactivityoncrash_error_activity_error_occurred_explanation">Si è verificato un errore inaspettato.\nScusa per l\'inconveniente.</string>
+    <string name="customactivityoncrash_error_activity_restart_app">Riavvia app</string>
+    <string name="customactivityoncrash_error_activity_close_app">Chiudi app</string>
+    <string name="customactivityoncrash_error_activity_error_details">Mostra dettagli errore</string>
+    <string name="customactivityoncrash_error_activity_error_details_title">Dettagli errore</string>
+    <string name="customactivityoncrash_error_activity_error_details_close">Chiudi</string>
+    <string name="customactivityoncrash_error_activity_error_details_copy">Copia dettagli</string>
+    <string name="customactivityoncrash_error_activity_error_details_copied">Dettagli copiati nella clipboard</string>
+    <string name="customactivityoncrash_error_activity_error_details_clipboard_label">Informazioni errore</string>
+
+    <!-- TODO: Remove or change this placeholmessageTexttext -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile_shares_history_button">Cronologia condivisioni</string>
+    <string name="splash_signing_button">Accedi</string>
+    <string name="dialog_new_share_create">Crea una nuova condivisione</string>
+    <string name="dialog_new_share_join">Unisciti ad una condivisione</string>
+    <string name="dialog_new_share_title">Nuova condivisione</string>
+    <string name="view_profile_activity_no_data">Ancora nessun dato da visualizzare</string>
+    <string name="view_profile_shares_no_datra">Ancora nessuna condivsione completata</string>
+    <string name="view_profile_shares_month_record">Record condivisioni mensili</string>
+    <string name="view_profile_shares_longest_share">Condivisione più lunga</string>
+    <string name="profile_activity_details_title">Attività</string>
+
+
 </resources>

@@ -2,11 +2,9 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
-import it.gruppoinfor.home2work.domain.entities.LatLngEntity
 import it.gruppoinfor.home2work.domain.entities.MatchEntity
 import it.gruppoinfor.home2work.domain.entities.Optional
 import it.gruppoinfor.home2work.domain.interfaces.MatchRepository
-import java.util.regex.Matcher
 
 class GetMatch(
         transformer: Transformer<Optional<MatchEntity>>,

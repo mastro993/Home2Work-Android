@@ -9,5 +9,10 @@ enum class ShareStatusData constructor(val value: Int) {
     @SerializedName("1")
     COMPLETED(1),
     @SerializedName("2")
-    CANCELED(2)
+    CANCELED(2);
+
+    companion object {
+        fun from(findValue: Int): ShareStatusData = ShareStatusData.values().first { it.value == findValue }
+    }
+
 }

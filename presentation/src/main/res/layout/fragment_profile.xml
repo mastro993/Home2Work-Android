@@ -1,0 +1,165 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cardview_light_background"
+    android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme.NoActionBar">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlwaysCollapsed">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/profile_options_button"
+                        android:layout_width="36dp"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="4dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/ic_dots"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_name_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="8dp"
+                        android:alpha="0"
+                        android:gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+                        tools:text="Nome Cognome" />
+
+
+                </FrameLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+            <include layout="@layout/view_profile_header" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
+
+                <LinearLayout
+                    android:id="@+id/profile_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/view_exp_details" />
+
+                    <include layout="@layout/view_activity_details" />
+
+                    <include layout="@layout/view_profile_milestones" />
+
+                    <include layout="@layout/view_shares_details" />
+
+                    <Button
+                        android:id="@+id/button_shares_history"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_share_history"
+                        android:focusable="false"
+                        android:padding="20dp"
+                        android:text="@string/profile_shares_history_button"
+                        android:textAllCaps="false" />
+
+                    <include
+                        layout="@layout/horizontal_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:elevation="@dimen/cardview_default_elevation"
+                        android:paddingBottom="64dp"
+                        android:paddingEnd="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingTop="24dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/fragment_profile_registration_date"
+                            android:textColor="@color/light_bg_dark_secondary_text" />
+
+                        <TextView
+                            android:id="@+id/text_regdate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="dd mmmm yyyy"
+                            android:textColor="@color/colorAccent" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <it.gruppoinfor.home2work.views.ScreenStateView
+                    android:id="@+id/status_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

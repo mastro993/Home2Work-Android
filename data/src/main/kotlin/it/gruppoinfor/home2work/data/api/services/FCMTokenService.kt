@@ -11,5 +11,5 @@ interface FCMTokenService {
     @POST("user/fcmtoken")
     fun updateFCMToken(
             @Field("token") fcmToken: String
-    ): Observable<ResponseBody>
+    ): Observable<Boolean>
 }

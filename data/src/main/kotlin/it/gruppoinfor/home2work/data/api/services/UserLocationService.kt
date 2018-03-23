@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface UserLocationService {
-    @POST("user/location")
+    @POST("user/latLng")
     fun uploadLocations(
             @Body userLocations: List<UserLocationEntity>
     ): Observable<List<UserLocationEntity>>

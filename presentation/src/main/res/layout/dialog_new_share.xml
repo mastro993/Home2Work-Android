@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="@string/dialog_new_share_title" />
+
+    <TextView
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:id="@+id/new_share_dialog_create_new"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_car_connected"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="@string/dialog_new_share_create" />
+
+    <TextView
+
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:id="@+id/new_share_dialog_join"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_join_share"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="@string/dialog_new_share_join" />
+
+
+</LinearLayout>

@@ -26,7 +26,7 @@ class UploadUserLocations(
 
         locations?.let {
             return locationRepository.syncUserLocations(locations as List<UserLocationEntity>)
-        } ?: return Observable.error(IllegalArgumentException("location list must be provided."))
+        } ?: return Observable.error(IllegalArgumentException("latLng list must be provided."))
 
 
     }

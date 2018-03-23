@@ -8,21 +8,21 @@ import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
 
 class UserTokenLogin(
-        transformer: Transformer<Optional<UserEntity>>,
+        transformer: Transformer<UserEntity>,
         private val userRepository: UserRepository
-) : UseCase<Optional<UserEntity>>(transformer) {
+) : UseCase<UserEntity>(transformer) {
 
     companion object {
         private const val PARAM_TOKEN = "param:token"
     }
 
-    fun login(token: String): Observable<Optional<UserEntity>> {
+    fun login(token: String): Observable<UserEntity> {
         val data = HashMap<String, String>()
         data[PARAM_TOKEN] = token
         return observable(data)
     }
 
-    override fun createObservable(data: Map<String, Any>?): Observable<Optional<UserEntity>> {
+    override fun createObservable(data: Map<String, Any>?): Observable<UserEntity> {
         val token = data?.get(PARAM_TOKEN)
 
         token?.let {

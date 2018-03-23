@@ -12,6 +12,6 @@ class GetMatchList(
 ) : UseCase<List<MatchEntity>>(transformer) {
 
     override fun createObservable(data: Map<String, Any>?): Observable<List<MatchEntity>> {
-        return matchRepository.getUserMatchList()
+        return matchRepository.getMatchList()
     }
 }

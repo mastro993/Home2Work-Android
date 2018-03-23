@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.api
 
 import io.reactivex.Observable
 import io.reactivex.functions.Function
+import it.gruppoinfor.home2work.data.api.RetrofitException
 import retrofit2.*
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException

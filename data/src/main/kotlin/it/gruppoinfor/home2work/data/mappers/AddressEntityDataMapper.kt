@@ -7,11 +7,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
+
 class AddressEntityDataMapper @Inject constructor() : Mapper<AddressEntity, AddressData>() {
 
     override fun mapFrom(from: AddressEntity): AddressData {
         return AddressData(
+                latitude = from.latitude,
+                longitude = from.longitude,
                 city = from.city,
                 district = from.district,
                 postalCode = from.postalCode,

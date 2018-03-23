@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingEnd="26dp"
+        android:paddingStart="26dp"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:includeFontPadding="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/fragment_profile_card_shares" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            tools:visibility="gone"
+            android:id="@+id/chart_shares"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="-120dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="visible" />
+
+        <FrameLayout
+            android:id="@+id/no_share_chart_data_view"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="-120dp"
+            android:background="@color/cardview_light_background"
+            android:paddingBottom="136dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0.1"
+                android:src="@drawable/ic_empty_share_chart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/view_profile_shares_no_datra"
+                android:textAlignment="center" />
+
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/text_month_shares"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                tools:text="Condivisioni completate a Marzo"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/text_month_shares_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                tools:text="14"
+                android:textColor="@color/colorAccent" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="@string/fragment_profile_card_shares_month_avg"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/text_month_shares_avg_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                tools:text="3.56"
+                android:textColor="@color/colorAccent" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="@string/view_profile_shares_month_record"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/text_month_shares_record_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                tools:text="21"
+                android:textColor="@color/colorAccent" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="@string/view_profile_shares_longest_share"
+                android:textColor="@color/light_bg_dark_secondary_text" />
+
+            <TextView
+                android:id="@+id/text_longest_share_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                tools:text="120.45 Km"
+                android:textColor="@color/colorAccent" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+</LinearLayout>

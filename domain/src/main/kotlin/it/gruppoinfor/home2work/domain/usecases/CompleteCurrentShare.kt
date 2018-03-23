@@ -2,7 +2,6 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
-import it.gruppoinfor.home2work.domain.entities.LatLngEntity
 import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 
 class CompleteCurrentShare(
@@ -11,20 +10,27 @@ class CompleteCurrentShare(
 ) : UseCase<Boolean>(transformer) {
 
     companion object {
-        private const val PARAM_COMPLETE_LATLNG = "param:completeLatLng"
+        private const val PARAM_COMPLETE_LAT = "param:completeLat"
+        private const val PARAM_COMPLETE_LNG = "param:completeLng"
     }
 
-    fun completeFrom(latLngEntity: LatLngEntity): Observable<Boolean>{
-        val data = HashMap<String, LatLngEntity>()
-        data[PARAM_COMPLETE_LATLNG] = latLngEntity
+    fun completeFrom(latitude: Double, longitude: Double): Observable<Boolean> {
+        val data = HashMap<String, Double>()
+        data[PARAM_COMPLETE_LAT] = latitude
+        data[PARAM_COMPLETE_LNG] = longitude
         return observable(data)
     }
 
     override fun createObservable(data: Map<String, Any>?): Observable<Boolean> {
-        val completeLatLng = data?.get(PARAM_COMPLETE_LATLNG)
+        val completeLat = data?.get(PARAM_COMPLETE_LAT)
+        val completeLng = data?.get(PARAM_COMPLETE_LNG)
 
-        completeLatLng?.let {
-            return shareRepository.completeShare(completeLatLng as LatLngEntity)
-        } ?: return Observable.error(IllegalArgumentException("completeLatLng must be provided."))
+
+        completeLat?.let { lat ->
+            completeLng?.let { lng ->
+                return shareRepository.completeShare(lat as Double, lng as Double)
+            } ?: return Observable.error(IllegalArgumentException("completeLat must be provided."))
+        } ?: return Observable.error(IllegalArgumentException("completeLng must be provided."))
+
     }
 }

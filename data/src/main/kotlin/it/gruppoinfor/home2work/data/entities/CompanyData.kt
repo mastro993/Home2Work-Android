@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class CompanyData(
         @SerializedName("Id") var id: Long = -1,
         @SerializedName("Name") var name: String,
-        @SerializedName("LatLng") var location: LatLngData,
-        @SerializedName("Address") var address: AddressData
+        @SerializedName("Address") var address: AddressData,
+        @SerializedName("Domain") var domain: String
 )

@@ -10,9 +10,8 @@ data class UserData(
         @SerializedName("Email") var email: String,
         @SerializedName("Name") var name: String,
         @SerializedName("Surname") var surname: String,
-        @SerializedName("HomeLatLng") var homeLatLng: LatLngData? = null,
         @SerializedName("Address") var address: AddressData? = null,
-        @SerializedName("Company") var company: CompanyData? = null,
+        @SerializedName("Company") var company: CompanyData,
         @SerializedName("Regdate") var regdate: Date,
-        @SerializedName("Configured") var isConfigured: Boolean = false
+        @SerializedName("AccessToken") var accessToken: String?
 )

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/match_user_container"
+        layout="@layout/item_match" />
+
+    <LinearLayout
+        android:id="@+id/match_scores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="3">
+
+        <TextView
+            android:id="@+id/text_home_score"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_match_score"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ic_match_home_score"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="10%"
+            android:textColor="@color/red_500"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_job_score"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_match_score"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ic_match_job_score"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="10%"
+            android:textColor="@color/red_500"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_time_score"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_match_score"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ic_match_time_score"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="10%"
+            android:textColor="@color/red_500"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/match_scores"
+        android:id="@+id/text_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <include
+            android:id="@+id/item_match_divider"
+            layout="@layout/horizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_match_time" />
+
+            <TextView
+                android:textColor="@color/light_bg_dark_secondary_text"
+                android:id="@+id/text_matched_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="72dp"
+                android:text="HH:mm - HH:mm" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/item_match_divider"
+            layout="@layout/horizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_match_distance" />
+
+            <TextView
+                android:textColor="@color/light_bg_dark_secondary_text"
+                android:id="@+id/text_matched_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="72dp"
+                android:text="99,9 Km in comune" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/item_match_divider"
+            layout="@layout/horizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/button_send_message"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_profile_send_message"
+            android:padding="20dp"
+            android:text="Invia un messaggio"
+            android:textAllCaps="false" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

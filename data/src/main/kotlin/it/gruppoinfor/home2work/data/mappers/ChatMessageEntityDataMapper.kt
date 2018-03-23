@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
+
 class ChatMessageEntityDataMapper @Inject constructor() : Mapper<ChatMessageEntity, ChatMessageData>() {
     override fun mapFrom(from: ChatMessageEntity): ChatMessageData {
         val userEntity = UserEntityDataMapper().mapFrom(from.author)

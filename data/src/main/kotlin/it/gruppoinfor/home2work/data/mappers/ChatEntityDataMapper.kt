@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
+
 class ChatEntityDataMapper @Inject constructor() : Mapper<ChatEntity, ChatData>() {
     override fun mapFrom(from: ChatEntity): ChatData {
 
@@ -15,13 +15,11 @@ class ChatEntityDataMapper @Inject constructor() : Mapper<ChatEntity, ChatData>(
             ChatMessageEntityDataMapper().mapFrom(it)
         }
 
-        val user_1 = UserEntityDataMapper().mapFrom(from.users[0])
-        val user_2 = UserEntityDataMapper().mapFrom(from.users[1])
+        val user = UserEntityDataMapper().mapFrom(from.user)
 
         return ChatData(
                 id = from.id,
-                user_1 = user_1,
-                user_2 = user_2,
+                user = user,
                 lastMsg = chatMessageData,
                 unreadCnt = from.unreadCnt
         )

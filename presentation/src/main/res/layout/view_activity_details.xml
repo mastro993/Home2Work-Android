@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingEnd="26dp"
+    android:paddingStart="26dp"
+    android:paddingTop="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:includeFontPadding="false"
+        android:text="@string/profile_activity_details_title" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart_activity"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="32dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/no_activity_chart_data_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="@color/cardview_light_background"
+        android:clipToPadding="false"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:alpha="0.1"
+            android:src="@drawable/ic_empty_activity_chart" />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/view_profile_activity_no_data"
+            android:textAlignment="center" />
+
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="Distanza condivisa questo mese"
+            android:textColor="@color/light_bg_dark_secondary_text" />
+
+        <TextView
+            android:id="@+id/text_month_shared_distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            tools:text="168,5 Km"
+            android:textColor="@color/colorAccent" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="Media distanza condivisa mensile"
+            android:textColor="@color/light_bg_dark_secondary_text" />
+
+        <TextView
+            android:id="@+id/text_month_shared_distance_avg_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            tools:text="120,6 Km"
+            android:textColor="@color/colorPrimary" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="Distanza totale condivisa"
+            android:textColor="@color/light_bg_dark_secondary_text" />
+
+        <TextView
+            android:id="@+id/text_shared_distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            tools:text="1.456,2 Km"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

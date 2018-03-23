@@ -8,23 +8,23 @@ import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
 
 class UserLogin(
-        transformer: Transformer<Optional<UserEntity>>,
+        transformer: Transformer<UserEntity>,
         private val userRepository: UserRepository
-) : UseCase<Optional<UserEntity>>(transformer) {
+) : UseCase<UserEntity>(transformer) {
 
     companion object {
         private const val PARAM_EMAIL = "param:email"
         private const val PARAM_PASSWORD = "param:password"
     }
 
-    fun login(email: String, password: String): Observable<Optional<UserEntity>> {
+    fun login(email: String, password: String): Observable<UserEntity> {
         val data = HashMap<String, String>()
         data[PARAM_EMAIL] = email
         data[PARAM_PASSWORD] = password
         return observable(data)
     }
 
-    override fun createObservable(data: Map<String, Any>?): Observable<Optional<UserEntity>> {
+    override fun createObservable(data: Map<String, Any>?): Observable<UserEntity> {
         val email = data?.get(PARAM_EMAIL)
         val password = data?.get(PARAM_PASSWORD)
 

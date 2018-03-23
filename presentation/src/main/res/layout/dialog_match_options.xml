@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:id="@+id/match_dialog_show_profile"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_user_profile"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Mostra profilo utente" />
+
+    <TextView
+
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:id="@+id/match_dialog_send_message"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_match_options_send_message"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Invia un messaggio" />
+
+    <TextView
+        android:textColor="@color/light_bg_dark_secondary_text"
+        android:id="@+id/match_dialog_hide"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:drawablePadding="32dp"
+        android:drawableStart="@drawable/ic_hide_match"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Nascondi" />
+
+
+</LinearLayout>

@@ -12,11 +12,13 @@ class SendMessage(
 ) : UseCase<Boolean>(transformer) {
 
     companion object {
+        private const val PARAM_CHAT_ID = "param:chatId"
         private const val PARAM_MESSAGE = "param:message"
     }
 
-    fun send(message: ChatMessageEntity): Observable<Boolean> {
-        val data = HashMap<String, ChatMessageEntity>()
+    fun send(chatId: Long, message: String): Observable<Boolean> {
+        val data = HashMap<String, Any>()
+        data[PARAM_CHAT_ID] = chatId
         data[PARAM_MESSAGE] = message
         return observable(data)
     }
@@ -24,10 +26,13 @@ class SendMessage(
     override fun createObservable(data: Map<String, Any>?): Observable<Boolean> {
 
         val message = data?.get(PARAM_MESSAGE)
+        val chatId = data?.get(PARAM_CHAT_ID)
 
-        message?.let {
-            return chatRepository.sendMessage(message as ChatMessageEntity)
-        } ?: return Observable.error(IllegalArgumentException("message must be provided."))
+        chatId?.let {id ->
+            message?.let {message->
+                return chatRepository.sendMessage(id as Long, message as String)
+            } ?: return Observable.error(IllegalArgumentException("message must be provided."))
+        }?: return Observable.error(IllegalArgumentException("chatId must be provided."))
 
     }
 }

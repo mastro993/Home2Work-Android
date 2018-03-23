@@ -7,16 +7,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
+
 class CompanyEntityDataMapper @Inject constructor() : Mapper<CompanyEntity, CompanyData>() {
     override fun mapFrom(from: CompanyEntity): CompanyData {
-        val latLngData = LatLngEntityDataMapper().mapFrom(from.location)
         val addressData = AddressEntityDataMapper().mapFrom(from.address)
         return CompanyData(
                 id = from.id,
                 name = from.name,
-                location = latLngData,
-                address = addressData
+                address = addressData,
+                domain = from.domain
+
         )
     }
 

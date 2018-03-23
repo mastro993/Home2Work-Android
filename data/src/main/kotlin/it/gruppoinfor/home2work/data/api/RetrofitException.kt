@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.api
+package it.gruppoinfor.home2work.data.api
 
 import retrofit2.Response
 import retrofit2.Retrofit
