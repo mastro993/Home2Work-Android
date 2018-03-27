@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class GuestData(
         @SerializedName("Id") var id: Long = -1,
         @SerializedName("ShareId") var shareId: Long = -1,
-        @SerializedName("User") var user: UserData? = null,
+        @SerializedName("User") var user: UserData,
         @SerializedName("StartLat") var startLat: Double,
         @SerializedName("StartLng") var startLng: Double,
         @SerializedName("EndLat") var endLat: Double? = null,

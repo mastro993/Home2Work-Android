@@ -1,10 +1,9 @@
 package it.gruppoinfor.home2work.di
 
-import android.app.Service
 import android.content.Context
-import android.view.View
-import com.google.firebase.iid.FirebaseInstanceIdService
 import dagger.Component
+import it.gruppoinfor.home2work.common.services.LocationService
+import it.gruppoinfor.home2work.common.views.AvatarView
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
 import it.gruppoinfor.home2work.di.firebase.FirebaseModule
@@ -18,6 +17,10 @@ import it.gruppoinfor.home2work.di.main.MainSubComponent
 import it.gruppoinfor.home2work.di.match.MatchModule
 import it.gruppoinfor.home2work.di.match.MatchSubComponent
 import it.gruppoinfor.home2work.di.profile.ProfileModule
+import it.gruppoinfor.home2work.di.settings.SettingsModule
+import it.gruppoinfor.home2work.di.settings.SettingsSubComponent
+import it.gruppoinfor.home2work.di.sharecurrent.CurrentShareModule
+import it.gruppoinfor.home2work.di.sharecurrent.CurrentShareSubComponent
 import it.gruppoinfor.home2work.di.sharehistory.ShareHistoryModule
 import it.gruppoinfor.home2work.di.sharehistory.ShareHistorySubComponent
 import it.gruppoinfor.home2work.di.signin.SignInModule
@@ -25,8 +28,8 @@ import it.gruppoinfor.home2work.di.signin.SignInSubComponent
 import it.gruppoinfor.home2work.di.splash.SplashModule
 import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
-import it.gruppoinfor.home2work.location.LocationService
-import it.gruppoinfor.home2work.views.AvatarView
+import it.gruppoinfor.home2work.di.user.UserModule
+import it.gruppoinfor.home2work.di.user.UserSubComponent
 import javax.inject.Singleton
 
 @Singleton
@@ -49,4 +52,7 @@ interface MainComponent {
     fun plus(chatModule: ChatModule): ChatSubComponent
     fun plus(profileModule: ProfileModule): ProfileSubComponent
     fun plus(shareHistoryModule: ShareHistoryModule): ShareHistorySubComponent
+    fun plus(currentShareModule: CurrentShareModule): CurrentShareSubComponent
+    fun plus(userModule: UserModule): UserSubComponent
+    fun plus(settingsModule: SettingsModule): SettingsSubComponent
 }

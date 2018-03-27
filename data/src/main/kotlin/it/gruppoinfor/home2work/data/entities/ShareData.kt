@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 
 data class ShareData(
         @SerializedName("Id") var id: Long = -1,
-        @SerializedName("Host") var host: UserData? = null,
+        @SerializedName("Host") var host: UserData,
         @SerializedName("Status") var status: ShareStatusData,
         @SerializedName("Time") var date: Date? = null,
         @SerializedName("Type") var type: ShareTypeData,

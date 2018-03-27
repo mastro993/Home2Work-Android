@@ -35,8 +35,12 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
         }
 
         fun asRetrofitException(throwable: Throwable): RetrofitException {
+
             if (throwable is HttpException) {
                 val response: Response<Any> = throwable.response() as Response<Any>
+                if (response.code() == 401) {
+                    // TODO logout automatico
+                }
                 return RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
             }
             // A network error happened

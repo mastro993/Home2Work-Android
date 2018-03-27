@@ -154,7 +154,7 @@
                 android:textColor="@color/dark_bg_light_secondary_text"
                 android:textSize="12sp" />
 
-            <it.gruppoinfor.home2work.views.AvatarView
+            <it.gruppoinfor.home2work.common.views.AvatarView
                 android:id="@+id/avatar_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -3,14 +3,14 @@ package it.gruppoinfor.home2work.signin
 import android.arch.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import it.gruppoinfor.home2work.common.BaseViewModel
-import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.common.SingleLiveEvent
-import it.gruppoinfor.home2work.data.api.RetrofitException
+import it.gruppoinfor.home2work.common.services.FirebaseTokenService
+import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.data.api.APIAuthenticationInterceptor
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.usecases.UserLogin
 import it.gruppoinfor.home2work.entities.User
-import it.gruppoinfor.home2work.firebase.FirebaseTokenService
 
 
 class SignInViewModel(
@@ -43,7 +43,6 @@ class SignInViewModel(
 
         addDisposable(userLogin.login(email, password)
                 .map {
-                    localUserData.token = it.accessToken
                     userEntityUserMapper.mapFrom(it)
                 }
                 .doOnSubscribe {
@@ -55,10 +54,13 @@ class SignInViewModel(
                 .subscribe({
                     onLoginSuccess(it)
                 }, {
-                    loginSuccessState.value = true
-                    if (it is RetrofitException) {
-                        onLoginError(it)
-                    }
+                    loginSuccessState.value = false
+
+                    val newViewState = viewState.value?.copy(
+                            isLoading = false
+                    )
+
+                    viewState.value = newViewState
                 })
         )
     }
@@ -70,6 +72,8 @@ class SignInViewModel(
         Crashlytics.setUserEmail(user.email)
         Crashlytics.setUserName(user.fullName)
 
+        localUserData.session = APIAuthenticationInterceptor.sessionToken
+
         // Aggiorno il token Firebase Cloud Messaging sul server
         FirebaseTokenService().onTokenRefresh()
 
@@ -80,16 +84,5 @@ class SignInViewModel(
 
     }
 
-    private fun onLoginError(error: RetrofitException) {
-
-        loginSuccessState.value = false
-
-        val newViewState = viewState.value?.copy(
-                isLoading = false
-        )
-
-        viewState.value = newViewState
-
-    }
 
 }

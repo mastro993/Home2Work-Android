@@ -29,6 +29,10 @@ class ChatRepositoryImpl(
     }
 
     override fun getChatList(): Observable<List<ChatEntity>> {
-        return chatService.getChatList().map { it.map { chatMapper.mapFrom(it) } }
+        return chatService.getChatList().map {
+            it.map {
+                chatMapper.mapFrom(it)
+            }
+        }
     }
 }

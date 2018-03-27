@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.usecases.CreateShare
@@ -19,6 +19,7 @@ class MainVMFactory(
         private val localUserData: LocalUserData
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return MainViewModel(getActiveShare, joinShare, createShare, shareMapper, localUserData) as T
     }
 }

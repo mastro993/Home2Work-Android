@@ -1,7 +1,5 @@
 package it.gruppoinfor.home2work.entities
 
-import it.gruppoinfor.home2work.data.entities.ShareTypeData
-
 
 enum class ShareStatus constructor(val value: Int) {
     CREATED(0),

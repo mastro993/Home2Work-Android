@@ -2,16 +2,16 @@ package it.gruppoinfor.home2work.chat
 
 import android.arch.lifecycle.MutableLiveData
 import it.gruppoinfor.home2work.common.BaseViewModel
-import it.gruppoinfor.home2work.common.LocalUserData
-import it.gruppoinfor.home2work.common.ScreenState
 import it.gruppoinfor.home2work.common.SingleLiveEvent
+import it.gruppoinfor.home2work.common.events.NewMessageEvent
+import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.usecases.GetChatMessageList
 import it.gruppoinfor.home2work.domain.usecases.NewChat
 import it.gruppoinfor.home2work.domain.usecases.SendMessage
 import it.gruppoinfor.home2work.entities.ChatMessage
-import it.gruppoinfor.home2work.events.NewMessageEvent
 
 
 class ChatViewModel(
@@ -33,6 +33,7 @@ class ChatViewModel(
     }
 
     fun createChat() {
+
         userId?.let {
             addDisposable(newChat.withUserId(it)
                     .doOnSubscribe {
@@ -148,16 +149,6 @@ class ChatViewModel(
 
         if (newMessageEvent.chatId == chatId) {
             silentRefreshMessageList()
-        }
-
-    }
-
-    private fun loadingError(exception: RetrofitException) {
-
-        val errorMessage = when (exception.kind) {
-            RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
-            RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
-            RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
         }
 
     }

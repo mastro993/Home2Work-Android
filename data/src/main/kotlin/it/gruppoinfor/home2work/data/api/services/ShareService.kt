@@ -3,7 +3,6 @@ package it.gruppoinfor.home2work.data.api.services
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.data.entities.ShareData
 import it.gruppoinfor.home2work.domain.entities.Optional
-import okhttp3.ResponseBody
 import retrofit2.http.*
 
 
@@ -18,7 +17,7 @@ interface ShareService {
     ): Observable<Optional<ShareData>>
 
     @GET("share/current")
-    fun getCurrentShare(): Observable<Optional<ShareData>>
+    fun getCurrentShare(): Observable<ShareData>
 
     @POST("share/new")
     fun createShare(): Observable<ShareData>

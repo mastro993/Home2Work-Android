@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <it.gruppoinfor.home2work.views.ScreenStateView
+    <it.gruppoinfor.home2work.common.views.ScreenStateView
         android:id="@+id/status_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

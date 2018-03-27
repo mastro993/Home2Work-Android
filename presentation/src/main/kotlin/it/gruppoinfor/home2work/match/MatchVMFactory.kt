@@ -8,7 +8,6 @@ import it.gruppoinfor.home2work.domain.usecases.EditMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatchList
 import it.gruppoinfor.home2work.entities.Match
-import it.gruppoinfor.home2work.mappers.MatchEntityMatchMapper
 
 
 class MatchVMFactory(
@@ -18,6 +17,7 @@ class MatchVMFactory(
         private val mapper: Mapper<MatchEntity, Match>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return MatchViewModel(getMatch, getMatchList, editMatch, mapper) as T
     }
 }

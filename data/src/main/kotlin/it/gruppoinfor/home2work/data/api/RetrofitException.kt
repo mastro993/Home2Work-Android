@@ -16,16 +16,13 @@ class RetrofitException internal constructor(message: String?,
                                              /** The Retrofit this request was executed on  */
                                              private val retrofit: Retrofit?) : RuntimeException(message, exception) {
 
-    /** Identifies the event kind which triggered a [RetrofitException].  */
+    /** Tipo di evento [RetrofitException].  */
     enum class Kind {
-        /** An [IOException] occurred while communicating to the server.  */
+        /** Problemi di comunicazione con il server.  */
         NETWORK,
-        /** A non-200 HTTP status code was received from the server.  */
+        /** Status code ricevuto diverso da 200.  */
         HTTP,
-        /**
-         * An internal error occurred while attempting to execute a request. It is best practice to
-         * re-throw this exception so your application crashes.
-         */
+        /** Altro errore inaspettato */
         UNEXPECTED
     }
 

@@ -1,7 +1,5 @@
 package it.gruppoinfor.home2work.entities
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import java.util.*
 
 

@@ -13,6 +13,7 @@ class InboxVMFactory(
         private val mapper: Mapper<ChatEntity, Chat>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return InboxViewModel(getChatList, mapper) as T
     }
 }

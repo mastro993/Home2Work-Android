@@ -313,8 +313,8 @@
     <color name="dark_bg_light_disabled_text">#35FFFFFF</color>
 
 
-    <color name="bottom_nav_inactive">#60101010</color>
-    <color name="bottom_nav_accent">#D0101010</color>
+    <color name="bottom_nav_inactive">#50101010</color>
+    <color name="bottom_nav_active">@color/colorAccent</color>
 
 </resources>
 

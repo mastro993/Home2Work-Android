@@ -1,7 +1,10 @@
 package it.gruppoinfor.home2work.di.user
 
-/**
- * Created by feder on 21/03/2018.
- */
-class UserSubComponent {
+import dagger.Subcomponent
+import it.gruppoinfor.home2work.user.UserActivity
+
+@UserScope
+@Subcomponent(modules = [UserModule::class])
+interface UserSubComponent {
+    fun inject(userActivity: UserActivity)
 }

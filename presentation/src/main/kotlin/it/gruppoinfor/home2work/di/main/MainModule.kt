@@ -4,12 +4,12 @@ import dagger.Module
 import dagger.Provides
 import it.gruppoinfor.home2work.MainVMFactory
 import it.gruppoinfor.home2work.common.ASyncTransformer
-import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.mappers.ShareEntityShareMapper
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 import it.gruppoinfor.home2work.domain.usecases.CreateShare
 import it.gruppoinfor.home2work.domain.usecases.GetActiveShare
 import it.gruppoinfor.home2work.domain.usecases.JoinShare
-import it.gruppoinfor.home2work.mappers.ShareEntityShareMapper
 
 
 @MainScope

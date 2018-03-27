@@ -1,32 +1,32 @@
 package it.gruppoinfor.home2work.settings
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.CompoundButton
-import com.crashlytics.android.Crashlytics
-import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.signin.SignInActivity
+import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.intentFor
+import javax.inject.Inject
 
 
 class SettingsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var localUserData: LocalUserData
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        DipendencyInjector.createSettingsComponent().inject(this)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initUI()
     }
@@ -43,7 +43,13 @@ class SettingsActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        DipendencyInjector.releaseSettingsComponent()
+    }
+
     private fun initUI() {
+
 
         button_logout.setOnClickListener {
 
@@ -52,7 +58,8 @@ class SettingsActivity : AppCompatActivity() {
             builder.setMessage(R.string.dialog_logout_content)
             builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
 
-                startActivity(intentFor<SignInActivity>().clearTask())
+                localUserData.clear()
+                startActivity(intentFor<SplashActivity>().clearTask())
 
             }
             builder.setNegativeButton(R.string.dialog_logout_decline, null)

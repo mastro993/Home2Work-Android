@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
-import it.gruppoinfor.home2work.entities.Match
+import it.gruppoinfor.home2work.common.utilities.DateFormatUtils
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareType
-import it.gruppoinfor.home2work.utils.DateFormatUtils
 import kotlinx.android.synthetic.main.item_share.view.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -64,34 +63,35 @@ class ShareHistoryAdapter(
 
             text_share_guests.text = guestSize.toString()
 
-            if (share.type == ShareType.HOST) {
+            when (share.type) {
+                ShareType.HOST -> {
+                    text_share_info.text = "Hai condiviso la tua auto"
 
-                text_share_info.text = "Hai condiviso la tua auto"
+                    text_share_type.text = "Driver"
+                    text_share_type.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
 
-                text_share_type.text = "Driver"
-                text_share_type.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                    val totalMt = share.guests.sumBy { it.distance }
 
-                val totalMt = share.guests.sumBy { it.distance }
+                    val totalKm = totalMt / 1000.0
+                    text_share_distance.text = mDf.format(totalKm)
+                    text_share_xp.text = (totalKm.toInt() * 10).toString()
+                }
+                ShareType.GUEST -> {
+                    text_share_info.text = "Hai condiviso l'auto di ${share.host}"
 
-                val totalKm = totalMt / 1000.0
-                text_share_distance.text = mDf.format(totalKm)
-                text_share_xp.text = (totalKm.toInt() * 10).toString()
+                    text_share_type.text = "Guest"
+                    text_share_type.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
 
-            } else {
-
-                text_share_info.text = "Hai condiviso l'auto di ${share.host}"
-
-                text_share_type.text = "Guest"
-                text_share_type.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-
-                for (guest in share.guests) {
-                    /* if (guest.user == HomeToWorkClient.user) {
-                         val totalKm = guest.distance / 1000.0
-                         holder.textShareDistance.text = mDf.format(totalKm)
-                         holder.textShareXp.text = (totalKm.toInt() * 10).toString()
-                     }*/
+                    for (guest in share.guests) {
+                        /* if (guest.user == HomeToWorkClient.user) {
+                             val totalKm = guest.distance / 1000.0
+                             holder.textShareDistance.text = mDf.format(totalKm)
+                             holder.textShareXp.text = (totalKm.toInt() * 10).toString()
+                         }*/
+                    }
                 }
             }
+
 
         }
 

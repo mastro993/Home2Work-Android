@@ -9,6 +9,7 @@ class HomeVMFactory(
         private val getChatList: GetChatList
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return HomeViewModel(getChatList) as T
     }
 }

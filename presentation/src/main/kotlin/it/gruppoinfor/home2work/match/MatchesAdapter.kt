@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
+import it.gruppoinfor.home2work.common.extensions.getScore
+import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.entities.Match
-import it.gruppoinfor.home2work.extensions.getScore
-import it.gruppoinfor.home2work.extensions.hide
-import it.gruppoinfor.home2work.extensions.show
-import it.gruppoinfor.home2work.user.UserActivityArgs
+import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.item_match.view.*
 
 
@@ -64,7 +64,10 @@ class MatchesAdapter(
                 imageLoader: ImageLoader
         ) = with(itemView) {
 
-            setOnClickListener { onMatchClick(match, position) }
+            setOnClickListener {
+                new_badge.hide()
+                onMatchClick(match, position)
+            }
             setOnLongClickListener { onMatchLongClick(match, position) }
 
             new_badge.apply {
@@ -87,19 +90,19 @@ class MatchesAdapter(
             }
 
             text_host_name.text = match.host.fullName
-            text_host_job.text = match.host.company.formattedName
+            text_host_job.text = match.host.company?.formattedName
             text_host_home.text = "Da ${match.host.address?.city}"
 
             match_user_avatar.setOnClickListener {
 
                 val user = match.host
 
-                UserActivityArgs(
+                UserActivityLancher(
                         userId = user.id,
-                        userName = user.toString(),
+                        userName = user.fullName,
                         userAvatarUrl = user.avatarUrl,
-                        userCompanyId = user.company.id,
-                        userCompanyName = user.company.name
+                        userCompanyId = user.company!!.id,
+                        userCompanyName = user.company!!.formattedName
                 ).launch(context)
 
             }

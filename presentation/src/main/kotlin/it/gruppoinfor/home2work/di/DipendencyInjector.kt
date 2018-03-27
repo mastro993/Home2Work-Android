@@ -14,6 +14,10 @@ import it.gruppoinfor.home2work.di.main.MainSubComponent
 import it.gruppoinfor.home2work.di.match.MatchModule
 import it.gruppoinfor.home2work.di.match.MatchSubComponent
 import it.gruppoinfor.home2work.di.profile.ProfileModule
+import it.gruppoinfor.home2work.di.settings.SettingsModule
+import it.gruppoinfor.home2work.di.settings.SettingsSubComponent
+import it.gruppoinfor.home2work.di.sharecurrent.CurrentShareModule
+import it.gruppoinfor.home2work.di.sharecurrent.CurrentShareSubComponent
 import it.gruppoinfor.home2work.di.sharehistory.ShareHistoryModule
 import it.gruppoinfor.home2work.di.sharehistory.ShareHistorySubComponent
 import it.gruppoinfor.home2work.di.signin.SignInModule
@@ -21,6 +25,8 @@ import it.gruppoinfor.home2work.di.signin.SignInSubComponent
 import it.gruppoinfor.home2work.di.splash.SplashModule
 import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
+import it.gruppoinfor.home2work.di.user.UserModule
+import it.gruppoinfor.home2work.di.user.UserSubComponent
 
 object DipendencyInjector {
     lateinit var mainComponent: MainComponent
@@ -35,6 +41,9 @@ object DipendencyInjector {
     private var chatSubComponent: ChatSubComponent? = null
     private var profileSubComponent: ProfileSubComponent? = null
     private var shareHistorySubComponent: ShareHistorySubComponent? = null
+    private var currentShareSubComponent: CurrentShareSubComponent? = null
+    private var userSubComponent: UserSubComponent? = null
+    private var settingsSubComponent: SettingsSubComponent? = null
 
     fun init(context: Context) {
 
@@ -131,10 +140,36 @@ object DipendencyInjector {
         return shareHistorySubComponent!!
     }
 
-    fun releaseShareHistoryComponent(){
+    fun releaseShareHistoryComponent() {
         shareHistorySubComponent = null
     }
 
+    fun createCurrentShareComponent(): CurrentShareSubComponent {
+        currentShareSubComponent = mainComponent.plus(CurrentShareModule())
+        return currentShareSubComponent!!
+    }
+
+    fun releaseCurrentShareComponent() {
+        currentShareSubComponent = null
+    }
+
+    fun createUserComponent(): UserSubComponent {
+        userSubComponent = mainComponent.plus(UserModule())
+        return userSubComponent!!
+    }
+
+    fun releaseUserComponent() {
+        userSubComponent = null
+    }
+
+    fun createSettingsComponent(): SettingsSubComponent {
+        settingsSubComponent = mainComponent.plus(SettingsModule())
+        return settingsSubComponent!!
+    }
+
+    fun releaseSettingsComponent() {
+        settingsSubComponent = null
+    }
 
 
 }

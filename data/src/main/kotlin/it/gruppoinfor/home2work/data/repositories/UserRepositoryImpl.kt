@@ -5,7 +5,6 @@ import it.gruppoinfor.home2work.data.api.APIServiceGenerator
 import it.gruppoinfor.home2work.data.api.services.UserService
 import it.gruppoinfor.home2work.data.mappers.ProfileDataEntityMapper
 import it.gruppoinfor.home2work.data.mappers.UserDataEntityMapper
-import it.gruppoinfor.home2work.domain.entities.Optional
 import it.gruppoinfor.home2work.domain.entities.ProfileEntity
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.interfaces.UserRepository
@@ -39,6 +38,12 @@ class UserRepositoryImpl(
     override fun getProfile(): Observable<ProfileEntity> {
         return userService.getProfile().map {
             profileMapper.mapFrom(it)
+        }
+    }
+
+    override fun getUser(): Observable<UserEntity> {
+        return userService.get().map {
+            userMapper.mapFrom(it)
         }
     }
 

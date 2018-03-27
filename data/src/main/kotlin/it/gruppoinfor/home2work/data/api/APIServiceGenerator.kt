@@ -2,7 +2,6 @@ package it.gruppoinfor.home2work.data.api
 
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
-import it.gruppoinfor.home2work.api.AuthenticationInterceptor
 import it.gruppoinfor.home2work.api.RxErrorHandlingCallAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -30,7 +29,7 @@ internal object APIServiceGenerator {
     private var retrofit = APIServiceGenerator.builder.build()
 
     fun <S> createService(serviceClass: Class<S>): S {
-        val interceptor = AuthenticationInterceptor()
+        val interceptor = APIAuthenticationInterceptor()
 
         if (!APIServiceGenerator.httpClient.interceptors().contains(interceptor)) {
             APIServiceGenerator.httpClient.addInterceptor(interceptor)

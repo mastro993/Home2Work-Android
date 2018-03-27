@@ -12,13 +12,14 @@ import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityArgs
+import it.gruppoinfor.home2work.chat.ChatActivityLancher
+import it.gruppoinfor.home2work.common.PicassoCircleTransform
+import it.gruppoinfor.home2work.common.events.NewMessageEvent
+import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.services.MessagingService
+import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.Chat
-import it.gruppoinfor.home2work.extensions.showToast
-import it.gruppoinfor.home2work.firebase.MessagingService
-import it.gruppoinfor.home2work.events.NewMessageEvent
-import it.gruppoinfor.home2work.views.ScreenStateView
 import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -60,7 +61,11 @@ class InboxActivity : AppCompatActivity() {
         }
 
         dialogsListAdapter = DialogsListAdapter(ImageLoader { imageView, url ->
-            imageLoader.load(url, imageView)
+            imageLoader.load(
+                    url = url,
+                    imageView = imageView,
+                    transformation = PicassoCircleTransform(),
+                    placeholder = R.drawable.ic_avatar_placeholder)
         })
         dialogsListAdapter?.setOnDialogClickListener({
 
@@ -71,7 +76,7 @@ class InboxActivity : AppCompatActivity() {
             val recipientId = author.id.toLong()
             val recipientName = author.name
 
-            ChatActivityArgs(
+            ChatActivityLancher(
                     chatId = chatId,
                     recipientId = recipientId,
                     recipientName = recipientName)
@@ -125,7 +130,7 @@ class InboxActivity : AppCompatActivity() {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onMessageEvent(event: NewMessageEvent) {
+    fun onMessageEvent(event: NewMessageEvent) {
 
         viewModel.silentRefreshChatList()
 

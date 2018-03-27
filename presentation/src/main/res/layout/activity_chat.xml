@@ -37,7 +37,7 @@
         app:inputButtonDefaultIconDisabledColor="@color/white60"
         app:showAttachmentButton="false" />
 
-    <it.gruppoinfor.home2work.views.ScreenStateView
+    <it.gruppoinfor.home2work.common.views.ScreenStateView
         tools:visibility="gone"
         android:id="@+id/status_view"
         android:layout_width="match_parent"

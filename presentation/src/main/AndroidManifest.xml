@@ -45,7 +45,7 @@
             android:resource="@drawable/home2work_icon" />
 
         <receiver
-            android:name=".boot.BootReceiver"
+            android:name="it.gruppoinfor.home2work.common.boot.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -59,26 +59,26 @@
         </receiver>
 
         <service
-            android:name=".location.LocationService"
+            android:name="it.gruppoinfor.home2work.common.services.LocationService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
-            android:name=".sync.SyncJobService"
+            android:name=".common.services.SyncJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".location.ActivityRecognizedService"
+            android:name="it.gruppoinfor.home2work.common.services.ActivityRecognizedService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".firebase.FirebaseTokenService"
+            android:name=".common.services.FirebaseTokenService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".firebase.MessagingService"
+            android:name=".common.services.MessagingService"
             android:enabled="true"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -112,22 +112,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".configuration.ConfigurationActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/activity_configuration_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FullScreen" />
-        <activity
-            android:name=".match.MatchInfoActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/activity_match_title"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.EditProfileActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/activity_edit_profile_title"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".settings.SettingsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_settings_title"
@@ -149,7 +133,7 @@
             android:label="Messaggi"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".sharecurrent.ActiveShareActivity"
+            android:name=".sharecurrent.CurrentShareActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_ongoing_share_title"
             android:screenOrientation="portrait"

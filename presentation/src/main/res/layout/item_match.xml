@@ -27,6 +27,8 @@
         tools:src="@drawable/ic_avatar_placeholder" />
 
     <ImageView
+        android:visibility="gone"
+        tools:visibility="visible"
         android:id="@+id/new_badge"
         layout="@layout/badge_new"
         android:layout_width="16dp"
@@ -43,7 +45,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:lines="1"
-        android:textColor="@color/light_bg_dark_primary_text"
+        android:textColor="@color/light_bg_dark_secondary_text"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/match_user_avatar"

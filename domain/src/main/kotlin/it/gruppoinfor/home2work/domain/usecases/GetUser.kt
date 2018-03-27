@@ -2,8 +2,6 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
-import it.gruppoinfor.home2work.domain.entities.Optional
-import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 
@@ -28,7 +26,7 @@ class GetUser(
 
         userId?.let {
             return userRepository.getUser(userId as Long)
-        } ?: return Observable.error(IllegalArgumentException("userId must be provided."))
+        } ?: return userRepository.getUser()
 
     }
 

@@ -21,10 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:includeFontPadding="false"
             android:text="Pietre miliari"
-            android:textColor="@color/light_bg_dark_primary_text"
-            android:textStyle="bold" />
+            android:includeFontPadding="false"
+            android:textSize="16dp" />
 
         <Button
             android:id="@+id/button_show_all_milestones"

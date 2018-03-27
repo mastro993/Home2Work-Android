@@ -27,9 +27,9 @@ class ShareRepositoryImpl(
         }
     }
 
-    override fun getActiveShare(): Observable<Optional<ShareEntity>> {
+    override fun getActiveShare(): Observable<ShareEntity> {
         return shareService.getCurrentShare().map {
-            mapper.mapOptional(it)
+            mapper.mapFrom(it)
         }
     }
 

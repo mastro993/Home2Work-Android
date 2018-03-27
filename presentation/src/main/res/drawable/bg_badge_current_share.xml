@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <stroke
+        android:width="2dp"
+        android:color="@color/transparent" />
+    <solid android:color="@color/red_500" />
+    <corners android:radius="@dimen/cardview_default_radius" />
+</shape>

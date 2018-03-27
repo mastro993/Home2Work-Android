@@ -17,7 +17,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -31,17 +31,20 @@ import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import com.pixplicity.easyprefs.library.Prefs
-import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.events.ActiveShareEvent
+import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
+import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.show
+import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.services.LocationService
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
-import it.gruppoinfor.home2work.extensions.showToast
-import it.gruppoinfor.home2work.events.ActiveShareEvent
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
+import it.gruppoinfor.home2work.profile.ProfileFragment
 import it.gruppoinfor.home2work.ranks.RanksFragment
 import it.gruppoinfor.home2work.settings.SettingsActivity
-import it.gruppoinfor.home2work.sharecurrent.ActiveShareActivity
-import it.gruppoinfor.home2work.location.LocationService
-import it.gruppoinfor.home2work.profile.ProfileFragment
+import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -164,7 +167,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.addItem(matchTab)
         bottomNav.addItem(profileTab)
 
-        bottomNav.accentColor = ContextCompat.getColor(this, R.color.bottom_nav_accent)
+        bottomNav.accentColor = ContextCompat.getColor(this, R.color.bottom_nav_active)
         bottomNav.inactiveColor = ContextCompat.getColor(this, R.color.bottom_nav_inactive)
         bottomNav.isForceTint = true
 
@@ -176,6 +179,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnTabSelectedListener { position, _ ->
             when (position) {
                 NEW_SHARE_BUTTON_PLACEHOLDER -> {
+                    shareButton.performClick()
                     false
                 }
                 else -> {
@@ -205,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                     joinShare()
                 }
             } else {
-                startActivity(intentFor<ActiveShareActivity>())
+                startActivity(intentFor<CurrentShareActivity>())
             }
 
         }
@@ -254,7 +258,7 @@ class MainActivity : AppCompatActivity() {
             handleViewState(it)
         })
         viewModel.shareEvent.observe(this, Observer {
-            startActivity(intentFor<ActiveShareActivity>())
+            startActivity(intentFor<CurrentShareActivity>())
         })
     }
 
@@ -262,17 +266,24 @@ class MainActivity : AppCompatActivity() {
 
         state?.let {
 
-            setNavigationBadge(HOME_TAB, it.homeTabBadge)
-            setNavigationBadge(RANKS_TAB, it.ranksTabBadge)
-            setNavigationBadge(MATCHES_TAB, it.matchTabBadge)
-            setNavigationBadge(PROFILE_TAB, it.profileTabBadge)
-
             if (it.shareInProgress) {
-                ongoingShareStatusBar.visibility = View.VISIBLE
-                button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_car))
+                button_new_share.setBackgroundResource(R.drawable.bg_new_share_button_active)
+                button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_active))
+
+                current_share_badge.show()
+                current_share_badge_bg.show()
+
+                val pulse = AnimationUtils.loadAnimation(this, R.anim.pulse)
+                current_share_badge.startAnimation(pulse)
+
+
             } else {
-                ongoingShareStatusBar.visibility = View.GONE
-                button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_car))
+
+                current_share_badge.hide()
+                current_share_badge_bg.hide()
+
+                button_new_share.setBackgroundResource(R.drawable.bg_new_share_button_inactive)
+                button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_inactive))
             }
 
         }
@@ -319,9 +330,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onMessageEvent(event: ActiveShareEvent) {
+    fun onMessageEvent(event: ActiveShareEvent) {
 
         viewModel.getCurrentShare()
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onBadgeEvent(event: BottomNavBadgeEvent) {
+
+        bottom_navigation.setNotification(event.badgeContent, event.tabPosition)
 
     }
 

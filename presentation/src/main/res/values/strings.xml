@@ -190,6 +190,8 @@
     <string name="view_profile_shares_month_record">Record condivisioni mensili</string>
     <string name="view_profile_shares_longest_share">Condivisione più lunga</string>
     <string name="profile_activity_details_title">Attività</string>
+    <string name="guest_exit">uscito</string>
+    <string name="guest_completed">completato</string>
 
 
 </resources>

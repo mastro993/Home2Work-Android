@@ -5,7 +5,7 @@ import kotlin.collections.ArrayList
 
 data class Share(
         var id: Long = -1,
-        var host: User? = null,
+        var host: User,
         var status: ShareStatus? = null,
         var date: Date? = null,
         var type: ShareType? = null,

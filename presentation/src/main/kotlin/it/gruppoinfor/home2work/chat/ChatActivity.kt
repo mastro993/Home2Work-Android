@@ -8,12 +8,13 @@ import android.view.MenuItem
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.PicassoCircleTransform
+import it.gruppoinfor.home2work.common.events.NewMessageEvent
+import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.ChatMessage
-import it.gruppoinfor.home2work.extensions.showToast
-import it.gruppoinfor.home2work.events.NewMessageEvent
-import it.gruppoinfor.home2work.views.ScreenStateView
 import kotlinx.android.synthetic.main.activity_chat.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -33,7 +34,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var statusView: ScreenStateView
 
     private val args by lazy {
-        ChatActivityArgs.deserializeFrom(intent)
+        ChatActivityLancher.deserializeFrom(intent)
     }
 
     var adapter: MessagesListAdapter<ChatMessage>? = null
@@ -51,7 +52,11 @@ class ChatActivity : AppCompatActivity() {
 
 
         adapter = MessagesListAdapter(localUserData.user?.id.toString(), ImageLoader { imageView, url ->
-            imageLoader.load(url, imageView)
+            imageLoader.load(
+                    url = url,
+                    imageView = imageView,
+                    transformation = PicassoCircleTransform(),
+                    placeholder = R.drawable.ic_avatar_placeholder)
         })
         messages_list.setAdapter(adapter)
 
@@ -136,7 +141,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onMessageEvent(event: NewMessageEvent) {
+    fun onMessageEvent(event: NewMessageEvent) {
 
         viewModel.onNewMessageEvent(event)
 

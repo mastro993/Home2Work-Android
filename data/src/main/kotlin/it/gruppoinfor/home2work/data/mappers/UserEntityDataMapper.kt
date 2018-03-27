@@ -4,8 +4,6 @@ import it.gruppoinfor.home2work.data.entities.UserData
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import javax.inject.Inject
-import javax.inject.Singleton
-
 
 
 class UserEntityDataMapper @Inject constructor() : Mapper<UserEntity, UserData>() {
@@ -16,7 +14,9 @@ class UserEntityDataMapper @Inject constructor() : Mapper<UserEntity, UserData>(
             AddressEntityDataMapper().mapFrom(it)
         }
 
-        val companyData = CompanyEntityDataMapper().mapFrom(from.company)
+        val companyData = from.company?.let {
+            CompanyEntityDataMapper().mapFrom(it)
+        }
 
         return UserData(
                 id = from.id,

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.views.InboxIconView
+import it.gruppoinfor.home2work.common.events.NewMessageEvent
+import it.gruppoinfor.home2work.common.views.InboxIconView
 import it.gruppoinfor.home2work.di.DipendencyInjector
-import it.gruppoinfor.home2work.events.NewMessageEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onMessageEvent(event: NewMessageEvent) {
+    fun onMessageEvent(event: NewMessageEvent) {
 
         viewModel.getInboxCount()
 

@@ -9,8 +9,8 @@ import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
+import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.di.DipendencyInjector
-import it.gruppoinfor.home2work.extensions.showToast
 import kotlinx.android.synthetic.main.activity_shares.*
 import javax.inject.Inject
 

@@ -3,8 +3,8 @@ package it.gruppoinfor.home2work
 import android.arch.lifecycle.MutableLiveData
 import android.location.Location
 import it.gruppoinfor.home2work.common.BaseViewModel
-import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.common.SingleLiveEvent
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
@@ -34,21 +34,42 @@ class MainViewModel(
     fun createShare() {
         addDisposable(createShare.observable()
                 .map { shareMapper.mapFrom(it) }
+                .doOnSubscribe {
+
+                    val newViewState = viewState.value?.copy(
+                            creatingShare = true
+                    )
+
+                    viewState.value = newViewState
+
+                }
                 .subscribe({
+
                     localUserData.currentShare = it
 
-                    val newViewState = viewState.value?.copy(shareInProgress = true)
+                    val newViewState = viewState.value?.copy(
+                            creatingShare = false,
+                            shareInProgress = true
+                    )
                     viewState.value = newViewState
 
                     shareEvent.value = true
 
-
                 }, {
 
-                    if (it is RetrofitException) {
-                        creationError(it)
-                    }
+                    val newViewState = viewState.value?.copy(
+                            creatingShare = false
+                    )
 
+                    viewState.value = newViewState
+
+                    with(it as RetrofitException) {
+                        when (kind) {
+                            RetrofitException.Kind.NETWORK -> errorState.value = "Impossibile contattare il server"
+                            RetrofitException.Kind.HTTP -> errorState.value = "Il server ha riscontrato un problema"
+                            RetrofitException.Kind.UNEXPECTED -> errorState.value = "Errore sconosciuto"
+                        }
+                    }
                     shareEvent.value = false
 
                 }))
@@ -57,7 +78,6 @@ class MainViewModel(
 
     fun joinShare(shareId: Long, hostLocation: Location, joinLocation: Location) {
 
-        // TOdo controllare distanza join
         if (hostLocation.distanceTo(joinLocation) < 1000) {
             addDisposable(joinShare.join(shareId, joinLocation.latitude, joinLocation.longitude)
                     .map { shareMapper.mapFrom(it) }
@@ -73,8 +93,12 @@ class MainViewModel(
 
                     }, {
 
-                        if (it is RetrofitException) {
-                            joinError(it)
+                        with(it as RetrofitException) {
+                            when (kind) {
+                                RetrofitException.Kind.NETWORK -> errorState.value = "Impossibile contattare il server"
+                                RetrofitException.Kind.HTTP -> errorState.value = "Il server ha riscontrato un problema"
+                                RetrofitException.Kind.UNEXPECTED -> errorState.value = "Errore sconosciuto"
+                            }
                         }
 
                         shareEvent.value = false
@@ -89,15 +113,13 @@ class MainViewModel(
 
     fun getCurrentShare() {
         addDisposable(getActiveShare.observable()
-                .map { shareMapper.mapOptional(it) }
+                .map { shareMapper.mapFrom(it) }
                 .subscribe({
 
-                    if (it.hasValue()) {
-                        localUserData.currentShare = it.value
+                    localUserData.currentShare = it
 
-                        val newViewState = viewState.value?.copy(shareInProgress = true)
-                        viewState.value = newViewState
-                    }
+                    val newViewState = viewState.value?.copy(shareInProgress = it != null)
+                    viewState.value = newViewState
 
                 }, {
 
@@ -105,26 +127,5 @@ class MainViewModel(
                 ))
     }
 
-    private fun creationError(exception: RetrofitException) {
-
-        errorState.value = "Impossibile creare una nuova condivisione: " + when (exception.kind) {
-            RetrofitException.Kind.NETWORK -> "nessuna connessione ad internet"
-            RetrofitException.Kind.HTTP -> "impossibile contattare il server"
-            RetrofitException.Kind.UNEXPECTED -> "errore sconosciuto"
-        }
-
-
-    }
-
-    private fun joinError(exception: RetrofitException) {
-
-        errorState.value = "Impossibile unirsi alla condivisione: " + when (exception.kind) {
-            RetrofitException.Kind.NETWORK -> "nessuna connessione ad internet"
-            RetrofitException.Kind.HTTP -> "impossibile contattare il server"
-            RetrofitException.Kind.UNEXPECTED -> "errore sconosciuto"
-        }
-
-
-    }
 
 }

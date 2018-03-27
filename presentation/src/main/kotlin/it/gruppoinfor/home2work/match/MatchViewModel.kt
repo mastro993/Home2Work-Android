@@ -1,9 +1,13 @@
 package it.gruppoinfor.home2work.match
 
 import android.arch.lifecycle.MutableLiveData
+import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.common.BaseViewModel
-import it.gruppoinfor.home2work.common.ScreenState
 import it.gruppoinfor.home2work.common.SingleLiveEvent
+import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
+import it.gruppoinfor.home2work.common.extensions.getScore
+import it.gruppoinfor.home2work.common.mappers.MatchMatchEntityMapper
+import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.MatchEntity
@@ -11,8 +15,7 @@ import it.gruppoinfor.home2work.domain.usecases.EditMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatchList
 import it.gruppoinfor.home2work.entities.Match
-import it.gruppoinfor.home2work.extensions.getScore
-import it.gruppoinfor.home2work.mappers.MatchMatchEntityMapper
+import org.greenrobot.eventbus.EventBus
 
 
 class MatchViewModel(
@@ -49,12 +52,16 @@ class MatchViewModel(
                     val newViewState = when {
                         it.isEmpty() -> {
 
+                            EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.MATCHES_TAB))
+
                             viewState.value?.copy(
                                     screenState = ScreenState.Empty("Non sono ancora disponibili match per te")
                             )
 
                         }
                         it.any { it.getScore() == null } -> {
+
+                            EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.MATCHES_TAB))
 
                             viewState.value?.copy(
                                     screenState = ScreenState.Done,
@@ -63,6 +70,8 @@ class MatchViewModel(
 
                         }
                         else -> {
+
+                            EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.MATCHES_TAB, it.count { it.isNew }.toString()))
 
                             viewState.value?.copy(
                                     screenState = ScreenState.Done,
@@ -93,6 +102,8 @@ class MatchViewModel(
 
 
                 }))
+
+
     }
 
     fun refreshMatchList() {
@@ -101,13 +112,17 @@ class MatchViewModel(
                     it.map { mapper.mapFrom(it) }
                 }
                 .doOnSubscribe {
-                    val newViewState = viewState.value?.copy(isRefreshing = true)
+                    val newViewState = viewState.value?.copy(
+                            isRefreshing = true
+                    )
                     viewState.value = newViewState
                 }
                 .subscribe({
 
                     val newViewState = when {
                         it.isEmpty() -> {
+
+                            EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.MATCHES_TAB))
 
                             viewState.value?.copy(
                                     screenState = ScreenState.Empty("Non sono ancora disponibili match per te")
@@ -116,6 +131,8 @@ class MatchViewModel(
                         }
                         it.any { it.getScore() == null } -> {
 
+                            EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.MATCHES_TAB))
+
                             viewState.value?.copy(
                                     isRefreshing = false,
                                     isLightMatches = true,
@@ -123,6 +140,8 @@ class MatchViewModel(
 
                         }
                         else -> {
+
+                            EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.MATCHES_TAB, it.count { it.isNew }.toString()))
 
                             viewState.value?.copy(
                                     isRefreshing = false,
@@ -139,14 +158,14 @@ class MatchViewModel(
 
                     if (it is RetrofitException) {
 
-                        val errorMessage = "Impossibile aggiornare la lista match: " + when (it.kind) {
+                        errorState.value = when (it.kind) {
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
                         }
 
                         val newViewState = viewState.value?.copy(
-                                screenState = ScreenState.Error(errorMessage)
+                                isRefreshing = false
                         )
                         viewState.value = newViewState
 
@@ -176,6 +195,8 @@ class MatchViewModel(
                 }, {
 
         }))
+
+
     }
 
     fun hideMatch(match: Match) {

@@ -1,9 +1,8 @@
 package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.data.entities.UserData
 import it.gruppoinfor.home2work.data.entities.ProfileData
-import it.gruppoinfor.home2work.domain.entities.Optional
+import it.gruppoinfor.home2work.data.entities.UserData
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -13,20 +12,20 @@ import retrofit2.http.*
 interface UserService {
 
     @FormUrlEncoded
-    @POST("auth/login")
+    @POST("user/login")
     fun login(
             @Field("email") email: String,
             @Field("password") password: String
     ): Observable<UserData>
 
     @FormUrlEncoded
-    @POST("auth/login/token")
+    @POST("user/login/token")
     fun login(
             @Field("token") token: String
     ): Observable<UserData>
 
     @GET("user")
-    fun get(): Observable<Response<UserData>>
+    fun get(): Observable<UserData>
 
     @PUT("user")
     fun edit(@Body user: UserData): Observable<UserData>

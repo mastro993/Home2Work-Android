@@ -14,16 +14,16 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityArgs
+import it.gruppoinfor.home2work.chat.ChatActivityLancher
 import it.gruppoinfor.home2work.common.ImageLoader
+import it.gruppoinfor.home2work.common.extensions.getScore
+import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.show
+import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.Match
-import it.gruppoinfor.home2work.extensions.getScore
-import it.gruppoinfor.home2work.extensions.hide
-import it.gruppoinfor.home2work.extensions.show
-import it.gruppoinfor.home2work.extensions.showToast
-import it.gruppoinfor.home2work.user.UserActivityArgs
-import it.gruppoinfor.home2work.views.ScreenStateView
+import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.fragment_match.*
 import org.jetbrains.anko.find
 import javax.inject.Inject
@@ -145,18 +145,18 @@ class MatchesFragment : Fragment() {
     private fun onMatchClick(match: Match, position: Int) {
         if (match.getScore() != null) {
             viewModel.setMatchAsViewed(match)
-            val dialog = MatchInfoDialog(context!!, match)
+            val dialog = MatchInfoDialog(context!!, imageLoader, match)
             dialog.show()
         } else {
 
             val user = match.host
 
-            UserActivityArgs(
+            UserActivityLancher(
                     userId = user.id,
-                    userName = user.toString(),
+                    userName = user.fullName,
                     userAvatarUrl = user.avatarUrl,
-                    userCompanyId = user.company.id,
-                    userCompanyName = user.company.name
+                    userCompanyId = user.company!!.id,
+                    userCompanyName = user.company!!.formattedName
             ).launch(context!!)
 
         }
@@ -165,7 +165,7 @@ class MatchesFragment : Fragment() {
     private fun onMatchLongClick(match: Match, position: Int): Boolean {
 
         val dialog = BottomSheetDialog(context!!)
-        val sheetView = layoutInflater.inflate(R.layout.dialog_match_options, null)
+        val sheetView = layoutInflater.inflate(R.layout.dialog_match_options, null, false)
 
         dialog.setContentView(sheetView)
         dialog.show()
@@ -175,12 +175,12 @@ class MatchesFragment : Fragment() {
 
             val user = match.host
 
-            UserActivityArgs(
+            UserActivityLancher(
                     userId = user.id,
-                    userName = user.toString(),
+                    userName = user.fullName,
                     userAvatarUrl = user.avatarUrl,
-                    userCompanyId = user.company.id,
-                    userCompanyName = user.company.name
+                    userCompanyId = user.company!!.id,
+                    userCompanyName = user.company!!.formattedName
             ).launch(context!!)
 
         }
@@ -190,7 +190,7 @@ class MatchesFragment : Fragment() {
             val recipientId = match.host.id
             val recipientName = match.host.name
 
-            ChatActivityArgs(
+            ChatActivityLancher(
                     chatId = 0L,
                     recipientId = recipientId,
                     recipientName = recipientName

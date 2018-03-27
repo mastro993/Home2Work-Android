@@ -8,7 +8,7 @@
     android:paddingBottom="72dp"
     android:paddingTop="56dp">
 
-    <it.gruppoinfor.home2work.views.AvatarView
+    <it.gruppoinfor.home2work.common.views.AvatarView
         android:id="@+id/avatar_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

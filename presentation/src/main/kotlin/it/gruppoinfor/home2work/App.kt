@@ -9,11 +9,11 @@ import com.pixplicity.easyprefs.library.Prefs
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 import io.objectbox.BoxStore
+import it.gruppoinfor.home2work.common.timber.DebugLogTree
+import it.gruppoinfor.home2work.common.timber.FileLoggingTree
+import it.gruppoinfor.home2work.common.timber.ReleaseLogTree
 import it.gruppoinfor.home2work.data.entities.MyObjectBox
 import it.gruppoinfor.home2work.di.DipendencyInjector
-import it.gruppoinfor.home2work.utils.timber.DebugLogTree
-import it.gruppoinfor.home2work.utils.timber.FileLoggingTree
-import it.gruppoinfor.home2work.utils.timber.ReleaseLogTree
 import timber.log.Timber
 
 

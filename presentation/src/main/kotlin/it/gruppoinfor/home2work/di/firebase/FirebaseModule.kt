@@ -5,7 +5,6 @@ import dagger.Provides
 import it.gruppoinfor.home2work.common.ASyncTransformer
 import it.gruppoinfor.home2work.domain.interfaces.FirebaseTokenRepository
 import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
-import javax.inject.Singleton
 
 
 @FirebaseScope

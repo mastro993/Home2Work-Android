@@ -13,6 +13,7 @@ class ShareHistoryVMFactory(
         private val mapper: Mapper<ShareEntity, Share>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return ShareHistoryViewModel(getShareList, mapper) as T
     }
 }

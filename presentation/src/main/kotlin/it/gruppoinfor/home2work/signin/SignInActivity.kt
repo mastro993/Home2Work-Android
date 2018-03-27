@@ -11,12 +11,12 @@ import android.widget.Button
 import android.widget.EditText
 import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.App
 import it.gruppoinfor.home2work.common.JobScheduler
-import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.extensions.launchActivity
+import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.services.LocationService
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
-import it.gruppoinfor.home2work.extensions.launchActivity
-import it.gruppoinfor.home2work.extensions.showToast
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import javax.inject.Inject
 
@@ -119,6 +119,8 @@ class SignInActivity : AppCompatActivity() {
 
         localUserData.user?.let {
             jobScheduler.scheduleSyncJob(it.id)
+
+            LocationService.launch(this, it.id)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -2,8 +2,8 @@ package it.gruppoinfor.home2work.inbox
 
 import android.arch.lifecycle.MutableLiveData
 import it.gruppoinfor.home2work.common.BaseViewModel
-import it.gruppoinfor.home2work.common.ScreenState
 import it.gruppoinfor.home2work.common.SingleLiveEvent
+import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ChatEntity
@@ -27,7 +27,9 @@ class InboxViewModel(
 
         addDisposable(getChatList.observable()
                 .map {
-                    it.map { mapper.mapFrom(it) }
+                    it.map {
+                        mapper.mapFrom(it)
+                    }
                 }
                 .doOnSubscribe {
                     val newViewState = viewState.value?.copy(
@@ -35,9 +37,6 @@ class InboxViewModel(
                             isRefreshing = false
                     )
                     viewState.value = newViewState
-                }
-                .onErrorReturn {
-                    listOf()
                 }
                 .subscribe({
 

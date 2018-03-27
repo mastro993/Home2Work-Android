@@ -13,6 +13,7 @@ class ProfileVMFactory(
         private val profileMapper: Mapper<ProfileEntity, Profile>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return ProfileViewModel(getProfile, profileMapper) as T
     }
 }

@@ -4,9 +4,9 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.objectbox.BoxStore
-import it.gruppoinfor.home2work.common.LocalUserData
-import it.gruppoinfor.home2work.common.SettingsPreferences
-import it.gruppoinfor.home2work.common.UserPreferences
+import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.common.user.UserPreferences
 import it.gruppoinfor.home2work.data.entities.MyObjectBox
 import it.gruppoinfor.home2work.data.mappers.*
 import it.gruppoinfor.home2work.data.repositories.*

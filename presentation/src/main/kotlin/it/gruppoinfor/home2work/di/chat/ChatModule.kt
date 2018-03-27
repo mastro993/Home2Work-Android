@@ -4,13 +4,13 @@ import dagger.Module
 import dagger.Provides
 import it.gruppoinfor.home2work.chat.ChatVMFactory
 import it.gruppoinfor.home2work.common.ASyncTransformer
-import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.mappers.MessageEntityMessageMapper
+import it.gruppoinfor.home2work.common.mappers.MessageMessageEntityMapper
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.domain.interfaces.ChatRepository
 import it.gruppoinfor.home2work.domain.usecases.GetChatMessageList
 import it.gruppoinfor.home2work.domain.usecases.NewChat
 import it.gruppoinfor.home2work.domain.usecases.SendMessage
-import it.gruppoinfor.home2work.mappers.MessageEntityMessageMapper
-import it.gruppoinfor.home2work.mappers.MessageMessageEntityMapper
 
 @Module
 class ChatModule {

@@ -5,7 +5,7 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.os.PersistableBundle
-import it.gruppoinfor.home2work.sync.SyncJobService
+import it.gruppoinfor.home2work.common.services.SyncJobService
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
