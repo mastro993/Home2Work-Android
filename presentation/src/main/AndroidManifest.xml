@@ -59,26 +59,26 @@
         </receiver>
 
         <service
-            android:name="it.gruppoinfor.home2work.services.LocationService"
+            android:name="it.gruppoinfor.home2work.common.services.LocationService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
-            android:name="it.gruppoinfor.home2work.services.SyncJobService"
+            android:name="it.gruppoinfor.home2work.common.services.SyncJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name="it.gruppoinfor.home2work.services.ActivityRecognizedService"
+            android:name="it.gruppoinfor.home2work.common.services.ActivityRecognizedService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name="it.gruppoinfor.home2work.services.FirebaseTokenService"
+            android:name="it.gruppoinfor.home2work.common.services.FirebaseTokenService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="it.gruppoinfor.home2work.services.MessagingService"
+            android:name="it.gruppoinfor.home2work.common.services.MessagingService"
             android:enabled="true"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -109,7 +109,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_signin_title"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.SignInTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".settings.SettingsActivity"
@@ -148,7 +148,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".sharehistory.ShareHistoryActivity"
-            android:label="Condivisioni"
+            android:label="Condivisioni completate"
             android:screenOrientation="portrait" />
     </application>
 

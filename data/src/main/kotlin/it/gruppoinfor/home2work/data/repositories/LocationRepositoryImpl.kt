@@ -15,7 +15,7 @@ import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
 import it.gruppoinfor.home2work.domain.interfaces.LocationRepository
 
 class LocationRepositoryImpl(
-        private val boxStore: BoxStore,
+        boxStore: BoxStore,
         private val locationDataEntityMapper: UserLocationDataEntityMapper,
         private val locationEntityDataMapper: UserLocationEntityDataMapper
 ) : LocationRepository {

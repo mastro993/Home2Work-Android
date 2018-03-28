@@ -8,6 +8,6 @@ data class Guest(
         var startLng: Double,
         var endLat: Double?,
         var endLng: Double?,
-        var status: ShareStatus? = null,
+        var status: GuestStatus? = null,
         var distance: Int = -1
 )

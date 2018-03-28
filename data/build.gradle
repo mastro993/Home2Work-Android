@@ -48,12 +48,9 @@ android {
         implementation rootProject.ext.objectBoxRx
 
         implementation rootProject.ext.chatKit
-        implementation rootProject.ext.stetho
-        implementation rootProject.ext.stethoInterceptor
 
 
         testImplementation rootProject.ext.junit
-        testImplementation rootProject.ext.mockito
         androidTestImplementation rootProject.ext.androidTestRunner
 
         implementation project(':domain')

@@ -28,20 +28,18 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
-import com.pixplicity.easyprefs.library.Prefs
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
 import it.gruppoinfor.home2work.common.extensions.hide
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.services.LocationService
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
 import it.gruppoinfor.home2work.ranks.RanksFragment
-import it.gruppoinfor.home2work.services.LocationService
-import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
@@ -86,13 +84,11 @@ class MainActivity : AppCompatActivity() {
         observeViewState()
 
         // TODO avvio servizio tracking
-        if (Prefs.getBoolean(SettingsActivity.PREFS_ACTIVITY_TRACKING, true)) {
-            val locationIntent = Intent(this, LocationService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(locationIntent)
-            } else {
-                startService(locationIntent)
-            }
+        val locationIntent = Intent(this, LocationService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(locationIntent)
+        } else {
+            startService(locationIntent)
         }
 
     }

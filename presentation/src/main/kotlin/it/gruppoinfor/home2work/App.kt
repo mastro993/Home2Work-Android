@@ -1,11 +1,9 @@
 package it.gruppoinfor.home2work
 
 import android.app.Application
-import android.content.ContextWrapper
 import com.crashlytics.android.Crashlytics
-import com.facebook.stetho.Stetho
+import com.crashlytics.android.core.CrashlyticsCore
 import com.google.firebase.FirebaseApp
-import com.pixplicity.easyprefs.library.Prefs
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 import it.gruppoinfor.home2work.common.timber.DebugLogTree
@@ -19,6 +17,10 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
+        val kit = Crashlytics.Builder().core(core).build()
+        Fabric.with(this, kit)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(FileLoggingTree())
@@ -36,22 +38,7 @@ class App : Application() {
         }
         LeakCanary.install(this)
 
-        Prefs.Builder()
-                .setContext(this)
-                .setMode(ContextWrapper.MODE_PRIVATE)
-                .setPrefsName(packageName)
-                .setUseDefaultSharedPreference(true)
-                .build()
-
-
-
         Fabric.with(this, Crashlytics())
-
-        val initializerBuilder = Stetho.newInitializerBuilder(this)
-        initializerBuilder.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
-        initializerBuilder.enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-        val initializer = initializerBuilder.build()
-        Stetho.initialize(initializer)
 
     }
 

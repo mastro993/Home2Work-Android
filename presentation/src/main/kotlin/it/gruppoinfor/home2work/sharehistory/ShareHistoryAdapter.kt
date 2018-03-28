@@ -15,9 +15,8 @@ import kotlinx.android.synthetic.main.item_share.view.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class ShareHistoryAdapter(
-        private val imageLoader: ImageLoader,
-        private val onShareClick: (Share, Int) -> Unit
+class ShareHistoryAdapter(private val imageLoader: ImageLoader,
+                          private val onShareClick: (Share, Int) -> Unit
 ) : RecyclerView.Adapter<ShareHistoryAdapter.ViewHolder>() {
 
     private val shares: MutableList<Share> = mutableListOf()
@@ -77,13 +76,14 @@ class ShareHistoryAdapter(
                     text_share_xp.text = (totalKm.toInt() * 10).toString()
                 }
                 ShareType.GUEST -> {
-                    text_share_info.text = "Hai condiviso l'auto di ${share.host}"
+                    text_share_info.text = "Hai condiviso l'auto di ${share.host.fullName}"
 
                     text_share_type.text = "Guest"
                     text_share_type.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
 
                     for (guest in share.guests) {
-                        /* if (guest.user == HomeToWorkClient.user) {
+                        /* TODO
+                        if (guest.user == HomeToWorkClient.user) {
                              val totalKm = guest.distance / 1000.0
                              holder.textShareDistance.text = mDf.format(totalKm)
                              holder.textShareXp.text = (totalKm.toInt() * 10).toString()

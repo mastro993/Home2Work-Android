@@ -1,6 +1,5 @@
 package it.gruppoinfor.home2work.data.api
 
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
 import it.gruppoinfor.home2work.api.RxErrorHandlingCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -13,7 +12,6 @@ object APIServiceGenerator {
     private const val BASE_URL = "https://hometoworkapi.azurewebsites.net/api/"
 
     private val httpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor(StethoInterceptor())
 
     private val gson = GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")

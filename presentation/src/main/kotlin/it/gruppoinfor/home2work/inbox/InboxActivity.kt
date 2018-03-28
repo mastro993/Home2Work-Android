@@ -16,10 +16,10 @@ import it.gruppoinfor.home2work.chat.ChatActivityLancher
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.services.MessagingService
 import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.Chat
-import it.gruppoinfor.home2work.services.MessagingService
 import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

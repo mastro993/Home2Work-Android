@@ -4,13 +4,13 @@ import android.arch.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import it.gruppoinfor.home2work.common.BaseViewModel
 import it.gruppoinfor.home2work.common.SingleLiveEvent
+import it.gruppoinfor.home2work.common.services.FirebaseTokenService
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.data.api.APIAuthenticationInterceptor
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.usecases.UserLogin
 import it.gruppoinfor.home2work.entities.User
-import it.gruppoinfor.home2work.services.FirebaseTokenService
 
 
 class SignInViewModel(

@@ -12,15 +12,6 @@ import java.util.*
 
 class FileLoggingTree : Timber.DebugTree() {
 
-    private val logsFile: File = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/HomeToWork/Logs")
-
-    init {
-
-        if (!logsFile.exists()) {
-            logsFile.mkdirs()
-        }
-    }
-
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
 
         val titleColor = when (priority) {
@@ -92,6 +83,12 @@ class FileLoggingTree : Timber.DebugTree() {
 
             if (dirExists) {
                 file = File(root, fileName)
+            }
+
+            file?.let {
+                if (!it.exists()) {
+                    it.createNewFile()
+                }
             }
         }
         return file

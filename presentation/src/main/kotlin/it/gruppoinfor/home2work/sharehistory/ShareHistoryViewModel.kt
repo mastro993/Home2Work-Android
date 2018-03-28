@@ -51,18 +51,20 @@ class ShareHistoryViewModel(
 
                 }, {
 
-                    if (it is RetrofitException) {
-                        val errorMessage = when (it.kind) {
+                    val errorMessage = if (it is RetrofitException) {
+                        when (it.kind) {
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
                         }
-
-                        val newViewState = viewState.value?.copy(
-                                screenState = ScreenState.Error(errorMessage)
-                        )
-                        viewState.value = newViewState
+                    } else {
+                        "Errore sconosciuto"
                     }
+
+                    val newViewState = viewState.value?.copy(
+                            screenState = ScreenState.Error(errorMessage)
+                    )
+                    viewState.value = newViewState
 
 
                 }))

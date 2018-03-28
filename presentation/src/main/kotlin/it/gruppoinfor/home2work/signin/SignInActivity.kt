@@ -14,9 +14,9 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.services.LocationService
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
-import it.gruppoinfor.home2work.services.LocationService
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import javax.inject.Inject
 

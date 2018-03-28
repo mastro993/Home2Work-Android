@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
 apply plugin: 'io.objectbox'
 
 android {
+
     signingConfigs {
         config {
             keyAlias 'infor'
@@ -14,8 +14,10 @@ android {
             storePassword 'edef.RICO.3991'
         }
     }
+
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
+
     defaultConfig {
         applicationId "it.gruppoinfor.home2work"
         minSdkVersion 21
@@ -26,6 +28,7 @@ android {
         resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         multiDexEnabled true
     }
+
     buildTypes {
         debug {
             versionNameSuffix '-DEBUG'
@@ -39,6 +42,7 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -71,7 +75,6 @@ dependencies {
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "io.objectbox:objectbox-android:$objectboxVersion"
 
-    // Leakecanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 
     kapt rootProject.ext.daggerCompiler
@@ -95,17 +98,12 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
 
-    implementation 'com.facebook.stetho:stetho:1.5.0'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
 
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
-
-    implementation 'com.pixplicity.easyprefs:library:1.9.0'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
@@ -114,11 +112,9 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     testImplementation rootProject.ext.junit
-    testImplementation rootProject.ext.mockito
     androidTestImplementation rootProject.ext.androidTestRunner
-    androidTestImplementation 'org.mockito:mockito-android:2.8.47'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true
     }
 
