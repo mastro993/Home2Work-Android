@@ -192,6 +192,7 @@
     <string name="profile_activity_details_title">Attività</string>
     <string name="guest_exit">uscito</string>
     <string name="guest_completed">completato</string>
+    <string name="current_share_host_view_guests">Passeggeri</string>
 
 
 </resources>

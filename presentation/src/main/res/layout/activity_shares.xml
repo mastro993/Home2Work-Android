@@ -13,6 +13,7 @@
         android:elevation="@dimen/cardview_default_elevation"
         android:focusable="false"
         android:paddingBottom="72dp"
+        tools:listitem="@layout/item_share"
         android:paddingTop="4dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/ongoing_share_layout"

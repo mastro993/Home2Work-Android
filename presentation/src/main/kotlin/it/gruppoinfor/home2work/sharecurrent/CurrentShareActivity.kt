@@ -35,6 +35,7 @@ import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.utilities.QREncoder
+import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareStatus
@@ -164,7 +165,7 @@ class CurrentShareActivity : AppCompatActivity() {
         host_layout.show()
         guest_layout.hide()
 
-        layout_show_code.setOnClickListener {
+        layout_share_code.setOnClickListener {
 
             qrCodeDialog = BottomSheetDialog(this)
             val sheetView = layoutInflater.inflate(R.layout.dialog_share_qr_code, null)
@@ -297,11 +298,12 @@ class CurrentShareActivity : AppCompatActivity() {
 
         with(share!!) {
             if (guests.size > 0) {
-                empty_view.hide()
+                screen_state_view.setScreenState(ScreenState.Done)
                 header_view.show()
                 guests_recycler_view.show()
             } else {
-                empty_view.show()
+
+                screen_state_view.setScreenState(ScreenState.Empty("Ancora nessun passeggero"))
                 header_view.hide()
                 guests_recycler_view.hide()
             }
@@ -331,7 +333,7 @@ class CurrentShareActivity : AppCompatActivity() {
 
             with(it.host) {
 
-                layout_host.setOnClickListener {
+                avatar_view.setOnClickListener {
                     UserActivityLancher(
                             userId = id,
                             userName = fullName,
@@ -363,7 +365,12 @@ class CurrentShareActivity : AppCompatActivity() {
         })
 
         viewModel.shareFinishEvent.observe(this, Observer {
-            it?.let { if (it) finish() }
+            it?.let {
+                if (it) {
+                    localUserData.currentShare = null
+                    finish()
+                }
+            }
         })
 
         viewModel.viewState.observe(this, Observer {
@@ -376,11 +383,11 @@ class CurrentShareActivity : AppCompatActivity() {
             share = it
 
             if (it.guests.size > 0) {
-                empty_view.hide()
+                screen_state_view.setScreenState(ScreenState.Done)
                 header_view.show()
                 guests_recycler_view.show()
             } else {
-                empty_view.show()
+                screen_state_view.setScreenState(ScreenState.Empty("Ancora nessun passeggero"))
                 header_view.hide()
                 guests_recycler_view.hide()
             }

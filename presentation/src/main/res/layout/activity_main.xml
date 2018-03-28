@@ -11,7 +11,7 @@
     tools:mContext="it.gruppoinfor.home2work.MainActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/ab_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -29,7 +29,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
-        android:id="@+id/view_pager"
+        android:id="@+id/vp_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -43,47 +43,20 @@
         tools:layout_height="48dp">
 
         <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-            android:id="@+id/bottom_navigation"
+            android:id="@+id/bn_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:selectedBackgroundVisible="false" />
 
-        <ImageView
-            android:id="@+id/current_share_badge_bg"
-            layout="@layout/badge_new"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center"
-            android:elevation="9dp"
-            android:src="@drawable/bg_badge_current_share_bg"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/button_new_share"
-            app:layout_constraintTop_toTopOf="@id/button_new_share"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/current_share_badge"
-            layout="@layout/badge_new"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center"
-            android:elevation="9dp"
-            android:src="@drawable/bg_badge_current_share"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/button_new_share"
-            app:layout_constraintTop_toTopOf="@id/button_new_share"
-            tools:visibility="visible" />
-
-
         <ImageButton
-            android:id="@+id/button_new_share"
+            android:id="@+id/bt_new_share"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/bg_new_share_button_active"
+            android:background="@drawable/bg_new_share_button_inactive"
             android:elevation="8dp"
-            android:src="@drawable/ic_new_share_button_icon_active"
+            android:src="@drawable/ic_new_share_button_icon_inactive"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,20 +64,20 @@
             tools:visibility="visible" />
 
         <ProgressBar
-            android:id="@+id/ongoing_share_progress_bar"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:id="@+id/pb_current_share"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-17dp"
             android:elevation="8dp"
             android:indeterminate="true"
-            android:indeterminateTint="@color/dark_bg_light_hint_text"
+            android:indeterminateTint="@color/colorAccent"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
 
     </android.support.constraint.ConstraintLayout>

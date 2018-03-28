@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ongoing_share_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +9,15 @@
     android:theme="@style/AppTheme.GradientTheme">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/ab_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,61 +26,28 @@
             android:layout_gravity="center_vertical"
             android:background="@null"
             android:gravity="center"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Condivisione in corso">
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/host_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/buttons_layout"
-        android:layout_below="@id/appbar"
+        android:layout_below="@id/ab_main"
         android:animateLayoutChanges="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="vertical"
-        android:visibility="visible">
-
-        <TextView
-            android:id="@+id/header_view"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:text="Passeggeri"
-            android:textColor="@color/dark_bg_light_secondary_text" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/guests_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/layout_show_code"
-            android:layout_marginTop="40dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingBottom="16dp"
-            android:paddingTop="8dp"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/layout_show_code"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="32dp"
-            android:text="Nessun ospite nella condivisione corrente. Invita qualcuno mostrando il codice di condivisione."
-            android:textColor="@color/dark_bg_light_secondary_text"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/ab_main">
 
         <LinearLayout
-            android:id="@+id/layout_show_code"
+            android:id="@+id/layout_share_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -123,81 +94,106 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/header_view"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingEnd="72dp"
+            android:paddingStart="16dp"
+            android:text="@string/current_share_host_view_guests"
+            android:textColor="@color/dark_bg_light_secondary_text" />
 
-    </RelativeLayout>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
-    <RelativeLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/guests_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:visibility="visible"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_share_guest" />
+
+            <it.gruppoinfor.home2work.common.views.ScreenStateView
+                android:id="@+id/screen_state_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </android.support.v7.widget.CardView>
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/guest_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/buttons_layout"
+        android:layout_height="wrap_content"
         android:clickable="false"
         android:focusable="false"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/ab_main"
+        tools:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/layout_host"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:text="Host condivisione"
+            android:textColor="@color/dark_bg_light_secondary_text"
+            android:textSize="12sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_horizontal"
-                android:text="Host condivisione"
-                android:textColor="@color/dark_bg_light_secondary_text"
-                android:textSize="12sp" />
+        <it.gruppoinfor.home2work.common.views.AvatarView
+            android:id="@+id/avatar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_horizontal"
+            app:layout_behavior="it.gruppoinfor.home2work.custom.AvatarViewBehavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <it.gruppoinfor.home2work.common.views.AvatarView
-                android:id="@+id/avatar_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:gravity="center_horizontal"
-                app:layout_behavior="it.gruppoinfor.home2work.custom.AvatarViewBehavior"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Nome Cognome"
+            android:textColor="@color/dark_bg_light_primary_text"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_view" />
 
-            <TextView
-                android:id="@+id/name_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="Nome Cognome"
-                android:textColor="@color/dark_bg_light_primary_text"
-                android:textSize="21sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatar_view" />
+        <TextView
+            android:id="@+id/job_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Azienda"
+            android:textColor="@color/dark_bg_light_secondary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_text_view" />
 
-            <TextView
-                android:id="@+id/job_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Azienda"
-                android:textColor="@color/dark_bg_light_secondary_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/name_text_view" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/buttons_layout"
@@ -206,22 +202,26 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:elevation="@dimen/bottom_navigation_elevation"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/button_complete_share"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:enabled="false"
             android:text="Completa"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            tools:enabled="true" />
 
     </FrameLayout>
 
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
 
 

@@ -34,7 +34,6 @@ android {
 
     dependencies {
         implementation fileTree(dir: 'libs', include: ['*.jar'])
-        implementation 'com.android.support:appcompat-v7:27.1.0'
         androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
         kapt rootProject.ext.daggerCompiler
@@ -46,6 +45,7 @@ android {
 
         implementation rootProject.ext.objectBox
         kapt rootProject.ext.objectBoxProcessor
+        implementation rootProject.ext.objectBoxRx
 
         implementation rootProject.ext.chatKit
         implementation rootProject.ext.stetho

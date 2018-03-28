@@ -6,14 +6,14 @@ import it.gruppoinfor.home2work.entities.UserLocation
 import javax.inject.Inject
 
 
-class UserLocationEntityUserLocationMapper @Inject constructor() : Mapper<UserLocationEntity, UserLocation>() {
+class UserLocationUserLocationEntityMapper @Inject constructor() : Mapper<UserLocation, UserLocationEntity>() {
 
 
-    override fun mapFrom(from: UserLocationEntity): UserLocation {
-        return UserLocation(
+    override fun mapFrom(from: UserLocation): UserLocationEntity {
+        return UserLocationEntity(
                 userId = from.userId,
                 latitude = from.latitude,
-                longitude = from.langitude,
+                langitude = from.longitude,
                 date = from.date
         )
 

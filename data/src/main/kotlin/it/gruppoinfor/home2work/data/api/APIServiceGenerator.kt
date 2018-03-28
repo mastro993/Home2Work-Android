@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-internal object APIServiceGenerator {
+object APIServiceGenerator {
 
     private const val BASE_URL = "https://hometoworkapi.azurewebsites.net/api/"
 
@@ -40,4 +40,6 @@ internal object APIServiceGenerator {
 
         return APIServiceGenerator.retrofit.create(serviceClass)
     }
+
 }
+

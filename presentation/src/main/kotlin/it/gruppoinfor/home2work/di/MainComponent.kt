@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.di
 
 import android.content.Context
 import dagger.Component
-import it.gruppoinfor.home2work.common.services.LocationService
+import it.gruppoinfor.home2work.common.boot.BootReceiver
 import it.gruppoinfor.home2work.common.views.AvatarView
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
@@ -30,6 +30,7 @@ import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
+import it.gruppoinfor.home2work.services.LocationService
 import javax.inject.Singleton
 
 @Singleton
@@ -40,6 +41,7 @@ import javax.inject.Singleton
 ])
 interface MainComponent {
     fun inject(context: Context)
+    fun inject(bootReceiver: BootReceiver)
     fun inject(locationService: LocationService)
     fun inject(avatarView: AvatarView)
     fun plus(firebaseModule: FirebaseModule): FirebaseSubComponent

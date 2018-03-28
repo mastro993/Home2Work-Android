@@ -8,6 +8,7 @@ ext {
 
     objectBox = "io.objectbox:objectbox-kotlin:$objectboxVersion"
     objectBoxProcessor = "io.objectbox:objectbox-processor:$objectboxVersion"
+    objectBoxRx = 'io.objectbox:objectbox-rxjava:0.9.8'
 
     rxJava = "io.reactivex.rxjava2:rxjava:2.1.7"
 

@@ -5,7 +5,7 @@ import it.gruppoinfor.home2work.domain.common.Transformer
 import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
 import it.gruppoinfor.home2work.domain.interfaces.LocationRepository
 
-class UploadUserLocations(
+class SyncUserLocations(
         transformer: Transformer<Boolean>,
         private val locationRepository: LocationRepository
 ) : UseCase<Boolean>(transformer) {
@@ -23,12 +23,9 @@ class UploadUserLocations(
     override fun createObservable(data: Map<String, Any>?): Observable<Boolean> {
         val locations = data?.get(PARAM_LOCATIONS)
 
-
         locations?.let {
             return locationRepository.syncUserLocations(locations as List<UserLocationEntity>)
+
         } ?: return Observable.error(IllegalArgumentException("latLng list must be provided."))
-
-
     }
-
 }

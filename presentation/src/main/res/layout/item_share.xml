@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,15 +10,18 @@
     tools:ignore="HardcodedText">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="16dp"
-        android:layout_marginBottom="16dp"
         android:background="@color/grey_600"
         android:gravity="center"
         android:padding="32dp"
         android:text="Mappa del percorso con Google Static Map \n (placeholder)"
-        android:textColor="@color/dark_bg_light_primary_text" />
+        android:textColor="@color/dark_bg_light_primary_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- TODO mappa del percorso con static map Google-->
 
@@ -26,173 +30,193 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tools:text="Driver"
+        android:layout_marginTop="16dp"
         android:textAllCaps="true"
-        tools:textColor="@color/colorPrimary"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:text="Driver"
+        tools:textColor="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/text_share_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tools:text="Hai condiviso la tua auto"
-        android:textColor="@color/light_bg_dark_primary_text" />
+        android:layout_marginTop="4dp"
+        android:textColor="@color/light_bg_dark_primary_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_share_type"
+        tools:text="Hai condiviso la tua auto" />
 
     <TextView
         android:id="@+id/text_share_datetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        tools:text="23/01/2017 alle 9:00"
         android:textColor="@color/light_bg_dark_secondary_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_share_info"
+        tools:text="23/01/2017 alle 9:00" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:baselineAligned="false"
-        android:gravity="center"
-        android:weightSum="3">
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_match_score"
+        android:padding="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_share_datetime">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_share_guests" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_match_score"
-            android:padding="8dp">
+            android:orientation="vertical">
 
-            <ImageView
+            <TextView
+                android:id="@+id/text_share_guests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_share_guests" />
+                android:gravity="end"
+                android:textStyle="bold"
+                tools:text="4" />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_share_guests"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    tools:text="4"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-2dp"
-                    android:text="Ospiti"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_match_score"
-            android:padding="8dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_share_distance" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_share_distance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:gravity="end"
-                    tools:text="99.9"
-                    android:textColor="@color/blue_grey_500"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-2dp"
-                    android:text="Km"
-                    android:textSize="12sp" />
-
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_match_score"
-            android:padding="8dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_share_xp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_share_xp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:gravity="end"
-                    android:text="99.9"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-2dp"
-                    tools:text="Punti"
-                    android:textSize="12sp" />
-
-
-            </LinearLayout>
+                android:layout_marginTop="-2dp"
+                android:text="Ospiti"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/horizontal_divider" />
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_match_score"
+        android:padding="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/text_share_datetime">
 
-</LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_share_distance" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_share_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="end"
+                android:textColor="@color/blue_grey_500"
+                android:textStyle="bold"
+                tools:text="99.9" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:text="Km"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_match_score"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/item_match_divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/text_share_datetime">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_share_xp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_share_xp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="end"
+                android:text="99.9"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:textSize="12sp"
+                tools:text="Punti" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/item_match_divider"
+        layout="@layout/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
 
 

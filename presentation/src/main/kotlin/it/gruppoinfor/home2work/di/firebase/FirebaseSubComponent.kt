@@ -1,7 +1,7 @@
 package it.gruppoinfor.home2work.di.firebase
 
 import dagger.Subcomponent
-import it.gruppoinfor.home2work.common.services.FirebaseTokenService
+import it.gruppoinfor.home2work.services.FirebaseTokenService
 
 
 @FirebaseScope

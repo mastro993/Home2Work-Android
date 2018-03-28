@@ -122,7 +122,8 @@ class MainViewModel(
                     viewState.value = newViewState
 
                 }, {
-
+                    val newViewState = viewState.value?.copy(shareInProgress = false)
+                    viewState.value = newViewState
                 }
                 ))
     }

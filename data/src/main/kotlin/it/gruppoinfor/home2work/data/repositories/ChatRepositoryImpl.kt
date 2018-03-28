@@ -3,6 +3,7 @@ package it.gruppoinfor.home2work.data.repositories
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.chat.ChatMessageEntity
 import it.gruppoinfor.home2work.data.api.APIServiceGenerator
+import it.gruppoinfor.home2work.data.api.getService
 import it.gruppoinfor.home2work.data.api.services.ChatService
 import it.gruppoinfor.home2work.data.mappers.ChatDataEntityMapper
 import it.gruppoinfor.home2work.data.mappers.ChatMessageDataEntityMapper
@@ -14,7 +15,7 @@ class ChatRepositoryImpl(
         private val messageMapper: ChatMessageDataEntityMapper
 ) : ChatRepository {
 
-    private val chatService: ChatService = APIServiceGenerator.createService(ChatService::class.java)
+    private val chatService: ChatService = APIServiceGenerator.getService()
 
     override fun getChatMessageList(chatId: Long): Observable<List<ChatMessageEntity>> {
         return chatService.getChatMessageList(chatId).map { it.map { messageMapper.mapFrom(it) } }

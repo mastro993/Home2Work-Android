@@ -4,7 +4,7 @@
     android:layout_height="14dp"
     android:layout_gravity="center"
     android:layout_marginTop="4dp"
-    android:background="@drawable/bg_badge_new"
+    android:background="@drawable/ic_match_new"
     android:clipToPadding="false"
     android:gravity="center"
     android:orientation="horizontal">

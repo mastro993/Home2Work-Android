@@ -8,22 +8,14 @@ import com.google.firebase.FirebaseApp
 import com.pixplicity.easyprefs.library.Prefs
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
-import io.objectbox.BoxStore
 import it.gruppoinfor.home2work.common.timber.DebugLogTree
 import it.gruppoinfor.home2work.common.timber.FileLoggingTree
 import it.gruppoinfor.home2work.common.timber.ReleaseLogTree
-import it.gruppoinfor.home2work.data.entities.MyObjectBox
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import timber.log.Timber
 
 
 class App : Application() {
-
-    companion object {
-        lateinit var boxStore: BoxStore
-
-
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -43,8 +35,6 @@ class App : Application() {
             return
         }
         LeakCanary.install(this)
-
-        boxStore = MyObjectBox.builder().androidContext(this).build()
 
         Prefs.Builder()
                 .setContext(this)

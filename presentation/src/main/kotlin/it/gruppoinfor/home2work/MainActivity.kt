@@ -17,13 +17,11 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -36,13 +34,13 @@ import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
 import it.gruppoinfor.home2work.common.extensions.hide
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.common.services.LocationService
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
 import it.gruppoinfor.home2work.ranks.RanksFragment
+import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,11 +61,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var localUserData: LocalUserData
 
     private lateinit var viewModel: MainViewModel
-
-    private lateinit var bottomNav: AHBottomNavigation
-    private lateinit var pager: AHBottomNavigationViewPager
-    private lateinit var ongoingShareStatusBar: ProgressBar
+    private lateinit var bottomNavigation: AHBottomNavigation
+    private lateinit var viewPager: ViewPager
     private lateinit var shareButton: ImageButton
+    private lateinit var newShareProgress: ProgressBar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,10 +77,10 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
-        bottomNav = bottom_navigation
-        pager = view_pager
-        ongoingShareStatusBar = ongoing_share_progress_bar
-        shareButton = button_new_share
+        bottomNavigation = bn_main
+        viewPager = vp_main
+        shareButton = bt_new_share
+        newShareProgress = pb_current_share
 
         initUI()
         observeViewState()
@@ -114,8 +111,8 @@ class MainActivity : AppCompatActivity() {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
 
-        if (data != null) {
-            val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        data?.let {
+            val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, it)
             if (scanResult is IntentResult) {
 
                 val stringData = scanResult.contents.split(",")
@@ -159,32 +156,32 @@ class MainActivity : AppCompatActivity() {
         val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_navigation_match, R.color.light_green_400)
         val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_navigation_account, R.color.colorAccent)
 
-        bottomNav.removeAllItems()
+        bottomNavigation.removeAllItems()
 
-        bottomNav.addItem(homeTab)
-        bottomNav.addItem(ranksTab)
-        bottomNav.addItem(newShareButton)
-        bottomNav.addItem(matchTab)
-        bottomNav.addItem(profileTab)
+        bottomNavigation.addItem(homeTab)
+        bottomNavigation.addItem(ranksTab)
+        bottomNavigation.addItem(newShareButton)
+        bottomNavigation.addItem(matchTab)
+        bottomNavigation.addItem(profileTab)
 
-        bottomNav.accentColor = ContextCompat.getColor(this, R.color.bottom_nav_active)
-        bottomNav.inactiveColor = ContextCompat.getColor(this, R.color.bottom_nav_inactive)
-        bottomNav.isForceTint = true
+        bottomNavigation.accentColor = ContextCompat.getColor(this, R.color.bottom_nav_active)
+        bottomNavigation.inactiveColor = ContextCompat.getColor(this, R.color.bottom_nav_inactive)
+        bottomNavigation.isForceTint = true
 
-        bottomNav.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
+        bottomNavigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
 
-        bottomNav.isBehaviorTranslationEnabled = false
-        bottomNav.titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
+        bottomNavigation.isBehaviorTranslationEnabled = false
+        bottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
 
-        bottomNav.setOnTabSelectedListener { position, _ ->
+        bottomNavigation.setOnTabSelectedListener { position, _ ->
             when (position) {
                 NEW_SHARE_BUTTON_PLACEHOLDER -> {
                     shareButton.performClick()
                     false
                 }
                 else -> {
-                    view_pager.setCurrentItem(position, false)
-                    title = bottom_navigation.getItem(position).getTitle(this)
+                    viewPager.setCurrentItem(position, false)
+                    title = bottomNavigation.getItem(position).getTitle(this)
                     true
                 }
             }
@@ -214,10 +211,10 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        pager.offscreenPageLimit = 4
+        viewPager.offscreenPageLimit = 4
         val pagerAdapter = PagerAdapter(supportFragmentManager)
-        pager.adapter = pagerAdapter
-        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        viewPager.adapter = pagerAdapter
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
@@ -236,14 +233,14 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        bottomNav.currentItem = HOME_TAB
-        title = bottomNav.getItem(HOME_TAB).getTitle(this)
+        bottomNavigation.currentItem = HOME_TAB
+        title = bottomNavigation.getItem(HOME_TAB).getTitle(this)
 
     }
 
     fun setNavigationBadge(itemPosition: Int, title: String) {
 
-        bottom_navigation.setNotification(title, itemPosition)
+        bottomNavigation.setNotification(title, itemPosition)
 
     }
 
@@ -266,24 +263,19 @@ class MainActivity : AppCompatActivity() {
 
         state?.let {
 
-            if (it.shareInProgress) {
-                button_new_share.setBackgroundResource(R.drawable.bg_new_share_button_active)
-                button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_active))
 
-                current_share_badge.show()
-                current_share_badge_bg.show()
-
-                val pulse = AnimationUtils.loadAnimation(this, R.anim.pulse)
-                current_share_badge.startAnimation(pulse)
-
-
+            if (it.creatingShare || it.joiningShare) {
+                newShareProgress.show()
             } else {
+                newShareProgress.hide()
+            }
 
-                current_share_badge.hide()
-                current_share_badge_bg.hide()
-
-                button_new_share.setBackgroundResource(R.drawable.bg_new_share_button_inactive)
-                button_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_inactive))
+            if (it.shareInProgress) {
+                shareButton.setBackgroundResource(R.drawable.bg_new_share_button_active)
+                shareButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_active))
+            } else {
+                shareButton.setBackgroundResource(R.drawable.bg_new_share_button_inactive)
+                shareButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_inactive))
             }
 
         }
@@ -339,7 +331,7 @@ class MainActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onBadgeEvent(event: BottomNavBadgeEvent) {
 
-        bottom_navigation.setNotification(event.badgeContent, event.tabPosition)
+        bottomNavigation.setNotification(event.badgeContent, event.tabPosition)
 
     }
 

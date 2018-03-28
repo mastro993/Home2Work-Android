@@ -33,6 +33,11 @@ class DataModule {
         return UserPreferences(context)
     }
 
+    @Provides
+    fun provideBoxStore(context: Context): BoxStore {
+        return MyObjectBox.builder().androidContext(context).build()
+    }
+
     @Singleton
     @Provides
     fun provideSettingsPreferences(context: Context): SettingsPreferences {
@@ -78,5 +83,16 @@ class DataModule {
     @Singleton
     fun provideFirebaseTokenRepository(): FirebaseTokenRepository {
         return FirebaseTokenRepositoryImpl()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideLocationRepository(
+            boxStore: BoxStore,
+            locationDataEntityMapper: UserLocationDataEntityMapper,
+            locationEntityDataMapper: UserLocationEntityDataMapper
+    ): LocationRepository {
+        return LocationRepositoryImpl(boxStore, locationDataEntityMapper, locationEntityDataMapper)
     }
 }

@@ -59,26 +59,26 @@
         </receiver>
 
         <service
-            android:name="it.gruppoinfor.home2work.common.services.LocationService"
+            android:name="it.gruppoinfor.home2work.services.LocationService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
-            android:name=".common.services.SyncJobService"
+            android:name="it.gruppoinfor.home2work.services.SyncJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name="it.gruppoinfor.home2work.common.services.ActivityRecognizedService"
+            android:name="it.gruppoinfor.home2work.services.ActivityRecognizedService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".common.services.FirebaseTokenService"
+            android:name="it.gruppoinfor.home2work.services.FirebaseTokenService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".common.services.MessagingService"
+            android:name="it.gruppoinfor.home2work.services.MessagingService"
             android:enabled="true"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">

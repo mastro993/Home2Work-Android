@@ -2,6 +2,7 @@ package it.gruppoinfor.home2work.data.repositories
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.data.api.APIServiceGenerator
+import it.gruppoinfor.home2work.data.api.getService
 import it.gruppoinfor.home2work.data.api.services.MatchService
 import it.gruppoinfor.home2work.data.mappers.MatchDataEntityMapper
 import it.gruppoinfor.home2work.data.mappers.MatchEntityDataMapper
@@ -15,7 +16,7 @@ class MatchRepositoryImpl(
         private val matchEntityDataMapper: MatchEntityDataMapper
 ) : MatchRepository {
 
-    private val matchService = APIServiceGenerator.createService(MatchService::class.java)
+    private val matchService: MatchService = APIServiceGenerator.getService()
 
     override fun getMatchList(): Observable<List<MatchEntity>> {
         return matchService.getMatchList().map {
