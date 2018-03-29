@@ -39,11 +39,13 @@
 
     <Button
         android:id="@+id/b_signin"
-        android:layout_width="128dp"
+        android:layout_width="156dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="120dp"
+        android:background="@drawable/bg_button_light"
+        android:includeFontPadding="false"
         android:text="@string/splash_signing_button"
         android:textAllCaps="false"
         android:textColor="@color/light_bg_dark_secondary_text"

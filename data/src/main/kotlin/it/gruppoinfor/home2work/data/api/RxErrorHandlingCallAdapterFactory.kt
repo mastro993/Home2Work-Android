@@ -1,8 +1,9 @@
-package it.gruppoinfor.home2work.api
+package it.gruppoinfor.home2work.data.api
+
 
 import io.reactivex.Observable
 import io.reactivex.functions.Function
-import it.gruppoinfor.home2work.data.api.RetrofitException
+import org.greenrobot.eventbus.EventBus
 import retrofit2.*
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException
@@ -24,6 +25,7 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
     }
 
     class RxCallAdapterWrapper constructor(private val retrofit: Retrofit, private val wrapped: CallAdapter<Any, Observable<Any>>) : CallAdapter<Any, Observable<Any>> {
+
         override fun responseType(): Type {
             return wrapped.responseType()
         }
@@ -34,22 +36,25 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
             })
         }
 
-        fun asRetrofitException(throwable: Throwable): RetrofitException {
+        private fun asRetrofitException(throwable: Throwable): RetrofitException {
 
+            // Errore HTTP
             if (throwable is HttpException) {
                 val response: Response<Any> = throwable.response() as Response<Any>
-                if (response.code() == 401) {
-                    // TODO logout automatico
+                when (response.code()) {
+                    401 -> {
+                        EventBus.getDefault().post(LogoutEvent())
+                    }
+                    else -> RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
                 }
-                return RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
             }
-            // A network error happened
+
+            // Errore di comunicazione
             if (throwable is IOException) {
                 return RetrofitException.networkError(throwable)
             }
 
-            // We don't know what happened. We need to simply convert to an unknown error
-
+            // Non si sa cosa sia successo
             return RetrofitException.unexpectedError(throwable)
         }
     }

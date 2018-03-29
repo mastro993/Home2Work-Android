@@ -319,9 +319,7 @@ class MainActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ActiveShareEvent) {
-
         viewModel.getCurrentShare()
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

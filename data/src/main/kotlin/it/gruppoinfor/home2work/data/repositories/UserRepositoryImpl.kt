@@ -1,8 +1,8 @@
 package it.gruppoinfor.home2work.data.repositories
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.data.api.APIServiceGenerator
-import it.gruppoinfor.home2work.data.api.getService
+import it.gruppoinfor.home2work.data.api.APIService
+import it.gruppoinfor.home2work.data.api.get
 import it.gruppoinfor.home2work.data.api.services.UserService
 import it.gruppoinfor.home2work.data.mappers.ProfileDataEntityMapper
 import it.gruppoinfor.home2work.data.mappers.UserDataEntityMapper
@@ -17,7 +17,7 @@ class UserRepositoryImpl(
         private val profileMapper: ProfileDataEntityMapper
 ) : UserRepository {
 
-    private val userService: UserService = APIServiceGenerator.getService()
+    private val userService = APIService.get<UserService>()
 
     override fun login(email: String, password: String): Observable<UserEntity> {
         return userService.login(email, password).map {

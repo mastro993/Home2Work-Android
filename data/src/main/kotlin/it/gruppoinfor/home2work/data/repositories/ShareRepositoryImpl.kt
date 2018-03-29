@@ -1,8 +1,8 @@
 package it.gruppoinfor.home2work.data.repositories
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.data.api.APIServiceGenerator
-import it.gruppoinfor.home2work.data.api.getService
+import it.gruppoinfor.home2work.data.api.APIService
+import it.gruppoinfor.home2work.data.api.get
 import it.gruppoinfor.home2work.data.api.services.ShareService
 import it.gruppoinfor.home2work.data.mappers.ShareDataEntityMapper
 import it.gruppoinfor.home2work.domain.entities.Optional
@@ -14,7 +14,7 @@ class ShareRepositoryImpl(
         private val mapper: ShareDataEntityMapper
 ) : ShareRepository {
 
-    private val shareService: ShareService = APIServiceGenerator.getService()
+    private val shareService = APIService.get<ShareService>()
 
     override fun getShare(shareId: Long): Observable<Optional<ShareEntity>> {
         return shareService.getShare(shareId).map {

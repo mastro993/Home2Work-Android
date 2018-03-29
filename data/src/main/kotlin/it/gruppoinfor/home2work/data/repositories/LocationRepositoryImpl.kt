@@ -4,8 +4,8 @@ import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
 import io.objectbox.rx.RxQuery
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.data.api.APIServiceGenerator
-import it.gruppoinfor.home2work.data.api.getService
+import it.gruppoinfor.home2work.data.api.APIService
+import it.gruppoinfor.home2work.data.api.get
 import it.gruppoinfor.home2work.data.api.services.UserLocationService
 import it.gruppoinfor.home2work.data.entities.UserLocationData
 import it.gruppoinfor.home2work.data.entities.UserLocationData_
@@ -21,7 +21,7 @@ class LocationRepositoryImpl(
 ) : LocationRepository {
 
     private val userLocationBox = boxStore.boxFor<UserLocationData>()
-    private val locationService: UserLocationService = APIServiceGenerator.getService()
+    private val locationService = APIService.get<UserLocationService>()
 
     override fun getUserLocations(userId: Long): Observable<List<UserLocationEntity>> {
         val query = userLocationBox.query().equal(UserLocationData_.userId, userId).build()

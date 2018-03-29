@@ -54,6 +54,11 @@ class RetrofitException internal constructor(message: String?,
             return RetrofitException(message, url, response, Kind.HTTP, null, retrofit)
         }
 
+        fun authError(url: String, response: Response<Any>, retrofit: Retrofit): RetrofitException {
+            val message = "${response.code()} ${response.message()}"
+            return RetrofitException(message, url, response, Kind.HTTP, null, retrofit)
+        }
+
         fun networkError(exception: IOException): RetrofitException {
             return RetrofitException(exception.message, null, null, Kind.NETWORK, exception, null)
         }
