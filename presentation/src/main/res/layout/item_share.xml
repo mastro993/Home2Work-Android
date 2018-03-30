@@ -9,20 +9,41 @@
     android:orientation="vertical"
     tools:ignore="HardcodedText">
 
-    <TextView
+    <android.support.v7.widget.CardView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="16dp"
         android:background="@color/grey_600"
+        android:clipChildren="true"
+        android:clipToPadding="true"
         android:gravity="center"
         android:padding="32dp"
         android:text="Mappa del percorso con Google Static Map \n (placeholder)"
         android:textColor="@color/dark_bg_light_primary_text"
+        app:cardBackgroundColor="@color/light_bg_dark_secondary_text"
+        app:cardCornerRadius="8dp"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/map_placeholder" />
+
+        <TextView
+            android:textColor="@color/light_bg_dark_primary_text"
+            android:textSize="21sp"
+            android:gravity="center"
+            android:text="PLACEHOLDER"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </android.support.v7.widget.CardView>
 
     <!-- TODO mappa del percorso con static map Google-->
 

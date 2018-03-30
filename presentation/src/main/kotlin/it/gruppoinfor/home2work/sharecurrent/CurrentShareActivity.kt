@@ -41,7 +41,7 @@ import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareStatus
 import it.gruppoinfor.home2work.entities.ShareType
 import it.gruppoinfor.home2work.user.UserActivityLancher
-import kotlinx.android.synthetic.main.activity_ongoing_share.*
+import kotlinx.android.synthetic.main.activity_current_share.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -68,7 +68,7 @@ class CurrentShareActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ongoing_share)
+        setContentView(R.layout.activity_current_share)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -165,7 +165,7 @@ class CurrentShareActivity : AppCompatActivity() {
         host_layout.show()
         guest_layout.hide()
 
-        layout_share_code.setOnClickListener {
+        button_show_share_code.setOnClickListener {
 
             qrCodeDialog = BottomSheetDialog(this)
             val sheetView = layoutInflater.inflate(R.layout.dialog_share_qr_code, null)
@@ -221,7 +221,7 @@ class CurrentShareActivity : AppCompatActivity() {
         }
 
 
-        button_complete_share.setOnClickListener {
+        button_complete_share_host.setOnClickListener {
             share?.let {
                 if (it.guests.size == 0) {
 
@@ -294,17 +294,14 @@ class CurrentShareActivity : AppCompatActivity() {
 
         guests_recycler_view.adapter = mGuestsAdapter
 
-        button_complete_share.isEnabled = enableCompleteButton()
+        button_complete_share_host.isEnabled = enableCompleteButton()
 
         with(share!!) {
             if (guests.size > 0) {
-                screen_state_view.setScreenState(ScreenState.Done)
-                header_view.show()
+                text_empty_guest_list.hide()
                 guests_recycler_view.show()
             } else {
-
-                screen_state_view.setScreenState(ScreenState.Empty("Ancora nessun passeggero"))
-                header_view.hide()
+                text_empty_guest_list.show()
                 guests_recycler_view.hide()
             }
 
@@ -319,7 +316,7 @@ class CurrentShareActivity : AppCompatActivity() {
             host_layout.hide()
             guest_layout.show()
 
-            button_complete_share.setOnClickListener {
+            button_complete_share_guest.setOnClickListener {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
                 } else {
@@ -350,7 +347,7 @@ class CurrentShareActivity : AppCompatActivity() {
                 avatar_view.setLevel(null)
             }
 
-            button_complete_share.isEnabled = true
+            button_complete_share_guest.isEnabled = true
         }
 
     }
@@ -383,11 +380,11 @@ class CurrentShareActivity : AppCompatActivity() {
             share = it
 
             if (it.guests.size > 0) {
-                screen_state_view.setScreenState(ScreenState.Done)
+                text_empty_guest_list.hide()
                 header_view.show()
                 guests_recycler_view.show()
             } else {
-                screen_state_view.setScreenState(ScreenState.Empty("Ancora nessun passeggero"))
+                text_empty_guest_list.show()
                 header_view.hide()
                 guests_recycler_view.hide()
             }

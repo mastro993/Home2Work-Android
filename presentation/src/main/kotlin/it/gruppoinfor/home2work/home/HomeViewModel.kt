@@ -30,7 +30,7 @@ class HomeViewModel(
                     viewState.value = newViewState
 
                 }, {
-
+                    it.printStackTrace()
                 }))
 
     }

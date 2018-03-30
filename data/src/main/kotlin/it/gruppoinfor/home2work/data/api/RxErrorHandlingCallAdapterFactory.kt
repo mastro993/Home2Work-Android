@@ -41,16 +41,16 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
             // Errore HTTP
             if (throwable is HttpException) {
                 val response: Response<Any> = throwable.response() as Response<Any>
-                when (response.code()) {
-                    401 -> {
-                        EventBus.getDefault().post(LogoutEvent())
-                    }
-                    else -> RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
+                if(response.code() == 401){
+                    // Utente non autenticato (session token errato o mancante)
+                    EventBus.getDefault().post(LogoutEvent())
                 }
+                RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
             }
 
             // Errore di comunicazione
             if (throwable is IOException) {
+                EventBus.getDefault().post(NoInternetErrorEvent())
                 return RetrofitException.networkError(throwable)
             }
 
@@ -61,3 +61,6 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
 
 
 }
+
+class LogoutEvent
+class NoInternetErrorEvent

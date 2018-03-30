@@ -193,6 +193,7 @@
     <string name="guest_exit">uscito</string>
     <string name="guest_completed">completato</string>
     <string name="current_share_host_view_guests">Passeggeri</string>
+    <string name="button_complete">Completa</string>
 
 
 </resources>

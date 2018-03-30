@@ -13,11 +13,13 @@ import it.gruppoinfor.home2work.common.timber.FileLoggingTree
 import it.gruppoinfor.home2work.common.timber.ReleaseLogTree
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.data.api.LogoutEvent
+import it.gruppoinfor.home2work.data.api.NoInternetErrorEvent
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.splash.SplashActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -58,13 +60,20 @@ class App : Application() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: LogoutEvent) {
+    fun onLogoutEvent(event: LogoutEvent) {
 
         localUserData.clear()
         launchActivity<SplashActivity> {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onNoInternetErrorEvent(event: NoInternetErrorEvent) {
+
+        //toast("Nessuna connessione ad internet")
 
     }
 
