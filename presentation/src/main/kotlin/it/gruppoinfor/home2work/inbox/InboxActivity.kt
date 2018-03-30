@@ -60,7 +60,7 @@ class InboxActivity : AppCompatActivity() {
             viewModel.refreshChatList()
         }
 
-        dialogsListAdapter = DialogsListAdapter(ImageLoader { imageView, url ->
+        dialogsListAdapter = DialogsListAdapter(R.layout.item_dialog_custom , ImageLoader { imageView, url ->
             imageLoader.load(
                     url = url,
                     imageView = imageView,

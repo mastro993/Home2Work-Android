@@ -8,6 +8,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.entities.Guest
+import it.gruppoinfor.home2work.entities.GuestStatus
 import it.gruppoinfor.home2work.entities.ShareStatus
 import kotlinx.android.synthetic.main.item_share_guest.view.*
 
@@ -59,8 +60,8 @@ class GuestAdapter(
             )
 
 
-            share_guest_name_view.text = guest.user.toString()
-            share_guest_job_view.text = guest.user.company.toString()
+            share_guest_name_view.text = guest.user.fullName
+            share_guest_job_view.text = guest.user.company?.formattedName
 
             setOnClickListener {
                 onGuesthClick(guest, position)
@@ -70,12 +71,12 @@ class GuestAdapter(
             }
 
             when {
-                guest.status == ShareStatus.COMPLETED -> {
+                guest.status == GuestStatus.COMPLETED -> {
                     guest_status_completed.visibility = View.VISIBLE
                     guest_status_leaved.visibility = View.GONE
                     alpha = 1.0f
                 }
-                guest.status == ShareStatus.CANCELED -> {
+                guest.status == GuestStatus.LEAVED -> {
                     guest_status_completed.visibility = View.GONE
                     guest_status_leaved.visibility = View.VISIBLE
                     alpha = 0.6f

@@ -37,6 +37,7 @@ import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.utilities.QREncoder
 import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.entities.GuestStatus
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareStatus
 import it.gruppoinfor.home2work.entities.ShareType
@@ -142,7 +143,7 @@ class CurrentShareActivity : AppCompatActivity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (scanResult != null) {
@@ -279,6 +280,10 @@ class CurrentShareActivity : AppCompatActivity() {
             sheetView.find<TextView>(R.id.guest_dialog_ban).setOnClickListener {
                 dialog.dismiss()
                 viewModel.banUser(guest.user.id)
+            }
+
+            if (guest.status != GuestStatus.JOINED) {
+                sheetView.find<TextView>(R.id.guest_dialog_ban).hide()
             }
 
             with(sheetView.find<TextView>(R.id.guest_dialog_ban)) {

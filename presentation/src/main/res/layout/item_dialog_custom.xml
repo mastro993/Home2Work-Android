@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/dialogRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@id/dialogContainer"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:transitionGroup="true">
+
+        <ImageView
+            android:id="@id/dialogAvatar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:paddingBottom="2dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/dialogDividerContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_avatar_placeholder" />
+
+        <TextView
+            android:id="@id/dialogUnreadBubble"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_match_new"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:textColor="@color/dark_bg_light_primary_text"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/dialogAvatar"
+            app:layout_constraintTop_toTopOf="@+id/dialogAvatar"
+            tools:text="9"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@id/dialogName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
+            android:textColor="@color/light_bg_dark_secondary_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/dialogLastMessage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Annamaria Della Ragione" />
+
+        <TextView
+            android:id="@id/dialogDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:alpha="0.8"
+            android:textColor="@color/light_bg_dark_hint_text"
+            app:layout_constraintBottom_toTopOf="@+id/dialogLastMessage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="12:00" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@id/dialogLastMessageUserAvatar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginStart="72dp"
+            app:layout_constraintBottom_toTopOf="@+id/dialogDividerContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialogName"
+            tools:src="@drawable/ic_avatar_placeholder" />
+
+        <TextView
+            android:id="@id/dialogLastMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="72dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@+id/dialogDividerContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialogName"
+            tools:text="Hey ciao come va? Viaggiamo insieme domani? Fammi sapere" />
+
+        <FrameLayout
+            android:id="@id/dialogDividerContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <View
+                android:id="@id/dialogDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dialog_divider" />
+
+        </FrameLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
+

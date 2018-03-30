@@ -105,7 +105,7 @@ class MainViewModel(
 
                     }))
         } else {
-            errorState.value = "Impossibile unirsi alla condivisione: troppo distance dall'host"
+            errorState.value = "Impossibile unirsi alla condivisione: troppo distante dall'host"
         }
 
 

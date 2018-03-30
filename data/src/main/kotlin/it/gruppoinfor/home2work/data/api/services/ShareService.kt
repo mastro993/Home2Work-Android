@@ -34,7 +34,7 @@ interface ShareService {
     @POST("share/complete")
     fun completeCurrentShare(
             @Field("completeLat") completeLat: Double,
-            @Field("completengt") completeLng: Double
+            @Field("completeLng") completeLng: Double
     ): Observable<Boolean>
 
     @POST("share/finish")

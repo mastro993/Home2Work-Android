@@ -23,6 +23,7 @@
         android:textColor="@color/dark_bg_light_primary_text"
         app:cardBackgroundColor="@color/light_bg_dark_secondary_text"
         app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

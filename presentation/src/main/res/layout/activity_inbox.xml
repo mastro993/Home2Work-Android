@@ -26,6 +26,8 @@
             app:dialogDividerLeftPadding="0dp"
             app:dialogMessageTextSize="17sp"
             app:dialogTitleTextStyle="bold"
+            app:dialogAvatarHeight="44dp"
+            app:dialogAvatarWidth="44dp"
             app:dialogUnreadBubbleBackgroundColor="@color/red_500"
             app:dialogUnreadTitleTextStyle="bold" />
 

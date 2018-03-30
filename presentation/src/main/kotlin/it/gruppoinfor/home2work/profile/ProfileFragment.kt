@@ -116,6 +116,8 @@ class ProfileFragment : Fragment() {
         button_shares_history.setOnClickListener {
             context?.launchActivity<ShareHistoryActivity>()
         }
+        button_shares_history.isFocusableInTouchMode = false
+        //button_shares_history.setOnFocusChangeListener { v, hasFocus -> if(hasFocus) v.performClick() }
 
     }
 
