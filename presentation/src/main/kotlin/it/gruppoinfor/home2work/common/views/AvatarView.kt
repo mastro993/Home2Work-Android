@@ -14,7 +14,7 @@ import android.widget.RelativeLayout
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import kotlinx.android.synthetic.main.view_avatar.view.*
@@ -61,8 +61,8 @@ class AvatarView : RelativeLayout {
 
         if (level == null) {
 
-            level_frame.hide()
-            exp_level.hide()
+            level_frame.remove()
+            exp_level.remove()
 
 
         } else {

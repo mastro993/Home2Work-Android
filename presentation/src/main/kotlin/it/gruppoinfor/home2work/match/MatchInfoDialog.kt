@@ -8,8 +8,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.ChatActivityLancher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
-import it.gruppoinfor.home2work.common.extensions.hide
-import it.gruppoinfor.home2work.common.extensions.show
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.dialog_match_info.*
@@ -27,7 +26,7 @@ class MatchInfoDialog constructor(context: Context, private val imageLoader: Ima
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_match_info)
         text_container.hide()
-        text_match_score.hide()
+        text_match_score.remove()
 
         doAsync {
             Thread.sleep(500)

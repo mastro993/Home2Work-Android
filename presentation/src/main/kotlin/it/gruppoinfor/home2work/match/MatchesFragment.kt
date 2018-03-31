@@ -17,7 +17,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.chat.ChatActivityLancher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.extensions.getScore
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.views.ScreenStateView
@@ -130,7 +130,7 @@ class MatchesFragment : Fragment() {
         if (state.isLightMatches) {
             light_matches_view.show()
         } else {
-            light_matches_view.hide()
+            light_matches_view.remove()
         }
 
         state.matches?.let {

@@ -10,7 +10,7 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.getScore
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.user.UserActivityLancher
@@ -65,13 +65,13 @@ class MatchesAdapter(
         ) = with(itemView) {
 
             setOnClickListener {
-                new_badge.hide()
+                new_badge.remove()
                 onMatchClick(match, position)
             }
             setOnLongClickListener { onMatchLongClick(match, position) }
 
             new_badge.apply {
-                if (match.isNew) show() else hide()
+                if (match.isNew) show() else remove()
             }
 
             imageLoader.load(
@@ -81,7 +81,7 @@ class MatchesAdapter(
                     placeholder = R.drawable.ic_avatar_placeholder
             )
 
-            text_match_score.hide()
+            text_match_score.remove()
             match.getScore()?.let {
                 text_match_score.show()
                 val color = getScoreColor(it)

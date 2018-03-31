@@ -30,7 +30,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.services.LocationService
@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity() {
             if (it.creatingShare || it.joiningShare) {
                 newShareProgress.show()
             } else {
-                newShareProgress.hide()
+                newShareProgress.remove()
             }
 
             if (it.shareInProgress) {

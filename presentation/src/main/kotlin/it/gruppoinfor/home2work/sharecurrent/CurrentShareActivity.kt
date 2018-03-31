@@ -31,11 +31,11 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.utilities.QREncoder
-import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.GuestStatus
 import it.gruppoinfor.home2work.entities.Share
@@ -43,6 +43,7 @@ import it.gruppoinfor.home2work.entities.ShareStatus
 import it.gruppoinfor.home2work.entities.ShareType
 import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.activity_current_share.*
+import kotlinx.android.synthetic.main.dialog_share_qr_code.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -164,7 +165,7 @@ class CurrentShareActivity : AppCompatActivity() {
     private fun initHostUI() {
 
         host_layout.show()
-        guest_layout.hide()
+        guest_layout.remove()
 
         button_show_share_code.setOnClickListener {
 
@@ -191,7 +192,8 @@ class CurrentShareActivity : AppCompatActivity() {
 
                 val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-                loadingView.visibility = View.VISIBLE
+                pb_qr_code.show()
+                qr_code_image_view.hide()
 
                 mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
@@ -211,6 +213,9 @@ class CurrentShareActivity : AppCompatActivity() {
                         } ?: qrCodeDialog?.dismiss()
 
                         mFusedLocationClient.removeLocationUpdates(this)
+
+                        pb_qr_code.remove()
+                        qr_code_image_view.show()
 
                     }
                 }, Looper.myLooper())
@@ -283,12 +288,12 @@ class CurrentShareActivity : AppCompatActivity() {
             }
 
             if (guest.status != GuestStatus.JOINED) {
-                sheetView.find<TextView>(R.id.guest_dialog_ban).hide()
+                sheetView.find<TextView>(R.id.guest_dialog_ban).remove()
             }
 
             with(sheetView.find<TextView>(R.id.guest_dialog_ban)) {
                 if (guest.status == ShareStatus.CANCELED || guest.status == ShareStatus.COMPLETED) {
-                    hide()
+                    remove()
                 } else {
                     show()
                 }
@@ -303,11 +308,11 @@ class CurrentShareActivity : AppCompatActivity() {
 
         with(share!!) {
             if (guests.size > 0) {
-                text_empty_guest_list.hide()
+                text_empty_guest_list.remove()
                 guests_recycler_view.show()
             } else {
                 text_empty_guest_list.show()
-                guests_recycler_view.hide()
+                guests_recycler_view.remove()
             }
 
             mGuestsAdapter?.setItems(guests)
@@ -318,7 +323,7 @@ class CurrentShareActivity : AppCompatActivity() {
     private fun initGuestUI() {
 
         share?.let {
-            host_layout.hide()
+            host_layout.remove()
             guest_layout.show()
 
             button_complete_share_guest.setOnClickListener {
@@ -385,13 +390,13 @@ class CurrentShareActivity : AppCompatActivity() {
             share = it
 
             if (it.guests.size > 0) {
-                text_empty_guest_list.hide()
+                text_empty_guest_list.remove()
                 header_view.show()
                 guests_recycler_view.show()
             } else {
                 text_empty_guest_list.show()
-                header_view.hide()
-                guests_recycler_view.hide()
+                header_view.remove()
+                guests_recycler_view.remove()
             }
 
             mGuestsAdapter?.setItems(it.guests)

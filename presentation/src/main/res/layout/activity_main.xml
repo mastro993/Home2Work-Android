@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -33,54 +33,53 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:animateLayoutChanges="true" />
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toTopOf="b"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ab_main" />
 
-    <android.support.constraint.ConstraintLayout
+
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+        android:id="@+id/bn_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        tools:layout_height="48dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:selectedBackgroundVisible="false"
+        tools:layout_height="50dp" />
 
-        <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-            android:id="@+id/bn_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:selectedBackgroundVisible="false" />
+    <ImageButton
+        android:id="@+id/bt_new_share"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_new_share_button_inactive"
+        android:elevation="8dp"
+        android:src="@drawable/ic_new_share_button_icon_inactive"
+        app:layout_constraintBottom_toBottomOf="@id/bn_main"
+        app:layout_constraintEnd_toEndOf="@id/bn_main"
+        app:layout_constraintStart_toStartOf="@id/bn_main"
+        app:layout_constraintTop_toTopOf="@id/bn_main"
+        tools:visibility="visible" />
 
-        <ImageButton
-            android:id="@+id/bt_new_share"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/bg_new_share_button_inactive"
-            android:elevation="8dp"
-            android:src="@drawable/ic_new_share_button_icon_inactive"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-        <ProgressBar
-            android:id="@+id/pb_current_share"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="-17dp"
-            android:elevation="8dp"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/colorAccent"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+    <ProgressBar
+        android:id="@+id/pb_current_share"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-17dp"
+        android:elevation="8dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bn_main"
+        app:layout_constraintEnd_toEndOf="@id/bn_main"
+        app:layout_constraintStart_toStartOf="@id/bn_main"
+        app:layout_constraintTop_toTopOf="@id/bn_main"
+        tools:visibility="visible" />
 
 
-    </android.support.constraint.ConstraintLayout>
-
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

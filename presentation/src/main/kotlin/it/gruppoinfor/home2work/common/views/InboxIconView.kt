@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.inbox.InboxActivity
 import kotlinx.android.synthetic.main.view_inbox_icon.view.*
@@ -47,7 +47,7 @@ class InboxIconView : RelativeLayout {
             messages_counter_text_view.text = "$unread"
         } else {
             // messages_image_view.visibility = View.VISIBLE
-            messages_counter_text_view.hide()
+            messages_counter_text_view.remove()
         }
     }
 

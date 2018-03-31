@@ -8,7 +8,7 @@ import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import kotlinx.android.synthetic.main.view_screen_state.view.*
 import kotlinx.coroutines.experimental.Deferred
@@ -50,18 +50,18 @@ class ScreenStateView : ConstraintLayout {
     }
 
     private fun done() {
-        hide()
+        remove()
 
-        image_error.hide()
-        loading_view.hide()
-        text_info.hide()
+        image_error.remove()
+        loading_view.remove()
+        text_info.remove()
     }
 
     private fun loading() {
         show()
 
-        text_info.hide()
-        image_error.hide()
+        text_info.remove()
+        image_error.remove()
         loading_view.show()
     }
 
@@ -75,7 +75,7 @@ class ScreenStateView : ConstraintLayout {
             }
         }
 
-        loading_view.hide()
+        loading_view.remove()
         image_error.show()
         text_info.show()
     }
@@ -85,7 +85,7 @@ class ScreenStateView : ConstraintLayout {
 
         text_info.setText(errorMessageResource)
 
-        loading_view.hide()
+        loading_view.remove()
         image_error.show()
         text_info.show()
 
@@ -101,8 +101,8 @@ class ScreenStateView : ConstraintLayout {
             }
         }
 
-        image_error.hide()
-        loading_view.hide()
+        image_error.remove()
+        loading_view.remove()
         text_info.show()
 
     }
@@ -112,8 +112,8 @@ class ScreenStateView : ConstraintLayout {
 
         text_info.setText(emptyMessageResource)
 
-        image_error.hide()
-        loading_view.hide()
+        image_error.remove()
+        loading_view.remove()
         text_info.show()
 
     }

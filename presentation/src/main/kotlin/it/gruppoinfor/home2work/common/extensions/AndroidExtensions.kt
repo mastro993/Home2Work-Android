@@ -9,9 +9,13 @@ import android.view.View
 import android.widget.Toast
 
 
-fun View.hide() {
+fun View.remove() {
     visibility = View.GONE
 }
+fun View.hide() {
+    visibility = View.INVISIBLE
+}
+
 
 fun View.show() {
     visibility = View.VISIBLE
@@ -21,7 +25,7 @@ fun View.setVisibile(visible: Boolean) {
     if (visible) {
         show()
     } else {
-        hide()
+        remove()
     }
 }
 

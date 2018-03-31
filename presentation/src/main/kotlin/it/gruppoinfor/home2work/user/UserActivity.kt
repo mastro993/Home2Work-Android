@@ -163,12 +163,12 @@ class UserActivity : AppCompatActivity() {
             text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.monthSharedDistanceAvg.div(1000f))
 
             if (it.stats.sharedDistance > 0) {
-                no_activity_chart_data_view.hide()
+                no_activity_chart_data_view.remove()
                 chart_activity.show()
                 chart_activity.setData(it.activity, it.stats.monthSharedDistanceAvg.div(1000f))
             } else {
                 no_activity_chart_data_view.show()
-                chart_activity.hide()
+                chart_activity.remove()
             }
 
             text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
@@ -178,18 +178,18 @@ class UserActivity : AppCompatActivity() {
             text_longest_share_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.longestShare.div(1000f))
 
             if (it.stats.totalShares > 0) {
-                no_share_chart_data_view.hide()
+                no_share_chart_data_view.remove()
                 chart_shares.show()
                 chart_shares.setData(it.stats)
             } else {
                 no_share_chart_data_view.show()
-                chart_shares.hide()
+                chart_shares.remove()
             }
 
             val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
             val strDt = simpleDate.format(it.regdate)
             text_regdate.text = strDt
 
-        } ?: profile_container.hide()
+        } ?: profile_container.remove()
     }
 }
