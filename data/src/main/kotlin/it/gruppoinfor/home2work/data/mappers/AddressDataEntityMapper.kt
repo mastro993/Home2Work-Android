@@ -17,7 +17,7 @@ class AddressDataEntityMapper @Inject constructor() : Mapper<AddressData, Addres
                 district = from.district,
                 postalCode = from.postalCode,
                 street = from.street,
-                number = from.number
+                region = from.region
         )
     }
 }

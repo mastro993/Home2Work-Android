@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLancher
+import it.gruppoinfor.home2work.chat.ChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.remove
@@ -13,8 +13,6 @@ import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.dialog_match_info.*
 import kotlinx.android.synthetic.main.item_match.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,20 +23,13 @@ class MatchInfoDialog constructor(context: Context, private val imageLoader: Ima
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_match_info)
-        text_container.hide()
         text_match_score.remove()
 
-        doAsync {
-            Thread.sleep(500)
-            uiThread {
-                initUI()
-            }
-        }
+        initUI()
 
     }
 
     private fun initUI() {
-        text_container.show()
 
         val host = match.host
 
@@ -83,7 +74,7 @@ class MatchInfoDialog constructor(context: Context, private val imageLoader: Ima
 
 
         button_send_message.setOnClickListener {
-            ChatActivityLancher(
+            ChatActivityLauncher(
                     chatId = 0L,
                     recipientId = host.id,
                     recipientName = host.name

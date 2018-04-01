@@ -22,13 +22,13 @@ interface ChatService {
     fun sendMessageToChat(
             @Path("chatId") chatId: Long?,
             @Field("text") text: String?
-    ): Observable<Boolean>
+    ): Observable<ChatMessageData>
 
     @FormUrlEncoded
     @POST("chat/new")
     fun newChat(
             @Field("recipientId") userId: Long?
-    ): Observable<ChatEntity>
+    ): Observable<ChatData>
 
     @GET("user/chat")
     fun getChatList(): Observable<List<ChatData>>

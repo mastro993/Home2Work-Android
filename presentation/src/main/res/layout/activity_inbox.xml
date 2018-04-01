@@ -24,12 +24,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:dialogDividerLeftPadding="0dp"
-            app:dialogMessageTextSize="17sp"
+            app:dialogTitleTextSize="16sp"
+            app:dialogTitleTextColor="@color/light_bg_dark_secondary_text"
             app:dialogTitleTextStyle="bold"
+            app:dialogUnreadTitleTextColor="@color/light_bg_dark_primary_text"
+            app:dialogUnreadTitleTextStyle="bold"
+            app:dialogUnreadItemBackground="@color/grey_100"
+            app:dialogUnreadMessageTextColor="@color/light_bg_dark_secondary_text"
             app:dialogAvatarHeight="44dp"
             app:dialogAvatarWidth="44dp"
-            app:dialogUnreadBubbleBackgroundColor="@color/red_500"
-            app:dialogUnreadTitleTextStyle="bold" />
+            app:dialogUnreadBubbleBackgroundColor="@color/colorAccent"
+            app:dialogUnreadBubbleTextSize="10sp"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

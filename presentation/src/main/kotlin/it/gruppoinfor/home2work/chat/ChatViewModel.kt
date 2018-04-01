@@ -26,6 +26,7 @@ class ChatViewModel(
     var chatId: Long? = null
     var userId: Long? = null
     var viewState: MutableLiveData<ChatViewState> = MutableLiveData()
+    var messageSent: SingleLiveEvent<ChatMessage> = SingleLiveEvent()
     var errorState: SingleLiveEvent<String> = SingleLiveEvent()
 
     init {
@@ -130,14 +131,17 @@ class ChatViewModel(
     }
 
     fun sendMessage(message: String) {
-
         chatId?.let {
             addDisposable(sendMessage.send(it, message)
+                    .map { messageMapper.mapFrom(it) }
                     .subscribe({
 
-                        if (it) {
-                            silentRefreshMessageList()
-                        }
+                        val newViewState = viewState.value?.copy(
+                                screenState = ScreenState.Done
+                        )
+                        viewState.value = newViewState
+                        messageSent.value = it
+
 
                     }, {
 

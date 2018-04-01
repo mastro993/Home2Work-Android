@@ -14,7 +14,7 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLancher
+import it.gruppoinfor.home2work.chat.ChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.extensions.getScore
 import it.gruppoinfor.home2work.common.extensions.remove
@@ -190,7 +190,7 @@ class MatchesFragment : Fragment() {
             val recipientId = match.host.id
             val recipientName = match.host.name
 
-            ChatActivityLancher(
+            ChatActivityLauncher(
                     chatId = 0L,
                     recipientId = recipientId,
                     recipientName = recipientName

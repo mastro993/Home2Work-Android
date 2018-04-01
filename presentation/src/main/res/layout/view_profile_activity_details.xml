@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/cardview_light_background"
     android:clipChildren="false"
     android:clipToPadding="false"
+    android:elevation="@dimen/cardview_default_elevation"
     android:orientation="vertical"
     android:paddingBottom="16dp"
     android:paddingEnd="26dp"
     android:paddingStart="26dp"
-    android:background="@color/cardview_light_background"
-    android:elevation="@dimen/cardview_default_elevation"
-    android:paddingTop="16dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingTop="16dp">
 
     <TextView
-        android:textSize="16sp"
+        android:id="@+id/text_activity_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:includeFontPadding="false"
-        android:text="@string/profile_activity_details_title" />
+        android:text="@string/profile_activity_details_title"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart_activity"
@@ -28,7 +32,10 @@
         android:layout_marginBottom="32dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:visibility="gone" />
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_activity_title" />
 
     <FrameLayout
         android:id="@+id/no_activity_chart_data_view"
@@ -38,7 +45,10 @@
         android:layout_marginBottom="16dp"
         android:background="@color/cardview_light_background"
         android:clipToPadding="false"
-        android:visibility="visible">
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_activity_title">
 
         <ImageView
             android:layout_width="match_parent"
@@ -58,77 +68,74 @@
 
     </FrameLayout>
 
-    <RelativeLayout
+    <TextView
+        android:layout_marginTop="32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="Distanza condivisa questo mese"
+        android:textColor="@color/light_bg_dark_secondary_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_activity" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="Distanza condivisa questo mese"
-            android:textColor="@color/light_bg_dark_secondary_text" />
-
-        <TextView
-            android:id="@+id/text_month_shared_distance_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            tools:text="168,5 Km"
-            android:textColor="@color/colorAccent" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
+    <TextView
+        android:layout_marginTop="32dp"
+        android:id="@+id/text_month_shared_distance_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_activity"
+        tools:text="168,5 Km" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="Media distanza condivisa mensile"
-            android:textColor="@color/light_bg_dark_secondary_text" />
-
-        <TextView
-            android:id="@+id/text_month_shared_distance_avg_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            tools:text="120,6 Km"
-            android:textColor="@color/colorPrimary" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="8dp"
+        android:text="Media distanza condivisa mensile"
+        android:textColor="@color/light_bg_dark_secondary_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_month_shared_distance_value" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="Distanza totale condivisa"
-            android:textColor="@color/light_bg_dark_secondary_text" />
+    <TextView
+        android:id="@+id/text_month_shared_distance_avg_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_month_shared_distance_value"
+        tools:text="113,6 Km" />
 
-        <TextView
-            android:id="@+id/text_shared_distance_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            tools:text="1.456,2 Km"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"
+        android:text="Distanza totale condivisa"
+        android:textColor="@color/light_bg_dark_secondary_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_month_shared_distance_avg_value" />
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/text_shared_distance_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_month_shared_distance_avg_value"
+        tools:text="1.456,2 Km" />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -34,7 +34,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var statusView: ScreenStateView
 
     private val args by lazy {
-        ChatActivityLancher.deserializeFrom(intent)
+        ChatActivityLauncher.deserializeFrom(intent)
     }
 
     var adapter: MessagesListAdapter<ChatMessage>? = null
@@ -122,6 +122,10 @@ class ChatActivity : AppCompatActivity() {
         })
         viewModel.viewState.observe(this, Observer {
             handleViewState(it)
+        })
+
+        viewModel.messageSent.observe(this, Observer {
+            adapter?.addToStart(it, true)
         })
 
     }

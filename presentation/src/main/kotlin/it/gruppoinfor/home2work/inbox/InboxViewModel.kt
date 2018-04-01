@@ -91,7 +91,7 @@ class InboxViewModel(
                         )
                     } else {
                         viewState.value?.copy(
-                                isRefreshing = true,
+                                isRefreshing = false,
                                 chatList = it
                         )
                     }

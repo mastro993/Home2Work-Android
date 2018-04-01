@@ -11,8 +11,9 @@ import android.view.MenuItem
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter
+import com.stfalcon.chatkit.utils.DateFormatter
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLancher
+import it.gruppoinfor.home2work.chat.ChatActivityLauncher
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.common.extensions.showToast
@@ -24,6 +25,9 @@ import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -60,7 +64,7 @@ class InboxActivity : AppCompatActivity() {
             viewModel.refreshChatList()
         }
 
-        dialogsListAdapter = DialogsListAdapter(R.layout.item_dialog_custom , ImageLoader { imageView, url ->
+        dialogsListAdapter = DialogsListAdapter(R.layout.item_dialog_custom, ImageLoader { imageView, url ->
             imageLoader.load(
                     url = url,
                     imageView = imageView,
@@ -76,7 +80,7 @@ class InboxActivity : AppCompatActivity() {
             val recipientId = author.id.toLong()
             val recipientName = author.name
 
-            ChatActivityLancher(
+            ChatActivityLauncher(
                     chatId = chatId,
                     recipientId = recipientId,
                     recipientName = recipientName)
@@ -84,6 +88,28 @@ class InboxActivity : AppCompatActivity() {
 
         })
 
+
+        dialogsListAdapter?.setDatesFormatter(object : DateFormatter.Formatter {
+            override fun format(date: Date?): String {
+
+                var difference = Date().time - date!!.time
+                val elapsedDays = difference / TimeUnit.DAYS.toMillis(1)
+                difference %= TimeUnit.DAYS.toMillis(1)
+
+                return when {
+                    elapsedDays > 1 -> {
+                        val sdfDate = SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN)
+                        sdfDate.format(date)
+
+                    }
+                    elapsedDays > 0 -> "Ieri"
+                    else -> {
+                        val sdfTime = SimpleDateFormat("HH:mm", Locale.ITALIAN)
+                        sdfTime.format(date)
+                    }
+                }
+            }
+        })
         dialogsList.setAdapter(dialogsListAdapter)
 
         observeViewState()

@@ -3,6 +3,7 @@ package it.gruppoinfor.home2work.common.utilities
 
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 object DateFormatUtils {
@@ -11,18 +12,10 @@ object DateFormatUtils {
 
         if (startDate == null) return ""
 
-        val endDate = Date()
+        var difference = Date().time - startDate.time
 
-        //milliseconds
-        var difference = endDate.time - startDate.time
-
-        val secondsInMillis: Long = 1000
-        val minutesInMillis = secondsInMillis * 60
-        val hoursInMillis = minutesInMillis * 60
-        val daysInMillis = hoursInMillis * 24
-
-        val elapsedDays = difference / daysInMillis
-        difference %= daysInMillis
+        val elapsedDays = difference / TimeUnit.DAYS.toMillis(1)
+        difference %= TimeUnit.DAYS.toMillis(1)
 
         when {
             elapsedDays > 6 -> {
@@ -36,8 +29,8 @@ object DateFormatUtils {
             elapsedDays > 0 -> return elapsedDays.toString() + " giorno fa"
             else -> {
 
-                val elapsedHours = difference / hoursInMillis
-                difference %= hoursInMillis
+                val elapsedHours = difference / TimeUnit.HOURS.toMillis(1)
+                difference %= TimeUnit.HOURS.toMillis(1)
 
                 if (elapsedHours > 1) {
                     return elapsedHours.toString() + " ore fa"
@@ -45,8 +38,8 @@ object DateFormatUtils {
                     return elapsedHours.toString() + " ora fa"
                 }
 
-                val elapsedMinutes = difference / minutesInMillis
-                difference %= minutesInMillis
+                val elapsedMinutes = difference / TimeUnit.MINUTES.toMillis(1)
+                difference %= TimeUnit.MINUTES.toMillis(1)
 
                 if (elapsedMinutes > 1) {
                     return elapsedMinutes.toString() + " minuti fa"

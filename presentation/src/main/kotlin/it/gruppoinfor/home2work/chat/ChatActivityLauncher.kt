@@ -6,7 +6,7 @@ import it.gruppoinfor.home2work.common.ActivityLancher
 import org.jetbrains.anko.intentFor
 
 
-class ChatActivityLancher(
+class ChatActivityLauncher(
         val chatId: Long,
         val recipientId: Long,
         val recipientName: String
@@ -25,8 +25,8 @@ class ChatActivityLancher(
         private const val KEY_RECIPIENT_ID: String = "recipient_id"
         private const val KEY_RECIPIENT_NAME: String = "recipient_name"
 
-        fun deserializeFrom(intent: Intent): ChatActivityLancher {
-            return ChatActivityLancher(
+        fun deserializeFrom(intent: Intent): ChatActivityLauncher {
+            return ChatActivityLauncher(
                     chatId = intent.getLongExtra(KEY_CHAT_ID, 0L),
                     recipientId = intent.getLongExtra(KEY_RECIPIENT_ID, 0L),
                     recipientName = intent.getStringExtra(KEY_RECIPIENT_NAME)

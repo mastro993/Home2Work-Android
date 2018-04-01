@@ -4,17 +4,8 @@
     android:height="72dp"
     android:viewportHeight="72"
     android:viewportWidth="72">
-    <group
-        android:pivotX="36"
-        android:pivotY="36"
-        android:scaleX="0.93"
-        android:scaleY="0.93">
-
-        <path
-            android:fillColor="@color/transparent"
-            android:pathData="M 36,-3e-5 C 5.1428571,-3e-5 -1.5e-7,5.14283 5.0000003e-8,36.00004 -1.5e-7,66.85724 5.1428571,72.00004 36,72.00004 c 30.857143,0 36,-5.1428 36,-36 C 72,5.14283 66.857143,-3e-5 36,-3e-5 Z"
-            android:strokeColor="@color/bottom_nav_inactive"
-            android:strokeWidth="5" />
-    </group>
+    <path
+        android:fillColor="@color/window_background"
+        android:pathData="M 36,-3e-5 C 5.1428571,-3e-5 -1.5e-7,5.14283 5.0000003e-8,36.00004 -1.5e-7,66.85724 5.1428571,72.00004 36,72.00004 c 30.857143,0 36,-5.1428 36,-36 C 72,5.14283 66.857143,-3e-5 36,-3e-5 Z" />
 
 </vector>

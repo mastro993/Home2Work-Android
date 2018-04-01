@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLancher
+import it.gruppoinfor.home2work.chat.ChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
@@ -116,7 +116,7 @@ class UserActivity : AppCompatActivity() {
         }
 
         button_send_message.setOnClickListener {
-            ChatActivityLancher(
+            ChatActivityLauncher(
                     chatId = 0L,
                     recipientId = args.userId,
                     recipientName = args.userName
@@ -124,7 +124,6 @@ class UserActivity : AppCompatActivity() {
         }
 
         text_name_small.text = args.userName
-        avatar_view_small.setAvatarURL(args.userAvatarUrl)
         avatar_view.setAvatarURL(args.userAvatarUrl)
         name_text_view.text = args.userName
         job_text_view.text = args.userCompanyName

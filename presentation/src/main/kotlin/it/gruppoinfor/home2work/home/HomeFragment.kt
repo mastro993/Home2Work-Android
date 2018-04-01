@@ -1,10 +1,13 @@
 package it.gruppoinfor.home2work.home
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.common.views.InboxIconView
 import it.gruppoinfor.home2work.di.DipendencyInjector
@@ -35,6 +38,16 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel.viewState.observe(this, Observer {
+            it?.let {
+                inboxIconView?.setCount(it.inboxCount)
+            }
+        })
     }
 
     override fun onResume() {

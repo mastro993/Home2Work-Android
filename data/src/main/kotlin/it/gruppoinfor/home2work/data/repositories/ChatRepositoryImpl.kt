@@ -12,21 +12,27 @@ import it.gruppoinfor.home2work.domain.interfaces.ChatRepository
 
 class ChatRepositoryImpl(
         private val chatMapper: ChatDataEntityMapper,
-        private val messageMapper: ChatMessageDataEntityMapper
+        private val chatMessageMapper: ChatMessageDataEntityMapper
 ) : ChatRepository {
 
     private val chatService = APIService.get<ChatService>()
 
     override fun getChatMessageList(chatId: Long): Observable<List<ChatMessageEntity>> {
-        return chatService.getChatMessageList(chatId).map { it.map { messageMapper.mapFrom(it) } }
+        return chatService.getChatMessageList(chatId).map { it.map { chatMessageMapper.mapFrom(it) } }
     }
 
-    override fun sendMessage(chatId: Long, message: String): Observable<Boolean> {
+    override fun sendMessage(chatId: Long, message: String): Observable<ChatMessageEntity> {
         return chatService.sendMessageToChat(chatId, message)
+                .map {
+                    chatMessageMapper.mapFrom(it)
+                }
     }
 
     override fun newChat(userId: Long): Observable<ChatEntity> {
         return chatService.newChat(userId)
+                .map {
+                    chatMapper.mapFrom(it)
+                }
     }
 
     override fun getChatList(): Observable<List<ChatEntity>> {
