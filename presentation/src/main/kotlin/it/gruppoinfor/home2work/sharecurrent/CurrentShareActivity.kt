@@ -18,10 +18,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -139,8 +136,15 @@ class CurrentShareActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ActiveShareEvent) {
 
-        qrCodeDialog?.dismiss()
-        viewModel.getActiveShare()
+        if(event.finished){
+            localUserData.currentShare = null
+            finish()
+        } else {
+            qrCodeDialog?.dismiss()
+            viewModel.getActiveShare()
+        }
+
+        button_complete_share_host.isEnabled = enableCompleteButton()
 
     }
 
@@ -175,13 +179,8 @@ class CurrentShareActivity : AppCompatActivity() {
             qrCodeDialog?.show()
 
             val qrCodeImage = sheetView.find<ImageView>(R.id.qr_code_image_view)
-            val loadingView = sheetView.find<FrameLayout>(R.id.loading_view)
-
-            loadingView.visibility = View.VISIBLE
 
             qrCodeDialog?.show()
-
-
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -192,8 +191,7 @@ class CurrentShareActivity : AppCompatActivity() {
 
                 val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-                pb_qr_code.show()
-                qr_code_image_view.hide()
+                qrCodeImage.hide()
 
                 mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
@@ -209,13 +207,11 @@ class CurrentShareActivity : AppCompatActivity() {
 
                         qrCodeBitmap?.let {
                             qrCodeImage.setImageBitmap(qrCodeBitmap)
-                            loadingView.visibility = View.INVISIBLE
                         } ?: qrCodeDialog?.dismiss()
 
                         mFusedLocationClient.removeLocationUpdates(this)
 
-                        pb_qr_code.remove()
-                        qr_code_image_view.show()
+                        qrCodeImage.show()
 
                     }
                 }, Looper.myLooper())
@@ -255,10 +251,10 @@ class CurrentShareActivity : AppCompatActivity() {
             val user = guest.user
             UserActivityLancher(
                     userId = user.id,
-                    userName = user.toString(),
+                    userName = user.fullName,
                     userAvatarUrl = user.avatarUrl,
                     userCompanyId = user.company!!.id,
-                    userCompanyName = user.company!!.name
+                    userCompanyName = user.company!!.formattedName
             ).launch(this)
 
         }, { guest, _ ->

@@ -1,4 +1,6 @@
 package it.gruppoinfor.home2work.common.events
 
 
-class ActiveShareEvent
+data class ActiveShareEvent(
+        val finished: Boolean = false
+)

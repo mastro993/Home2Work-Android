@@ -18,6 +18,7 @@ import it.gruppoinfor.home2work.sharehistory.ShareHistoryActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.view_profile_activity_details.*
 import kotlinx.android.synthetic.main.view_profile_exp_details.*
+import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
 import java.text.SimpleDateFormat
@@ -160,7 +161,7 @@ class ProfileFragment : Fragment() {
                 chart_activity.remove()
             }
 
-            text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), SimpleDateFormat("MMMM", Locale.ITALY).format(Date()).capitalize())
+            text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), Date().format("MMMM").capitalize())
             text_month_shares_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), it.stats.monthShares)
             text_month_shares_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_avg_value), it.stats.monthlySharesAvg)
             text_month_shares_record_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month_value), it.stats.bestMonthShares)
@@ -175,9 +176,7 @@ class ProfileFragment : Fragment() {
                 chart_shares.remove()
             }
 
-            val simpleDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
-            val strDt = simpleDate.format(it.regdate)
-            text_regdate.text = strDt
+            text_regdate.text = it.regdate.format("dd MMMM yyyy")
 
         } ?: profile_container.remove()
 

@@ -123,38 +123,19 @@
 
                         <include layout="@layout/view_profile_exp_details" />
 
+                        <include layout="@layout/horizontal_divider" />
+
                         <include layout="@layout/view_profile_activity_details" />
 
-                        <include layout="@layout/view_profile_milestones" />
+                        <include layout="@layout/horizontal_divider" />
+
+                        <!--<include layout="@layout/view_profile_milestones" />-->
 
                         <include layout="@layout/view_profile_shares_details" />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/white"
-                            android:elevation="@dimen/cardview_default_elevation"
-                            android:paddingBottom="64dp"
-                            android:paddingEnd="24dp"
-                            android:paddingStart="24dp"
-                            android:paddingTop="24dp">
+                        <include layout="@layout/horizontal_divider" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/fragment_profile_registration_date"
-                                android:textColor="@color/light_bg_dark_secondary_text" />
-
-                            <TextView
-                                android:id="@+id/text_regdate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:text="dd mmmm yyyy"
-                                android:textColor="@color/colorAccent" />
-
-                        </RelativeLayout>
+                        <include layout="@layout/view_profile_footer" />
 
                     </LinearLayout>
 

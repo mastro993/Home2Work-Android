@@ -195,5 +195,6 @@
     <string name="current_share_host_view_guests">Passeggeri</string>
     <string name="button_complete">Completa</string>
 
+    <string name="com.crashlytics.android.build_id">gdfwfrgyt56g46464565645645</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
+import it.gruppoinfor.home2work.data.entities.GuestData
 import it.gruppoinfor.home2work.data.entities.ShareData
 import it.gruppoinfor.home2work.domain.entities.Optional
 import retrofit2.http.*
@@ -9,12 +10,17 @@ import retrofit2.http.*
 interface ShareService {
 
     @GET("user/share")
-    fun getShareList(): Observable<List<ShareData>>
+    fun getCompletedShareList(): Observable<List<ShareData>>
 
     @GET("share/{id}")
-    fun getShare(
+    fun getCompletedShare(
             @Path("id") shareId: Long?
     ): Observable<Optional<ShareData>>
+
+    @GET("share/{id}/guests")
+    fun getShareGuests(
+            @Path("id") shareId: Long?
+    ): Observable<List<GuestData>>
 
     @GET("share/current")
     fun getCurrentShare(): Observable<ShareData>

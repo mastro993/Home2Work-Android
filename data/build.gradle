@@ -14,7 +14,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,26 +32,26 @@ android {
 
 }
 
-    dependencies {
-        implementation fileTree(dir: 'libs', include: ['*.jar'])
-        androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-        kapt rootProject.ext.daggerCompiler
-        implementation rootProject.ext.dagger
-        implementation rootProject.ext.rxJava
-        implementation rootProject.ext.retrofit
-        implementation rootProject.ext.retrofitGsonConverter
-        implementation rootProject.ext.retrofitRxJava2Adapter
+    kapt rootProject.ext.daggerCompiler
+    implementation rootProject.ext.dagger
+    implementation rootProject.ext.rxJava
+    implementation rootProject.ext.retrofit
+    implementation rootProject.ext.retrofitGsonConverter
+    implementation rootProject.ext.retrofitRxJava2Adapter
 
-        implementation rootProject.ext.objectBox
-        kapt rootProject.ext.objectBoxProcessor
-        implementation rootProject.ext.objectBoxRx
+    implementation rootProject.ext.objectBox
+    kapt rootProject.ext.objectBoxProcessor
+    implementation rootProject.ext.objectBoxRx
 
-        implementation rootProject.ext.chatKit
-        implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation rootProject.ext.chatKit
+    implementation 'org.greenrobot:eventbus:3.1.1'
 
-        testImplementation rootProject.ext.junit
-        androidTestImplementation rootProject.ext.androidTestRunner
+    testImplementation rootProject.ext.junit
+    androidTestImplementation rootProject.ext.androidTestRunner
 
-        implementation project(':domain')
-    }
+    implementation project(':domain')
+}

@@ -36,7 +36,7 @@ fun ProgressBar.animateTo(value: Float) {
 
 fun LineChart.setUp() {
 
-    setViewPortOffsets(16f, 0f, 16f, 0f)
+    setViewPortOffsets(32f, 0f, 32f, 0f)
 
     description.isEnabled = false
     isDragEnabled = false

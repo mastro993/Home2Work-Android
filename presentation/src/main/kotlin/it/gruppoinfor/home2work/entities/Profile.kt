@@ -7,5 +7,5 @@ class Profile(
         var exp: Experience,
         var stats: Statistics,
         var activity: Map<Int, SharingActivity>,
-        var regdate: Date?
+        var regdate: Date
 )

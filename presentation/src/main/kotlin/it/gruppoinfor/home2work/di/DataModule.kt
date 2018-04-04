@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.objectbox.BoxStore
+import it.gruppoinfor.home2work.common.mappers.GuestEntityGuestMapper
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.user.SettingsPreferences
 import it.gruppoinfor.home2work.common.user.UserPreferences
@@ -69,9 +70,10 @@ class DataModule {
     @Provides
     @Singleton
     fun provideShareRepository(
-            shareDataEntityMapper: ShareDataEntityMapper
+            shareDataEntityMapper: ShareDataEntityMapper,
+            guestDataEntityMapper: GuestDataEntityMapper
     ): ShareRepository {
-        return ShareRepositoryImpl(shareDataEntityMapper)
+        return ShareRepositoryImpl(shareDataEntityMapper, guestDataEntityMapper)
     }
 
     @Provides

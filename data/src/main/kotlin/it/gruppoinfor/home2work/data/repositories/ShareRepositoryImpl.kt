@@ -4,26 +4,35 @@ import io.reactivex.Observable
 import it.gruppoinfor.home2work.data.api.APIService
 import it.gruppoinfor.home2work.data.api.get
 import it.gruppoinfor.home2work.data.api.services.ShareService
+import it.gruppoinfor.home2work.data.mappers.GuestDataEntityMapper
 import it.gruppoinfor.home2work.data.mappers.ShareDataEntityMapper
+import it.gruppoinfor.home2work.domain.entities.GuestEntity
 import it.gruppoinfor.home2work.domain.entities.Optional
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 
 
 class ShareRepositoryImpl(
-        private val mapper: ShareDataEntityMapper
+        private val mapper: ShareDataEntityMapper,
+        private val guestMapper: GuestDataEntityMapper
 ) : ShareRepository {
 
     private val shareService = APIService.get<ShareService>()
 
     override fun getShare(shareId: Long): Observable<Optional<ShareEntity>> {
-        return shareService.getShare(shareId).map {
+        return shareService.getCompletedShare(shareId).map {
             mapper.mapOptional(it)
         }
     }
 
+    override fun getShareGuests(shareId: Long): Observable<List<GuestEntity>> {
+        return shareService.getShareGuests(shareId).map {
+            it.map { guestMapper.mapFrom(it) }
+        }
+    }
+
     override fun getShareList(): Observable<List<ShareEntity>> {
-        return shareService.getShareList().map {
+        return shareService.getCompletedShareList().map {
             it.map { mapper.mapFrom(it) }
         }
     }

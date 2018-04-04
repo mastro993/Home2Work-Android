@@ -3,8 +3,10 @@ package it.gruppoinfor.home2work.sharecurrent
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import it.gruppoinfor.home2work.domain.Mapper
+import it.gruppoinfor.home2work.domain.entities.GuestEntity
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.usecases.*
+import it.gruppoinfor.home2work.entities.Guest
 import it.gruppoinfor.home2work.entities.Share
 
 

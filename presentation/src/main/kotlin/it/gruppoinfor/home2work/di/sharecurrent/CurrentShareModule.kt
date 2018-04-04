@@ -3,6 +3,7 @@ package it.gruppoinfor.home2work.di.sharecurrent
 import dagger.Module
 import dagger.Provides
 import it.gruppoinfor.home2work.common.ASyncTransformer
+import it.gruppoinfor.home2work.common.mappers.GuestEntityGuestMapper
 import it.gruppoinfor.home2work.common.mappers.ShareEntityShareMapper
 import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 import it.gruppoinfor.home2work.domain.usecases.*
@@ -16,6 +17,11 @@ class CurrentShareModule {
     @Provides
     fun provideGetActiveShareUseCase(shareRepository: ShareRepository): GetActiveShare {
         return GetActiveShare(ASyncTransformer(), shareRepository)
+    }
+
+    @Provides
+    fun provideGetShareGuestsUseCase(shareRepository: ShareRepository): GetShareGuests {
+        return GetShareGuests(ASyncTransformer(), shareRepository)
     }
 
     @Provides

@@ -7,8 +7,10 @@ import it.gruppoinfor.home2work.common.SingleLiveEvent
 import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
+import it.gruppoinfor.home2work.domain.entities.GuestEntity
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.usecases.*
+import it.gruppoinfor.home2work.entities.Guest
 import it.gruppoinfor.home2work.entities.Share
 
 class CurrentShareViewModel(
@@ -71,33 +73,13 @@ class CurrentShareViewModel(
 
     }
 
-    fun refreshActiveShare() {
-
-        addDisposable(getActiveShare.observable()
-                .map { shareMapper.mapFrom(it) }
-                .subscribe({
-
-
-                    val newViewState = viewState.value?.copy(
-                            share = it
-                    )
-                    viewState.value = newViewState
-
-
-                }, {
-
-
-                }))
-
-    }
-
     fun banUser(userId: Long) {
         addDisposable(banUserFromShare.banById(userId)
                 .subscribe({
 
                     if (it) {
                         infoEvent.value = "Utente espulso"
-                        refreshActiveShare()
+                        getActiveShare()
                     } else {
                         errorEvent.value = "Impossibile espellere l'utente selezionato"
                     }
@@ -147,11 +129,7 @@ class CurrentShareViewModel(
             addDisposable(completeCurrentShare.completeFrom(completeLocation.latitude, completeLocation.longitude)
                     .subscribe({
 
-                        if (it) {
-                            shareFinishEvent.value = true
-                        } else {
-                            errorEvent.value = "Impossibile completare la condivisione corso"
-                        }
+                        shareFinishEvent.value = true
                     }, {
 
                         errorEvent.value = "Impossibile completare la condivisione in corso"

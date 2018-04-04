@@ -32,9 +32,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-        val kit = Crashlytics.Builder().core(core).build()
-        Fabric.with(this, kit)
+        val crashlyticsKit = Crashlytics.Builder()
+                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build()
+        Fabric.with(this, crashlyticsKit)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(FileLoggingTree())

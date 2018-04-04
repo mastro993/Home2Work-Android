@@ -10,5 +10,6 @@ data class ShareData(
         @SerializedName("Status") var status: ShareStatusData,
         @SerializedName("Time") var date: Date? = null,
         @SerializedName("Type") var type: ShareTypeData,
-        @SerializedName("Guests") var guests: ArrayList<GuestData> = ArrayList()
+        @SerializedName("Guests") var guests: ArrayList<GuestData> = ArrayList(),
+        @SerializedName("SharedDistance") var sharedDistance: Int = 0
 )

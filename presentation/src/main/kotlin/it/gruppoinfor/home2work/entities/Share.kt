@@ -9,5 +9,6 @@ data class Share(
         var status: ShareStatus? = null,
         var date: Date? = null,
         var type: ShareType? = null,
-        var guests: ArrayList<Guest> = ArrayList()
+        var guests: ArrayList<Guest> = ArrayList(),
+        var sharedDistance: Int = 0
 )

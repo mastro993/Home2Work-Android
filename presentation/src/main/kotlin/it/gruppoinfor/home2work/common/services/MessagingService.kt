@@ -44,8 +44,11 @@ class MessagingService : FirebaseMessagingService() {
                 val text = remoteMessage.data[TEXT]!!
                 EventBus.getDefault().post(NewMessageEvent(chatId, text))
             }
-            SHARE_JOIN, SHARE_COMPLETED, SHARE_CANCELED, SHARE_LEAVED, SHARE_BAN -> {
+            SHARE_JOIN, SHARE_COMPLETED, SHARE_LEAVED -> {
                 EventBus.getDefault().post(ActiveShareEvent())
+            }
+            SHARE_BAN, SHARE_CANCELED -> {
+                EventBus.getDefault().post(ActiveShareEvent(finished = true))
             }
             else -> {
                 //val intent = Intent(type)
