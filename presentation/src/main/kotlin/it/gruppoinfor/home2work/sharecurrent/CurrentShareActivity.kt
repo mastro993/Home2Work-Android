@@ -133,21 +133,6 @@ class CurrentShareActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: ActiveShareEvent) {
-
-        if(event.finished){
-            localUserData.currentShare = null
-            finish()
-        } else {
-            qrCodeDialog?.dismiss()
-            viewModel.getActiveShare()
-        }
-
-        button_complete_share_host.isEnabled = enableCompleteButton()
-
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -283,12 +268,8 @@ class CurrentShareActivity : AppCompatActivity() {
                 viewModel.banUser(guest.user.id)
             }
 
-            if (guest.status != GuestStatus.JOINED) {
-                sheetView.find<TextView>(R.id.guest_dialog_ban).remove()
-            }
-
             with(sheetView.find<TextView>(R.id.guest_dialog_ban)) {
-                if (guest.status == ShareStatus.CANCELED || guest.status == ShareStatus.COMPLETED) {
+                if (guest.status == GuestStatus.LEAVED || guest.status == GuestStatus.COMPLETED) {
                     remove()
                 } else {
                     show()
@@ -470,6 +451,21 @@ class CurrentShareActivity : AppCompatActivity() {
             }, Looper.myLooper())
 
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: ActiveShareEvent) {
+
+        if(event.finished){
+            localUserData.currentShare = null
+            finish()
+        } else {
+            qrCodeDialog?.dismiss()
+            viewModel.getActiveShare()
+        }
+
+        button_complete_share_host.isEnabled = enableCompleteButton()
+
     }
 
 

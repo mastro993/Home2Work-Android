@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inbox_icon_container"
     style="@android:style/Widget.ActionButton"
     android:layout_width="wrap_content"
@@ -33,7 +34,7 @@
         android:background="@drawable/bg_inbox_icon_text"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="3"
+        tools:text="3"
         android:textColor="#ffffffff"
         android:textStyle="bold"
         android:visibility="invisible" />

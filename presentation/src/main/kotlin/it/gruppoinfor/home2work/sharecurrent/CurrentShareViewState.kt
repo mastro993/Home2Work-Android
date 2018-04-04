@@ -7,6 +7,5 @@ import it.gruppoinfor.home2work.entities.Share
 
 data class CurrentShareViewState(
         var screenState: ScreenState? = null,
-        var share: Share? = null,
-        var guests: List<Guest> = listOf()
+        var share: Share? = null
 )
