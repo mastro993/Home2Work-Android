@@ -17,8 +17,9 @@ class SplashViewModel(
         private val getUser: GetUser,
         private val userEntityUserMapper: Mapper<UserEntity, User>,
         private val localUserData: LocalUserData
-) : BaseViewModel<SplashViewState>() {
+) : BaseViewModel() {
 
+    var viewState: MutableLiveData<SplashViewState> = MutableLiveData()
     var errorState: SingleLiveEvent<String> = SingleLiveEvent()
     var loginState: SingleLiveEvent<Boolean> = SingleLiveEvent()
 

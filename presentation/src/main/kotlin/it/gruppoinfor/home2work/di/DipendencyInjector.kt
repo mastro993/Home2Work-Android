@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.di
 
 import android.content.Context
-import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
 import it.gruppoinfor.home2work.di.firebase.FirebaseModule
@@ -28,7 +27,6 @@ import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
-import it.gruppoinfor.home2work.splash.SplashActivity
 
 object DipendencyInjector {
     lateinit var mainComponent: MainComponent
@@ -54,22 +52,6 @@ object DipendencyInjector {
                 .dataModule(DataModule())
                 .build()
 
-    }
-
-    fun inject(baseActivity: BaseActivity<*, *, *>){
-        when(baseActivity){
-            is SplashActivity -> {
-                createSplashComponent().inject(baseActivity)
-            }
-        }
-    }
-
-    fun release(baseActivity: BaseActivity<*, *, *>){
-        when(baseActivity){
-            is SplashActivity -> {
-                releaseSplashComponent()
-            }
-        }
     }
 
     fun createFirebaseComponent(): FirebaseSubComponent {
