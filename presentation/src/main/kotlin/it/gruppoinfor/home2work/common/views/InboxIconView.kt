@@ -13,6 +13,10 @@ import org.jetbrains.anko.intentFor
 
 class InboxIconView : RelativeLayout {
 
+    companion object {
+        private var messageCount: Int = 0
+    }
+
     constructor(context: Context) : super(context) {
 
         View.inflate(context, R.layout.view_inbox_icon, this)
@@ -35,12 +39,14 @@ class InboxIconView : RelativeLayout {
     }
 
     private fun initUI() {
+        setCount(messageCount)
         inbox_icon_container.setOnClickListener {
             context.startActivity(context.intentFor<InboxActivity>())
         }
     }
 
     fun setCount(unread: Int) {
+        messageCount = unread
         if (unread > 0) {
             //messages_image_view.visibility = View.INVISIBLE
             messages_counter_text_view.show()
