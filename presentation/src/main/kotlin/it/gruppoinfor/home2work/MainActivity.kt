@@ -51,7 +51,7 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    val CAMERA_PERMISSION_REQUEST_CODE = 1
+    private val CAMERA_PERMISSION_REQUEST_CODE = 1
 
     @Inject
     lateinit var factory: MainVMFactory
