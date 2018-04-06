@@ -1,7 +1,7 @@
 package it.gruppoinfor.home2work.data.repositories
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.chat.ChatMessageEntity
+import it.gruppoinfor.home2work.domain.entities.ChatMessageEntity
 import it.gruppoinfor.home2work.data.api.APIService
 import it.gruppoinfor.home2work.data.api.get
 import it.gruppoinfor.home2work.data.api.services.ChatService

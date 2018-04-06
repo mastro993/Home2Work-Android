@@ -8,7 +8,7 @@
     android:clipChildren="false"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:mContext="it.gruppoinfor.home2work.MainActivity">
+    tools:mContext="it.gruppoinfor.home2work.main.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/ab_main"

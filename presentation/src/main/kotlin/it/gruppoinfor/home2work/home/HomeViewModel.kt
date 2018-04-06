@@ -1,10 +1,10 @@
 package it.gruppoinfor.home2work.home
 
 import android.arch.lifecycle.MutableLiveData
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.common.BaseViewModel
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
 import it.gruppoinfor.home2work.domain.usecases.GetChatList
+import it.gruppoinfor.home2work.main.MainActivity
 import org.greenrobot.eventbus.EventBus
 
 
@@ -19,14 +19,15 @@ class HomeViewModel(
     }
 
     fun getInboxCount() {
+
         addDisposable(getChatList.observable()
                 .subscribe({
 
-                    val inboxCount = it.count { it.unreadCnt > 0 }
+                    val unreadChatCount = it.count { it.unreadCnt > 0 }
 
-                    EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.HOME_TAB, if (inboxCount == 0) "" else inboxCount.toString()))
+                    EventBus.getDefault().post(BottomNavBadgeEvent(MainActivity.HOME_TAB, if (unreadChatCount == 0) "" else unreadChatCount.toString()))
 
-                    val newViewState = viewState.value?.copy(inboxCount = inboxCount)
+                    val newViewState = viewState.value?.copy(unreadChatCount = unreadChatCount)
                     viewState.value = newViewState
 
                 }, {

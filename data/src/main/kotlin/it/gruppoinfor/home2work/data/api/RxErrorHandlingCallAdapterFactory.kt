@@ -45,7 +45,7 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
                     // Utente non autenticato (session token errato o mancante)
                     EventBus.getDefault().post(LogoutEvent())
                 }
-                RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
+                return RetrofitException.httpError(response.raw().request().url().toString(), response, retrofit)
             }
 
             // Errore di comunicazione

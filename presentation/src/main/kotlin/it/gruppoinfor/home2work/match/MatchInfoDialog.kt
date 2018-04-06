@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLauncher
+import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.remove
@@ -74,7 +74,7 @@ class MatchInfoDialog constructor(context: Context, private val imageLoader: Ima
 
 
         button_send_message.setOnClickListener {
-            ChatActivityLauncher(
+            SingleChatActivityLauncher(
                     chatId = 0L,
                     recipientId = host.id,
                     recipientName = host.name

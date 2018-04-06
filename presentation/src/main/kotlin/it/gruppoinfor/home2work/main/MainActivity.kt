@@ -1,12 +1,10 @@
-package it.gruppoinfor.home2work
+package it.gruppoinfor.home2work.main
 
 import android.Manifest
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.support.design.widget.BottomSheetDialog
@@ -16,9 +14,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
-import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
@@ -28,14 +23,13 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.common.services.LocationService
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
@@ -47,49 +41,24 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
 import org.jetbrains.anko.intentFor
-import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
     private val CAMERA_PERMISSION_REQUEST_CODE = 1
 
-    @Inject
-    lateinit var factory: MainVMFactory
-    @Inject
-    lateinit var localUserData: LocalUserData
-
-    private lateinit var viewModel: MainViewModel
-    private lateinit var bottomNavigation: AHBottomNavigation
-    private lateinit var viewPager: ViewPager
-    private lateinit var shareButton: ImageButton
-    private lateinit var newShareProgress: ProgressBar
-
+    override fun getVMClass(): Class<MainViewModel> {
+        return MainViewModel::class.java
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DipendencyInjector.createMainComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
-        bottomNavigation = bn_main
-        viewPager = vp_main
-        shareButton = bt_new_share
-        newShareProgress = pb_current_share
-
         initUI()
         observeViewState()
-
-        // TODO avvio servizio tracking
-        val locationIntent = Intent(this, LocationService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(locationIntent)
-        } else {
-            startService(locationIntent)
-        }
 
     }
 
@@ -102,10 +71,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        for (fragment in supportFragmentManager.fragments) {
-            fragment.onActivityResult(requestCode, resultCode, data)
-        }
 
         data?.let {
             val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, it)
@@ -139,11 +104,6 @@ class MainActivity : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseMainComponent()
-    }
-
     private fun initUI() {
 
         val homeTab = AHBottomNavigationItem(R.string.activity_main_tab_home, R.drawable.ic_navigation_home, R.color.colorPrimaryDark)
@@ -152,38 +112,38 @@ class MainActivity : AppCompatActivity() {
         val matchTab = AHBottomNavigationItem(R.string.activity_main_tab_matches, R.drawable.ic_navigation_match, R.color.light_green_400)
         val profileTab = AHBottomNavigationItem(R.string.activity_main_tab_profile, R.drawable.ic_navigation_account, R.color.colorAccent)
 
-        bottomNavigation.removeAllItems()
+        bn_main.removeAllItems()
 
-        bottomNavigation.addItem(homeTab)
-        bottomNavigation.addItem(ranksTab)
-        bottomNavigation.addItem(newShareButton)
-        bottomNavigation.addItem(matchTab)
-        bottomNavigation.addItem(profileTab)
+        bn_main.addItem(homeTab)
+        bn_main.addItem(ranksTab)
+        bn_main.addItem(newShareButton)
+        bn_main.addItem(matchTab)
+        bn_main.addItem(profileTab)
 
-        bottomNavigation.accentColor = ContextCompat.getColor(this, R.color.bottom_nav_active)
-        bottomNavigation.inactiveColor = ContextCompat.getColor(this, R.color.bottom_nav_inactive)
-        bottomNavigation.isForceTint = true
+        bn_main.accentColor = ContextCompat.getColor(this, R.color.bottom_nav_active)
+        bn_main.inactiveColor = ContextCompat.getColor(this, R.color.bottom_nav_inactive)
+        bn_main.isForceTint = true
 
-        bottomNavigation.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
+        bn_main.setNotificationBackgroundColor(ContextCompat.getColor(this, R.color.red_500))
 
-        bottomNavigation.isBehaviorTranslationEnabled = false
-        bottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
+        bn_main.isBehaviorTranslationEnabled = false
+        bn_main.titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
 
-        bottomNavigation.setOnTabSelectedListener { position, _ ->
+        bn_main.setOnTabSelectedListener { position, _ ->
             when (position) {
                 NEW_SHARE_BUTTON_PLACEHOLDER -> {
-                    shareButton.performClick()
+                    bt_new_share.performClick()
                     false
                 }
                 else -> {
-                    viewPager.setCurrentItem(position, false)
-                    title = bottomNavigation.getItem(position).getTitle(this)
+                    vp_main.setCurrentItem(position, false)
+                    title = bn_main.getItem(position).getTitle(this)
                     true
                 }
             }
         }
 
-        shareButton.setOnClickListener {
+        bt_new_share.setOnClickListener {
 
             if (localUserData.currentShare == null) {
 
@@ -207,10 +167,10 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        viewPager.offscreenPageLimit = 4
+        vp_main.offscreenPageLimit = 4
         val pagerAdapter = PagerAdapter(supportFragmentManager)
-        viewPager.adapter = pagerAdapter
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        vp_main.adapter = pagerAdapter
+        vp_main.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
@@ -229,14 +189,14 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        bottomNavigation.currentItem = HOME_TAB
-        title = bottomNavigation.getItem(HOME_TAB).getTitle(this)
+        bn_main.currentItem = HOME_TAB
+        title = bn_main.getItem(HOME_TAB).getTitle(this)
 
     }
 
     fun setNavigationBadge(itemPosition: Int, title: String) {
 
-        bottomNavigation.setNotification(title, itemPosition)
+        bn_main.setNotification(title, itemPosition)
 
     }
 
@@ -261,17 +221,17 @@ class MainActivity : AppCompatActivity() {
 
 
             if (it.creatingShare || it.joiningShare) {
-                newShareProgress.show()
+                pb_current_share.show()
             } else {
-                newShareProgress.remove()
+                pb_current_share.remove()
             }
 
             if (it.shareInProgress) {
-                shareButton.setBackgroundResource(R.drawable.bg_new_share_button_active)
-                shareButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_active))
+                bt_new_share.setBackgroundResource(R.drawable.bg_new_share_button_active)
+                bt_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_active))
             } else {
-                shareButton.setBackgroundResource(R.drawable.bg_new_share_button_inactive)
-                shareButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_inactive))
+                bt_new_share.setBackgroundResource(R.drawable.bg_new_share_button_inactive)
+                bt_new_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_new_share_button_icon_inactive))
             }
 
         }
@@ -325,7 +285,7 @@ class MainActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onBadgeEvent(event: BottomNavBadgeEvent) {
 
-        bottomNavigation.setNotification(event.badgeContent, event.tabPosition)
+        bn_main.setNotification(event.badgeContent, event.tabPosition)
 
     }
 

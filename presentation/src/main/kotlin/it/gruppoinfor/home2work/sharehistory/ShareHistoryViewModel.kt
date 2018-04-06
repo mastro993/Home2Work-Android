@@ -56,6 +56,7 @@ class ShareHistoryViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
+                            else ->{""}
                         }
                     } else {
                         "Errore sconosciuto"

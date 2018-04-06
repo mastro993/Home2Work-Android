@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work
+package it.gruppoinfor.home2work.main
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider

@@ -48,6 +48,7 @@ class ProfileViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
+                            else ->{""}
                         }
 
                         val newViewState = viewState.value?.copy(
@@ -83,6 +84,7 @@ class ProfileViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
+                            else ->{""}
                         }
 
                         errorState.value = errorMessage

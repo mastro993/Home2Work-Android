@@ -1,7 +1,5 @@
 package it.gruppoinfor.home2work.domain.entities
 
-import it.gruppoinfor.home2work.chat.ChatMessageEntity
-
 
 data class ChatEntity(
         val id: Long,

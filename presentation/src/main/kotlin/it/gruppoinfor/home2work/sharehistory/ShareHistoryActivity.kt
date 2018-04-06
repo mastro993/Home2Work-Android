@@ -3,34 +3,26 @@ package it.gruppoinfor.home2work.sharehistory
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.ImageLoader
+import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import kotlinx.android.synthetic.main.activity_shares.*
-import javax.inject.Inject
 
-class ShareHistoryActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var factory: ShareHistoryVMFactory
-    @Inject
-    lateinit var imageLoader: ImageLoader
-
-    private lateinit var viewModel: ShareHistoryViewModel
+class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMFactory>() {
 
     private var mSharesAdapter: ShareHistoryAdapter? = null
+
+    override fun getVMClass(): Class<ShareHistoryViewModel> {
+        return ShareHistoryViewModel::class.java
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shares)
-
-        DipendencyInjector.createShareHistoryComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(ShareHistoryViewModel::class.java)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -61,11 +53,6 @@ class ShareHistoryActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseShareHistoryComponent()
     }
 
     private fun observeViewState() {

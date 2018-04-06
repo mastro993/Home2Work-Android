@@ -100,7 +100,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -117,7 +117,7 @@
             android:label="@string/activity_settings_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".inbox.InboxActivity"
+            android:name=".chat.ChatActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Conversazioni"
             android:screenOrientation="portrait">
@@ -128,7 +128,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".chat.ChatActivity"
+            android:name=".singlechat.SingleChatActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Messaggi"
             android:screenOrientation="portrait" />

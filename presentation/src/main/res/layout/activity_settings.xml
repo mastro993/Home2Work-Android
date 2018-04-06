@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,129 +8,205 @@
     tools:ignore="HardcodedText,RtlHardcoded,ContentDescription"
     tools:mContext="it.gruppoinfor.home2work.fragments.SettingsFragment">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="48dp">
 
         <TextView
+            android:id="@+id/profile_settings_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:padding="16dp"
-            android:text="Utente" />
+            android:text="Utente"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/user_info_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:padding="16dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:includeFontPadding="false"
+            android:padding="16dp"
             android:text="Riepilogo dati utente"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/light_bg_dark_primary_text" />
+            android:textColor="@color/light_bg_dark_primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_settings_title" />
 
         <TextView
+            android:id="@+id/user_avatar_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:padding="16dp"
-            android:text="Modifica profilo"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:includeFontPadding="false"
+            android:padding="16dp"
+            android:text="Modifica foto profilo"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/light_bg_dark_primary_text" />
+            android:textColor="@color/light_bg_dark_primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_info_button" />
 
         <TextView
+            android:id="@+id/change_password_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:padding="16dp"
             android:text="Modifica password"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/light_bg_dark_primary_text" />
+            android:textColor="@color/light_bg_dark_primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_avatar_button" />
 
-        <include layout="@layout/horizontal_divider" />
+        <include
+            android:id="@+id/profile_settings_divider"
+            layout="@layout/horizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/change_password_button" />
 
         <TextView
-            android:layout_marginTop="8dp"
+            android:id="@+id/app_settings_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:padding="16dp"
-            android:text="Impostazioni" />
+            android:text="Impostazioni"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_settings_divider" />
 
         <TextView
+            android:id="@+id/tracking_settings_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:padding="16dp"
             android:text="Tracking posizione"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/light_bg_dark_primary_text" />
+            android:textColor="@color/light_bg_dark_primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_settings_title" />
 
         <TextView
+            android:id="@+id/notifications_settings_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:padding="16dp"
             android:text="Notifiche"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/light_bg_dark_primary_text" />
+            android:textColor="@color/light_bg_dark_primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tracking_settings_button" />
 
-        <include layout="@layout/horizontal_divider" />
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toTopOf="@id/vacancy_mode_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vacancy_mode_title" />
 
         <TextView
+            android:id="@+id/vacancy_mode_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:includeFontPadding="false"
+            android:padding="16dp"
+            android:text="Modalità vacanza"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/light_bg_dark_primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/notifications_settings_button" />
+
+        <include
+            android:id="@+id/app_settings_divider"
+            layout="@layout/horizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vacancy_mode_title" />
+
+        <TextView
+            android:id="@+id/about_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:padding="16dp"
             android:text="Informazioni sull'applicazione"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_settings_divider" />
 
         <TextView
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
             android:id="@+id/button_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             android:includeFontPadding="false"
             android:padding="16dp"
             android:text="Esci"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/about_button" />
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </ScrollView>
 

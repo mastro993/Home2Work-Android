@@ -1,18 +1,19 @@
 package it.gruppoinfor.home2work.di
 
 import android.content.Context
+import it.gruppoinfor.home2work.chat.ChatActivity
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
 import it.gruppoinfor.home2work.di.firebase.FirebaseModule
 import it.gruppoinfor.home2work.di.firebase.FirebaseSubComponent
 import it.gruppoinfor.home2work.di.home.HomeModule
 import it.gruppoinfor.home2work.di.home.HomeSubComponent
-import it.gruppoinfor.home2work.di.inbox.InboxModule
-import it.gruppoinfor.home2work.di.inbox.InboxSubComponent
 import it.gruppoinfor.home2work.di.main.MainModule
 import it.gruppoinfor.home2work.di.main.MainSubComponent
 import it.gruppoinfor.home2work.di.match.MatchModule
 import it.gruppoinfor.home2work.di.match.MatchSubComponent
+import it.gruppoinfor.home2work.di.module.AppModule
+import it.gruppoinfor.home2work.di.module.DataModule
 import it.gruppoinfor.home2work.di.profile.ProfileModule
 import it.gruppoinfor.home2work.di.settings.SettingsModule
 import it.gruppoinfor.home2work.di.settings.SettingsSubComponent
@@ -22,11 +23,24 @@ import it.gruppoinfor.home2work.di.sharehistory.ShareHistoryModule
 import it.gruppoinfor.home2work.di.sharehistory.ShareHistorySubComponent
 import it.gruppoinfor.home2work.di.signin.SignInModule
 import it.gruppoinfor.home2work.di.signin.SignInSubComponent
+import it.gruppoinfor.home2work.di.singlechat.SingleChatModule
+import it.gruppoinfor.home2work.di.singlechat.SingleChatSubComponent
 import it.gruppoinfor.home2work.di.splash.SplashModule
 import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
+import it.gruppoinfor.home2work.home.HomeFragment
+import it.gruppoinfor.home2work.main.MainActivity
+import it.gruppoinfor.home2work.match.MatchesFragment
+import it.gruppoinfor.home2work.profile.ProfileFragment
+import it.gruppoinfor.home2work.settings.SettingsActivity
+import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
+import it.gruppoinfor.home2work.sharehistory.ShareHistoryActivity
+import it.gruppoinfor.home2work.signin.SignInActivity
+import it.gruppoinfor.home2work.singlechat.SingleChatActivity
+import it.gruppoinfor.home2work.splash.SplashActivity
+import it.gruppoinfor.home2work.user.UserActivity
 
 object DipendencyInjector {
     lateinit var mainComponent: MainComponent
@@ -37,8 +51,8 @@ object DipendencyInjector {
     private var mainSubComponent: MainSubComponent? = null
     private var homeSubComponent: HomeSubComponent? = null
     private var matchSubComponent: MatchSubComponent? = null
-    private var inboxSubComponent: InboxSubComponent? = null
     private var chatSubComponent: ChatSubComponent? = null
+    private var singleChatSubComponent: SingleChatSubComponent? = null
     private var profileSubComponent: ProfileSubComponent? = null
     private var shareHistorySubComponent: ShareHistorySubComponent? = null
     private var currentShareSubComponent: CurrentShareSubComponent? = null
@@ -54,6 +68,86 @@ object DipendencyInjector {
 
     }
 
+    fun inject(activity: DaggerActivity) {
+        when (activity) {
+            is SplashActivity -> {
+                splashSubComponent = mainComponent.plus(SplashModule())
+                splashSubComponent!!.inject(activity)
+            }
+            is MainActivity -> {
+                mainSubComponent = mainComponent.plus(MainModule())
+                mainSubComponent!!.inject(activity)
+            }
+            is SignInActivity -> {
+                signInSubComponent = mainComponent.plus(SignInModule())
+                signInSubComponent!!.inject(activity)
+            }
+            is SingleChatActivity -> {
+                singleChatSubComponent = mainComponent.plus(SingleChatModule())
+                singleChatSubComponent!!.inject(activity)
+            }
+            is ChatActivity -> {
+                chatSubComponent = mainComponent.plus(ChatModule())
+                chatSubComponent!!.inject(activity)
+            }
+            is ShareHistoryActivity -> {
+                shareHistorySubComponent = mainComponent.plus(ShareHistoryModule())
+                shareHistorySubComponent!!.inject(activity)
+            }
+            is CurrentShareActivity -> {
+                currentShareSubComponent = mainComponent.plus(CurrentShareModule())
+                currentShareSubComponent!!.inject(activity)
+            }
+            is UserActivity -> {
+                userSubComponent = mainComponent.plus(UserModule())
+                userSubComponent!!.inject(activity)
+            }
+            is SettingsActivity->{
+                settingsSubComponent = mainComponent.plus(SettingsModule())
+                settingsSubComponent!!.inject(activity)
+            }
+        }
+    }
+
+    fun release(activity: DaggerActivity) {
+        when (activity) {
+            is SplashActivity -> splashSubComponent = null
+            is MainActivity -> mainSubComponent = null
+            is SignInActivity -> signInSubComponent = null
+            is SingleChatActivity -> singleChatSubComponent = null
+            is ChatActivity -> chatSubComponent = null
+            is ShareHistoryActivity -> shareHistorySubComponent = null
+            is CurrentShareActivity -> currentShareSubComponent = null
+            is UserActivity -> userSubComponent = null
+            is SettingsActivity -> settingsSubComponent = null
+        }
+    }
+
+    fun inject(fragment: DaggerFragment) {
+        when (fragment) {
+            is HomeFragment -> {
+                homeSubComponent = mainComponent.plus(HomeModule())
+                homeSubComponent!!.inject(fragment)
+            }
+            is MatchesFragment -> {
+                matchSubComponent = mainComponent.plus(MatchModule())
+                matchSubComponent!!.inject(fragment)
+            }
+            is ProfileFragment -> {
+                profileSubComponent = mainComponent.plus(ProfileModule())
+                return profileSubComponent!!.inject(fragment)
+            }
+        }
+    }
+
+    fun release(fragment: DaggerFragment) {
+        when (fragment) {
+            is HomeFragment -> homeSubComponent = null
+            is MatchesFragment -> matchSubComponent = null
+            is ProfileFragment -> profileSubComponent = null
+        }
+    }
+
     fun createFirebaseComponent(): FirebaseSubComponent {
         firebaseSubComponent = mainComponent.plus(FirebaseModule())
         return firebaseSubComponent!!
@@ -61,114 +155,6 @@ object DipendencyInjector {
 
     fun releaseFirebaseComponent() {
         firebaseSubComponent = null
-    }
-
-    fun createSignInComponent(): SignInSubComponent {
-        signInSubComponent = mainComponent.plus(SignInModule())
-        return signInSubComponent!!
-    }
-
-    fun releaseSignInComponent() {
-        signInSubComponent = null
-    }
-
-    fun createSplashComponent(): SplashSubComponent {
-        splashSubComponent = mainComponent.plus(SplashModule())
-        return splashSubComponent!!
-    }
-
-    fun releaseSplashComponent() {
-        splashSubComponent = null
-    }
-
-    fun createMainComponent(): MainSubComponent {
-        mainSubComponent = mainComponent.plus(MainModule())
-        return mainSubComponent!!
-    }
-
-    fun releaseMainComponent() {
-        mainSubComponent = null
-    }
-
-    fun createHomeComponent(): HomeSubComponent {
-        homeSubComponent = mainComponent.plus(HomeModule())
-        return homeSubComponent!!
-    }
-
-    fun releaseHomeComponent() {
-        homeSubComponent = null
-    }
-
-    fun createMatchComponent(): MatchSubComponent {
-        matchSubComponent = mainComponent.plus(MatchModule())
-        return matchSubComponent!!
-    }
-
-    fun releaseMatchComponent() {
-        matchSubComponent = null
-    }
-
-    fun createInboxComponent(): InboxSubComponent {
-        inboxSubComponent = mainComponent.plus(InboxModule())
-        return inboxSubComponent!!
-    }
-
-    fun releaseInboxComponent() {
-        inboxSubComponent = null
-    }
-
-    fun createChatComponent(): ChatSubComponent {
-        chatSubComponent = mainComponent.plus(ChatModule())
-        return chatSubComponent!!
-    }
-
-    fun releaseChatComponent() {
-        chatSubComponent = null
-    }
-
-    fun createProfileComponent(): ProfileSubComponent {
-        profileSubComponent = mainComponent.plus(ProfileModule())
-        return profileSubComponent!!
-    }
-
-    fun releaseProfileComponent() {
-        profileSubComponent = null
-    }
-
-    fun createShareHistoryComponent(): ShareHistorySubComponent {
-        shareHistorySubComponent = mainComponent.plus(ShareHistoryModule())
-        return shareHistorySubComponent!!
-    }
-
-    fun releaseShareHistoryComponent() {
-        shareHistorySubComponent = null
-    }
-
-    fun createCurrentShareComponent(): CurrentShareSubComponent {
-        currentShareSubComponent = mainComponent.plus(CurrentShareModule())
-        return currentShareSubComponent!!
-    }
-
-    fun releaseCurrentShareComponent() {
-        currentShareSubComponent = null
-    }
-
-    fun createUserComponent(): UserSubComponent {
-        userSubComponent = mainComponent.plus(UserModule())
-        return userSubComponent!!
-    }
-
-    fun releaseUserComponent() {
-        userSubComponent = null
-    }
-
-    fun createSettingsComponent(): SettingsSubComponent {
-        settingsSubComponent = mainComponent.plus(SettingsModule())
-        return settingsSubComponent!!
-    }
-
-    fun releaseSettingsComponent() {
-        settingsSubComponent = null
     }
 
 

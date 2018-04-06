@@ -7,6 +7,7 @@ import it.gruppoinfor.home2work.common.SingleLiveEvent
 import it.gruppoinfor.home2work.common.services.FirebaseTokenService
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.data.api.APIAuthenticationInterceptor
+import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.usecases.UserLogin
@@ -54,13 +55,23 @@ class SignInViewModel(
                 .subscribe({
                     onLoginSuccess(it)
                 }, {
+
+                    if(it is RetrofitException){
+                        when(it.kind){
+                            RetrofitException.Kind.SERVER -> errorState.value = "Errore durante il login"
+                            RetrofitException.Kind.CLIENT -> errorState.value = "Dati inseriti non validi"
+                            RetrofitException.Kind.NETWORK -> errorState.value = "Nessuna connessione ad internet"
+                            else -> errorState.value = "Errore imprevisto"
+                        }
+                    }
+
                     loginSuccessState.value = false
 
                     val newViewState = viewState.value?.copy(
                             isLoading = false
                     )
-
                     viewState.value = newViewState
+
                 })
         )
     }

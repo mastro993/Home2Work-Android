@@ -2,29 +2,24 @@ package it.gruppoinfor.home2work.settings
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.intentFor
-import javax.inject.Inject
 
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
 
-    @Inject
-    lateinit var localUserData: LocalUserData
-
+    override fun getVMClass(): Class<SettingsViewModel> {
+        return SettingsViewModel::class.java
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
-        DipendencyInjector.createSettingsComponent().inject(this)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -41,11 +36,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseSettingsComponent()
     }
 
     private fun initUI() {

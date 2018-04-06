@@ -12,19 +12,20 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.extensions.hide
@@ -40,29 +41,24 @@ import it.gruppoinfor.home2work.entities.ShareStatus
 import it.gruppoinfor.home2work.entities.ShareType
 import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.activity_current_share.*
-import kotlinx.android.synthetic.main.dialog_share_qr_code.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
 import javax.inject.Inject
 
-class CurrentShareActivity : AppCompatActivity() {
+class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMFactory>() {
 
-    @Inject
-    lateinit var factory: CurrentShareVMFactory
-    @Inject
-    lateinit var imageLoader: ImageLoader
-    @Inject
-    lateinit var localUserData: LocalUserData
-
-    private lateinit var viewModel: CurrentShareViewModel
     private var mGuestsAdapter: GuestAdapter? = null
     private var share: Share? = null
     private var qrCodeDialog: BottomSheetDialog? = null
 
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 1
+    }
+
+    override fun getVMClass(): Class<CurrentShareViewModel> {
+        return CurrentShareViewModel::class.java
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,9 +68,6 @@ class CurrentShareActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        DipendencyInjector.createCurrentShareComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(CurrentShareViewModel::class.java)
 
         share = localUserData.currentShare
         share?.let {
@@ -98,11 +91,6 @@ class CurrentShareActivity : AppCompatActivity() {
         super.onPause()
         EventBus.getDefault().unregister(this)
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseCurrentShareComponent()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -456,7 +444,7 @@ class CurrentShareActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ActiveShareEvent) {
 
-        if(event.finished){
+        if (event.finished) {
             localUserData.currentShare = null
             finish()
         } else {

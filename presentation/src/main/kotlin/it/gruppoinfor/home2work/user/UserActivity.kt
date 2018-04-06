@@ -10,7 +10,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLauncher
+import it.gruppoinfor.home2work.common.BaseActivity
+import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
@@ -21,18 +22,14 @@ import kotlinx.android.synthetic.main.view_profile_exp_details.*
 import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class UserActivity : AppCompatActivity() {
+class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
 
-    @Inject
-    lateinit var factory: UserVMFactory
-    @Inject
-    lateinit var imageLoader: ImageLoader
-
-    private lateinit var viewModel: UserViewModel
+    override fun getVMClass(): Class<UserViewModel> {
+        return UserViewModel::class.java
+    }
 
 
     private val args by lazy {
@@ -43,9 +40,6 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
-        DipendencyInjector.createUserComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -55,7 +49,6 @@ class UserActivity : AppCompatActivity() {
         observeViewState()
 
         viewModel.getProfile(args.userId)
-
 
     }
 
@@ -69,11 +62,6 @@ class UserActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseUserComponent()
     }
 
     private fun initUI() {
@@ -117,7 +105,7 @@ class UserActivity : AppCompatActivity() {
         }
 
         button_send_message.setOnClickListener {
-            ChatActivityLauncher(
+            SingleChatActivityLauncher(
                     chatId = 0L,
                     recipientId = args.userId,
                     recipientName = args.userName
@@ -163,12 +151,12 @@ class UserActivity : AppCompatActivity() {
             text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.monthSharedDistanceAvg.div(1000f))
 
             if (it.stats.sharedDistance > 0) {
-                no_activity_chart_data_view.remove()
+                no_activity_chart_data_view.hide()
                 chart_activity.show()
                 chart_activity.setData(it.activity, it.stats.monthSharedDistanceAvg.div(1000f))
             } else {
                 no_activity_chart_data_view.show()
-                chart_activity.hide()
+                chart_activity.remove()
             }
 
             text_month_shares.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_shares_month), Date().format("MMMM").capitalize())
@@ -178,12 +166,12 @@ class UserActivity : AppCompatActivity() {
             text_longest_share_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.longestShare.div(1000f))
 
             if (it.stats.totalShares > 0) {
-                no_share_chart_data_view.remove()
+                no_share_chart_data_view.hide()
                 chart_shares.show()
                 chart_shares.setData(it.stats)
             } else {
                 no_share_chart_data_view.show()
-                chart_shares.hide()
+                chart_shares.remove()
             }
 
             text_regdate.text = it.regdate.format("dd MMMM yyyy")

@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.di
+package it.gruppoinfor.home2work.di.module
 
 import android.content.Context
 import dagger.Module

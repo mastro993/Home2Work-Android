@@ -17,7 +17,7 @@ import com.google.firebase.messaging.RemoteMessage
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
-import it.gruppoinfor.home2work.inbox.InboxActivity
+import it.gruppoinfor.home2work.chat.ChatActivity
 import org.greenrobot.eventbus.EventBus
 
 
@@ -66,7 +66,7 @@ class MessagingService : FirebaseMessagingService() {
         when (type) {
             NEW_MESSAGE_RECEIVED -> {
 
-                val resultIntent = Intent(this, InboxActivity::class.java)
+                val resultIntent = Intent(this, ChatActivity::class.java)
                 val pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
                 val mNotifyMgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

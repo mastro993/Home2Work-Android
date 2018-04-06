@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.match
 
 import android.arch.lifecycle.MutableLiveData
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.common.BaseViewModel
 import it.gruppoinfor.home2work.common.SingleLiveEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
@@ -15,6 +14,7 @@ import it.gruppoinfor.home2work.domain.usecases.EditMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatchList
 import it.gruppoinfor.home2work.entities.Match
+import it.gruppoinfor.home2work.main.MainActivity
 import org.greenrobot.eventbus.EventBus
 
 
@@ -91,6 +91,7 @@ class MatchViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
+                            else ->{""}
                         }
 
                         val newViewState = viewState.value?.copy(
@@ -162,6 +163,7 @@ class MatchViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
+                            else ->{""}
                         }
 
                         val newViewState = viewState.value?.copy(

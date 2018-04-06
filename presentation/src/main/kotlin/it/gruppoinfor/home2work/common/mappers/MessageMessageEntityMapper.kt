@@ -1,6 +1,6 @@
 package it.gruppoinfor.home2work.common.mappers
 
-import it.gruppoinfor.home2work.chat.ChatMessageEntity
+import it.gruppoinfor.home2work.domain.entities.ChatMessageEntity
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.entities.ChatMessage
 import javax.inject.Inject

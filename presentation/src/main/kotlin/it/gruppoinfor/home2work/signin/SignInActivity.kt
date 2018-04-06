@@ -1,55 +1,36 @@
 package it.gruppoinfor.home2work.signin
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.services.LocationService
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.main.MainActivity
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import javax.inject.Inject
 
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
 
-    @Inject
-    lateinit var factory: SignInVMFactory
     @Inject
     lateinit var jobScheduler: JobScheduler
-    @Inject
-    lateinit var localUserData: LocalUserData
 
-    private lateinit var viewModel: SignInViewModel
-
-    private lateinit var emailInput: EditText
-    private lateinit var passwordInput: EditText
-    private lateinit var signInButton: Button
-    private lateinit var lostPasswordButton: Button
+    override fun getVMClass(): Class<SignInViewModel> {
+        return SignInViewModel::class.java
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        DipendencyInjector.createSignInComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(SignInViewModel::class.java)
 
-        emailInput = email_input
-        passwordInput = password_input
-        signInButton = sign_in_button
-        lostPasswordButton = lost_password_button
-
-        signInButton.setOnClickListener {
+        sign_in_button.setOnClickListener {
             val view = this.currentFocus
             if (view != null) {
 
@@ -60,8 +41,8 @@ class SignInActivity : AppCompatActivity() {
 
             if (validate()) {
 
-                val email = emailInput.text.toString()
-                val password = passwordInput.text.toString()
+                val email = email_input.text.toString()
+                val password = password_input.text.toString()
 
                 viewModel.login(email, password)
 
@@ -73,11 +54,6 @@ class SignInActivity : AppCompatActivity() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseSignInComponent()
-    }
-
     private fun observeViewState() {
 
         viewModel.errorState.observe(this, Observer {
@@ -86,7 +62,10 @@ class SignInActivity : AppCompatActivity() {
             }
         })
         viewModel.loginSuccessState.observe(this, Observer {
-            it?.let { if (it) onLoginSuccess() }
+            it?.let {
+                if (it)
+                    onLoginSuccess()
+            }
         })
         viewModel.viewState.observe(this, Observer {
             handleViewState(it)
@@ -99,16 +78,16 @@ class SignInActivity : AppCompatActivity() {
 
         state?.let {
 
-            it.savedEmail?.let { emailInput.setText(it) }
+            it.savedEmail?.let { email_input.setText(it) }
 
-            emailInput.isEnabled = !it.isLoading
-            emailInput.clearFocus()
+            email_input.isEnabled = !it.isLoading
+            email_input.clearFocus()
 
-            passwordInput.isEnabled = !it.isLoading
-            passwordInput.clearFocus()
+            password_input.isEnabled = !it.isLoading
+            password_input.clearFocus()
 
-            signInButton.isEnabled = !it.isLoading
-            signInButton.text = if (it.isLoading) "Accesso in corso" else "Accedi"
+            sign_in_button.isEnabled = !it.isLoading
+            sign_in_button.text = if (it.isLoading) "Accesso in corso" else "Accedi"
 
 
         }
@@ -118,8 +97,8 @@ class SignInActivity : AppCompatActivity() {
     private fun onLoginSuccess() {
 
         localUserData.user?.let {
-            jobScheduler.scheduleSyncJob(it.id)
 
+            jobScheduler.scheduleSyncJob(it.id)
             LocationService.launch(this, it.id)
 
             launchActivity<MainActivity> {
@@ -136,21 +115,21 @@ class SignInActivity : AppCompatActivity() {
 
         var valid = true
 
-        val email = emailInput.text.toString()
-        val password = passwordInput.text.toString()
+        val email = email_input.text.toString()
+        val password = password_input.text.toString()
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailInput.error = getString(R.string.activity_signin_email_error)
+            email_input.error = getString(R.string.activity_signin_email_error)
             valid = false
         } else {
-            emailInput.error = null
+            email_input.error = null
         }
 
         if (password.isEmpty() || password.length < 6) {
-            passwordInput.error = getString(R.string.activity_signin_password_error)
+            password_input.error = getString(R.string.activity_signin_password_error)
             valid = false
         } else {
-            passwordInput.error = null
+            password_input.error = null
         }
 
         return valid

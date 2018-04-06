@@ -22,6 +22,8 @@ class RetrofitException internal constructor(message: String?,
         NETWORK,
         /** Status code ricevuto diverso da 200.  */
         HTTP,
+        CLIENT,
+        SERVER,
         /** Altro errore inaspettato */
         UNEXPECTED
     }
@@ -51,6 +53,15 @@ class RetrofitException internal constructor(message: String?,
     companion object {
         fun httpError(url: String, response: Response<Any>, retrofit: Retrofit): RetrofitException {
             val message = "${response.code()} ${response.message()}"
+
+            if (response.code() in 400..499) {
+                return RetrofitException(message, url, response, Kind.CLIENT, null, retrofit)
+            }
+
+            if (response.code() in 500..599) {
+                return RetrofitException(message, url, response, Kind.SERVER, null, retrofit)
+            }
+
             return RetrofitException(message, url, response, Kind.HTTP, null, retrofit)
         }
 

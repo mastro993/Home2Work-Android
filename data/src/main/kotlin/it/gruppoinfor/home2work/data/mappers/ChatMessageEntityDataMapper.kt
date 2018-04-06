@@ -1,11 +1,9 @@
 package it.gruppoinfor.home2work.data.mappers
 
-import it.gruppoinfor.home2work.chat.ChatMessageEntity
+import it.gruppoinfor.home2work.domain.entities.ChatMessageEntity
 import it.gruppoinfor.home2work.data.entities.ChatMessageData
 import it.gruppoinfor.home2work.domain.Mapper
 import javax.inject.Inject
-import javax.inject.Singleton
-
 
 
 class ChatMessageEntityDataMapper @Inject constructor() : Mapper<ChatMessageEntity, ChatMessageData>() {

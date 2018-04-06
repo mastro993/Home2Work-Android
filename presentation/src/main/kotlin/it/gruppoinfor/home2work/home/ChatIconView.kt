@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.common.views
+package it.gruppoinfor.home2work.home
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,11 +7,11 @@ import android.widget.RelativeLayout
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
-import it.gruppoinfor.home2work.inbox.InboxActivity
-import kotlinx.android.synthetic.main.view_inbox_icon.view.*
+import it.gruppoinfor.home2work.chat.ChatActivity
+import kotlinx.android.synthetic.main.view_chat_icon.view.*
 import org.jetbrains.anko.intentFor
 
-class InboxIconView : RelativeLayout {
+class ChatIconView : RelativeLayout {
 
     companion object {
         private var messageCount: Int = 0
@@ -19,21 +19,21 @@ class InboxIconView : RelativeLayout {
 
     constructor(context: Context) : super(context) {
 
-        View.inflate(context, R.layout.view_inbox_icon, this)
+        View.inflate(context, R.layout.view_chat_icon, this)
         initUI()
 
     }
 
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes) {
 
-        View.inflate(context, R.layout.view_inbox_icon, this)
+        View.inflate(context, R.layout.view_chat_icon, this)
         initUI()
 
     }
 
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
 
-        View.inflate(context, R.layout.view_inbox_icon, this)
+        View.inflate(context, R.layout.view_chat_icon, this)
         initUI()
 
     }
@@ -41,7 +41,7 @@ class InboxIconView : RelativeLayout {
     private fun initUI() {
         setCount(messageCount)
         inbox_icon_container.setOnClickListener {
-            context.startActivity(context.intentFor<InboxActivity>())
+            context.startActivity(context.intentFor<ChatActivity>())
         }
     }
 

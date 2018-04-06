@@ -1,10 +1,11 @@
 package it.gruppoinfor.home2work.chat
 
 import it.gruppoinfor.home2work.common.views.ScreenState
-import it.gruppoinfor.home2work.entities.ChatMessage
+import it.gruppoinfor.home2work.entities.Chat
 
 
 data class ChatViewState(
+        var isRefreshing: Boolean = false,
         var screenState: ScreenState? = null,
-        var messageList: List<ChatMessage>? = null
+        var chatList: List<Chat>? = null
 )

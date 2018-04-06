@@ -1,6 +1,5 @@
-package it.gruppoinfor.home2work.chat
+package it.gruppoinfor.home2work.domain.entities
 
-import it.gruppoinfor.home2work.domain.entities.UserEntity
 import java.util.*
 
 

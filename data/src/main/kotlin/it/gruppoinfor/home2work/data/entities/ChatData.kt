@@ -1,7 +1,6 @@
 package it.gruppoinfor.home2work.data.entities
 
 import com.google.gson.annotations.SerializedName
-import it.gruppoinfor.home2work.chat.ChatMessageEntity
 
 
 data class ChatData(

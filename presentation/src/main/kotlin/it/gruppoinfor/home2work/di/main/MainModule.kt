@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.di.main
 
 import dagger.Module
 import dagger.Provides
-import it.gruppoinfor.home2work.MainVMFactory
+import it.gruppoinfor.home2work.main.MainVMFactory
 import it.gruppoinfor.home2work.common.ASyncTransformer
 import it.gruppoinfor.home2work.common.mappers.ShareEntityShareMapper
 import it.gruppoinfor.home2work.common.user.LocalUserData

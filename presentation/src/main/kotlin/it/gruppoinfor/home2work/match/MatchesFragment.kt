@@ -2,20 +2,16 @@ package it.gruppoinfor.home2work.match
 
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
-import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.chat.ChatActivityLauncher
-import it.gruppoinfor.home2work.common.ImageLoader
+import it.gruppoinfor.home2work.common.BaseFragment
 import it.gruppoinfor.home2work.common.extensions.getScore
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
@@ -23,31 +19,26 @@ import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.Match
+import it.gruppoinfor.home2work.main.MainActivity
+import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.fragment_match.*
 import org.jetbrains.anko.find
-import javax.inject.Inject
 
 
-class MatchesFragment : Fragment() {
+class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
 
-
-    @Inject
-    lateinit var factory: MatchVMFactory
-    @Inject
-    lateinit var imageLoader: ImageLoader
-
-    private lateinit var viewModel: MatchViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var statusView: ScreenStateView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mMatchesAdapter: MatchesAdapter
 
+    override fun getVMClass(): Class<MatchViewModel> {
+        return MatchViewModel::class.java
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DipendencyInjector.createMatchComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(MatchViewModel::class.java)
-
         viewModel.getMatchList()
     }
 
@@ -115,11 +106,6 @@ class MatchesFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseMatchComponent()
     }
 
     private fun handleViewState(state: MatchViewState) {
@@ -190,7 +176,7 @@ class MatchesFragment : Fragment() {
             val recipientId = match.host.id
             val recipientName = match.host.name
 
-            ChatActivityLauncher(
+            SingleChatActivityLauncher(
                     chatId = 0L,
                     recipientId = recipientId,
                     recipientName = recipientName

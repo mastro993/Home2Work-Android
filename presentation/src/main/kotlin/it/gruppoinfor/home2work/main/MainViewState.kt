@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work
+package it.gruppoinfor.home2work.main
 
 data class MainViewState(
         var joiningShare: Boolean = false,

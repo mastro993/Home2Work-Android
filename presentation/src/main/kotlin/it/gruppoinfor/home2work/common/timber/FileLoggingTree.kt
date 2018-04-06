@@ -61,7 +61,7 @@ class FileLoggingTree : Timber.DebugTree() {
             //MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null, null);
 
         } catch (e: Exception) {
-            Timber.e(FileLoggingTree::class.java.simpleName, "Error while logging into file : $e")
+            Log.e(FileLoggingTree::class.java.simpleName, "Error while logging into file : $e")
         }
     }
 

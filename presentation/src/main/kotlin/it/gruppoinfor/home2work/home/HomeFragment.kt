@@ -1,42 +1,30 @@
 package it.gruppoinfor.home2work.home
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.*
-import it.gruppoinfor.home2work.MainActivity
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
+import it.gruppoinfor.home2work.common.BaseFragment
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
-import it.gruppoinfor.home2work.common.views.InboxIconView
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import javax.inject.Inject
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<HomeViewModel, HomeVMFactory>() {
 
-    @Inject
-    lateinit var factory: HomeVMFactory
+    private var chatIconView: ChatIconView? = null
 
-    private lateinit var viewModel: HomeViewModel
-    private var inboxIconView: InboxIconView? = null
+    override fun getVMClass(): Class<HomeViewModel> {
+        return HomeViewModel::class.java
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        DipendencyInjector.createHomeComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
-
-
         setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -45,7 +33,7 @@ class HomeFragment : Fragment() {
 
         viewModel.viewState.observe(this, Observer {
             it?.let {
-                inboxIconView?.setCount(it.inboxCount)
+                chatIconView?.setCount(it.unreadChatCount)
             }
         })
     }
@@ -66,16 +54,11 @@ class HomeFragment : Fragment() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseHomeComponent()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_fragment_home, menu)
 
         val item = menu.findItem(R.id.action_messages)
-        inboxIconView = item.actionView as InboxIconView
+        chatIconView = item.actionView as ChatIconView
 
     }
 

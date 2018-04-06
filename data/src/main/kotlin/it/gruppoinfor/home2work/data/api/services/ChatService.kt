@@ -1,11 +1,8 @@
 package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.domain.entities.ChatEntity
-import it.gruppoinfor.home2work.chat.ChatMessageEntity
 import it.gruppoinfor.home2work.data.entities.ChatData
 import it.gruppoinfor.home2work.data.entities.ChatMessageData
-import okhttp3.ResponseBody
 import retrofit2.http.*
 
 

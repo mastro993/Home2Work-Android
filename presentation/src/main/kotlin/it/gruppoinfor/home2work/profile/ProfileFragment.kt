@@ -9,6 +9,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.view.*
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.BaseFragment
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
@@ -26,20 +27,14 @@ import java.util.*
 import javax.inject.Inject
 
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
 
-    @Inject
-    lateinit var factory: ProfileVMFactory
-    @Inject
-    lateinit var localUserData: LocalUserData
-
-    private lateinit var viewModel: ProfileViewModel
+    override fun getVMClass(): Class<ProfileViewModel> {
+        return ProfileViewModel::class.java
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        DipendencyInjector.createProfileComponent().inject(this)
-        viewModel = ViewModelProvider(this, factory).get(ProfileViewModel::class.java)
 
         viewModel.getProfile()
     }
@@ -127,11 +122,6 @@ class ProfileFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        DipendencyInjector.releaseProfileComponent()
-    }
-
 
     private fun handleViewState(state: ProfileViewState) {
 
@@ -153,7 +143,7 @@ class ProfileFragment : Fragment() {
             text_month_shared_distance_avg_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.monthSharedDistanceAvg.div(1000f))
 
             if (it.stats.sharedDistance > 0) {
-                no_activity_chart_data_view.remove()
+                no_activity_chart_data_view.hide()
                 chart_activity.show()
                 chart_activity.setData(it.activity, it.stats.monthSharedDistanceAvg.div(1000f))
             } else {
@@ -168,7 +158,7 @@ class ProfileFragment : Fragment() {
             text_longest_share_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.longestShare.div(1000f))
 
             if (it.stats.totalShares > 0) {
-                no_share_chart_data_view.remove()
+                no_share_chart_data_view.hide()
                 chart_shares.show()
                 chart_shares.setData(it.stats)
             } else {
