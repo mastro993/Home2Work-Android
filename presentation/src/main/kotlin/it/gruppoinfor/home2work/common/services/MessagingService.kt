@@ -40,9 +40,9 @@ class MessagingService : FirebaseMessagingService() {
         val type = remoteMessage.data[TYPE]
         when (type) {
             NEW_MESSAGE_RECEIVED -> {
-                val chatId = remoteMessage.data[CHAT_ID]?.toLong()!!
-                val text = remoteMessage.data[TEXT]!!
-                EventBus.getDefault().post(NewMessageEvent(chatId, text))
+                val chatId = remoteMessage.data[CHAT_ID]?.toLong()
+                val messageId = remoteMessage.data[MESSAGE_ID]?.toLong()
+                EventBus.getDefault().post(NewMessageEvent(chatId, messageId))
             }
             SHARE_JOIN, SHARE_COMPLETED, SHARE_LEAVED -> {
                 EventBus.getDefault().post(ActiveShareEvent())
@@ -132,7 +132,7 @@ class MessagingService : FirebaseMessagingService() {
     companion object {
         const val TYPE = "TYPE"
         const val CHAT_ID = "CHAT_ID"
-        const val TEXT = "TEXT"
+        const val MESSAGE_ID = "MESSAGE_ID"
         const val MATCHES_CHANNELL = "MATCHES_CHANNEL"
         const val MESSAGING_CHANNELL = "MESSAGING_CHANNEL"
         const val MESSAGING_NOTIFICATION_ID = 3433

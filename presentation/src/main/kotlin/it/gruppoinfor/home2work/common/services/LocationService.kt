@@ -207,7 +207,7 @@ class LocationService : Service() {
 
             val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)
             saveUserLocation.save(userLocationEntity).subscribe({
-                Timber.i("Posizione utente registrata: ${userLocation.latitude}, ${userLocation.longitude}")
+                Timber.v("Posizione utente registrata: ${userLocation.latitude}, ${userLocation.longitude}")
             }, {
                 Timber.e(it)
             })

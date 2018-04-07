@@ -9,6 +9,7 @@ import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ChatMessageEntity
+import it.gruppoinfor.home2work.domain.usecases.GetChatMessage
 import it.gruppoinfor.home2work.domain.usecases.GetChatMessageList
 import it.gruppoinfor.home2work.domain.usecases.NewChat
 import it.gruppoinfor.home2work.domain.usecases.SendMessage
@@ -18,6 +19,7 @@ import it.gruppoinfor.home2work.entities.ChatMessage
 class SingleChatViewModel(
         private var newChat: NewChat,
         private var getChatMessageList: GetChatMessageList,
+        private var getMessage: GetChatMessage,
         private var sendMessage: SendMessage,
         private var messageMapper: Mapper<ChatMessageEntity, ChatMessage>,
         private var entityMapper: Mapper<ChatMessage, ChatMessageEntity>,
@@ -55,7 +57,9 @@ class SingleChatViewModel(
                                 RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                                 RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                                 RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
-                                else ->{""}
+                                else -> {
+                                    ""
+                                }
                             }
 
                             val newViewState = viewStateSingle.value?.copy(
@@ -103,7 +107,9 @@ class SingleChatViewModel(
                                 RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                                 RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                                 RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
-                                else ->{""}
+                                else -> {
+                                    ""
+                                }
                             }
 
                             val newViewState = viewStateSingle.value?.copy(
@@ -116,6 +122,18 @@ class SingleChatViewModel(
                     })
             )
         }
+    }
+
+    private fun getMessage(messageId: Long) {
+        addDisposable(getMessage.getById(messageId)
+                .map {
+                    messageMapper.mapFrom(it)
+                }
+                .subscribe({
+                    messageReceived.value = it
+                }, {
+
+                }))
     }
 
     private fun silentRefreshMessageList() {
@@ -154,7 +172,9 @@ class SingleChatViewModel(
     fun onNewMessageEvent(newMessageEvent: NewMessageEvent) {
 
         if (newMessageEvent.chatId == chatId) {
-            silentRefreshMessageList()
+            newMessageEvent.messageId?.let {
+                getMessage(it)
+            }
         }
 
     }

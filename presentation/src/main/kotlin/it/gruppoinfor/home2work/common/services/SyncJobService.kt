@@ -31,17 +31,17 @@ class SyncJobService : JobService() {
 
     override fun onStartJob(params: JobParameters): Boolean {
 
-        Timber.v("Inizio job di sincronizzazione")
+        Timber.i("Inizio job di sincronizzazione")
 
         val userId = params.extras.getLong(KEY_USER_ID)
 
         getUserLocations.byId(userId)
                 .flatMap {
                     if (it.isNotEmpty()) {
-                        Timber.i("Sincronizzazione di ${it.size} posizioni utente")
+                        Timber.v("Sincronizzazione di ${it.size} posizioni utente")
                         syncUserLocation.upload(it)
                     } else {
-                        Timber.i("Nessuna posizione da sincronizzare")
+                        Timber.v("Nessuna posizione da sincronizzare")
                         Observable.just(false)
                     }
                 }
@@ -57,7 +57,7 @@ class SyncJobService : JobService() {
     }
 
     override fun onStopJob(p0: JobParameters?): Boolean {
-        Timber.v("Fine job di sincronizzazione")
+        Timber.i("Fine job di sincronizzazione")
         return false
     }
 

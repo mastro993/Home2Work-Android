@@ -14,6 +14,11 @@ interface ChatService {
             @Path("chatId") chatId: Long?
     ): Observable<List<ChatMessageData>>
 
+    @GET("message/{messageId}")
+    fun getMessageFromChat(
+            @Path("messageId") messageId: Long?
+    ): Observable<ChatMessageData>
+
     @FormUrlEncoded
     @POST("chat/{chatId}")
     fun sendMessageToChat(

@@ -27,24 +27,31 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
+import it.gruppoinfor.home2work.common.extensions.hide
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.user.SettingsPreferences
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
 import it.gruppoinfor.home2work.ranks.RanksFragment
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.view_vacancy_mode_banner.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
 import org.jetbrains.anko.intentFor
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
     private val CAMERA_PERMISSION_REQUEST_CODE = 1
+
+    @Inject
+    lateinit var settingsPreferences: SettingsPreferences
 
     override fun getVMClass(): Class<MainViewModel> {
         return MainViewModel::class.java
@@ -64,6 +71,19 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
     override fun onResume() {
         super.onResume()
+
+        vacancy_mode_banner.apply {
+            if (settingsPreferences.vacancyModeEnabled) {
+                show()
+                button_disable_vacancy_mode.setOnClickListener {
+                    settingsPreferences.vacancyModeEnabled = false
+                    hide()
+                }
+            } else {
+                remove()
+            }
+        }
+
 
         viewModel.getCurrentShare()
 
@@ -231,7 +251,7 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
                 bt_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_active))
             } else {
                 bt_new_share.setBackgroundResource(R.drawable.bg_new_share_button_inactive)
-                bt_new_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_new_share_button_icon_inactive))
+                bt_new_share.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_new_share_button_icon_inactive))
             }
 
         }

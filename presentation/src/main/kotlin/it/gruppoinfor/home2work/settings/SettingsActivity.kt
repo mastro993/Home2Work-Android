@@ -1,17 +1,24 @@
 package it.gruppoinfor.home2work.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
+import it.gruppoinfor.home2work.common.user.SettingsPreferences
 import it.gruppoinfor.home2work.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.intentFor
+import javax.inject.Inject
 
 
 class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
+
+    @Inject
+    lateinit var settingsPreferences: SettingsPreferences
 
     override fun getVMClass(): Class<SettingsViewModel> {
         return SettingsViewModel::class.java
@@ -40,6 +47,35 @@ class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
 
     private fun initUI() {
 
+        vacancy_mode_switch.isChecked = settingsPreferences.vacancyModeEnabled
+
+        vacancy_mode_switch.setOnCheckedChangeListener { _, isChecked ->
+            settingsPreferences.vacancyModeEnabled = isChecked
+        }
+
+        vacancy_mode_title.setOnClickListener {
+
+            if(!settingsPreferences.vacancyModeEnabled){
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Modalità vacanza")
+                builder.setMessage("Abilitando la modalità vacanza la tua attività non verrà monitorata e le notifiche saranno disabilitate")
+                builder.setPositiveButton("Attiva") { _, _ ->
+
+                    vacancy_mode_switch.isChecked = true
+
+                }
+                builder.setNegativeButton(R.string.dialog_logout_decline, null)
+                builder.show()
+            } else {
+                vacancy_mode_switch.isChecked = false
+            }
+
+        }
+
+
+        about_button.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.home2work.it/")))
+        }
 
         button_logout.setOnClickListener {
 
@@ -60,13 +96,5 @@ class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
 
     }
 
-    companion object {
-        const val PREFS_NOTIFICATIONS = "NOTIFICATIONS"
-        const val PREFS_NOTIFICATIONS_NEWS = "NOTIFICATIONS_NEWS"
-        const val PREFS_NOTIFICATIONS_MSG = "NOTIFICATIONS_MSG"
-        const val PREFS_NOTIFICATIONS_MATCHES = "NOTIFICATIONS_MATCHES"
-        const val PREFS_ACTIVITY_TRACKING = "ACTIVITY_TRACKING"
-        const val PREFS_SYNC_WITH_DATA = "SYNC_WITH_DATA"
-        const val PREFS_LAST_SYNC = "LAST_SYNC"
-    }
+
 }
