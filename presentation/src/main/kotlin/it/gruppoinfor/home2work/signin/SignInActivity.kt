@@ -99,11 +99,12 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
         localUserData.user?.let {
 
             jobScheduler.scheduleSyncJob(it.id)
-            LocationService.launch(this, it.id)
+            LocationService.launch(this)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
+
             finish()
 
         } ?: showToast("Errore imprevisto")

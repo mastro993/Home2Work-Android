@@ -3,6 +3,7 @@ package it.gruppoinfor.home2work.common.services
 import android.annotation.SuppressLint
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService
+import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import timber.log.Timber
@@ -13,6 +14,8 @@ class FirebaseTokenService : FirebaseInstanceIdService() {
 
     @Inject
     lateinit var storeUserFCMToken: StoreUserFCMToken
+    @Inject
+    lateinit var localUserData: LocalUserData
 
     @SuppressLint("CheckResult")
     override fun onTokenRefresh() {
@@ -20,20 +23,26 @@ class FirebaseTokenService : FirebaseInstanceIdService() {
 
         val refreshedToken = FirebaseInstanceId.getInstance().token
 
-        Timber.i("FirebaseToken aggiornato: $refreshedToken")
-
-        sync(token = refreshedToken)
-
-    }
-
-    fun sync(token: String?) {
-        token?.let {
-
-            storeUserFCMToken.store(it)
-                    .subscribe({}, {})
-
+        refreshedToken?.let {
+            val savedToken = localUserData.firebaseToken
+            if (it != savedToken) {
+                localUserData.firebaseToken = refreshedToken
+                syncToken(it)
+            }
         }
     }
+
+    fun syncToken(token: String?) {
+        token?.let {
+            storeUserFCMToken.store(it)
+                    .subscribe({
+                        //Timber.i("Firebase Token aggiornato")
+                    }, {
+                        Timber.e(it, "Impossibile aggiornare il Firebase Token")
+                    })
+        }
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

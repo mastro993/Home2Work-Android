@@ -2,6 +2,8 @@ package it.gruppoinfor.home2work.di
 
 import dagger.Component
 import it.gruppoinfor.home2work.App
+import it.gruppoinfor.home2work.common.DaggerJobService
+import it.gruppoinfor.home2work.common.DaggerService
 import it.gruppoinfor.home2work.common.boot.BootReceiver
 import it.gruppoinfor.home2work.common.services.LocationService
 import it.gruppoinfor.home2work.common.services.SyncJobService
@@ -46,8 +48,8 @@ import javax.inject.Singleton
 interface MainComponent {
     fun inject(app: App)
     fun inject(bootReceiver: BootReceiver)
-    fun inject(locationService: LocationService)
-    fun inject(syncJobService: SyncJobService)
+    fun inject(daggerservice: DaggerService)
+    fun inject(daggerJobService: DaggerJobService)
     fun inject(avatarView: AvatarView)
     fun plus(firebaseModule: FirebaseModule): FirebaseSubComponent
     fun plus(authModule: SignInModule): SignInSubComponent

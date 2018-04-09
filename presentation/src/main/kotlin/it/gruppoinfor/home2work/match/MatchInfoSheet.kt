@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MatchInfoDialog constructor(context: Context, private val imageLoader: ImageLoader, private val match: Match) : AlertDialog(context) {
+class MatchInfoSheet constructor(context: Context, private val imageLoader: ImageLoader, private val match: Match) : AlertDialog(context) {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,10 +65,10 @@ class MatchInfoDialog constructor(context: Context, private val imageLoader: Ima
         match_user_container.setOnClickListener {
             UserActivityLancher(
                     userId = host.id,
-                    userName = host.toString(),
+                    userName = host.fullName,
                     userAvatarUrl = host.avatarUrl,
                     userCompanyId = host.company!!.id,
-                    userCompanyName = host.company!!.name
+                    userCompanyName = host.company!!.formattedName
             ).launch(context)
         }
 

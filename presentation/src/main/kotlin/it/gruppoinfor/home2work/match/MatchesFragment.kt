@@ -17,7 +17,6 @@ import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.views.ScreenStateView
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
@@ -131,7 +130,7 @@ class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
     private fun onMatchClick(match: Match, position: Int) {
         if (match.getScore() != null) {
             viewModel.setMatchAsViewed(match)
-            val dialog = MatchInfoDialog(context!!, imageLoader, match)
+            val dialog = MatchInfoSheet(context!!, imageLoader, match)
             dialog.show()
         } else {
 

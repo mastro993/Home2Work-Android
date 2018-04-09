@@ -83,9 +83,9 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
     private fun onLoginSuccess() {
 
         localUserData.user?.let {
-            jobScheduler.scheduleSyncJob(it.id)
 
-            LocationService.launch(this, it.id)
+            jobScheduler.scheduleSyncJob(it.id)
+            LocationService.launch(this)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

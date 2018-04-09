@@ -29,6 +29,14 @@ class LocalUserData constructor(
         }
         set(value) = userPreferences.setSessionToken(value)
 
+    var firebaseToken: String?
+        get() {
+            return userPreferences.getFirebaseToken()
+        }
+        set(value) {
+            userPreferences.setFirebaseToken(value)
+        }
+
     var email: String?
         get() {
             return userPreferences.getEmail()

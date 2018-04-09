@@ -15,6 +15,9 @@ class FileLoggingTree : Timber.DebugTree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
 
         val titleColor = when (priority) {
+            Log.VERBOSE -> {
+                "#B0BEC5"
+            }
             Log.DEBUG -> {
                 "#81C784"
             }

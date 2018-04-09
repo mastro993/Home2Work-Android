@@ -4,7 +4,8 @@ class Experience(
         var level: Int,
         var amount: Int,
         var currentLvLExp: Int,
-        var nextLvlExp: Int
+        var nextLvlExp: Int,
+        var monthExp: Int
 ) {
 
 

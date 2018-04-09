@@ -12,7 +12,8 @@ class ExperienceEntityExperienceMapper @Inject constructor() : Mapper<Experience
                 level = from.level,
                 amount = from.amount,
                 currentLvLExp = from.currentLvLExp,
-                nextLvlExp = from.nextLvlExp
+                nextLvlExp = from.nextLvlExp,
+                monthExp = from.monthExp
         )
     }
 }

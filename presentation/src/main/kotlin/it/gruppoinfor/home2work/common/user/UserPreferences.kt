@@ -18,6 +18,7 @@ class UserPreferences constructor(context: Context) {
         const val PREF_EMAIL = "email"
         const val PREF_USER_DATA = "user"
         const val PREF_SESSION_TOKEN = "session_token"
+        const val PREF_FIREBASE_TOKEN = "firebase_token"
     }
 
     fun getAccessToken(): String? {
@@ -54,6 +55,18 @@ class UserPreferences constructor(context: Context) {
         val editor = prefs.edit()
         editor.putString(PREF_EMAIL, token)
         editor.apply()
+    }
+
+    fun getFirebaseToken(): String? {
+        return prefs.getString(PREF_FIREBASE_TOKEN, null)
+    }
+
+    fun setFirebaseToken(token: String?) {
+        token?.let {
+            val editor = prefs.edit()
+            editor.putString(PREF_FIREBASE_TOKEN, it)
+            editor.apply()
+        }
     }
 
     fun clearUserData() {

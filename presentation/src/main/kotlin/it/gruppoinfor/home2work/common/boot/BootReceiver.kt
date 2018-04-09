@@ -10,19 +10,9 @@ import it.gruppoinfor.home2work.di.DipendencyInjector
 import javax.inject.Inject
 
 class BootReceiver : BroadcastReceiver() {
-
-    @Inject
-    lateinit var localUserData: LocalUserData
-
-
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, arg1: Intent) {
-        DipendencyInjector.mainComponent.inject(this)
-
-        localUserData.user?.let {
-            LocationService.launch(context, it.id)
-        }
-
+        LocationService.launch(context)
     }
 
 }
