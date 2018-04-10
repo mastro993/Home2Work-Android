@@ -1,9 +1,10 @@
 package it.gruppoinfor.home2work.match
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.content.ContextCompat
+import android.view.ViewGroup
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
@@ -11,18 +12,20 @@ import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.user.UserActivityLancher
-import kotlinx.android.synthetic.main.dialog_match_info.*
+import kotlinx.android.synthetic.main.sheet_match_info.*
 import kotlinx.android.synthetic.main.item_match.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MatchInfoSheet constructor(context: Context, private val imageLoader: ImageLoader, private val match: Match) : AlertDialog(context) {
+class MatchInfoSheet constructor(context: Context, private val imageLoader: ImageLoader, private val match: Match) : BottomSheetDialog(context) {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_match_info)
+        setContentView(R.layout.sheet_match_info)
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
         text_match_score.remove()
 
         initUI()
@@ -70,6 +73,7 @@ class MatchInfoSheet constructor(context: Context, private val imageLoader: Imag
                     userCompanyId = host.company!!.id,
                     userCompanyName = host.company!!.formattedName
             ).launch(context)
+            dismiss()
         }
 
 
@@ -77,8 +81,9 @@ class MatchInfoSheet constructor(context: Context, private val imageLoader: Imag
             SingleChatActivityLauncher(
                     chatId = 0L,
                     recipientId = host.id,
-                    recipientName = host.name
+                    recipientName = host.fullName
             ).launch(context)
+            dismiss()
         }
 
 

@@ -2,7 +2,6 @@ package it.gruppoinfor.home2work.sharecurrent
 
 import android.Manifest
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -26,15 +25,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.extensions.hide
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.utilities.QREncoder
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.entities.GuestStatus
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareStatus
@@ -45,7 +41,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
-import javax.inject.Inject
 
 class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMFactory>() {
 
@@ -53,8 +48,11 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
     private var share: Share? = null
     private var qrCodeDialog: BottomSheetDialog? = null
 
+
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 1
+        const val REQ_CODE = 3434
+        const val EXTRA_SHARE = "share"
     }
 
     override fun getVMClass(): Class<CurrentShareViewModel> {
@@ -147,7 +145,7 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
         button_show_share_code.setOnClickListener {
 
             qrCodeDialog = BottomSheetDialog(this)
-            val sheetView = layoutInflater.inflate(R.layout.dialog_share_qr_code, null)
+            val sheetView = layoutInflater.inflate(R.layout.sheet_share_qr_code, null)
             qrCodeDialog?.setContentView(sheetView)
             qrCodeDialog?.show()
 
@@ -198,18 +196,33 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
 
         button_complete_share_host.setOnClickListener {
             share?.let {
-                if (it.guests.size == 0) {
 
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.activity_ongoing_share_dialog_completition_error_title)
-                            .setMessage(R.string.activity_ongoing_share_dialog_completition_error_content)
-                            .show()
+                when {
+                    it.guests.size == 0 -> {
+                        AlertDialog.Builder(this)
+                                .setTitle(R.string.activity_ongoing_share_dialog_completition_error_title)
+                                .setMessage(R.string.activity_ongoing_share_dialog_completition_error_content)
+                                .show()
+                    }
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+                        val locationRequest = LocationRequest.create()
+                        locationRequest.numUpdates = 1
+                        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-                } else {
+                        val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-                    viewModel.finishShare()
-
+                        mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                            override fun onLocationResult(locationResult: LocationResult) {
+                                val hostLocation = locationResult.lastLocation
+                                viewModel.finishShare(hostLocation)
+                                mFusedLocationClient.removeLocationUpdates(this)
+                            }
+                        }, Looper.myLooper())
+                    }
+                    else -> {
+                    }
                 }
+
             }
         }
 
@@ -336,12 +349,24 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
             it?.let { showToast(it) }
         })
 
-        viewModel.shareFinishEvent.observe(this, Observer {
+        viewModel.shareCanceledEvent.observe(this, Observer {
             it?.let {
                 if (it) {
                     localUserData.currentShare = null
                     finish()
                 }
+            }
+        })
+
+        viewModel.shareCompletedEvent.observe(this, Observer {
+            it?.let {
+
+                localUserData.currentShare = null
+                val resultIntent = Intent()
+                resultIntent.putExtra(EXTRA_SHARE, it)
+                setResult(REQ_CODE, resultIntent)
+                finish()
+
             }
         })
 

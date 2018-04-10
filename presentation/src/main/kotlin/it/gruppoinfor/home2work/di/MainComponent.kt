@@ -2,11 +2,8 @@ package it.gruppoinfor.home2work.di
 
 import dagger.Component
 import it.gruppoinfor.home2work.App
-import it.gruppoinfor.home2work.common.DaggerJobService
-import it.gruppoinfor.home2work.common.DaggerService
 import it.gruppoinfor.home2work.common.boot.BootReceiver
-import it.gruppoinfor.home2work.common.services.LocationService
-import it.gruppoinfor.home2work.common.services.SyncJobService
+import it.gruppoinfor.home2work.services.SyncJobService
 import it.gruppoinfor.home2work.common.views.AvatarView
 import it.gruppoinfor.home2work.di.singlechat.SingleChatModule
 import it.gruppoinfor.home2work.di.singlechat.SingleChatSubComponent
@@ -37,6 +34,8 @@ import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
+import it.gruppoinfor.home2work.services.LocationService
+import it.gruppoinfor.home2work.services.MessagingService
 import javax.inject.Singleton
 
 @Singleton
@@ -48,9 +47,10 @@ import javax.inject.Singleton
 interface MainComponent {
     fun inject(app: App)
     fun inject(bootReceiver: BootReceiver)
-    fun inject(daggerservice: DaggerService)
-    fun inject(daggerJobService: DaggerJobService)
+    fun inject(daggerservice: LocationService)
+    fun inject(daggerJobService: SyncJobService)
     fun inject(avatarView: AvatarView)
+    fun inject(messagingService: MessagingService)
     fun plus(firebaseModule: FirebaseModule): FirebaseSubComponent
     fun plus(authModule: SignInModule): SignInSubComponent
     fun plus(splashModule: SplashModule): SplashSubComponent

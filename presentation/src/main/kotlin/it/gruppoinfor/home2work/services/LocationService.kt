@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.common.services
+package it.gruppoinfor.home2work.services
 
 import android.app.*
 import android.content.Context
@@ -17,8 +17,10 @@ import android.support.v4.content.ContextCompat
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.DaggerService
 import it.gruppoinfor.home2work.common.mappers.UserLocationUserLocationEntityMapper
+import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.usecases.SaveUserLocation
 import it.gruppoinfor.home2work.entities.UserLocation
 import org.jetbrains.anko.startService
@@ -28,10 +30,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class LocationService : DaggerService() {
+class LocationService : Service() {
 
     @Inject
     lateinit var saveUserLocation: SaveUserLocation
+    @Inject
+    lateinit var localUserData: LocalUserData
+    @Inject
+    lateinit var settingsPreferences: SettingsPreferences
 
     companion object {
         const val NOTIFICATION_ID = 2313
@@ -57,6 +63,7 @@ class LocationService : DaggerService() {
 
     override fun onCreate() {
         super.onCreate()
+        DipendencyInjector.mainComponent.inject(this)
 
         localUserData.user?.let {
 

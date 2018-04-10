@@ -43,8 +43,8 @@ class ShareRepositoryImpl(
         }
     }
 
-    override fun createShare(): Observable<ShareEntity> {
-        return shareService.createShare().map {
+    override fun createShare(startLat: Double, startLng: Double): Observable<ShareEntity> {
+        return shareService.createShare(startLat, startLng).map {
             mapper.mapFrom(it)
         }
     }
@@ -55,12 +55,14 @@ class ShareRepositoryImpl(
         }
     }
 
-    override fun completeShare(completeLat: Double, completeLng: Double): Observable<Boolean> {
+    override fun completeShare(completeLat: Double, completeLng: Double): Observable<ShareEntity> {
         return shareService.completeCurrentShare(completeLat, completeLng)
+                .map { mapper.mapFrom(it) }
     }
 
-    override fun finishShare(): Observable<Boolean> {
-        return shareService.finishCurrentShare()
+    override fun finishShare(finishLat: Double, finishLng: Double): Observable<ShareEntity> {
+        return shareService.finishCurrentShare(finishLat, finishLng)
+                .map { mapper.mapFrom(it) }
     }
 
     override fun banUserFromShare(userId: Long): Observable<Boolean> {

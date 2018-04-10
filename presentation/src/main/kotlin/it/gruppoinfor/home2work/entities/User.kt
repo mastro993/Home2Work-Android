@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.entities
 
 
+import java.io.Serializable
 import java.util.*
 
 data class User(
@@ -13,4 +14,4 @@ data class User(
         var address: Address?,
         var company: Company?,
         var regdate: Date?
-)
+) : Serializable

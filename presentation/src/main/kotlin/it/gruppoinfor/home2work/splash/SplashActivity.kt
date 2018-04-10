@@ -13,7 +13,7 @@ import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.common.services.LocationService
+import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject

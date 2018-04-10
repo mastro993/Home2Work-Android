@@ -36,14 +36,12 @@
         tools:visibility="visible" />
 
     <TextView
+        style="@style/TextAppearance.App.Subtitle"
         android:id="@+id/text_host_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginTop="16dp"
-        android:textColor="@color/light_bg_dark_secondary_text"
-        android:textSize="16sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/text_host_job"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

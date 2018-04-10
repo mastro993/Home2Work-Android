@@ -25,8 +25,12 @@ interface ShareService {
     @GET("share/current")
     fun getCurrentShare(): Observable<ShareData>
 
+    @FormUrlEncoded
     @POST("share/new")
-    fun createShare(): Observable<ShareData>
+    fun createShare(
+            @Field("startLat") startLat: Double,
+            @Field("startLng") startLng: Double
+    ): Observable<ShareData>
 
     @FormUrlEncoded
     @POST("share/{shareId}/join")
@@ -41,10 +45,14 @@ interface ShareService {
     fun completeCurrentShare(
             @Field("completeLat") completeLat: Double,
             @Field("completeLng") completeLng: Double
-    ): Observable<Boolean>
+    ): Observable<ShareData>
 
+    @FormUrlEncoded
     @POST("share/finish")
-    fun finishCurrentShare(): Observable<Boolean>
+    fun finishCurrentShare(
+            @Field("finishLat") finishLat: Double,
+            @Field("finishLng") finishLng: Double
+    ): Observable<ShareData>
 
     @POST("share/leave")
     fun leaveCurrentShare(): Observable<Boolean>

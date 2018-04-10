@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.common.services
+package it.gruppoinfor.home2work.services
 
 
 import android.app.Notification
@@ -18,11 +18,16 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.chat.ChatActivity
+import it.gruppoinfor.home2work.di.DipendencyInjector
 import org.greenrobot.eventbus.EventBus
 
 
 class MessagingService : FirebaseMessagingService() {
 
+    override fun onCreate() {
+        super.onCreate()
+        DipendencyInjector.mainComponent.inject(this)
+    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 

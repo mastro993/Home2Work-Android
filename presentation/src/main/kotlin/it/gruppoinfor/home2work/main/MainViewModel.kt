@@ -31,8 +31,8 @@ class MainViewModel(
         viewState.value = MainViewState()
     }
 
-    fun createShare() {
-        addDisposable(createShare.observable()
+    fun createShare(hostLocation: Location) {
+        addDisposable(createShare.startFrom(hostLocation.latitude, hostLocation.longitude)
                 .map { shareMapper.mapFrom(it) }
                 .doOnSubscribe {
 

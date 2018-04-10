@@ -9,6 +9,8 @@
     android:orientation="vertical"
     tools:ignore="HardcodedText">
 
+    <!-- TODO  static map -->
+
     <ImageView
         android:id="@+id/share_route_image"
         android:layout_width="match_parent"
@@ -25,8 +27,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- TODO mappa del percorso con static map Google-->
 
     <TextView
         android:id="@+id/text_share_type"
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:text="Ospiti"
             android:textSize="12sp"
@@ -163,7 +163,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:text="Km"
             android:textSize="12sp"
@@ -221,7 +221,7 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:text="Xp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

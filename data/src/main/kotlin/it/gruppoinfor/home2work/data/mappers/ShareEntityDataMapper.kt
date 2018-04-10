@@ -24,6 +24,10 @@ class ShareEntityDataMapper @Inject constructor() : Mapper<ShareEntity, ShareDat
                 date = from.date,
                 type = type,
                 guests = guests,
+                startLat = from.startLat,
+                startLng = from.startLng,
+                endLat = from.endLat,
+                endLng = from.endLng,
                 sharedDistance = from.sharedDistance
         )
     }

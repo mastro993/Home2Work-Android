@@ -7,10 +7,8 @@ import it.gruppoinfor.home2work.common.SingleLiveEvent
 import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
-import it.gruppoinfor.home2work.domain.entities.GuestEntity
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.usecases.*
-import it.gruppoinfor.home2work.entities.Guest
 import it.gruppoinfor.home2work.entities.Share
 
 class CurrentShareViewModel(
@@ -26,7 +24,8 @@ class CurrentShareViewModel(
     var viewState: MutableLiveData<CurrentShareViewState> = MutableLiveData()
     var errorEvent: SingleLiveEvent<String> = SingleLiveEvent()
     var infoEvent: SingleLiveEvent<String> = SingleLiveEvent()
-    var shareFinishEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    var shareCompletedEvent: SingleLiveEvent<Share> = SingleLiveEvent()
+    var shareCanceledEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
 
     init {
         viewState.value = CurrentShareViewState()
@@ -60,7 +59,9 @@ class CurrentShareViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
-                            else ->{""}
+                            else -> {
+                                ""
+                            }
                         }
 
                         val newViewState = viewState.value?.copy(
@@ -97,7 +98,7 @@ class CurrentShareViewModel(
                 .subscribe({
 
                     if (it) {
-                        shareFinishEvent.value = true
+                        shareCanceledEvent.value = it
                     } else {
                         errorEvent.value = "Impossibile interrompere la condivisione corso"
                     }
@@ -113,7 +114,7 @@ class CurrentShareViewModel(
                 .subscribe({
 
                     if (it) {
-                        shareFinishEvent.value = true
+                        shareCanceledEvent.value = true
                     } else {
                         errorEvent.value = "Impossibile abbandonare la condivisione corso"
                     }
@@ -128,13 +129,11 @@ class CurrentShareViewModel(
 
         if (hostLocation.distanceTo(completeLocation) < 1000) {
             addDisposable(completeCurrentShare.completeFrom(completeLocation.latitude, completeLocation.longitude)
+                    .map { shareMapper.mapFrom(it) }
                     .subscribe({
-
-                        shareFinishEvent.value = true
+                        shareCompletedEvent.value = it
                     }, {
-
                         errorEvent.value = "Impossibile completare la condivisione in corso"
-
                     }))
         } else {
             errorEvent.value = "Impossibile completare la condivisione in corso"
@@ -142,15 +141,11 @@ class CurrentShareViewModel(
 
     }
 
-    fun finishShare() {
-        addDisposable(finishCurrentShare.observable()
+    fun finishShare(hostLocation: Location) {
+        addDisposable(finishCurrentShare.finishFrom(hostLocation.latitude, hostLocation.longitude)
+                .map { shareMapper.mapFrom(it) }
                 .subscribe({
-
-                    if (it) {
-                        shareFinishEvent.value = true
-                    } else {
-                        errorEvent.value = "Impossibile completare la condivisione corso"
-                    }
+                    shareCompletedEvent.value = it
                 }, {
 
                     errorEvent.value = "Impossibile completare la condivisione in corso"

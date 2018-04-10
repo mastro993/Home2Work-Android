@@ -10,10 +10,10 @@ interface ShareRepository {
     fun getShareList(): Observable<List<ShareEntity>>
     fun getActiveShare(): Observable<ShareEntity>
     fun getShareGuests(shareId: Long): Observable<List<GuestEntity>>
-    fun createShare(): Observable<ShareEntity>
+    fun createShare(startLat: Double, startLng: Double): Observable<ShareEntity>
     fun joinShare(shareId: Long, joinLat: Double, joinLng: Double): Observable<ShareEntity>
-    fun completeShare(completeLat: Double, completeLng: Double): Observable<Boolean>
-    fun finishShare(): Observable<Boolean>
+    fun completeShare(completeLat: Double, completeLng: Double): Observable<ShareEntity>
+    fun finishShare(finishLat: Double, finishLng: Double): Observable<ShareEntity>
     fun banUserFromShare(userId: Long): Observable<Boolean>
     fun cancelShare(): Observable<Boolean>
     fun leaveShare(): Observable<Boolean>

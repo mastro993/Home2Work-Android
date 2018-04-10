@@ -113,7 +113,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             context?.launchActivity<ShareHistoryActivity>()
         }
         button_shares_history.isFocusableInTouchMode = false
-        //button_shares_history.setOnFocusChangeListener { v, hasFocus -> if(hasFocus) v.performClick() }
+        button_shares_history.setOnFocusChangeListener { v, hasFocus -> if(hasFocus) v.performClick() }
 
     }
 
@@ -137,6 +137,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), it.exp.amount)
             text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), it.exp.currentLvLExp)
             text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), it.exp.nextLvlExp)
+            text_month_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_month), it.exp.monthExp)
 
             text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", it.stats.sharedDistance.div(1000f))
             text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.monthSharedDistance.div(1000f))

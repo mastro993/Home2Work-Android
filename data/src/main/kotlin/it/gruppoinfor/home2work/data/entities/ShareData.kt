@@ -11,5 +11,9 @@ data class ShareData(
         @SerializedName("Time") var date: Date? = null,
         @SerializedName("Type") var type: ShareTypeData,
         @SerializedName("Guests") var guests: ArrayList<GuestData> = ArrayList(),
+        @SerializedName("StartLat") var startLat: Double,
+        @SerializedName("StartLng") var startLng: Double,
+        @SerializedName("EndLat") var endLat: Double? = null,
+        @SerializedName("EndLng") var endLng: Double? = null,
         @SerializedName("SharedDistance") var sharedDistance: Int = 0
 )

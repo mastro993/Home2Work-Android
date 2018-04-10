@@ -10,7 +10,7 @@ import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.common.services.LocationService
+import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.main.MainActivity
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import javax.inject.Inject

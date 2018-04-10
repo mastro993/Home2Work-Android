@@ -1,7 +1,9 @@
 package it.gruppoinfor.home2work.entities
 
+import java.io.Serializable
 
-enum class ShareStatus constructor(val value: Int) {
+
+enum class ShareStatus constructor(val value: Int) : Serializable {
     CREATED(0),
     COMPLETED(1),
     CANCELED(2);

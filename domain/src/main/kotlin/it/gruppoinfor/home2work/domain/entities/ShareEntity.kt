@@ -9,5 +9,9 @@ data class ShareEntity(
         val date: Date?,
         val type: ShareTypeEntity,
         val guests: ArrayList<GuestEntity>,
+        val startLat: Double,
+        val startLng: Double,
+        val endLat: Double?,
+        val endLng: Double?,
         val sharedDistance: Int
 )

@@ -82,4 +82,15 @@
         <item name="android:windowEnterAnimation">@anim/slideup</item>
         <item name="android:windowExitAnimation">@anim/slidedown</item>
     </style>
+
+    <style name="TextAppearance.App" parent="TextAppearance.AppCompat">
+
+    </style>
+
+    <style name="TextAppearance.App.Subtitle">
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/light_bg_dark_tertiary_text</item>
+    </style>
 </resources>

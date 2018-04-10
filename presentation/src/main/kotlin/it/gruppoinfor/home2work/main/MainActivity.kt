@@ -27,26 +27,25 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
-import it.gruppoinfor.home2work.common.extensions.hide
-import it.gruppoinfor.home2work.common.extensions.remove
-import it.gruppoinfor.home2work.common.extensions.show
-import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
 import it.gruppoinfor.home2work.ranks.RanksFragment
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
+import it.gruppoinfor.home2work.sharecurrent.ShareCompleteDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_vacancy_mode_banner.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.find
-import org.jetbrains.anko.intentFor
 import javax.inject.Inject
 
 class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
+
 
     private val CAMERA_PERMISSION_REQUEST_CODE = 1
 
@@ -92,19 +91,30 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
+
         data?.let {
-            val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, it)
-            if (scanResult is IntentResult) {
+            if (requestCode == CurrentShareActivity.REQ_CODE) {
 
-                val stringData = scanResult.contents.split(",")
-                val shareId = java.lang.Long.parseLong(stringData[0])
+                if (it.hasExtra(CurrentShareActivity.EXTRA_SHARE)) {
+                    val share = it.getSerializableExtra(CurrentShareActivity.EXTRA_SHARE) as Share
+                    val dialog = ShareCompleteDialog(this, share)
+                    dialog.show()
+                }
 
-                val hostLocation = Location("")
-                hostLocation.latitude = stringData[1].toDouble()
-                hostLocation.longitude = stringData[2].toDouble()
+            } else {
+                val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, it)
+                if (scanResult is IntentResult) {
 
-                checkShareCode(shareId, hostLocation)
+                    val stringData = scanResult.contents.split(",")
+                    val shareId = java.lang.Long.parseLong(stringData[0])
 
+                    val hostLocation = Location("")
+                    hostLocation.latitude = stringData[1].toDouble()
+                    hostLocation.longitude = stringData[2].toDouble()
+
+                    checkShareCode(shareId, hostLocation)
+
+                }
             }
         }
 
@@ -165,8 +175,9 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
         bt_new_share.setOnClickListener {
 
-            if (localUserData.currentShare == null) {
-
+            localUserData.currentShare?.let {
+                launchActivity<CurrentShareActivity>(requestCode = CurrentShareActivity.REQ_CODE)
+            } ?: let {
                 val dialog = BottomSheetDialog(this)
                 val sheetView = layoutInflater.inflate(R.layout.dialog_new_share, null)
 
@@ -175,15 +186,14 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
                 sheetView.find<TextView>(R.id.new_share_dialog_create_new).setOnClickListener {
                     dialog.dismiss()
-                    viewModel.createShare()
+                    createShare()
                 }
                 sheetView.find<TextView>(R.id.new_share_dialog_join).setOnClickListener {
                     dialog.dismiss()
                     joinShare()
                 }
-            } else {
-                startActivity(intentFor<CurrentShareActivity>())
             }
+
 
         }
 
@@ -231,7 +241,7 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
             handleViewState(it)
         })
         viewModel.shareEvent.observe(this, Observer {
-            startActivity(intentFor<CurrentShareActivity>())
+            launchActivity<CurrentShareActivity>(requestCode = CurrentShareActivity.REQ_CODE)
         })
     }
 
@@ -270,6 +280,28 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
             intentIntegrator.setOrientationLocked(false)
             intentIntegrator.initiateScan()
+
+        }
+
+    }
+
+    private fun createShare() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            val locationRequest = LocationRequest.create()
+            locationRequest.numUpdates = 1
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+            val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val hostLocation = locationResult.lastLocation
+                    viewModel.createShare(hostLocation)
+                    mFusedLocationClient.removeLocationUpdates(this)
+                }
+            }, Looper.myLooper())
 
         }
 

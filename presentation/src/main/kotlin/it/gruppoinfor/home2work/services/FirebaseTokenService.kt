@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.common.services
+package it.gruppoinfor.home2work.services
 
 import android.annotation.SuppressLint
 import com.google.firebase.iid.FirebaseInstanceId
@@ -26,7 +26,6 @@ class FirebaseTokenService : FirebaseInstanceIdService() {
         refreshedToken?.let {
             val savedToken = localUserData.firebaseToken
             if (it != savedToken) {
-                localUserData.firebaseToken = refreshedToken
                 syncToken(it)
             }
         }
@@ -36,7 +35,7 @@ class FirebaseTokenService : FirebaseInstanceIdService() {
         token?.let {
             storeUserFCMToken.store(it)
                     .subscribe({
-                        //Timber.i("Firebase Token aggiornato")
+                        localUserData.firebaseToken = token
                     }, {
                         Timber.e(it, "Impossibile aggiornare il Firebase Token")
                     })

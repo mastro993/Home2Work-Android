@@ -119,6 +119,7 @@
     <string name="fragment_profile_card_current_lvl_exp_value">%,d</string>
     <string name="fragment_profile_card_next_lvl_exp_value">%,d</string>
     <string name="fragment_profile_card_exp_left">%,d punti al prossimo livello</string>
+    <string name="fragment_profile_card_exp_month">+%,d punti questo mese</string>
     <string name="fragment_profile_card_shares">Condivisioni</string>
     <string name="fragment_profile_card_shares_distance_value">%.2f km</string>
     <string name="fragment_profile_card_shares_month">Condivisioni completate a %s</string>

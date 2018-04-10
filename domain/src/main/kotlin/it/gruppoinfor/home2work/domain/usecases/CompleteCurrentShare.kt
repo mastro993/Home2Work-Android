@@ -2,26 +2,27 @@ package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.domain.common.Transformer
+import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 
 class CompleteCurrentShare(
-        transformer: Transformer<Boolean>,
+        transformer: Transformer<ShareEntity>,
         private val shareRepository: ShareRepository
-) : UseCase<Boolean>(transformer) {
+) : UseCase<ShareEntity>(transformer) {
 
     companion object {
         private const val PARAM_COMPLETE_LAT = "param:completeLat"
         private const val PARAM_COMPLETE_LNG = "param:completeLng"
     }
 
-    fun completeFrom(latitude: Double, longitude: Double): Observable<Boolean> {
+    fun completeFrom(latitude: Double, longitude: Double): Observable<ShareEntity> {
         val data = HashMap<String, Double>()
         data[PARAM_COMPLETE_LAT] = latitude
         data[PARAM_COMPLETE_LNG] = longitude
         return observable(data)
     }
 
-    override fun createObservable(data: Map<String, Any>?): Observable<Boolean> {
+    override fun createObservable(data: Map<String, Any>?): Observable<ShareEntity> {
         val completeLat = data?.get(PARAM_COMPLETE_LAT)
         val completeLng = data?.get(PARAM_COMPLETE_LNG)
 

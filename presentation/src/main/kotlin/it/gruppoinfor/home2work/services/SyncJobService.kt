@@ -1,8 +1,8 @@
-package it.gruppoinfor.home2work.common.services
+package it.gruppoinfor.home2work.services
 
 import android.app.job.JobParameters
+import android.app.job.JobService
 import io.reactivex.Observable
-import it.gruppoinfor.home2work.common.DaggerJobService
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class SyncJobService : DaggerJobService() {
+class SyncJobService : JobService() {
 
     @Inject
     lateinit var getUserLocations: GetUserLocations

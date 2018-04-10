@@ -2,14 +2,10 @@ package it.gruppoinfor.home2work.chat
 
 import android.app.NotificationManager
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.stfalcon.chatkit.commons.ImageLoader
-import com.stfalcon.chatkit.dialogs.DialogsList
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import it.gruppoinfor.home2work.R
@@ -18,9 +14,7 @@ import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.common.services.MessagingService
-import it.gruppoinfor.home2work.common.views.ScreenStateView
-import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.services.MessagingService
 import it.gruppoinfor.home2work.entities.Chat
 import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
@@ -29,7 +23,6 @@ import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
 class ChatActivity : BaseActivity<ChatViewModel, ChatVMFactory>() {

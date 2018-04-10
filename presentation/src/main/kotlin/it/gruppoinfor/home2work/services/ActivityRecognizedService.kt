@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.common.services
+package it.gruppoinfor.home2work.services
 
 import android.app.IntentService
 import android.content.Intent

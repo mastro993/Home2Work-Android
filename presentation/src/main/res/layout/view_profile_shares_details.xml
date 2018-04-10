@@ -9,12 +9,11 @@
     android:padding="16dp">
 
     <TextView
+        style="@style/TextAppearance.App.Subtitle"
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
         android:text="@string/fragment_profile_card_shares"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
