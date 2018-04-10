@@ -6,7 +6,7 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.v4.content.ContextCompat
 import android.view.ViewGroup
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
+import it.gruppoinfor.home2work.chat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.remove

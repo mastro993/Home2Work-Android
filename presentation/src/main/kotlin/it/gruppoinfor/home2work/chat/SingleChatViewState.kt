@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.singlechat
+package it.gruppoinfor.home2work.chat
 
 import it.gruppoinfor.home2work.common.views.ScreenState
 import it.gruppoinfor.home2work.entities.ChatMessage

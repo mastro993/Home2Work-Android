@@ -1,19 +1,23 @@
 package it.gruppoinfor.home2work.sharehistory
 
 import android.content.Context
+import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.utilities.DateFormatUtils
+import it.gruppoinfor.home2work.common.utilities.StaticMapUriBuilder
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareType
 import kotlinx.android.synthetic.main.item_share.view.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
+
 
 class ShareHistoryAdapter(private val imageLoader: ImageLoader,
                           private val onShareClick: (Share, Int) -> Unit
@@ -55,6 +59,9 @@ class ShareHistoryAdapter(private val imageLoader: ImageLoader,
                 onShareClick: (Share, Int) -> Unit,
                 imageLoader: ImageLoader
         ) = with(itemView) {
+
+            val staticMapUrl = StaticMapUriBuilder.buildFor(share)
+            imageLoader.load(url = staticMapUrl, imageView = share_route_image, fit = true)
 
             text_share_datetime.text = DateFormatUtils.formatDate(share.date)
 

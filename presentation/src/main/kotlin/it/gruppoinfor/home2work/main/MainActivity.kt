@@ -97,7 +97,7 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
                 if (it.hasExtra(CurrentShareActivity.EXTRA_SHARE)) {
                     val share = it.getSerializableExtra(CurrentShareActivity.EXTRA_SHARE) as Share
-                    val dialog = ShareCompleteDialog(this, share)
+                    val dialog = ShareCompleteDialog(this, share, imageLoader)
                     dialog.show()
                 }
 

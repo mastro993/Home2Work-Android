@@ -11,7 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
+import it.gruppoinfor.home2work.chat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener

@@ -11,5 +11,9 @@ data class Share(
         var date: Date? = null,
         var type: ShareType? = null,
         var guests: ArrayList<Guest> = ArrayList(),
+        val startLat: Double,
+        val startLng: Double,
+        val endLat: Double?,
+        val endLng: Double?,
         var sharedDistance: Int = 0
 ) : Serializable

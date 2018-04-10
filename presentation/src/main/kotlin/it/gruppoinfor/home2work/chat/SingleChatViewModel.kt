@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.singlechat
+package it.gruppoinfor.home2work.chat
 
 import android.arch.lifecycle.MutableLiveData
 import it.gruppoinfor.home2work.common.BaseViewModel

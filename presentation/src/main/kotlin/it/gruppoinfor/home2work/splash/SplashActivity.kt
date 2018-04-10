@@ -14,6 +14,7 @@ import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.services.LocationService
+import it.gruppoinfor.home2work.services.LocationServiceLite
 import it.gruppoinfor.home2work.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
@@ -85,7 +86,7 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
         localUserData.user?.let {
 
             jobScheduler.scheduleSyncJob(it.id)
-            LocationService.launch(this)
+            LocationServiceLite.launch(this)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

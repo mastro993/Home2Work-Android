@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.singlechat
+package it.gruppoinfor.home2work.chat
 
 import android.content.Context
 import android.content.Intent

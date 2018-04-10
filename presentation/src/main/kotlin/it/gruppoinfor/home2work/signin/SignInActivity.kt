@@ -10,8 +10,8 @@ import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.main.MainActivity
+import it.gruppoinfor.home2work.services.LocationServiceLite
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import javax.inject.Inject
 
@@ -99,7 +99,7 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
         localUserData.user?.let {
 
             jobScheduler.scheduleSyncJob(it.id)
-            LocationService.launch(this)
+            LocationServiceLite.launch(this)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

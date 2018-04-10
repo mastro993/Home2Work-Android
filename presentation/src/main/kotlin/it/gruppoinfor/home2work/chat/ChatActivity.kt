@@ -10,12 +10,11 @@ import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.services.MessagingService
 import it.gruppoinfor.home2work.entities.Chat
+import it.gruppoinfor.home2work.services.MessagingService
 import kotlinx.android.synthetic.main.activity_inbox.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

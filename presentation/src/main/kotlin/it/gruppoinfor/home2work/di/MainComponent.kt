@@ -35,6 +35,7 @@ import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
 import it.gruppoinfor.home2work.services.LocationService
+import it.gruppoinfor.home2work.services.LocationServiceLite
 import it.gruppoinfor.home2work.services.MessagingService
 import javax.inject.Singleton
 
@@ -48,6 +49,7 @@ interface MainComponent {
     fun inject(app: App)
     fun inject(bootReceiver: BootReceiver)
     fun inject(daggerservice: LocationService)
+    fun inject(daggerservice: LocationServiceLite) // TODO rimuovere
     fun inject(daggerJobService: SyncJobService)
     fun inject(avatarView: AvatarView)
     fun inject(messagingService: MessagingService)

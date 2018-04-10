@@ -5,7 +5,7 @@ import dagger.Provides
 import it.gruppoinfor.home2work.common.ASyncTransformer
 import it.gruppoinfor.home2work.domain.interfaces.LocationRepository
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
-import it.gruppoinfor.home2work.domain.usecases.SaveUserLocation
+import it.gruppoinfor.home2work.domain.usecases.StoreUserLocation
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 
 
@@ -13,8 +13,8 @@ import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 class ServiceModule {
 
     @Provides
-    fun provideSaveLocationUseCase(locationRepository: LocationRepository): SaveUserLocation {
-        return SaveUserLocation(ASyncTransformer(), locationRepository)
+    fun provideSaveLocationUseCase(locationRepository: LocationRepository): StoreUserLocation {
+        return StoreUserLocation(ASyncTransformer(), locationRepository)
     }
 
     @Provides

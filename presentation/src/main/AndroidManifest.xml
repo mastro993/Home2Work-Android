@@ -60,6 +60,10 @@
 
         <service
             android:name="it.gruppoinfor.home2work.services.LocationService"
+            android:enabled="false"
+            android:stopWithTask="false" />
+        <service
+            android:name="it.gruppoinfor.home2work.services.LocationServiceLite"
             android:enabled="true"
             android:stopWithTask="false" />
         <service
@@ -128,7 +132,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".singlechat.SingleChatActivity"
+            android:name=".chat.SingleChatActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Messaggi"
             android:screenOrientation="portrait" />

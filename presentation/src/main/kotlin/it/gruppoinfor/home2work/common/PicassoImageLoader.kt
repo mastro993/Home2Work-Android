@@ -9,7 +9,7 @@ import com.squareup.picasso.Transformation
 class PicassoImageLoader(private val picasso: Picasso) : ImageLoader {
 
 
-    override fun load(url: String, imageView: ImageView, transformation: Transformation?, placeholder: Int?, callback: ((Boolean) -> Unit)?, fadeEffect: Boolean) {
+    override fun load(url: String, imageView: ImageView, transformation: Transformation?, placeholder: Int?, callback: ((Boolean) -> Unit)?, fadeEffect: Boolean, fit: Boolean) {
         val request = picasso.load(url)
 
         placeholder?.let {
@@ -22,6 +22,10 @@ class PicassoImageLoader(private val picasso: Picasso) : ImageLoader {
 
         if (!fadeEffect) {
             request.noFade()
+        }
+
+        if(fit){
+            request.fit().centerCrop()
         }
 
         callback?.let {

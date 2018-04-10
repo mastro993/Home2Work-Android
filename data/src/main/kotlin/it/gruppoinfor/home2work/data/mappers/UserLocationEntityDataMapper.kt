@@ -10,7 +10,7 @@ class UserLocationEntityDataMapper @Inject constructor() : Mapper<UserLocationEn
         return UserLocationData(
                 userId = from.userId,
                 latitude = from.latitude,
-                longitude = from.langitude,
+                longitude = from.longitude,
                 date = from.date
         )
     }

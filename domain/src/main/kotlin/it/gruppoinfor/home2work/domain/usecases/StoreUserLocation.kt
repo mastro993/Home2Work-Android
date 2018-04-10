@@ -5,7 +5,7 @@ import it.gruppoinfor.home2work.domain.common.Transformer
 import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
 import it.gruppoinfor.home2work.domain.interfaces.LocationRepository
 
-class SaveUserLocation(
+class StoreUserLocation(
         transformer: Transformer<Long>,
         private val locationRepository: LocationRepository
 ) : UseCase<Long>(transformer) {

@@ -38,7 +38,7 @@ import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import it.gruppoinfor.home2work.sharehistory.ShareHistoryActivity
 import it.gruppoinfor.home2work.signin.SignInActivity
-import it.gruppoinfor.home2work.singlechat.SingleChatActivity
+import it.gruppoinfor.home2work.chat.SingleChatActivity
 import it.gruppoinfor.home2work.splash.SplashActivity
 import it.gruppoinfor.home2work.user.UserActivity
 

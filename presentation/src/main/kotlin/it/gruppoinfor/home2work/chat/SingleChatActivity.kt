@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.singlechat
+package it.gruppoinfor.home2work.chat
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
@@ -106,6 +106,7 @@ class SingleChatActivity : BaseActivity<SingleChatViewModel, SingleChatVMFactory
         })
 
         viewModel.messageSent.observe(this, Observer {
+            // TODO sistemare aggiunta doppia messaggi
             adapter?.addToStart(it, true)
         })
 

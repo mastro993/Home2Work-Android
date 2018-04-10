@@ -19,7 +19,7 @@ import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.main.MainActivity
-import it.gruppoinfor.home2work.singlechat.SingleChatActivityLauncher
+import it.gruppoinfor.home2work.chat.SingleChatActivityLauncher
 import it.gruppoinfor.home2work.user.UserActivityLancher
 import kotlinx.android.synthetic.main.fragment_match.*
 import org.jetbrains.anko.find

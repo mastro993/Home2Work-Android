@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.di.singlechat
 
 import dagger.Module
 import dagger.Provides
-import it.gruppoinfor.home2work.singlechat.SingleChatVMFactory
+import it.gruppoinfor.home2work.chat.SingleChatVMFactory
 import it.gruppoinfor.home2work.common.ASyncTransformer
 import it.gruppoinfor.home2work.common.mappers.MessageEntityMessageMapper
 import it.gruppoinfor.home2work.common.mappers.MessageMessageEntityMapper

@@ -1,4 +1,4 @@
-package it.gruppoinfor.home2work.singlechat
+package it.gruppoinfor.home2work.chat
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider

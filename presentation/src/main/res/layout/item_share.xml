@@ -20,7 +20,6 @@
         android:clipChildren="true"
         android:clipToPadding="true"
         android:gravity="center"
-        android:padding="32dp"
         android:text="Mappa del percorso con Google Static Map \n (placeholder)"
         android:textColor="@color/dark_bg_light_primary_text"
         app:layout_constraintDimensionRatio="16:9"

@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.services
 
+import android.Manifest
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
@@ -26,14 +28,17 @@ import it.gruppoinfor.home2work.entities.UserLocation
 import org.jetbrains.anko.startService
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class LocationService : Service() {
+/**
+ * Versione Lite del servizio di localizzazione. Salva la posizione dell'utente solo quando inizia o finisce di guidare.
+ * Questo comporta un numero minore di posizioni registrate per ogni utente.
+ */
+class LocationServiceLite : Service(), GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     @Inject
-    lateinit var saveUserLocation: StoreUserLocation
+    lateinit var storeUserLocation: StoreUserLocation
     @Inject
     lateinit var localUserData: LocalUserData
     @Inject
@@ -44,16 +49,13 @@ class LocationService : Service() {
 
         fun launch(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val locationIntent = Intent(context, LocationService::class.java)
+                val locationIntent = Intent(context, LocationServiceLite::class.java)
                 context.startForegroundService(locationIntent)
             } else {
-                context.startService<LocationService>()
+                context.startService<LocationServiceLite>()
             }
         }
     }
-
-    private var isTracking = false
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -67,19 +69,9 @@ class LocationService : Service() {
 
         localUserData.user?.let {
 
-            val mGoogleApiClient = GoogleApiClient.Builder(this@LocationService)
-                    .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                        override fun onConnected(p0: Bundle?) {
-                            startActivityRecognitionService()
-                        }
-
-                        override fun onConnectionSuspended(p0: Int) {
-                            Timber.w("Connessione sospesa. Codice: $p0")
-                        }
-                    })
-                    .addOnConnectionFailedListener { connectionResult ->
-                        Timber.e("Connessione fallita: $connectionResult")
-                    }
+            val mGoogleApiClient = GoogleApiClient.Builder(this@LocationServiceLite)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
                     .addApi(ActivityRecognition.API)
                     .addApi(LocationServices.API)
                     .build()
@@ -109,6 +101,35 @@ class LocationService : Service() {
 
     }
 
+    override fun onConnected(bundle: Bundle?) {
+        val intent = Intent(
+                this@LocationServiceLite,
+                ActivityRecognizedService::class.java
+        )
+
+        val pendingIntent = PendingIntent.getService(
+                this@LocationServiceLite,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val activityRecognitionClient = ActivityRecognition.getClient(this@LocationServiceLite)
+        val task = activityRecognitionClient.requestActivityUpdates(10000, pendingIntent)
+
+        task.addOnSuccessListener {
+            Timber.v("Activity Recognition Service avviato")
+        }
+    }
+
+    override fun onConnectionSuspended(code: Int) {
+        Timber.w("Connessione sospesa. Codice: $code")
+    }
+
+    override fun onConnectionFailed(connectionResult: ConnectionResult) {
+        Timber.e("Connessione fallita: $connectionResult")
+    }
+
     override fun onBind(arg0: Intent): IBinder? {
         return null
     }
@@ -118,73 +139,34 @@ class LocationService : Service() {
 
         intent?.let {
             if (ActivityRecognizedService.hasResult(it)) {
-                val drivingActivity = ActivityRecognizedService.extractResult(it)
-                if (drivingActivity == ActivityRecognizedService.DrivingActivity.STARTED_DRIVING && !isTracking) {
-                    startLocationRequests()
-                } else if (drivingActivity == ActivityRecognizedService.DrivingActivity.STOPPED_DRIVING) {
-                    stopLocationRequests()
-                }
+                getUserLocation()
             }
         }
         return Service.START_STICKY
     }
 
-    private fun startActivityRecognitionService() {
-
-        val intent = Intent(
-                this@LocationService,
-                ActivityRecognizedService::class.java
-        )
-
-        val pendingIntent = PendingIntent.getService(
-                this@LocationService,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val activityRecognitionClient = ActivityRecognition.getClient(this@LocationService)
-        val task = activityRecognitionClient.requestActivityUpdates(10000, pendingIntent)
-
-        task.addOnSuccessListener {
-            Timber.v("Activity Recognition Service avviato")
-        }
-
-    }
-
-    private fun startLocationRequests() {
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    private fun getUserLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             val locationRequest = LocationRequest.create()
+            locationRequest.numUpdates = 1
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = TimeUnit.MINUTES.toMillis(10)
-            locationRequest.fastestInterval = TimeUnit.MINUTES.toMillis(1)
-            locationRequest.smallestDisplacement = 2500f
 
-            mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
+            val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-            isTracking = true
+            mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
 
-            Timber.v("Inizio tracking utente")
+                    val lastLocation = locationResult.lastLocation
+
+                    Timber.v("Posizione utente ottenuta: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
+
+                    saveLocation(locationResult.lastLocation)
+                    mFusedLocationClient.removeLocationUpdates(this)
+                }
+            }, Looper.myLooper())
+
         }
-
-    }
-
-    private fun stopLocationRequests() {
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mFusedLocationClient.lastLocation.addOnSuccessListener({ this.saveLocation(it) })
-        }
-
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-
-        isTracking = false
-
-        Timber.v("Fine tracking utente")
-
     }
 
     private fun saveLocation(location: Location) {
@@ -198,8 +180,8 @@ class LocationService : Service() {
             )
 
             val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)
-            saveUserLocation.save(userLocationEntity).subscribe({
-                Timber.v("Posizione utente registrata: ${userLocation.latitude}, ${userLocation.longitude}")
+            storeUserLocation.save(userLocationEntity).subscribe({
+                Timber.v("Posizione utente registrata con successo")
             }, {
                 Timber.e(it)
             })

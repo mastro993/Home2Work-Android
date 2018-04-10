@@ -9,6 +9,23 @@ import timber.log.Timber
 
 class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
+    companion object {
+
+        private const val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
+        private const val MAX_STILL_STATUS_COUNT = 2
+
+        private var isDriving = false
+        private var stillStatusCounter = 0
+
+        fun hasResult(intent: Intent): Boolean {
+            return intent.hasExtra(DrivingActivity::class.java.simpleName)
+        }
+
+        fun extractResult(intent: Intent): DrivingActivity {
+            return intent.getSerializableExtra(DrivingActivity::class.java.simpleName) as DrivingActivity
+        }
+    }
+
     override fun onHandleIntent(intent: Intent?) {
 
         if (ActivityRecognitionResult.hasResult(intent)) {
@@ -83,20 +100,5 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
         STARTED_DRIVING, STOPPED_DRIVING
     }
 
-    companion object {
 
-        private const val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
-        private const val MAX_STILL_STATUS_COUNT = 2
-
-        private var isDriving = false
-        private var stillStatusCounter = 0
-
-        fun hasResult(intent: Intent): Boolean {
-            return intent.hasExtra(DrivingActivity::class.java.simpleName)
-        }
-
-        fun extractResult(intent: Intent): DrivingActivity {
-            return intent.getSerializableExtra(DrivingActivity::class.java.simpleName) as DrivingActivity
-        }
-    }
 }
