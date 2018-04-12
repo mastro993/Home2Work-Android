@@ -7,16 +7,20 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.view.View
-import it.gruppoinfor.home2work.main.MainActivity
+import io.reactivex.Observable
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.services.LocationService
-import it.gruppoinfor.home2work.services.LocationServiceLite
+import it.gruppoinfor.home2work.domain.usecases.DeleteUserLocations
+import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
+import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
+import it.gruppoinfor.home2work.main.MainActivity
+import it.gruppoinfor.home2work.services.LiteLocationService
 import it.gruppoinfor.home2work.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_splash.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -26,6 +30,12 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
 
     @Inject
     lateinit var jobScheduler: JobScheduler
+    @Inject
+    lateinit var getUserLocations: GetUserLocations
+    @Inject
+    lateinit var syncUserLocation: SyncUserLocations
+    @Inject
+    lateinit var deleteUserLocations: DeleteUserLocations
 
     override fun getVMClass(): Class<SplashViewModel> {
         return SplashViewModel::class.java
@@ -49,7 +59,6 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
         }
 
     }
-
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -85,8 +94,10 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
 
         localUserData.user?.let {
 
+            testSync(it.id)
+
             jobScheduler.scheduleSyncJob(it.id)
-            LocationServiceLite.launch(this)
+            LiteLocationService.launch(this)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -105,6 +116,34 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
             b_signin.visibility = if (it.showSignInButton) View.VISIBLE else View.GONE
 
         }
+
+    }
+
+    private fun testSync(userId: Long) {
+        getUserLocations.byId(userId)
+                .flatMap {
+                    if (it.isNotEmpty()) {
+                        Timber.v("Sincronizzazione di ${it.size} posizioni utente")
+                        syncUserLocation.upload(it)
+                    } else {
+                        Timber.v("Nessuna posizione da sincronizzare")
+                        Observable.just(false)
+                    }
+                }
+                .doOnNext {
+                    if (it) {
+                        deleteUserLocations.byId(userId).subscribe({
+                            Timber.i("Positioni eliminate")
+                        })
+                    }
+                }
+                .doOnError {
+                    Timber.e(it, "Sincronizzazione fallita")
+                }
+                .doOnComplete {
+                    Timber.i("Sincronizzazione completata")
+                }
+                .subscribe()
 
     }
 

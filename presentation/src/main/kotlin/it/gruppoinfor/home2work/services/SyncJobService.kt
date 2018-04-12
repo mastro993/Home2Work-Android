@@ -4,6 +4,7 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.domain.usecases.DeleteUserLocations
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 import timber.log.Timber
@@ -16,6 +17,8 @@ class SyncJobService : JobService() {
     lateinit var getUserLocations: GetUserLocations
     @Inject
     lateinit var syncUserLocation: SyncUserLocations
+    @Inject
+    lateinit var deleteUserLocations: DeleteUserLocations
 
     override fun onCreate() {
         super.onCreate()
@@ -39,7 +42,12 @@ class SyncJobService : JobService() {
                     }
                 }
                 .subscribe({
-                    Timber.i("Sincronizzazione completata")
+                    if (it) {
+                        Timber.i("Sincronizzazione completata")
+                        deleteUserLocations.byId(userId).subscribe({
+                            Timber.i("Posizioni eliminate")
+                        })
+                    }
                     jobFinished(params, true)
                 }, {
                     Timber.e(it, "Sincronizzazione fallita")

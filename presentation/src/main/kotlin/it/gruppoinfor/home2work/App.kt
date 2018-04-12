@@ -7,6 +7,7 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
+import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.timber.DebugLogTree
 import it.gruppoinfor.home2work.common.timber.FileLoggingTree
@@ -28,6 +29,8 @@ class App : Application() {
 
     @Inject
     lateinit var localUserData: LocalUserData
+    @Inject
+    lateinit var jobScheduler: JobScheduler
 
     override fun onCreate() {
         super.onCreate()
@@ -64,6 +67,8 @@ class App : Application() {
     fun onLogoutEvent(event: LogoutEvent) {
 
         localUserData.clear()
+        jobScheduler.removeSyncJob()
+
         launchActivity<SplashActivity> {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

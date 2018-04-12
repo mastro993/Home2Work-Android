@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import it.gruppoinfor.home2work.common.ASyncTransformer
 import it.gruppoinfor.home2work.domain.interfaces.LocationRepository
+import it.gruppoinfor.home2work.domain.usecases.DeleteUserLocations
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
 import it.gruppoinfor.home2work.domain.usecases.StoreUserLocation
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
@@ -25,6 +26,11 @@ class ServiceModule {
     @Provides
     fun provideSyncUserLocationsUseCase(locationRepository: LocationRepository): SyncUserLocations {
         return SyncUserLocations(ASyncTransformer(), locationRepository)
+    }
+
+    @Provides
+    fun provideDeleteUserLocationsUseCase(locationRepository: LocationRepository): DeleteUserLocations {
+        return DeleteUserLocations(ASyncTransformer(), locationRepository)
     }
 
 

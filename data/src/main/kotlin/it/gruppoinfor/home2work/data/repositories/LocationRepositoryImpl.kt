@@ -30,6 +30,20 @@ class LocationRepositoryImpl(
         }
     }
 
+    override fun deleteUserLocations(userId: Long): Observable<Boolean> {
+        val query = userLocationBox.query().equal(UserLocationData_.userId, userId).build()
+
+        return RxQuery.observable(query)
+                .flatMap {
+                    try {
+                        userLocationBox.remove(it)
+                        Observable.just(true)
+                    } catch (e: Exception) {
+                        Observable.just(false)
+                    }
+                }
+    }
+
     override fun saveLocation(userLocation: UserLocationEntity): Observable<Long> {
         val location = locationEntityDataMapper.mapFrom(userLocation)
         return Observable.just(userLocationBox.put(location))

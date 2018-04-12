@@ -35,7 +35,7 @@ import javax.inject.Inject
  * Versione Lite del servizio di localizzazione. Salva la posizione dell'utente solo quando inizia o finisce di guidare.
  * Questo comporta un numero minore di posizioni registrate per ogni utente.
  */
-class LocationServiceLite : Service(), GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     @Inject
     lateinit var storeUserLocation: StoreUserLocation
@@ -49,10 +49,10 @@ class LocationServiceLite : Service(), GoogleApiClient.OnConnectionFailedListene
 
         fun launch(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val locationIntent = Intent(context, LocationServiceLite::class.java)
+                val locationIntent = Intent(context, LiteLocationService::class.java)
                 context.startForegroundService(locationIntent)
             } else {
-                context.startService<LocationServiceLite>()
+                context.startService<LiteLocationService>()
             }
         }
     }
@@ -69,7 +69,7 @@ class LocationServiceLite : Service(), GoogleApiClient.OnConnectionFailedListene
 
         localUserData.user?.let {
 
-            val mGoogleApiClient = GoogleApiClient.Builder(this@LocationServiceLite)
+            val mGoogleApiClient = GoogleApiClient.Builder(this@LiteLocationService)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(ActivityRecognition.API)
@@ -103,18 +103,18 @@ class LocationServiceLite : Service(), GoogleApiClient.OnConnectionFailedListene
 
     override fun onConnected(bundle: Bundle?) {
         val intent = Intent(
-                this@LocationServiceLite,
+                this@LiteLocationService,
                 ActivityRecognizedService::class.java
         )
 
         val pendingIntent = PendingIntent.getService(
-                this@LocationServiceLite,
+                this@LiteLocationService,
                 0,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val activityRecognitionClient = ActivityRecognition.getClient(this@LocationServiceLite)
+        val activityRecognitionClient = ActivityRecognition.getClient(this@LiteLocationService)
         val task = activityRecognitionClient.requestActivityUpdates(10000, pendingIntent)
 
         task.addOnSuccessListener {
