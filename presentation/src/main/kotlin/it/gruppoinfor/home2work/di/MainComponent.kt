@@ -50,7 +50,7 @@ interface MainComponent {
     fun inject(bootReceiver: BootReceiver)
     fun inject(service: LocationService)
     fun inject(service: LiteLocationService) // TODO rimuovere
-    fun inject(jobService: SyncJobService)
+    fun inject(syncJobService: SyncJobService)
     fun inject(avatarView: AvatarView)
     fun inject(messagingService: MessagingService)
     fun plus(firebaseModule: FirebaseModule): FirebaseSubComponent

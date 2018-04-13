@@ -94,7 +94,7 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
 
         localUserData.user?.let {
 
-            testSync(it.id)
+            //testSync(it.id)
 
             jobScheduler.scheduleSyncJob(it.id)
             LiteLocationService.launch(this)
