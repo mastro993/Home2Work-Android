@@ -74,7 +74,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         stillStatusCounter = 0
 
-        val intent = Intent(this, LocationService::class.java)
+        val intent = Intent(this, LiteLocationService::class.java)
         intent.putExtra(DrivingActivity::class.java.simpleName, DrivingActivity.STARTED_DRIVING)
         startService(intent)
 
