@@ -158,7 +158,7 @@ class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListene
 
                     val lastLocation = locationResult.lastLocation
 
-                    Timber.v("Posizione utente ottenuta: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
+                    Timber.v("User position: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
 
                     saveLocation(locationResult.lastLocation)
                     mFusedLocationClient.removeLocationUpdates(this)
@@ -180,7 +180,7 @@ class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListene
 
             val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)
             storeUserLocation.save(userLocationEntity).subscribe({
-                Timber.v("Posizione utente registrata con successo")
+                Timber.v("User position successfully saved")
             }, {
                 Timber.e(it)
             })

@@ -14,7 +14,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         const val EXTRA_ACTIVITY = "activity"
         private const val ACTIVITY_TRESHOLD = 75
-        private const val MAX_STILL_STATUS_COUNT = 2
+        private const val MAX_STILL_STATUS_COUNT = 5
         private var isDriving = false
         private var stillStatusCounter = 0
 
@@ -38,7 +38,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
     private fun handleDetectedActivities(probableActivities: List<DetectedActivity>) {
 
-        Timber.d("Detected activity: $probableActivities")
+        Timber.d("Detected activities: $probableActivities")
 
         probableActivities
                 .asSequence()
@@ -52,11 +52,11 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
                         DetectedActivity.ON_FOOT,
                         DetectedActivity.ON_BICYCLE,
                         DetectedActivity.RUNNING -> {
-                            Timber.d("L'utente non è più in auto")
+                            Timber.d("User is not driving")
                             stopDrivingActivity()
                         }
                         DetectedActivity.STILL -> {
-                            Timber.v("L'utente è fermo")
+                            Timber.d("User is still")
                             increaseStillStatus()
                         }
                     }
@@ -74,7 +74,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         startService(intentFor<LiteLocationService>(EXTRA_ACTIVITY to DrivingActivity.STARTED_DRIVING))
 
-        Timber.d("L'utente è sta guidando")
+        Timber.i("User is driving")
 
         isDriving = true
         stillStatusCounter = 0
@@ -89,7 +89,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         startService(intentFor<LiteLocationService>(EXTRA_ACTIVITY to DrivingActivity.STOPPED_DRIVING))
 
-        Timber.i("Termine guida")
+        Timber.i("Driving finished")
 
         isDriving = false
         stillStatusCounter = 0
@@ -104,10 +104,10 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         stillStatusCounter++
 
-        Timber.v("Utente fermo. Guida automaticamente terminata tra ${MAX_STILL_STATUS_COUNT - stillStatusCounter}")
+        Timber.i("Driving automatically endend in  ${MAX_STILL_STATUS_COUNT - stillStatusCounter}")
 
         if (stillStatusCounter >= MAX_STILL_STATUS_COUNT) {
-            Timber.v("Guida terminata per inattività")
+            Timber.d("Drving endend for inactivity")
             stopDrivingActivity()
         }
 

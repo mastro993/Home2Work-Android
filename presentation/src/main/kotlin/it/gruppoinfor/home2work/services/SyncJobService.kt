@@ -27,30 +27,30 @@ class SyncJobService : JobService() {
 
     override fun onStartJob(params: JobParameters): Boolean {
 
-        Timber.i("Inizio job di sincronizzazione")
+        Timber.i("Sync job start")
 
         val userId = params.extras.getLong(KEY_USER_ID)
 
         getUserLocations.byId(userId)
                 .flatMap {
                     if (it.isNotEmpty()) {
-                        Timber.v("Sincronizzazione di ${it.size} posizioni utente")
+                        Timber.v("${it.size} positions to sync")
                         syncUserLocation.upload(it)
                     } else {
-                        Timber.v("Nessuna posizione da sincronizzare")
+                        Timber.v("No position to sync")
                         Observable.just(false)
                     }
                 }
                 .subscribe({
                     if (it) {
-                        Timber.i("Sincronizzazione completata")
+                        Timber.i("Sync completed")
                         deleteUserLocations.byId(userId).subscribe({
-                            Timber.i("Posizioni eliminate")
+                            Timber.i("All user positions deleted")
                         })
                     }
                     jobFinished(params, true)
                 }, {
-                    Timber.e(it, "Sincronizzazione fallita")
+                    Timber.e(it, "Sync failed!")
                     jobFinished(params, true)
                 })
 
@@ -58,7 +58,7 @@ class SyncJobService : JobService() {
     }
 
     override fun onStopJob(p0: JobParameters?): Boolean {
-        Timber.i("Fine job di sincronizzazione")
+        Timber.i("Sync job ended")
         return false
     }
 

@@ -36,8 +36,8 @@ class FileLoggingTree : Timber.DebugTree() {
 
 
             val path = "Log"
-            val fileNameTimeStamp = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-            val logTimeStamp = SimpleDateFormat("hh:mm aaa", Locale.getDefault()).format(Date())
+            val fileNameTimeStamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val logTimeStamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val fileName = "$fileNameTimeStamp.html"
 
             val file = generateFile(path, fileName)
