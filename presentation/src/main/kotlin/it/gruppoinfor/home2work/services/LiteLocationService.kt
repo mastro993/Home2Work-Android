@@ -46,6 +46,8 @@ class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListene
 
     companion object {
         const val NOTIFICATION_ID = 2313
+        const val REQ_ACTIVITY_UPDATES = 343
+        const val TIME_ACTIVITY_UPDATES = 10000L // 10 sec
 
         fun launch(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -57,14 +59,9 @@ class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListene
         }
     }
 
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            saveLocation(locationResult!!.lastLocation)
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
+
         DipendencyInjector.mainComponent.inject(this)
 
         localUserData.user?.let {
@@ -95,8 +92,10 @@ class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListene
             Timber.i("Servizio avviato")
 
         } ?: let {
-            Timber.v("Nessun utente collegato")
+
+            Timber.w("Nessun utente collegato")
             stopSelf()
+
         }
 
     }
@@ -109,13 +108,13 @@ class LiteLocationService : Service(), GoogleApiClient.OnConnectionFailedListene
 
         val pendingIntent = PendingIntent.getService(
                 this@LiteLocationService,
-                0,
+                REQ_ACTIVITY_UPDATES,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val activityRecognitionClient = ActivityRecognition.getClient(this@LiteLocationService)
-        val task = activityRecognitionClient.requestActivityUpdates(10000, pendingIntent)
+        val task = activityRecognitionClient.requestActivityUpdates(TIME_ACTIVITY_UPDATES, pendingIntent)
 
         task.addOnSuccessListener {
             Timber.v("Activity Recognition Service avviato")

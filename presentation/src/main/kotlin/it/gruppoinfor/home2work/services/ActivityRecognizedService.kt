@@ -4,6 +4,7 @@ import android.app.IntentService
 import android.content.Intent
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.DetectedActivity
+import org.jetbrains.anko.intentFor
 import timber.log.Timber
 
 
@@ -11,18 +12,18 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
     companion object {
 
-        private const val CONFIDENCE_TRESHOLD = 80 // Valore minimo di affidabilita' per i trigger delle attivita'
+        const val EXTRA_ACTIVITY = "activity"
+        private const val ACTIVITY_TRESHOLD = 75
         private const val MAX_STILL_STATUS_COUNT = 2
-
         private var isDriving = false
         private var stillStatusCounter = 0
 
         fun hasResult(intent: Intent): Boolean {
-            return intent.hasExtra(DrivingActivity::class.java.simpleName)
+            return intent.hasExtra(EXTRA_ACTIVITY)
         }
 
         fun extractResult(intent: Intent): DrivingActivity {
-            return intent.getSerializableExtra(DrivingActivity::class.java.simpleName) as DrivingActivity
+            return intent.getSerializableExtra(EXTRA_ACTIVITY) as DrivingActivity
         }
     }
 
@@ -37,62 +38,78 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
     private fun handleDetectedActivities(probableActivities: List<DetectedActivity>) {
 
+        Timber.d("Detected activity: $probableActivities")
 
         probableActivities
-                // Li prendo in sequenza
                 .asSequence()
-                // Filtro prendendo solo le attività che superano il treshold impostato
-                .filter { it.confidence >= CONFIDENCE_TRESHOLD }
-                // E per ognuno effettuo il controllo sul tipo di attività
+                .filter { it.confidence >= ACTIVITY_TRESHOLD }
                 .forEach {
+
                     when (it.type) {
-                        DetectedActivity.IN_VEHICLE -> if (!isDriving) startDrivingActivity()
-                        DetectedActivity.ON_FOOT -> if (isDriving) stopDrivingActivity()
-                        DetectedActivity.ON_BICYCLE -> if (isDriving) stopDrivingActivity()
+                        DetectedActivity.IN_VEHICLE -> {
+                            startDrivingActivity()
+                        }
+                        DetectedActivity.ON_FOOT,
+                        DetectedActivity.ON_BICYCLE,
+                        DetectedActivity.RUNNING -> {
+                            Timber.d("L'utente non è più in auto")
+                            stopDrivingActivity()
+                        }
                         DetectedActivity.STILL -> {
-
-                            if (isDriving) {
-
-                                stillStatusCounter++
-
-                                if (stillStatusCounter >= MAX_STILL_STATUS_COUNT) {
-                                    Timber.v("Utente fermo")
-                                    stopDrivingActivity()
-                                } else
-                                    Timber.v("Utente fermo. Guida automaticamente terminata tra ${MAX_STILL_STATUS_COUNT - stillStatusCounter}")
-                            }
-
+                            Timber.v("L'utente è fermo")
+                            increaseStillStatus()
                         }
                     }
+
+
                 }
 
     }
 
     private fun startDrivingActivity() {
 
-        Timber.i("Inizio guida")
+        if (isDriving) {
+            return
+        }
 
-        stillStatusCounter = 0
+        startService(intentFor<LiteLocationService>(EXTRA_ACTIVITY to DrivingActivity.STARTED_DRIVING))
 
-        val intent = Intent(this, LiteLocationService::class.java)
-        intent.putExtra(DrivingActivity::class.java.simpleName, DrivingActivity.STARTED_DRIVING)
-        startService(intent)
+        Timber.d("L'utente è sta guidando")
 
         isDriving = true
+        stillStatusCounter = 0
 
     }
 
     private fun stopDrivingActivity() {
 
+        if (!isDriving) {
+            return
+        }
+
+        startService(intentFor<LiteLocationService>(EXTRA_ACTIVITY to DrivingActivity.STOPPED_DRIVING))
+
         Timber.i("Termine guida")
 
+        isDriving = false
         stillStatusCounter = 0
 
-        val intent = Intent(this, LocationService::class.java)
-        intent.putExtra(DrivingActivity::class.java.simpleName, DrivingActivity.STOPPED_DRIVING)
-        startService(intent)
+    }
 
-        isDriving = false
+    private fun increaseStillStatus() {
+
+        if (!isDriving) {
+            return
+        }
+
+        stillStatusCounter++
+
+        Timber.v("Utente fermo. Guida automaticamente terminata tra ${MAX_STILL_STATUS_COUNT - stillStatusCounter}")
+
+        if (stillStatusCounter >= MAX_STILL_STATUS_COUNT) {
+            Timber.v("Guida terminata per inattività")
+            stopDrivingActivity()
+        }
 
     }
 
