@@ -22,7 +22,7 @@ class MatchesAdapter(
         private val imageLoader: ImageLoader,
         private val onMatchClick: (Match, Int) -> Unit,
         private val onMatchLongClick: (Match, Int) -> Boolean
-) : BaseAdapter<MatchesAdapter.ViewHolder, Match>() {
+) : BaseAdapter<Match>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,10 +30,11 @@ class MatchesAdapter(
         return ViewHolder(parent.context, layoutView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val match = items[position]
-        holder.bind(match, position, onMatchClick, onMatchLongClick, imageLoader)
+        (holder as ViewHolder).bind(match, position, onMatchClick, onMatchLongClick, imageLoader)
     }
+
 
     class ViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
 

@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.common.mappers
 
+import it.gruppoinfor.home2work.common.mappers.UserEntityUserMapper.Companion.avatarBaseUrl
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserRankingEntity
 import it.gruppoinfor.home2work.entities.UserRanking
@@ -14,6 +15,7 @@ class UserRankingEntityUserRankingMapper @Inject constructor() : Mapper<UserRank
                 position = from.position,
                 userId = from.userId,
                 userName = from.userName,
+                avatarUrl = "$avatarBaseUrl${from.userId}.jpg",
                 companyId = from.companyId,
                 companyName = from.companyName,
                 amount = from.amount

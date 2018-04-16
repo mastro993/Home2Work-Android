@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.common
 
 import android.support.v7.widget.RecyclerView
 
-abstract class BaseAdapter<VH : RecyclerView.ViewHolder, I> : RecyclerView.Adapter<VH>() {
+abstract class BaseAdapter<I> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val items: MutableList<I> = mutableListOf()
 

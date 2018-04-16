@@ -4,38 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/match_item_container"
     android:layout_width="match_parent"
-    android:layout_height="58dp"
+    android:layout_height="88dp"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
     android:transitionGroup="true">
 
-    <TextView
-        android:id="@+id/text_position"
-        android:layout_width="42dp"
+    <ImageView
+        android:id="@+id/img_prize"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:gravity="start"
-        android:textSize="12sp"
-        android:textStyle="bold"
+        android:src="@drawable/ic_leaderboard_first_place"
         app:layout_constraintBottom_toTopOf="@+id/item_match_divider"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_user_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/item_match_divider"
+        app:layout_constraintStart_toEndOf="@id/img_prize"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="999" />
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_avatar_placeholder" />
 
     <TextView
         android:id="@+id/text_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        app:layout_constraintStart_toEndOf="@id/text_position"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/text_company_name"
+        app:layout_constraintStart_toEndOf="@id/img_user_avatar"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Annamaria Della Ragione" />
 
     <TextView
@@ -43,18 +52,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="16dp"
         android:gravity="center_vertical"
-        android:textSize="12sp"
         android:includeFontPadding="false"
         android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/text_position"
+        app:layout_constraintStart_toEndOf="@id/img_user_avatar"
         app:layout_constraintTop_toBottomOf="@+id/text_user_name"
         tools:text="Azienda A" />
 
     <TextView
-        android:id="@+id/text_value"
+        android:id="@+id/text_match_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -62,7 +70,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/bg_match_score"
         android:gravity="center"
-        android:padding="6dp"
+        android:padding="8dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/item_match_divider"
         app:layout_constraintEnd_toEndOf="parent"
