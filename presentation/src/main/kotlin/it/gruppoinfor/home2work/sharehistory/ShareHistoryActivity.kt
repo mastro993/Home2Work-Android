@@ -1,20 +1,24 @@
 package it.gruppoinfor.home2work.sharehistory
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.view.animation.AnimationUtils
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
+import it.gruppoinfor.home2work.common.EndlessScrollListener
+import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import kotlinx.android.synthetic.main.activity_shares.*
+
 
 class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMFactory>() {
 
-    private var mSharesAdapter: ShareHistoryAdapter? = null
+    private lateinit var mSharesAdapter: ShareHistoryAdapter
+    private lateinit var mScrollListener: EndlessScrollListener
+
+    private val pageSize = 5
 
     override fun getVMClass(): Class<ShareHistoryViewModel> {
         return ShareHistoryViewModel::class.java
@@ -27,20 +31,27 @@ class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMF
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation)
-
-        shares_recycler_view.layoutManager = layoutManager
-        shares_recycler_view.layoutAnimation = animation
 
         mSharesAdapter = ShareHistoryAdapter(imageLoader, { share, pos ->
             // TODO shareclick
         })
 
+        mScrollListener = object : EndlessScrollListener(pageSize) {
+            override fun loadMoreItems(page: Int) {
+                viewModel.loadMoreShares(pageSize, page)
+                mScrollListener.isLoading = true
+
+            }
+        }
+
+        shares_recycler_view.layoutManager = layoutManager
         shares_recycler_view.adapter = mSharesAdapter
+        shares_recycler_view.addOnScrollListener(mScrollListener)
+        shares_recycler_view.isNestedScrollingEnabled = false
 
         observeViewState()
 
-        viewModel.getShareList()
+        viewModel.getShareList(pageSize, 1)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -61,18 +72,38 @@ class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMF
         })
 
         viewModel.viewState.observe(this, Observer {
-            it?.let { handleViewState(it) }
+            it?.let {
+
+                status_view.setScreenState(it.screenState)
+
+                it.sharesHistory?.let {
+                    mSharesAdapter.setItems(it)
+                }
+
+            }
         })
 
-    }
+        viewModel.loadingState.observe(this, Observer {
+            it?.let {
 
-    private fun handleViewState(state: ShareHistoryViewState) {
+                if (it)
+                    new_page_loading_view.show()
+                else
+                    new_page_loading_view.hide()
 
-        status_view.setScreenState(state.screenState)
+            }
+        })
 
-        state.sharesHistory?.let {
-            mSharesAdapter?.setItems(it)
-        }
+        viewModel.newSharePage.observe(this, Observer {
+            it?.let {
+                if (it.isEmpty() || it.size < pageSize) {
+                    mScrollListener.isLastPage = true
+                    new_page_loading_view.hide()
+                }
+                mSharesAdapter.addItems(it)
+                mScrollListener.isLoading = false
+            }
+        })
 
     }
 

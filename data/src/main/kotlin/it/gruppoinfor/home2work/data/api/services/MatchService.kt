@@ -2,12 +2,8 @@ package it.gruppoinfor.home2work.data.api.services
 
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.data.entities.MatchData
-import it.gruppoinfor.home2work.domain.entities.MatchEntity
 import it.gruppoinfor.home2work.domain.entities.Optional
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
 
 
 interface MatchService {
@@ -23,6 +19,9 @@ interface MatchService {
             @Body match: MatchData
     ): Observable<Boolean>
 
-    @GET("user/match")
-    fun getMatchList(): Observable<ArrayList<MatchData>>
+    @GET("user/match/list")
+    fun getMatchList(
+            @Query("limit") limit: Int?,
+            @Query("page") page: Int?
+    ): Observable<ArrayList<MatchData>>
 }

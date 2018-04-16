@@ -33,7 +33,7 @@ import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
-import it.gruppoinfor.home2work.ranks.RanksFragment
+import it.gruppoinfor.home2work.leaderboards.LeaderboardsFragment
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import it.gruppoinfor.home2work.sharecurrent.ShareCompleteDialog
 import kotlinx.android.synthetic.main.activity_main.*
@@ -348,7 +348,7 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
             return when (position) {
                 HOME_TAB -> HomeFragment()
-                RANKS_TAB -> RanksFragment()
+                RANKS_TAB -> LeaderboardsFragment()
                 MATCHES_TAB -> MatchesFragment()
                 PROFILE_TAB -> ProfileFragment()
                 else -> HomeFragment()

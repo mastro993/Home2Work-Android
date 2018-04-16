@@ -2,12 +2,15 @@ package it.gruppoinfor.home2work.di
 
 import android.content.Context
 import it.gruppoinfor.home2work.chat.ChatActivity
+import it.gruppoinfor.home2work.chat.SingleChatActivity
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
 import it.gruppoinfor.home2work.di.firebase.FirebaseModule
 import it.gruppoinfor.home2work.di.firebase.FirebaseSubComponent
 import it.gruppoinfor.home2work.di.home.HomeModule
 import it.gruppoinfor.home2work.di.home.HomeSubComponent
+import it.gruppoinfor.home2work.di.leaderboard.LeaderboardModule
+import it.gruppoinfor.home2work.di.leaderboard.LeaderboardSubComponent
 import it.gruppoinfor.home2work.di.main.MainModule
 import it.gruppoinfor.home2work.di.main.MainSubComponent
 import it.gruppoinfor.home2work.di.match.MatchModule
@@ -31,6 +34,7 @@ import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
 import it.gruppoinfor.home2work.home.HomeFragment
+import it.gruppoinfor.home2work.leaderboards.LeaderboardsFragment
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
@@ -38,7 +42,6 @@ import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import it.gruppoinfor.home2work.sharehistory.ShareHistoryActivity
 import it.gruppoinfor.home2work.signin.SignInActivity
-import it.gruppoinfor.home2work.chat.SingleChatActivity
 import it.gruppoinfor.home2work.splash.SplashActivity
 import it.gruppoinfor.home2work.user.UserActivity
 
@@ -54,6 +57,7 @@ object DipendencyInjector {
     private var chatSubComponent: ChatSubComponent? = null
     private var singleChatSubComponent: SingleChatSubComponent? = null
     private var profileSubComponent: ProfileSubComponent? = null
+    private var leaderboardSubComponent: LeaderboardSubComponent? = null
     private var shareHistorySubComponent: ShareHistorySubComponent? = null
     private var currentShareSubComponent: CurrentShareSubComponent? = null
     private var userSubComponent: UserSubComponent? = null
@@ -102,7 +106,7 @@ object DipendencyInjector {
                 userSubComponent = mainComponent.plus(UserModule())
                 userSubComponent!!.inject(activity)
             }
-            is SettingsActivity->{
+            is SettingsActivity -> {
                 settingsSubComponent = mainComponent.plus(SettingsModule())
                 settingsSubComponent!!.inject(activity)
             }
@@ -137,6 +141,10 @@ object DipendencyInjector {
                 profileSubComponent = mainComponent.plus(ProfileModule())
                 return profileSubComponent!!.inject(fragment)
             }
+            is LeaderboardsFragment -> {
+                leaderboardSubComponent = mainComponent.plus(LeaderboardModule())
+                return leaderboardSubComponent!!.inject(fragment)
+            }
         }
     }
 
@@ -145,6 +153,7 @@ object DipendencyInjector {
             is HomeFragment -> homeSubComponent = null
             is MatchesFragment -> matchSubComponent = null
             is ProfileFragment -> profileSubComponent = null
+            is LeaderboardsFragment -> leaderboardSubComponent = null
         }
     }
 

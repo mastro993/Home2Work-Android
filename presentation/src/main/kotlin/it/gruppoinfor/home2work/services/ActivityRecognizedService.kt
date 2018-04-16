@@ -38,8 +38,6 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
     private fun handleDetectedActivities(probableActivities: List<DetectedActivity>) {
 
-        Timber.d("Detected activities: $probableActivities")
-
         probableActivities
                 .asSequence()
                 .filter { it.confidence >= ACTIVITY_TRESHOLD }

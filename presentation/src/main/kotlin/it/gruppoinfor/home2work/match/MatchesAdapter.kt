@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.BaseAdapter
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.getScore
@@ -21,9 +22,8 @@ class MatchesAdapter(
         private val imageLoader: ImageLoader,
         private val onMatchClick: (Match, Int) -> Unit,
         private val onMatchLongClick: (Match, Int) -> Boolean
-) : RecyclerView.Adapter<MatchesAdapter.ViewHolder>() {
+) : BaseAdapter<MatchesAdapter.ViewHolder, Match>() {
 
-    private val matches: MutableList<Match> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.item_match, parent, false)
@@ -31,28 +31,9 @@ class MatchesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val match = matches[position]
+        val match = items[position]
         holder.bind(match, position, onMatchClick, onMatchLongClick, imageLoader)
     }
-
-    override fun getItemCount(): Int {
-
-        return matches.size
-    }
-
-    fun setItems(matches: List<Match>) {
-        this.matches.clear()
-        this.matches.addAll(matches)
-        notifyDataSetChanged()
-    }
-
-
-    fun hide(position: Int) {
-        matches.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, matches.size)
-    }
-
 
     class ViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
 

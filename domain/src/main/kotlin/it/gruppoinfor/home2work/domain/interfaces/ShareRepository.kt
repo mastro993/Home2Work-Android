@@ -7,7 +7,7 @@ import it.gruppoinfor.home2work.domain.entities.ShareEntity
 
 interface ShareRepository {
     fun getShare(shareId: Long): Observable<Optional<ShareEntity>>
-    fun getShareList(): Observable<List<ShareEntity>>
+    fun getShareList(limit: Int?, page: Int?): Observable<List<ShareEntity>>
     fun getActiveShare(): Observable<ShareEntity>
     fun getShareGuests(shareId: Long): Observable<List<GuestEntity>>
     fun createShare(startLat: Double, startLng: Double): Observable<ShareEntity>

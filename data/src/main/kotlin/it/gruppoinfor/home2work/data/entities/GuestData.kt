@@ -10,6 +10,6 @@ data class GuestData(
         @SerializedName("StartLng") var startLng: Double,
         @SerializedName("EndLat") var endLat: Double? = null,
         @SerializedName("EndLng") var endLng: Double? = null,
-        @SerializedName("Status") var status: GuestStatusData? = null,
+        @SerializedName("CurrentStatus") var status: GuestStatusData? = null,
         @SerializedName("Distance") var distance: Int = -1
 )

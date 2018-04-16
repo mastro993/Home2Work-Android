@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
@@ -29,6 +30,7 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         sign_in_button.setOnClickListener {
             val view = this.currentFocus
@@ -52,6 +54,18 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
         viewModel.loadSavedEmail()
         observeViewState()
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun observeViewState() {

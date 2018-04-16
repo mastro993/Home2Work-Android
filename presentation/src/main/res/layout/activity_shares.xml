@@ -5,21 +5,43 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/shares_recycler_view"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:elevation="@dimen/cardview_default_elevation"
-        android:focusable="false"
-        android:paddingBottom="72dp"
-        tools:listitem="@layout/item_share"
-        android:paddingTop="4dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/ongoing_share_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/shares_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:elevation="@dimen/cardview_default_elevation"
+                android:focusable="false"
+                android:paddingTop="4dp"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_share"
+                tools:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/new_page_loading_view"
+                android:layout_width="@dimen/loading_progressbar_size"
+                android:layout_height="@dimen/loading_progressbar_size"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/colorAccent"
+                android:visibility="visible" />
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
 
     <it.gruppoinfor.home2work.common.views.ScreenStateView
         android:id="@+id/status_view"

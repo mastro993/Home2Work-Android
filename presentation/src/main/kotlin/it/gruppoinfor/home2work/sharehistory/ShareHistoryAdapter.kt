@@ -1,14 +1,13 @@
 package it.gruppoinfor.home2work.sharehistory
 
 import android.content.Context
-import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.BaseAdapter
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.utilities.DateFormatUtils
 import it.gruppoinfor.home2work.common.utilities.StaticMapUriBuilder
@@ -19,11 +18,11 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 
 
-class ShareHistoryAdapter(private val imageLoader: ImageLoader,
-                          private val onShareClick: (Share, Int) -> Unit
-) : RecyclerView.Adapter<ShareHistoryAdapter.ViewHolder>() {
+class ShareHistoryAdapter(
+        private val imageLoader: ImageLoader,
+        private val onShareClick: (Share, Int) -> Unit
+) : BaseAdapter<ShareHistoryAdapter.ViewHolder, Share>() {
 
-    private val shares: MutableList<Share> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false)
@@ -31,18 +30,8 @@ class ShareHistoryAdapter(private val imageLoader: ImageLoader,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val share = shares[position]
+        val share = items[position]
         holder.bind(share, position, onShareClick, imageLoader)
-    }
-
-    override fun getItemCount(): Int {
-        return shares.size
-    }
-
-    fun setItems(list: List<Share>) {
-        shares.clear()
-        shares.addAll(list)
-        notifyDataSetChanged()
     }
 
     class ViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {

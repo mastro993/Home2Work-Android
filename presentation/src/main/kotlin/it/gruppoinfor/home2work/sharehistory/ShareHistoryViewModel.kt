@@ -17,15 +17,17 @@ class ShareHistoryViewModel(
 
     var viewState: MutableLiveData<ShareHistoryViewState> = MutableLiveData()
     var errorState: SingleLiveEvent<String> = SingleLiveEvent()
+    var loadingState: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    var newSharePage: SingleLiveEvent<List<Share>> = SingleLiveEvent()
 
     init {
         viewState.value = ShareHistoryViewState()
     }
 
 
-    fun getShareList() {
+    fun getShareList(limit: Int, page: Int) {
 
-        addDisposable(getShareList.observable()
+        addDisposable(getShareList.get(page, limit)
                 .map { it.map { mapper.mapFrom(it) } }
                 .doOnSubscribe {
                     val newViewState = viewState.value?.copy(
@@ -56,7 +58,9 @@ class ShareHistoryViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
-                            else ->{""}
+                            else -> {
+                                ""
+                            }
                         }
                     } else {
                         "Errore sconosciuto"
@@ -67,6 +71,24 @@ class ShareHistoryViewModel(
                     )
                     viewState.value = newViewState
 
+
+                }))
+
+    }
+
+    fun loadMoreShares(limit: Int, page: Int) {
+
+        addDisposable(getShareList.get(page, limit)
+                .map { it.map { mapper.mapFrom(it) } }
+                .doOnSubscribe {
+                    loadingState.value = true
+                }
+                .subscribe({
+                    loadingState.value = true
+                    newSharePage.value = it
+                }, {
+                    loadingState.value = false
+                    errorState.value = "Impossibile aggiornare la lista"
 
                 }))
 

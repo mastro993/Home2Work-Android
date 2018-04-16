@@ -31,8 +31,8 @@ class ShareRepositoryImpl(
         }
     }
 
-    override fun getShareList(): Observable<List<ShareEntity>> {
-        return shareService.getCompletedShareList().map {
+    override fun getShareList(limit: Int?, page: Int?): Observable<List<ShareEntity>> {
+        return shareService.getCompletedShareList(limit, page).map {
             it.map { mapper.mapFrom(it) }
         }
     }

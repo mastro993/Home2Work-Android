@@ -191,7 +191,7 @@ class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
                     .setPositiveButton(android.R.string.yes, { _, _ ->
 
                         viewModel.hideMatch(match)
-                        mMatchesAdapter.hide(position)
+                        mMatchesAdapter.hideItem(position)
                     })
                     .setNegativeButton(android.R.string.no, null)
                     .show()

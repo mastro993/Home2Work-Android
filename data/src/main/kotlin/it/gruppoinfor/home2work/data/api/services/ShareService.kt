@@ -9,8 +9,11 @@ import retrofit2.http.*
 
 interface ShareService {
 
-    @GET("user/share")
-    fun getCompletedShareList(): Observable<List<ShareData>>
+    @GET("user/share/list")
+    fun getCompletedShareList(
+            @Query("limit") limit: Int?,
+            @Query("page") page: Int?
+    ): Observable<List<ShareData>>
 
     @GET("share/{id}")
     fun getCompletedShare(

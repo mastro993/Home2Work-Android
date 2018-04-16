@@ -6,7 +6,7 @@ import it.gruppoinfor.home2work.domain.entities.MatchEntity
 import it.gruppoinfor.home2work.domain.entities.Optional
 
 interface MatchRepository {
-    fun getMatchList(): Observable<List<MatchEntity>>
+    fun getMatchList(limit: Int?, page: Int?): Observable<List<MatchEntity>>
     fun getMatch(matchId: Long): Observable<Optional<MatchEntity>>
     fun editMatch(match: MatchEntity): Observable<Boolean>
 }
