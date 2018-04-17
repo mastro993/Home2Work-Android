@@ -103,7 +103,7 @@ class LeaderboardsAdapter(
             if (userRanking.userId == userId) {
                 elevation = 8f
                 divider.remove()
-                setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
+                //setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
                 container.isClickable = false
                 container.isFocusable = false
                 usernameText.typeface = Typeface.DEFAULT_BOLD
@@ -148,7 +148,7 @@ class LeaderboardsAdapter(
             if (userRanking.userId == userId) {
                 elevation = 8f
                 divider.remove()
-                setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
+                //setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
                 container.isClickable = false
                 container.isFocusable = false
                 usernameText.typeface = Typeface.DEFAULT_BOLD
@@ -184,7 +184,7 @@ class LeaderboardsAdapter(
             if (userRanking.userId == userId) {
                 elevation = 8f
                 divider.remove()
-                setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
+                //setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
                 container.isClickable = false
                 container.isFocusable = false
                 usernameText.typeface = Typeface.DEFAULT_BOLD

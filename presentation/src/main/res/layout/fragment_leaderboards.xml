@@ -3,6 +3,7 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/window_background"
     tools:context=".leaderboards.LeaderboardsFragment">
 
     <FrameLayout
@@ -19,9 +20,17 @@
             android:transitionGroup="false">
 
             <LinearLayout
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <TextView
+                    android:padding="16dp"
+                    android:text="Condivisioni effettuate / Globale / Mensile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/leaderboards_recycler_view"
