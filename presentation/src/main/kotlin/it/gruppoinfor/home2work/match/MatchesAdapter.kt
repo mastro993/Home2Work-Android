@@ -14,7 +14,7 @@ import it.gruppoinfor.home2work.common.extensions.getScore
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.entities.Match
-import it.gruppoinfor.home2work.user.UserActivityLancher
+import it.gruppoinfor.home2work.user.UserActivityLauncher
 import kotlinx.android.synthetic.main.item_match.view.*
 
 
@@ -79,7 +79,7 @@ class MatchesAdapter(
 
                 val user = match.host
 
-                UserActivityLancher(
+                UserActivityLauncher(
                         userId = user.id,
                         userName = user.fullName,
                         userAvatarUrl = user.avatarUrl,

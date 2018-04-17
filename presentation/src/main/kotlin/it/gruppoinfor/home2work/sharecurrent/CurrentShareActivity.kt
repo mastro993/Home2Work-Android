@@ -35,7 +35,7 @@ import it.gruppoinfor.home2work.entities.GuestStatus
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.entities.ShareStatus
 import it.gruppoinfor.home2work.entities.ShareType
-import it.gruppoinfor.home2work.user.UserActivityLancher
+import it.gruppoinfor.home2work.user.UserActivityLauncher
 import kotlinx.android.synthetic.main.activity_current_share.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -235,7 +235,7 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
         mGuestsAdapter = GuestAdapter(imageLoader, { guest, _ ->
 
             val user = guest.user
-            UserActivityLancher(
+            UserActivityLauncher(
                     userId = user.id,
                     userName = user.fullName,
                     userAvatarUrl = user.avatarUrl,
@@ -255,7 +255,7 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
             sheetView.find<TextView>(R.id.guest_dialog_show_profile).setOnClickListener {
                 dialog.dismiss()
                 val user = guest.user
-                UserActivityLancher(
+                UserActivityLauncher(
                         userId = user.id,
                         userName = user.toString(),
                         userAvatarUrl = user.avatarUrl,
@@ -319,7 +319,7 @@ class CurrentShareActivity : BaseActivity<CurrentShareViewModel, CurrentShareVMF
             with(it.host) {
 
                 avatar_view.setOnClickListener {
-                    UserActivityLancher(
+                    UserActivityLauncher(
                             userId = id,
                             userName = fullName,
                             userAvatarUrl = avatarUrl,

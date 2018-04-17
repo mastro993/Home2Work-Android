@@ -11,22 +11,40 @@
         android:clipChildren="false"
         android:transitionGroup="false">
 
+
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"
             android:transitionGroup="false">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/matches_recycler_view"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:transitionGroup="false"
-                android:visibility="visible"
-                tools:listitem="@layout/item_leaderboard_user_normal" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/leaderboards_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:transitionGroup="false"
+                    android:visibility="visible"
+                    tools:listitem="@layout/item_leaderboard_user_large" />
+
+                <ProgressBar
+                    android:id="@+id/new_page_loading_view"
+                    android:layout_width="@dimen/loading_progressbar_size"
+                    android:layout_height="@dimen/loading_progressbar_size"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/colorAccent"
+                    android:visibility="visible" />
+
+            </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
 

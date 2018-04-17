@@ -11,7 +11,7 @@ import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.entities.Match
-import it.gruppoinfor.home2work.user.UserActivityLancher
+import it.gruppoinfor.home2work.user.UserActivityLauncher
 import kotlinx.android.synthetic.main.sheet_match_info.*
 import kotlinx.android.synthetic.main.item_match.*
 import java.text.SimpleDateFormat
@@ -66,7 +66,7 @@ class MatchInfoSheet constructor(context: Context, private val imageLoader: Imag
 
 
         match_user_container.setOnClickListener {
-            UserActivityLancher(
+            UserActivityLauncher(
                     userId = host.id,
                     userName = host.fullName,
                     userAvatarUrl = host.avatarUrl,

@@ -77,6 +77,15 @@ class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMF
                 status_view.setScreenState(it.screenState)
 
                 it.sharesHistory?.let {
+
+                    if (it.isEmpty() || it.size < pageSize) {
+                        mScrollListener.isLastPage = true
+                        new_page_loading_view.hide()
+                    } else {
+                        mScrollListener.isLastPage = false
+                        new_page_loading_view.show()
+                    }
+
                     mSharesAdapter.setItems(it)
                 }
 

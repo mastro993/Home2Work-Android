@@ -20,7 +20,7 @@ import it.gruppoinfor.home2work.common.views.ScreenStateView
 import it.gruppoinfor.home2work.entities.Match
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.chat.SingleChatActivityLauncher
-import it.gruppoinfor.home2work.user.UserActivityLancher
+import it.gruppoinfor.home2work.user.UserActivityLauncher
 import kotlinx.android.synthetic.main.fragment_match.*
 import org.jetbrains.anko.find
 
@@ -38,6 +38,7 @@ class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         viewModel.getMatchList()
     }
 
@@ -60,7 +61,6 @@ class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
 
         swipeRefreshLayout = swipe_refresh_layout
         recyclerView = matches_recycler_view
@@ -136,7 +136,7 @@ class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
 
             val user = match.host
 
-            UserActivityLancher(
+            UserActivityLauncher(
                     userId = user.id,
                     userName = user.fullName,
                     userAvatarUrl = user.avatarUrl,
@@ -160,7 +160,7 @@ class MatchesFragment : BaseFragment<MatchViewModel, MatchVMFactory>() {
 
             val user = match.host
 
-            UserActivityLancher(
+            UserActivityLauncher(
                     userId = user.id,
                     userName = user.fullName,
                     userAvatarUrl = user.avatarUrl,

@@ -3,19 +3,15 @@ package it.gruppoinfor.home2work.user
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.chat.SingleChatActivityLauncher
-import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.view_profile_activity_details.*
 import kotlinx.android.synthetic.main.view_profile_exp_details.*
@@ -23,7 +19,6 @@ import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
 import java.util.*
-import javax.inject.Inject
 
 class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
 
@@ -33,7 +28,7 @@ class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
 
 
     private val args by lazy {
-        UserActivityLancher.deserializeFrom(intent)
+        UserActivityLauncher.deserializeFrom(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,6 +140,7 @@ class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
             text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), it.exp.amount)
             text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), it.exp.currentLvLExp)
             text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), it.exp.nextLvlExp)
+            text_month_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_month), it.exp.monthExp)
 
             text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", it.stats.sharedDistance.div(1000f))
             text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.monthSharedDistance.div(1000f))

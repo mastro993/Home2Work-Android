@@ -6,7 +6,7 @@ import it.gruppoinfor.home2work.common.ActivityLancher
 import org.jetbrains.anko.intentFor
 
 
-class UserActivityLancher(
+class UserActivityLauncher(
         val userId: Long,
         val userName: String,
         val userAvatarUrl: String,
@@ -32,8 +32,8 @@ class UserActivityLancher(
         private const val KEY_USER_COMPANY_ID: String = "user_company_id"
         private const val KEY_USER_COMPANY_NAME: String = "user_company_name"
 
-        fun deserializeFrom(intent: Intent): UserActivityLancher {
-            return UserActivityLancher(
+        fun deserializeFrom(intent: Intent): UserActivityLauncher {
+            return UserActivityLauncher(
                     userId = intent.getLongExtra(KEY_USER_ID, 0L),
                     userName = intent.getStringExtra(KEY_USER_NAME),
                     userAvatarUrl = intent.getStringExtra(KEY_USER_AVATAR),

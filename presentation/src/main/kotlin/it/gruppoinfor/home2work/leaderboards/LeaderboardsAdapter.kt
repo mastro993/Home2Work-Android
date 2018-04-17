@@ -1,6 +1,9 @@
 package it.gruppoinfor.home2work.leaderboards
 
 import android.content.Context
+import android.graphics.Typeface
+import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +13,13 @@ import android.widget.TextView
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseAdapter
 import it.gruppoinfor.home2work.common.ImageLoader
+import it.gruppoinfor.home2work.common.PicassoCircleTransform
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.entities.UserRanking
 import kotlinx.android.synthetic.main.item_leaderboard_user_large.view.*
 
 class LeaderboardsAdapter(
+        private val userId: Long,
         private val imageLoader: ImageLoader,
         private val onClick: (UserRanking, Int) -> Unit
 ) : BaseAdapter<UserRanking>() {
@@ -46,16 +52,16 @@ class LeaderboardsAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val userRanking = items[position]
         when (holder.itemViewType) {
-            TOP_3 -> (holder as Top3ViewHolder).bind(userRanking, position, onClick, imageLoader)
-            TOP_10 -> (holder as Top10ViewHolder).bind(userRanking, position, onClick, imageLoader)
-            else -> (holder as Top100ViewHolder).bind(userRanking, position, onClick)
+            TOP_3 -> (holder as Top3ViewHolder).bind(userRanking, position, onClick, imageLoader, userId)
+            TOP_10 -> (holder as Top10ViewHolder).bind(userRanking, position, onClick, imageLoader, userId)
+            else -> (holder as Top100ViewHolder).bind(userRanking, position, onClick, userId)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
-            in 1..3 -> TOP_3
-            in 4..10 -> TOP_10
+            in 0..2 -> TOP_3
+            in 3..9 -> TOP_10
             else -> TOP_100
         }
     }
@@ -66,8 +72,16 @@ class LeaderboardsAdapter(
                 userRanking: UserRanking,
                 position: Int,
                 onClick: (UserRanking, Int) -> Unit,
-                imageLoader: ImageLoader
+                imageLoader: ImageLoader,
+                userId: Long
         ) = with(itemView) {
+
+            val container = findViewById<ConstraintLayout>(R.id.container)
+            val userAvatar = findViewById<ImageView>(R.id.img_user_avatar)
+            val usernameText = findViewById<TextView>(R.id.text_user_name)
+            val companyNameText = findViewById<TextView>(R.id.text_company_name)
+            val valueText = findViewById<TextView>(R.id.text_value)
+            val divider = findViewById<View>(R.id.item_divider)
 
             when (userRanking.position) {
                 1 -> img_prize.setImageDrawable(context.getDrawable(R.drawable.ic_leaderboard_first_place))
@@ -75,10 +89,28 @@ class LeaderboardsAdapter(
                 else -> img_prize.setImageDrawable(context.getDrawable(R.drawable.ic_leaderboard_third_place))
             }
 
-            imageLoader.load(userRanking.avatarUrl, findViewById(R.id.img_user_avatar))
-            findViewById<TextView>(R.id.text_user_name).text = userRanking.userName
-            findViewById<TextView>(R.id.text_company_name).text = userRanking.companyName
-            findViewById<TextView>(R.id.text_value).text = userRanking.amount.toString()
+            imageLoader.load(
+                    url = userRanking.avatarUrl,
+                    imageView = userAvatar,
+                    transformation = PicassoCircleTransform(),
+                    placeholder = R.drawable.ic_avatar_placeholder)
+
+            usernameText.text = userRanking.userName
+            companyNameText.text = userRanking.companyName
+            valueText.text = userRanking.amount.toString()
+
+
+            if (userRanking.userId == userId) {
+                elevation = 8f
+                divider.remove()
+                setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
+                container.isClickable = false
+                container.isFocusable = false
+                usernameText.typeface = Typeface.DEFAULT_BOLD
+            } else {
+                container.setOnClickListener { onClick(userRanking, position) }
+            }
+
 
         }
 
@@ -90,14 +122,39 @@ class LeaderboardsAdapter(
                 userRanking: UserRanking,
                 position: Int,
                 onClick: (UserRanking, Int) -> Unit,
-                imageLoader: ImageLoader
+                imageLoader: ImageLoader,
+                userId: Long
         ) = with(itemView) {
 
-            findViewById<TextView>(R.id.text_position).text = userRanking.position.toString()
-            imageLoader.load(userRanking.avatarUrl, findViewById(R.id.img_user_avatar))
-            findViewById<TextView>(R.id.text_user_name).text = userRanking.userName
-            findViewById<TextView>(R.id.text_company_name).text = userRanking.companyName
-            findViewById<TextView>(R.id.text_value).text = userRanking.amount.toString()
+            val container = findViewById<ConstraintLayout>(R.id.container)
+            val userAvatar = findViewById<ImageView>(R.id.img_user_avatar)
+            val usernameText = findViewById<TextView>(R.id.text_user_name)
+            val companyNameText = findViewById<TextView>(R.id.text_company_name)
+            val valueText = findViewById<TextView>(R.id.text_value)
+            val divider = findViewById<View>(R.id.item_divider)
+            val positionText = findViewById<TextView>(R.id.text_position)
+
+            imageLoader.load(
+                    url = userRanking.avatarUrl,
+                    imageView = userAvatar,
+                    transformation = PicassoCircleTransform(),
+                    placeholder = R.drawable.ic_avatar_placeholder)
+
+            positionText.text = userRanking.position.toString()
+            usernameText.text = userRanking.userName
+            companyNameText.text = userRanking.companyName
+            valueText.text = userRanking.amount.toString()
+
+            if (userRanking.userId == userId) {
+                elevation = 8f
+                divider.remove()
+                setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
+                container.isClickable = false
+                container.isFocusable = false
+                usernameText.typeface = Typeface.DEFAULT_BOLD
+            } else {
+                container.setOnClickListener { onClick(userRanking, position) }
+            }
 
         }
 
@@ -108,13 +165,32 @@ class LeaderboardsAdapter(
         fun bind(
                 userRanking: UserRanking,
                 position: Int,
-                onClick: (UserRanking, Int) -> Unit
+                onClick: (UserRanking, Int) -> Unit,
+                userId: Long
         ) = with(itemView) {
 
-            findViewById<TextView>(R.id.text_position).text = userRanking.position.toString()
-            findViewById<TextView>(R.id.text_user_name).text = userRanking.userName
-            findViewById<TextView>(R.id.text_company_name).text = userRanking.companyName
-            findViewById<TextView>(R.id.text_value).text = userRanking.amount.toString()
+            val container = findViewById<ConstraintLayout>(R.id.container)
+            val usernameText = findViewById<TextView>(R.id.text_user_name)
+            val companyNameText = findViewById<TextView>(R.id.text_company_name)
+            val valueText = findViewById<TextView>(R.id.text_value)
+            val divider = findViewById<View>(R.id.item_divider)
+            val positionText = findViewById<TextView>(R.id.text_position)
+
+            positionText.text = userRanking.position.toString()
+            usernameText.text = userRanking.userName
+            companyNameText.text = userRanking.companyName
+            valueText.text = userRanking.amount.toString()
+
+            if (userRanking.userId == userId) {
+                elevation = 8f
+                divider.remove()
+                setBackgroundColor(ContextCompat.getColor(context, R.color.grey_100))
+                container.isClickable = false
+                container.isFocusable = false
+                usernameText.typeface = Typeface.DEFAULT_BOLD
+            } else {
+                container.setOnClickListener { onClick(userRanking, position) }
+            }
 
         }
 

@@ -21,7 +21,7 @@ import java.text.DecimalFormat
 class ShareHistoryAdapter(
         private val imageLoader: ImageLoader,
         private val onShareClick: (Share, Int) -> Unit
-) : BaseAdapter<ShareHistoryAdapter.ViewHolder, Share>() {
+) : BaseAdapter<Share>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,9 +29,9 @@ class ShareHistoryAdapter(
         return ViewHolder(parent.context, v)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val share = items[position]
-        holder.bind(share, position, onShareClick, imageLoader)
+        (holder as ViewHolder).bind(share, position, onShareClick, imageLoader)
     }
 
     class ViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {

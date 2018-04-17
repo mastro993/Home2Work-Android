@@ -5,6 +5,7 @@
         android:id="@+id/action_messages"
         android:orderInCategory="100"
         android:title="Messaggi"
+        android:icon="@drawable/ic_leaderboard_first_place"
         app:showAsAction="always" />
 
 </menu>
