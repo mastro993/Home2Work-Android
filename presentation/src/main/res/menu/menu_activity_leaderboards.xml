@@ -2,10 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_messages"
+        android:id="@+id/action_global_leaderboards"
+        android:icon="@drawable/ic_leaderboard_global"
         android:orderInCategory="100"
-        android:title="Messaggi"
-        android:icon="@drawable/ic_leaderboard_first_place"
+        android:title="Classifiche globali"
         app:showAsAction="always" />
 
 </menu>

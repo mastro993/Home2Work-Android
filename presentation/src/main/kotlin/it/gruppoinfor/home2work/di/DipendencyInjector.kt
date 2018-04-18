@@ -34,6 +34,7 @@ import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
 import it.gruppoinfor.home2work.home.HomeFragment
+import it.gruppoinfor.home2work.leaderboards.LeaderboardsActivity
 import it.gruppoinfor.home2work.leaderboards.LeaderboardsFragment
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.match.MatchesFragment
@@ -109,6 +110,12 @@ object DipendencyInjector {
             is SettingsActivity -> {
                 settingsSubComponent = mainComponent.plus(SettingsModule())
                 settingsSubComponent!!.inject(activity)
+            }
+            is LeaderboardsActivity -> {
+                if(leaderboardSubComponent == null){
+                    leaderboardSubComponent = mainComponent.plus(LeaderboardModule())
+                }
+                leaderboardSubComponent!!.inject(activity)
             }
         }
     }

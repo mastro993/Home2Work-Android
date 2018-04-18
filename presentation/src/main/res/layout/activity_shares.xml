@@ -34,7 +34,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="16dp"
                 android:indeterminate="true"
-                android:indeterminateTint="@color/colorAccent"
+                android:indeterminateTint="@color/light_bg_dark_disabled_text"
                 android:visibility="visible" />
 
 

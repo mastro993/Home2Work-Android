@@ -1,28 +1,34 @@
 package it.gruppoinfor.home2work.leaderboards
 
-
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.BaseFragment
+import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.NestedScrollViewEndlessScrollListener
-import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.entities.Leaderboard
 import it.gruppoinfor.home2work.user.UserActivityLauncher
-import kotlinx.android.synthetic.main.fragment_leaderboards.*
+import kotlinx.android.synthetic.main.activity_leaderboards.*
 import org.jetbrains.anko.intentFor
 
 
-class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMFactory>() {
+class LeaderboardsActivity : BaseActivity<LeaderboardsViewModel, LeaderboardsVMFactory>() {
+
+
+    val range = Leaderboard.Range.Global
+    var type: Leaderboard.Type? = null
+    var timespan: Leaderboard.TimeSpan? = null
+
+
+    private val pageSize = 20
 
     private lateinit var mLeaderboardsAdapter: LeaderboardsAdapter
 
@@ -32,7 +38,6 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
             viewModel.getLeaderboardNewPage(
                     type = type,
                     range = range,
-                    companyId = localUserData.user?.company?.id,
                     timespan = timespan,
                     pageSize = pageSize,
                     page = page
@@ -47,19 +52,11 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
         viewModel.refreshLeaderboard(
                 type = type,
                 range = range,
-                companyId = localUserData.user?.company?.id,
                 timespan = timespan,
                 pageSize = pageSize,
                 page = 1
         )
     }
-
-
-    val range = Leaderboard.Range.Company
-    var type: Leaderboard.Type? = null
-    var timespan: Leaderboard.TimeSpan? = null
-
-    private val pageSize = 20
 
     override fun getVMClass(): Class<LeaderboardsViewModel> {
         return LeaderboardsViewModel::class.java
@@ -67,33 +64,18 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        setContentView(R.layout.activity_leaderboards)
 
-        viewModel.getLeaderboard(
-                type = type,
-                range = range,
-                companyId = localUserData.user?.company?.id,
-                timespan = timespan,
-                pageSize = pageSize,
-                page = 1
-        )
-
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_leaderboards, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
         swipe_refresh_layout.setOnRefreshListener(mOnRefreshListener)
 
         leaderboards_recycler_view.isNestedScrollingEnabled = false
 
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation)
 
         leaderboards_recycler_view.layoutManager = layoutManager
         leaderboards_recycler_view.layoutAnimation = animation
@@ -108,7 +90,7 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
                             userCompanyId = userRanking.companyId,
                             userCompanyName = userRanking.companyName,
                             userAvatarUrl = userRanking.avatarUrl
-                    ).launch(context!!)
+                    ).launch(this)
 
                 },
                 userId = localUserData.user!!.id)
@@ -156,13 +138,31 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
 
         nested_scroll_view.setOnScrollChangeListener(mNestedScrollViewEndlessScrollListener)
 
-        bn_global_leaderboards.setOnClickListener { activity?.launchActivity<LeaderboardsActivity>() }
+        observeViewState()
+
+        viewModel.getLeaderboard(
+                type = type,
+                range = range,
+                timespan = timespan,
+                pageSize = pageSize,
+                page = 1
+        )
 
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun observeViewState() {
         viewModel.viewState.observe(this, Observer {
 
             it?.let {
@@ -211,9 +211,5 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
                 mNestedScrollViewEndlessScrollListener.isLastPage = true
             }
         })
-
-
     }
-
-
 }
