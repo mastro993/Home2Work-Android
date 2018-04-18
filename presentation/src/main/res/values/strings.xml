@@ -198,4 +198,16 @@
 
     <string name="com.crashlytics.android.build_id">gdfwfrgyt56g46464565645645</string>
 
+    <string-array name="leaderboard_type">
+        <item>Condivisioni</item>
+        <item>Distanza condivisa</item>
+    </string-array>
+
+    <string-array name="leaderboard_timespan">
+        <item>Assoluto</item>
+        <item>Questo mese</item>
+        <item>Settimanale</item>
+    </string-array>
+
+
 </resources>

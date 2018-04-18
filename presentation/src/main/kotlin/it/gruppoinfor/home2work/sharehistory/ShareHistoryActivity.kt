@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.common.EndlessScrollListener
+import it.gruppoinfor.home2work.common.RecyclerViewEndlessScrollListener
 import it.gruppoinfor.home2work.common.extensions.hide
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.common.extensions.showToast
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_shares.*
 class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMFactory>() {
 
     private lateinit var mSharesAdapter: ShareHistoryAdapter
-    private lateinit var mScrollListener: EndlessScrollListener
+    private lateinit var mScrollListenerRecyclerView: RecyclerViewEndlessScrollListener
 
     private val pageSize = 5
 
@@ -36,17 +36,17 @@ class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMF
             // TODO shareclick
         })
 
-        mScrollListener = object : EndlessScrollListener(pageSize) {
+        mScrollListenerRecyclerView = object : RecyclerViewEndlessScrollListener(pageSize) {
             override fun loadMoreItems(page: Int) {
                 viewModel.loadMoreShares(pageSize, page)
-                mScrollListener.isLoading = true
+                mScrollListenerRecyclerView.isLoading = true
 
             }
         }
 
         shares_recycler_view.layoutManager = layoutManager
         shares_recycler_view.adapter = mSharesAdapter
-        shares_recycler_view.addOnScrollListener(mScrollListener)
+        shares_recycler_view.addOnScrollListener(mScrollListenerRecyclerView)
         shares_recycler_view.isNestedScrollingEnabled = false
 
         observeViewState()
@@ -79,10 +79,10 @@ class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMF
                 it.sharesHistory?.let {
 
                     if (it.isEmpty() || it.size < pageSize) {
-                        mScrollListener.isLastPage = true
+                        mScrollListenerRecyclerView.isLastPage = true
                         new_page_loading_view.hide()
                     } else {
-                        mScrollListener.isLastPage = false
+                        mScrollListenerRecyclerView.isLastPage = false
                         new_page_loading_view.show()
                     }
 
@@ -106,11 +106,11 @@ class ShareHistoryActivity : BaseActivity<ShareHistoryViewModel, ShareHistoryVMF
         viewModel.newSharePage.observe(this, Observer {
             it?.let {
                 if (it.isEmpty() || it.size < pageSize) {
-                    mScrollListener.isLastPage = true
+                    mScrollListenerRecyclerView.isLastPage = true
                     new_page_loading_view.hide()
                 }
                 mSharesAdapter.addItems(it)
-                mScrollListener.isLoading = false
+                mScrollListenerRecyclerView.isLoading = false
             }
         })
 

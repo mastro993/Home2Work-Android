@@ -3,15 +3,17 @@ package it.gruppoinfor.home2work.leaderboards
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.AdapterView
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseFragment
-import it.gruppoinfor.home2work.common.EndlessScrollListener
-import it.gruppoinfor.home2work.common.extensions.hide
+import it.gruppoinfor.home2work.common.NestedScrollViewEndlessScrollListener
+import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import it.gruppoinfor.home2work.entities.Leaderboard
 import it.gruppoinfor.home2work.user.UserActivityLauncher
@@ -21,10 +23,37 @@ import kotlinx.android.synthetic.main.fragment_leaderboards.*
 class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMFactory>() {
 
     private lateinit var mLeaderboardsAdapter: LeaderboardsAdapter
-    private lateinit var mScrollListener: EndlessScrollListener
 
+    private val mNestedScrollViewEndlessScrollListener = object : NestedScrollViewEndlessScrollListener() {
+        override fun loadMoreItems(page: Int) {
+
+            viewModel.getLeaderboardNewPage(
+                    type = type,
+                    range = range,
+                    companyId = localUserData.user?.company?.id,
+                    timespan = timespan,
+                    pageSize = pageSize,
+                    page = page
+            )
+
+            isLoading = true
+
+        }
+    }
+    private val mOnRefreshListener = SwipeRefreshLayout.OnRefreshListener {
+        viewModel.refreshLeaderboard(
+                type = type,
+                range = range,
+                companyId = localUserData.user?.company?.id,
+                timespan = timespan,
+                pageSize = pageSize,
+                page = 1
+        )
+    }
+
+
+    val range = Leaderboard.Range.Company
     var type: Leaderboard.Type? = null
-    var range: Leaderboard.Range? = null
     var timespan: Leaderboard.TimeSpan? = null
 
     private val pageSize = 20
@@ -40,6 +69,7 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
         viewModel.getLeaderboard(
                 type = type,
                 range = range,
+                companyId = localUserData.user?.company?.id,
                 timespan = timespan,
                 pageSize = pageSize,
                 page = 1
@@ -55,17 +85,7 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
         super.onViewCreated(view, savedInstanceState)
 
         swipe_refresh_layout.setColorSchemeResources(R.color.colorAccent)
-        swipe_refresh_layout.setOnRefreshListener {
-
-            viewModel.refreshLeaderboard(
-                    type = type,
-                    range = range,
-                    timespan = timespan,
-                    pageSize = pageSize,
-                    page = 1
-            )
-
-        }
+        swipe_refresh_layout.setOnRefreshListener(mOnRefreshListener)
 
         leaderboards_recycler_view.isNestedScrollingEnabled = false
 
@@ -77,7 +97,7 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
 
         mLeaderboardsAdapter = LeaderboardsAdapter(
                 imageLoader = imageLoader,
-                onClick = { userRanking, position ->
+                onClick = { userRanking, _ ->
 
                     UserActivityLauncher(
                             userId = userRanking.userId,
@@ -90,26 +110,46 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
                 },
                 userId = localUserData.user!!.id)
 
-        mScrollListener = object : EndlessScrollListener(pageSize) {
-            override fun loadMoreItems(page: Int) {
+        leaderboards_recycler_view.adapter = mLeaderboardsAdapter
 
-                viewModel.getLeaderboardNewPage(
+        spinner_leaderboard_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                type = Leaderboard.Type.from(position)
+
+                viewModel.getLeaderboard(
                         type = type,
                         range = range,
+                        companyId = localUserData.user?.company?.id,
                         timespan = timespan,
                         pageSize = pageSize,
-                        page = page
+                        page = 1
                 )
+            }
+        }
+        spinner_leaderboard_timespan.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
 
-                mScrollListener.isLoading = true
+            }
 
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                timespan = Leaderboard.TimeSpan.from(position)
 
+                viewModel.getLeaderboard(
+                        type = type,
+                        range = range,
+                        companyId = localUserData.user?.company?.id,
+                        timespan = timespan,
+                        pageSize = pageSize,
+                        page = 1
+                )
             }
         }
 
-        leaderboards_recycler_view.addOnScrollListener(mScrollListener)
-        leaderboards_recycler_view.adapter = mLeaderboardsAdapter
-
+        nested_scroll_view.setOnScrollChangeListener(mNestedScrollViewEndlessScrollListener)
 
     }
 
@@ -127,10 +167,10 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
                     mLeaderboardsAdapter.setItems(this)
 
                     if (isEmpty() || size < pageSize) {
-                        mScrollListener.isLastPage = true
-                        new_page_loading_view.hide()
+                        mNestedScrollViewEndlessScrollListener.isLastPage = true
+                        new_page_loading_view.remove()
                     } else {
-                        mScrollListener.isLastPage = false
+                        mNestedScrollViewEndlessScrollListener.isLastPage = false
                         new_page_loading_view.show()
                     }
                 }
@@ -147,21 +187,21 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
                 if (it)
                     new_page_loading_view.show()
                 else
-                    new_page_loading_view.hide()
+                    new_page_loading_view.remove()
             }
         })
 
         viewModel.newLeaderboardPage.observe(this, Observer {
             it?.let {
                 if (it.isEmpty() || it.size < pageSize) {
-                    mScrollListener.isLastPage = true
-                    new_page_loading_view.hide()
+                    mNestedScrollViewEndlessScrollListener.isLastPage = true
+                    new_page_loading_view.remove()
                 }
                 mLeaderboardsAdapter.addItems(it)
-                mScrollListener.isLoading = false
+                mNestedScrollViewEndlessScrollListener.isLoading = false
             } ?: let {
-                mScrollListener.isLoading = false
-                mScrollListener.isLastPage = true
+                mNestedScrollViewEndlessScrollListener.isLoading = false
+                mNestedScrollViewEndlessScrollListener.isLastPage = true
             }
         })
 

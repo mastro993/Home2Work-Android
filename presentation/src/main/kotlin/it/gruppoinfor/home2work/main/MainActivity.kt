@@ -207,7 +207,7 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
             override fun onPageSelected(position: Int) {
 
-                if (position == PROFILE_TAB)
+                if (position == PROFILE_TAB || position == RANKS_TAB)
                     supportActionBar?.hide()
                 else
                     supportActionBar?.show()

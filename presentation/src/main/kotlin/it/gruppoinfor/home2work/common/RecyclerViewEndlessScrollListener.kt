@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 
 
-abstract class EndlessScrollListener(val pageSize: Int) : RecyclerView.OnScrollListener() {
+abstract class RecyclerViewEndlessScrollListener(val pageSize: Int) : RecyclerView.OnScrollListener() {
 
 
     var isLoading = false

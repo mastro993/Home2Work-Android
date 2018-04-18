@@ -8,6 +8,7 @@ import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import it.gruppoinfor.home2work.R
+import it.gruppoinfor.home2work.common.extensions.hide
 import it.gruppoinfor.home2work.common.extensions.remove
 import it.gruppoinfor.home2work.common.extensions.show
 import kotlinx.android.synthetic.main.view_screen_state.view.*
@@ -50,7 +51,7 @@ class ScreenStateView : ConstraintLayout {
     }
 
     private fun done() {
-        remove()
+        hide()
 
         image_error.remove()
         loading_view.remove()
