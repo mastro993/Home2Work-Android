@@ -118,7 +118,9 @@ class LeaderboardsFragment : BaseFragment<LeaderboardsViewModel, LeaderboardsVMF
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
                 type = Leaderboard.Type.from(position)
+                mLeaderboardsAdapter.type = Leaderboard.Type.from(position)
 
                 viewModel.getLeaderboard(
                         type = type,

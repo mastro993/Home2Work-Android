@@ -200,7 +200,7 @@
 
     <string-array name="leaderboard_type">
         <item>Condivisioni</item>
-        <item>Distanza condivisa</item>
+        <item>Km condivisi</item>
     </string-array>
 
     <string-array name="leaderboard_timespan">

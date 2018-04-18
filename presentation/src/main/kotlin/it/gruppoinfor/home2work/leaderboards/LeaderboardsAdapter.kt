@@ -14,7 +14,9 @@ import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseAdapter
 import it.gruppoinfor.home2work.common.ImageLoader
 import it.gruppoinfor.home2work.common.PicassoCircleTransform
+import it.gruppoinfor.home2work.entities.Leaderboard
 import it.gruppoinfor.home2work.entities.UserRanking
+import java.util.*
 
 class LeaderboardsAdapter(
         private val userId: Long,
@@ -27,6 +29,7 @@ class LeaderboardsAdapter(
         const val TOP_100 = 1
     }
 
+    var type: Leaderboard.Type = Leaderboard.Type.Shares
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -49,9 +52,9 @@ class LeaderboardsAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val userRanking = items[position]
         when (holder.itemViewType) {
-            TOP_10 -> (holder as Top10ViewHolder).bind(userRanking, position, onClick, imageLoader, userId)
-            TOP_100 -> (holder as Top100ViewHolder).bind(userRanking, position, onClick, imageLoader, userId)
-            else -> (holder as ViewHolder).bind(userRanking, position, onClick, userId)
+            TOP_10 -> (holder as Top10ViewHolder).bind(userRanking, position, onClick, imageLoader, userId, type)
+            TOP_100 -> (holder as Top100ViewHolder).bind(userRanking, position, onClick, imageLoader, userId, type)
+            else -> (holder as ViewHolder).bind(userRanking, position, onClick, userId, type)
         }
     }
 
@@ -70,7 +73,8 @@ class LeaderboardsAdapter(
                 position: Int,
                 onClick: (UserRanking, Int) -> Unit,
                 imageLoader: ImageLoader,
-                userId: Long
+                userId: Long,
+                type: Leaderboard.Type
         ) = with(itemView as CardView) {
 
             val container = findViewById<ConstraintLayout>(R.id.container)
@@ -90,8 +94,13 @@ class LeaderboardsAdapter(
 
             usernameText.text = userRanking.userName
             companyNameText.text = userRanking.companyName
-            valueText.text = userRanking.amount.toString()
 
+            valueText.text = when (type) {
+                Leaderboard.Type.Shares -> userRanking.amount.toString()
+                Leaderboard.Type.Distance -> {
+                    String.format(Locale.ITALY, "%.1f", userRanking.amount.toFloat().div(1000f))
+                }
+            }
 
             if (userRanking.userId == userId) {
                 container.isClickable = false
@@ -113,7 +122,8 @@ class LeaderboardsAdapter(
                 position: Int,
                 onClick: (UserRanking, Int) -> Unit,
                 imageLoader: ImageLoader,
-                userId: Long
+                userId: Long,
+                type: Leaderboard.Type
         ) = with(itemView as CardView) {
 
             val container = findViewById<ConstraintLayout>(R.id.container)
@@ -132,7 +142,13 @@ class LeaderboardsAdapter(
             positionText.text = userRanking.position.toString()
             usernameText.text = userRanking.userName
             companyNameText.text = userRanking.companyName
-            valueText.text = userRanking.amount.toString()
+
+            valueText.text = when (type) {
+                Leaderboard.Type.Shares -> userRanking.amount.toString()
+                Leaderboard.Type.Distance -> {
+                    String.format(Locale.ITALY, "%.1f", userRanking.amount.toFloat().div(1000f))
+                }
+            }
 
             if (userRanking.userId == userId) {
                 container.isClickable = false
@@ -152,7 +168,8 @@ class LeaderboardsAdapter(
                 userRanking: UserRanking,
                 position: Int,
                 onClick: (UserRanking, Int) -> Unit,
-                userId: Long
+                userId: Long,
+                type: Leaderboard.Type
         ) = with(itemView as CardView) {
 
             val container = findViewById<ConstraintLayout>(R.id.container)
@@ -164,7 +181,13 @@ class LeaderboardsAdapter(
             positionText.text = userRanking.position.toString()
             usernameText.text = userRanking.userName
             companyNameText.text = userRanking.companyName
-            valueText.text = userRanking.amount.toString()
+
+            valueText.text = when (type) {
+                Leaderboard.Type.Shares -> userRanking.amount.toString()
+                Leaderboard.Type.Distance -> {
+                    String.format(Locale.ITALY, "%.1f", userRanking.amount.toFloat().div(1000f))
+                }
+            }
 
             if (userRanking.userId == userId) {
                 cardElevation = 8f

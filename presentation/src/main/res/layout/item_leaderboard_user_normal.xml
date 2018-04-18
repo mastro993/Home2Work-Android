@@ -78,6 +78,8 @@
             android:layout_marginEnd="16dp"
             android:background="@drawable/bg_match_score"
             android:gravity="center"
+
+            android:textColor="@color/colorPrimary"
             android:padding="8dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
