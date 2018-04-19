@@ -40,9 +40,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="46d1717c516ccf9648149cf19412063e5dace7cf" />
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/home2work_icon" />
 
         <receiver
             android:name=".common.boot.BootReceiver"

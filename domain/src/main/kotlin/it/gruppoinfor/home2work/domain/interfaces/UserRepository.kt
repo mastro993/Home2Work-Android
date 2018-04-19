@@ -8,7 +8,6 @@ import java.io.File
 
 interface UserRepository {
     fun login(email: String, password: String): Observable<UserEntity>
-    fun login(token: String): Observable<UserEntity>
     fun setAvatar(avatar: File): Observable<Boolean>
     fun getProfile(): Observable<ProfileEntity>
     fun getUser(): Observable<UserEntity>

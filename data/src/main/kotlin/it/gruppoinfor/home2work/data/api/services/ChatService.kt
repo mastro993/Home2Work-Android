@@ -32,6 +32,6 @@ interface ChatService {
             @Field("recipientId") userId: Long?
     ): Observable<ChatData>
 
-    @GET("user/chat")
+    @GET("chat/list")
     fun getChatList(): Observable<List<ChatData>>
 }

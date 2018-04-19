@@ -19,7 +19,7 @@ interface MatchService {
             @Body match: MatchData
     ): Observable<Boolean>
 
-    @GET("user/match/list")
+    @GET("match/list")
     fun getMatchList(
             @Query("limit") limit: Int?,
             @Query("page") page: Int?

@@ -13,6 +13,7 @@ import it.gruppoinfor.home2work.common.timber.DebugLogTree
 import it.gruppoinfor.home2work.common.timber.FileLoggingTree
 import it.gruppoinfor.home2work.common.timber.ReleaseLogTree
 import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.data.api.APIService
 import it.gruppoinfor.home2work.data.api.LogoutEvent
 import it.gruppoinfor.home2work.data.api.NoInternetErrorEvent
 import it.gruppoinfor.home2work.di.DipendencyInjector
@@ -58,6 +59,8 @@ class App : Application() {
         LeakCanary.install(this)
 
         Fabric.with(this, Crashlytics())
+
+        APIService.API_KEY = getString(R.string.home2work_api_key)
 
         EventBus.getDefault().register(this)
 

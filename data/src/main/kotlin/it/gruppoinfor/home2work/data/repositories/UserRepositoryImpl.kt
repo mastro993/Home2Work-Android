@@ -25,12 +25,6 @@ class UserRepositoryImpl(
         }
     }
 
-    override fun login(token: String): Observable<UserEntity> {
-        return userService.login(token).map {
-            userMapper.mapFrom(it)
-        }
-    }
-
     override fun setAvatar(avatar: File): Observable<Boolean> {
         // TODO Caricamento avatar
         return Observable.just(false)
@@ -49,7 +43,7 @@ class UserRepositoryImpl(
     }
 
     override fun getUser(userId: Long): Observable<UserEntity> {
-        return userService.getUserById(userId).map {
+        return userService.get(userId).map {
             userMapper.mapFrom(it)
         }
     }
@@ -60,7 +54,7 @@ class UserRepositoryImpl(
     }
 
     override fun getUserProfile(userId: Long): Observable<ProfileEntity> {
-        return userService.getUserProfileById(userId).map {
+        return userService.getProfile(userId).map {
             profileMapper.mapFrom(it)
         }
     }

@@ -3,17 +3,13 @@ package it.gruppoinfor.home2work.profile
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.v4.app.Fragment
 import android.view.*
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseFragment
 import it.gruppoinfor.home2work.common.extensions.*
-import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
-import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.settings.SettingsActivity
 import it.gruppoinfor.home2work.sharehistory.ShareHistoryActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -22,9 +18,7 @@ import kotlinx.android.synthetic.main.view_profile_exp_details.*
 import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
-import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 
 class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
@@ -135,9 +129,9 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             progress_exp.animateTo(it.exp.progress)
 
             text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), it.exp.amount)
-            text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), it.exp.currentLvLExp)
-            text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), it.exp.nextLvlExp)
-            text_month_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_month), it.exp.monthExp)
+            text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), it.exp.currentLvlKarma)
+            text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), it.exp.nextLvlKarma)
+            text_month_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_month), it.exp.monthKarma)
 
             text_shared_distance_value.text = String.format(Locale.ITALY, "%.2f km", it.stats.sharedDistance.div(1000f))
             text_month_shared_distance_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_activity_this_month_value), it.stats.monthSharedDistance.div(1000f))

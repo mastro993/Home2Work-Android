@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface FCMTokenService {
     @FormUrlEncoded
-    @POST("user/fcmtoken")
+    @POST("firebase/token")
     fun updateFCMToken(
             @Field("token") fcmToken: String
     ): Observable<Boolean>

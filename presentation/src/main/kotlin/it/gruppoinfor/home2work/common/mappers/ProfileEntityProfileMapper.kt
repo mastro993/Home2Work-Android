@@ -8,11 +8,11 @@ import javax.inject.Inject
 
 class ProfileEntityProfileMapper @Inject constructor() : Mapper<ProfileEntity, Profile>() {
     override fun mapFrom(from: ProfileEntity): Profile {
-        val exp = ExperienceEntityExperienceMapper().mapFrom(from.exp)
+        val karma = KarmaEntityExperienceMapper().mapFrom(from.karma)
         val activity = from.activity.mapValues { SharingActivityEntitySharingActivityMapper().mapFrom(it.value) }
         val stats = StatisticsEntityStatisticsMapper().mapFrom(from.stats)
         return Profile(
-                exp = exp,
+                exp = karma,
                 activity = activity,
                 regdate = from.regdate,
                 stats = stats

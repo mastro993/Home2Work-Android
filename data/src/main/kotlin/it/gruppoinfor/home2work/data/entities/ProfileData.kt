@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 data class ProfileData(
-        @SerializedName("Exp") var exp: ExperienceData,
+        @SerializedName("Karma") var karma: KarmaData,
         @SerializedName("Stats") var stats: StatisticsData,
         @SerializedName("Activity") var activity: Map<Int, SharingActivityData> = HashMap(),
         @SerializedName("Regdate") var regdate: Date

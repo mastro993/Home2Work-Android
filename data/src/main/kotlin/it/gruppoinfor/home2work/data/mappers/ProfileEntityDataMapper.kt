@@ -4,15 +4,13 @@ import it.gruppoinfor.home2work.data.entities.ProfileData
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ProfileEntity
 import javax.inject.Inject
-import javax.inject.Singleton
-
 
 
 class ProfileEntityDataMapper @Inject constructor() : Mapper<ProfileEntity, ProfileData>() {
 
     override fun mapFrom(from: ProfileEntity): ProfileData {
 
-        val exp = ExperienceEntityDataMapper().mapFrom(from.exp)
+        val karma = KarmaEntityDataMapper().mapFrom(from.karma)
         val stats = StatisticsEntityDataMapper().mapFrom(from.stats)
 
         val activity = from.activity.mapValues {
@@ -20,7 +18,7 @@ class ProfileEntityDataMapper @Inject constructor() : Mapper<ProfileEntity, Prof
         }
 
         return ProfileData(
-                exp = exp,
+                karma = karma,
                 stats = stats,
                 activity = activity,
                 regdate = from.regdate

@@ -20,4 +20,14 @@ interface LeaderboardsService {
             @Query("limit") limit: Int?
     ): Observable<List<UserRankingData>>
 
+    @GET("company/leaderboard")
+    fun getCompanyLeaderboard(
+            @Query("type") type: LeaderboardData.Type?,
+            @Query("range") range: LeaderboardData.Range?,
+            @Query("timespan") timeSpan: LeaderboardData.TimeSpan?,
+            @Query("companyId") companyId: Long?,
+            @Query("page") page: Int?,
+            @Query("limit") limit: Int?
+    ): Observable<List<UserRankingData>>
+
 }

@@ -18,17 +18,10 @@ interface UserService {
             @Field("password") password: String
     ): Observable<UserData>
 
-    @FormUrlEncoded
-    @POST("user/login/token")
-    fun login(
-            @Field("token") token: String
-    ): Observable<UserData>
-
     @GET("user")
-    fun get(): Observable<UserData>
-
-    @PUT("user")
-    fun edit(@Body user: UserData): Observable<UserData>
+    fun get(
+            @Query("id") id: Long? = null
+    ): Observable<UserData>
 
     @Multipart
     @POST("user/avatar")
@@ -37,15 +30,15 @@ interface UserService {
     ): Observable<Response<ResponseBody>>
 
     @GET("user/profile")
-    fun getProfile(): Observable<ProfileData>
+    fun getProfile(
+            @Query("id") id: Long? = null
+    ): Observable<ProfileData>
 
-    @GET("user/{id}")
-    fun getUserById(
-            @Path("id") id: Long?
-    ): Observable<UserData>
-
-    @GET("user/{id}/profile")
-    fun getUserProfileById(@Path("id") id: Long?): Observable<ProfileData>
+    @FormUrlEncoded
+    @POST("user/status")
+    fun updateStatus(
+            @Field("status") status: String
+    ): Observable<Boolean>
 
 
 }

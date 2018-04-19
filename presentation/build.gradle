@@ -26,6 +26,7 @@ android {
         versionName "1.18.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
+        resValue "string", "home2work_api_key", "d1ccf5f1e2f203695f9353d83b14bc41a9b236dea6b439bb00fbf3eff67fcc11"
         multiDexEnabled true
     }
 

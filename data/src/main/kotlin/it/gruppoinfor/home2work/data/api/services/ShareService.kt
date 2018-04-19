@@ -9,7 +9,7 @@ import retrofit2.http.*
 
 interface ShareService {
 
-    @GET("user/share/list")
+    @GET("share/list")
     fun getCompletedShareList(
             @Query("limit") limit: Int?,
             @Query("page") page: Int?

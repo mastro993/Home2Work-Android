@@ -24,17 +24,24 @@ object APIService {
 
     private var retrofit = APIService.builder.build()
 
+    var API_KEY: String? = null
+
     fun <S> createService(serviceClass: Class<S>): S {
-        val interceptor = APIAuthenticationInterceptor()
+        API_KEY?.let {
+            val interceptor = APIAuthenticationInterceptor(it)
 
-        if (!APIService.httpClient.interceptors().contains(interceptor)) {
-            APIService.httpClient.addInterceptor(interceptor)
+            if (!APIService.httpClient.interceptors().contains(interceptor)) {
+                APIService.httpClient.addInterceptor(interceptor)
 
-            APIService.builder.client(APIService.httpClient.build())
-            APIService.retrofit = APIService.builder.build()
+                APIService.builder.client(APIService.httpClient.build())
+                APIService.retrofit = APIService.builder.build()
+            }
+
+            return APIService.retrofit.create(serviceClass)
+        } ?: let {
+            throw IllegalStateException("Chiave API non impostata")
         }
 
-        return APIService.retrofit.create(serviceClass)
     }
 
 }
