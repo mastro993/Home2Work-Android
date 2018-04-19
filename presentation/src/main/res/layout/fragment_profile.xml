@@ -94,6 +94,8 @@
                     android:clipToPadding="false"
                     android:orientation="vertical">
 
+                    <include layout="@layout/view_profile_status" />
+
                     <include layout="@layout/view_profile_exp_details" />
 
                     <include layout="@layout/horizontal_divider" />

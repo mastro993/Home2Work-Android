@@ -14,4 +14,5 @@ interface UserRepository {
     fun getUser(userId: Long): Observable<UserEntity>
     fun getUserList(): Observable<List<UserEntity>>
     fun getUserProfile(userId: Long): Observable<ProfileEntity>
+    fun updateStatus(status:String): Observable<Boolean>
 }

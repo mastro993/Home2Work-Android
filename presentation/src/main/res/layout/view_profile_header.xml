@@ -1,8 +1,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="340dp"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="330dp"
     android:clipToPadding="false"
     android:orientation="vertical"
     android:paddingBottom="72dp"
@@ -27,14 +27,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        tools:text="Nome Cognome"
+        android:layout_marginTop="12dp"
         android:textColor="@color/dark_bg_light_primary_text"
         android:textSize="21sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/avatar_view" />
+        app:layout_constraintTop_toBottomOf="@+id/avatar_view"
+        tools:text="Nome Cognome" />
 
     <TextView
         android:id="@+id/job_text_view"
@@ -44,11 +44,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        tools:text="Azienda"
+        android:layout_marginTop="4dp"
         android:textColor="@color/dark_bg_light_secondary_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/name_text_view"
+        tools:text="Azienda" />
 
 </android.support.constraint.ConstraintLayout>

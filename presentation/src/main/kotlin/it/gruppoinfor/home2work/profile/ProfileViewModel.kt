@@ -8,11 +8,13 @@ import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ProfileEntity
 import it.gruppoinfor.home2work.domain.usecases.GetProfile
+import it.gruppoinfor.home2work.domain.usecases.UpdateStatus
 import it.gruppoinfor.home2work.entities.Profile
 
 
 class ProfileViewModel(
         private val getProfile: GetProfile,
+        private val updateStatus: UpdateStatus,
         private val profileMapper: Mapper<ProfileEntity, Profile>
 ) : BaseViewModel() {
 

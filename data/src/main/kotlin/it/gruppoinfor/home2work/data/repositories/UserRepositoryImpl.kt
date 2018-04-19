@@ -58,4 +58,8 @@ class UserRepositoryImpl(
             profileMapper.mapFrom(it)
         }
     }
+
+    override fun updateStatus(status: String): Observable<Boolean> {
+        return userService.updateStatus(status)
+    }
 }

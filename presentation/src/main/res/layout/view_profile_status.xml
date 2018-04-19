@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_profile_status"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingBottom="18dp"
+    android:paddingEnd="26dp"
+    android:paddingStart="26dp"
+    android:paddingTop="18dp">
+
+    <TextView
+        android:id="@+id/text_empty_status"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="4"
+        android:maxLines="4"
+        android:text="Aggiungi uno stato..."
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="4"
+        android:maxLines="4"
+        android:textColor="@color/light_bg_dark_primary_text"
+        android:textSize="16sp"
+        tools:text="@string/lorem" />
+
+    <TextView
+        android:id="@+id/text_status_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:maxHeight="160dp"
+        tools:text="Qualche istante fa" />
+
+</LinearLayout>
