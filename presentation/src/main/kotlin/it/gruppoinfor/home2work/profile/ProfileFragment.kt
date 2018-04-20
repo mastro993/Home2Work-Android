@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.view_profile_exp_details.*
 import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
+import kotlinx.android.synthetic.main.view_profile_status.*
 import java.util.*
 
 
@@ -107,7 +108,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             context?.launchActivity<ShareHistoryActivity>()
         }
         button_shares_history.isFocusableInTouchMode = false
-        button_shares_history.setOnFocusChangeListener { v, hasFocus -> if(hasFocus) v.performClick() }
+        button_shares_history.setOnFocusChangeListener { v, hasFocus -> if (hasFocus) v.performClick() }
 
     }
 
@@ -126,8 +127,13 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             profile_container.show()
 
             avatar_view.setLevel(it.exp.level)
-            progress_exp.animateTo(it.exp.progress)
 
+            it.status?.let {
+                text_status.text = it.status
+                text_status_date.text = it.date.format()
+            }
+
+            progress_exp.animateTo(it.exp.progress)
             text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), it.exp.amount)
             text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), it.exp.currentLvlKarma)
             text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), it.exp.nextLvlKarma)
@@ -166,9 +172,6 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
         } ?: profile_container.remove()
 
     }
-
-
-
 
 
 }

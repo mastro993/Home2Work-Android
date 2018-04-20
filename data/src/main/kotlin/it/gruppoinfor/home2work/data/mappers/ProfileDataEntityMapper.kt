@@ -13,11 +13,16 @@ class ProfileDataEntityMapper @Inject constructor() : Mapper<ProfileData, Profil
         val karma = KarmaDataEntityMapper().mapFrom(from.karma)
         val stats = StatisticsDataEntityMapper().mapFrom(from.stats)
 
-        val activity= from.activity.mapValues {
+        val activity = from.activity.mapValues {
             SharingActivityDataEntityMapper().mapFrom(it.value)
         }
 
+        val status = from.status?.let {
+            ProfileStatusDataEntityMapper().mapFrom(it)
+        }
+
         return ProfileEntity(
+                status = status,
                 karma = karma,
                 stats = stats,
                 activity = activity,

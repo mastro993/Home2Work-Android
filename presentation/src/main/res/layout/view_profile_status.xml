@@ -4,14 +4,10 @@
     android:id="@+id/container_profile_status"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
-    android:paddingBottom="18dp"
-    android:paddingEnd="26dp"
-    android:paddingStart="26dp"
-    android:paddingTop="18dp">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/text_empty_status"
@@ -26,6 +22,8 @@
         android:visibility="gone" />
 
     <TextView
+        android:padding="8dp"
+        android:background="@drawable/bg_user_score"
         android:id="@+id/text_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:maxHeight="160dp"
+        android:textSize="12sp"
         tools:text="Qualche istante fa" />
 
 </LinearLayout>

@@ -11,7 +11,9 @@ class ProfileEntityProfileMapper @Inject constructor() : Mapper<ProfileEntity, P
         val karma = KarmaEntityExperienceMapper().mapFrom(from.karma)
         val activity = from.activity.mapValues { SharingActivityEntitySharingActivityMapper().mapFrom(it.value) }
         val stats = StatisticsEntityStatisticsMapper().mapFrom(from.stats)
+        val status = from.status?.let { ProfileStatusEntityProfileStatusMapper().mapFrom(it) }
         return Profile(
+                status = status,
                 exp = karma,
                 activity = activity,
                 regdate = from.regdate,
