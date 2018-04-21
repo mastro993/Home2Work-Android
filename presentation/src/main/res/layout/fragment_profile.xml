@@ -96,8 +96,6 @@
 
                     <include layout="@layout/view_profile_status" />
 
-                    <include layout="@layout/horizontal_divider" />
-
                     <include layout="@layout/view_profile_exp_details" />
 
                     <include layout="@layout/horizontal_divider" />

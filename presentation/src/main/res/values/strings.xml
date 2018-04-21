@@ -114,7 +114,7 @@
     <string name="fragment_profile_stats_distance">%1$s km condivisi</string>
     <string name="fragment_profile_fuel">%1$s l di carburante risparmiato</string>
     <string name="fragment_profile_emission">%1$s g di CO2 evitati</string>
-    <string name="fragment_profile_card_exp">Punteggio utente</string>
+    <string name="fragment_profile_card_exp">Karma</string>
     <string name="fragment_profile_card_exp_value">%,d</string>
     <string name="fragment_profile_card_current_lvl_exp_value">%,d</string>
     <string name="fragment_profile_card_next_lvl_exp_value">%,d</string>

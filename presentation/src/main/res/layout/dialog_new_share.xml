@@ -5,16 +5,6 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:drawablePadding="32dp"
-        android:gravity="center_vertical"
-        android:includeFontPadding="false"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:text="@string/dialog_new_share_title" />
-
-    <TextView
         android:id="@+id/new_share_dialog_create_new"
         android:layout_width="match_parent"
         android:layout_height="64dp"

@@ -7,6 +7,6 @@ class Profile(
         var status: ProfileStatus?,
         var exp: Karma,
         var stats: Statistics,
-        var activity: Map<Int, SharingActivity>,
+        var activity: Map<String, SharingActivity>,
         var regdate: Date
 )

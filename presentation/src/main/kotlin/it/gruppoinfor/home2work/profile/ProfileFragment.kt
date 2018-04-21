@@ -3,11 +3,17 @@ package it.gruppoinfor.home2work.profile
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.design.widget.BottomSheetDialog
+import android.support.design.widget.TextInputEditText
+import android.support.v7.app.AlertDialog
 import android.view.*
+import android.widget.TextView
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseFragment
+import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
 import it.gruppoinfor.home2work.settings.SettingsActivity
@@ -19,7 +25,11 @@ import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
 import kotlinx.android.synthetic.main.view_profile_status.*
+import org.jetbrains.anko.find
 import java.util.*
+import android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.inputmethod.InputMethodManager
 
 
 class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
@@ -129,8 +139,33 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             avatar_view.setLevel(it.exp.level)
 
             it.status?.let {
+                container_profile_status.show()
+                container_status.show()
+                button_add_status.remove()
+
+                imageLoader.load(
+                        url = localUserData.user!!.avatarUrl,
+                        imageView = image_status_avatar,
+                        placeholder = R.drawable.ic_avatar_placeholder,
+                        transformation = PicassoCircleTransform())
+
                 text_status.text = it.status
-                text_status_date.text = it.date.format()
+                text_status_date.text = it.date.formatElapsed()
+
+                container_status.setOnClickListener {
+                    // TODO showStatusOptionsDialog()
+                    showNewStatuDialog()
+                }
+
+            } ?: let {
+                container_profile_status.show()
+                container_status.remove()
+                button_add_status.show()
+
+                button_add_status.setOnClickListener {
+                    showNewStatuDialog()
+                }
+
             }
 
             progress_exp.animateTo(it.exp.progress)
@@ -170,6 +205,60 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             text_regdate.text = it.regdate.format("dd MMMM yyyy")
 
         } ?: profile_container.remove()
+
+    }
+
+    private fun showStatusOptionsDialog() {
+        val dialog = BottomSheetDialog(context!!)
+        val sheetView = layoutInflater.inflate(R.layout.dialog_profile_status, null)
+
+        dialog.setContentView(sheetView)
+        dialog.show()
+
+        sheetView.find<TextView>(R.id.new_status).setOnClickListener {
+            dialog.dismiss()
+            showNewStatuDialog()
+        }
+
+        sheetView.find<TextView>(R.id.delete_status).remove()
+        sheetView.find<TextView>(R.id.delete_status).setOnClickListener {
+            dialog.dismiss()
+            // TODO eliminazione stato
+        }
+    }
+
+    private fun showNewStatuDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_status_input, null)
+
+        val input = view.findViewById<TextInputEditText>(R.id.status_input)
+
+        val dialogBuilder = AlertDialog.Builder(context!!)
+                .setView(view)
+                .setPositiveButton("Pubblica", { dialog, id ->
+                    dialog.dismiss()
+                    viewModel.updateStatus(input.text.toString())
+                })
+                .setNegativeButton("Annulla", { dialog, id ->
+                    dialog.dismiss()
+                })
+
+
+        val dialog = dialogBuilder.create()
+
+        dialog.window.attributes.gravity = Gravity.BOTTOM
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        dialog.show()
+
+        val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
+        dialog.setOnDismissListener {
+            view?.let{
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+            }
+
+        }
 
     }
 

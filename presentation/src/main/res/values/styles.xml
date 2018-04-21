@@ -93,4 +93,11 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/light_bg_dark_tertiary_text</item>
     </style>
+
+    <style name="TextAppearance.App.Section">
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/light_bg_dark_tertiary_text</item>
+    </style>
 </resources>

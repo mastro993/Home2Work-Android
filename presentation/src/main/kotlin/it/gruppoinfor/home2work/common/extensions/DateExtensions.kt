@@ -3,15 +3,16 @@ package it.gruppoinfor.home2work.common.extensions
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.absoluteValue
 
 fun Date.format(pattern: String): String {
     val simpleDate = SimpleDateFormat(pattern, Locale.ITALIAN)
     return simpleDate.format(this)
 }
 
-fun Date.format(): String {
+fun Date.formatElapsed(): String {
 
-    var difference = Date().time - time
+    var difference = (Date().time - time).absoluteValue
 
     val elapsedYears = difference / TimeUnit.DAYS.toMillis(365)
     difference %= TimeUnit.DAYS.toMillis(365)

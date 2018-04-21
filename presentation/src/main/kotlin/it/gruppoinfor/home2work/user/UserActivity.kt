@@ -8,8 +8,9 @@ import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
 import android.view.View
 import it.gruppoinfor.home2work.R
-import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.chat.SingleChatActivityLauncher
+import it.gruppoinfor.home2work.common.BaseActivity
+import it.gruppoinfor.home2work.common.PicassoCircleTransform
 import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.common.views.AppBarStateChangeListener
 import kotlinx.android.synthetic.main.activity_user.*
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.view_profile_exp_details.*
 import kotlinx.android.synthetic.main.view_profile_footer.*
 import kotlinx.android.synthetic.main.view_profile_header.*
 import kotlinx.android.synthetic.main.view_profile_shares_details.*
+import kotlinx.android.synthetic.main.view_profile_status.*
 import java.util.*
 
 class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
@@ -135,8 +137,21 @@ class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
             profile_container.show()
 
             avatar_view.setLevel(it.exp.level)
-            progress_exp.animateTo(it.exp.progress)
 
+            it.status?.let {
+                container_profile_status.show()
+
+                imageLoader.load(
+                        url = args.userAvatarUrl,
+                        imageView = image_status_avatar,
+                        placeholder = R.drawable.ic_avatar_placeholder,
+                        transformation = PicassoCircleTransform())
+
+                text_status.text = it.status
+                text_status_date.text = it.date.formatElapsed()
+            } ?: container_profile_status.remove()
+
+            progress_exp.animateTo(it.exp.progress)
             text_exp_value.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_exp_value), it.exp.amount)
             text_current_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_current_lvl_exp_value), it.exp.currentLvlKarma)
             text_next_lvl_exp.text = String.format(Locale.ITALY, getString(R.string.fragment_profile_card_next_lvl_exp_value), it.exp.nextLvlKarma)

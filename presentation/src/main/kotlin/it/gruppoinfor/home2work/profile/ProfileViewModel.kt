@@ -81,6 +81,8 @@ class ProfileViewModel(
 
                 }, {
 
+                    it.printStackTrace()
+
                     if (it is RetrofitException) {
                         val errorMessage = when (it.kind) {
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
@@ -97,6 +99,15 @@ class ProfileViewModel(
                     )
                     viewState.value = newViewState
 
+                }))
+    }
+
+    fun updateStatus(status:String){
+        addDisposable(updateStatus.update(status)
+                .subscribe({
+                    refreshProfile()
+                },{
+                    errorState.value = "Impossibile aggiornare lo stato"
                 }))
     }
 

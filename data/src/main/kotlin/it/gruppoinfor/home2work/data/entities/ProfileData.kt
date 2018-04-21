@@ -9,6 +9,6 @@ data class ProfileData(
         @SerializedName("Status") var status: ProfileStatusData?,
         @SerializedName("Karma") var karma: KarmaData,
         @SerializedName("Stats") var stats: StatisticsData,
-        @SerializedName("Activity") var activity: Map<Int, SharingActivityData> = HashMap(),
+        @SerializedName("Activity") var activity: Map<String, SharingActivityData> = HashMap(),
         @SerializedName("Regdate") var regdate: Date
 )

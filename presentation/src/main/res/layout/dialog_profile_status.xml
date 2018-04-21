@@ -5,17 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:drawablePadding="32dp"
-        android:gravity="center_vertical"
-        android:includeFontPadding="false"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:text="Stato" />
-
-    <TextView
-        android:id="@+id/new_share_dialog_create_new"
+        android:id="@+id/new_status"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:drawablePadding="32dp"
@@ -29,7 +19,7 @@
 
     <TextView
 
-        android:id="@+id/new_share_dialog_join"
+        android:id="@+id/delete_status"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:drawablePadding="32dp"

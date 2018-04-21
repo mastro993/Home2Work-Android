@@ -1,46 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_profile_status"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/window_background"
     android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:focusable="true"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/text_empty_status"
+    <Button
+        android:id="@+id/button_add_status"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_button_light"
         android:ellipsize="end"
         android:gravity="center"
-        android:lines="4"
         android:maxLines="4"
-        android:text="Aggiungi uno stato..."
+        android:text="Aggiungi uno stato"
+        android:textAllCaps="false"
         android:textSize="16sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="gone" />
 
-    <TextView
-        android:padding="8dp"
-        android:background="@drawable/bg_user_score"
-        android:id="@+id/text_status"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/container_status"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:lines="4"
-        android:maxLines="4"
-        android:textColor="@color/light_bg_dark_primary_text"
-        android:textSize="16sp"
-        tools:text="@string/lorem" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_status_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:maxHeight="160dp"
-        android:textSize="12sp"
-        tools:text="Qualche istante fa" />
+        <ImageView
+            android:id="@+id/image_status_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_avatar_placeholder" />
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:background="@drawable/bg_user_status"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/text_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="4"
+                android:maxLength="140"
+                android:maxLines="4"
+                android:textColor="@color/light_bg_dark_primary_text"
+                android:textSize="16sp"
+                tools:text="@string/lorem" />
+
+            <TextView
+                android:id="@+id/text_status_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:maxHeight="160dp"
+                android:textSize="12sp"
+                tools:text="Qualche istante fa" />
+
+
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</FrameLayout>

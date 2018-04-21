@@ -121,6 +121,8 @@
                         android:orientation="vertical"
                         android:visibility="visible">
 
+                        <include layout="@layout/view_profile_status" />
+
                         <include layout="@layout/view_profile_exp_details" />
 
                         <include layout="@layout/horizontal_divider" />

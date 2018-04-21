@@ -13,7 +13,9 @@ class SharingActivityDataEntityMapper @Inject constructor() : Mapper<SharingActi
     override fun mapFrom(from: SharingActivityData): SharingActivityEntity {
         return SharingActivityEntity(
                 shares = from.shares,
-                distance = from.distance
+                sharesTrend = from.sharesTrend,
+                distance = from.distance,
+                distanceTrend = from.distanceTrend
         )
     }
 }

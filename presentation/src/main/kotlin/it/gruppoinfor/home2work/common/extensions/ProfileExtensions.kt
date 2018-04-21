@@ -71,66 +71,89 @@ fun LineChart.setUp() {
 
 }
 
-fun LineChart.setData(activity: Map<Int, SharingActivity>, average: Float) {
+fun LineChart.setData(activity: Map<String, SharingActivity>, average: Float) {
 
     val colors = listOf(ContextCompat.getColor(context!!, R.color.colorAccent))
     val dataSets = arrayListOf<ILineDataSet>()
+
     val activityEntries = arrayListOf<Entry>()
     val avgEntries = arrayListOf<Entry>()
 
-    val thisMonth = Calendar.getInstance().get(Calendar.MONTH)
+    val startMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+    val startYear = Calendar.getInstance().get(Calendar.YEAR)
 
     for (i in 5 downTo 0) {
 
-        var month = thisMonth - i
-        if (month < 0) month += 12
+        var month = startMonth - i
+        var year = startYear
 
+        if (month < 1) {
+            month += 12
+            year--
+        }
 
-        val activityEntry = Entry(5 - i.toFloat(), activity[month + 1]?.distance?.toFloat()?.div(1000f)
-                ?: 0f)
-        val avgEntry = Entry(5 - i.toFloat(), average)
+        activity["$year-$month"]?.let {
 
-        activityEntries.add(activityEntry)
-        avgEntries.add(avgEntry)
+            val activityEntry = Entry(5 - i.toFloat(), it.distance.toFloat().div(1000f))
+            val avgEntry = Entry(5 - i.toFloat(), it.distanceTrend.div(1000f))
+
+            activityEntries.add(activityEntry)
+            avgEntries.add(avgEntry)
+
+        }
+
 
     }
 
     // Media
     Collections.sort(avgEntries, EntryXComparator())
     val avgDataSet = LineDataSet(avgEntries, "Media")
+
     avgDataSet.color = ContextCompat.getColor(context!!, R.color.colorPrimary)
     avgDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+
     avgDataSet.setDrawFilled(true)
     avgDataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.bg_chart_activity_avg_fill)
     avgDataSet.fillAlpha = 100
     avgDataSet.lineWidth = 3f
+
     avgDataSet.setDrawCircles(false)
     avgDataSet.setDrawValues(false)
+
     avgDataSet.setDrawHorizontalHighlightIndicator(false)
     avgDataSet.setDrawVerticalHighlightIndicator(false)
+
     avgDataSet.enableDashedLine(20f, 15f, 0f)
+
     dataSets.add(avgDataSet)
 
     // Attività
     Collections.sort(activityEntries, EntryXComparator())
     val activityDataSet = LineDataSet(activityEntries, "Attività")
+
     activityDataSet.color = ContextCompat.getColor(context!!, R.color.colorAccent)
     activityDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
     activityDataSet.setDrawFilled(true)
+
     activityDataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.bg_chart_activity_fill)
     activityDataSet.fillAlpha = 100
     activityDataSet.lineWidth = 3f
+
     activityDataSet.setDrawCircles(true)
     activityDataSet.setDrawCircleHole(true)
+    activityDataSet.setDrawValues(false)
     activityDataSet.circleRadius = 6f
     activityDataSet.circleHoleRadius = 4f
     activityDataSet.setCircleColorHole(ContextCompat.getColor(context!!, R.color.cardview_light_background))
-    activityDataSet.setDrawValues(false)
+
     activityDataSet.valueTextColor = ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)
     activityDataSet.valueTextSize = 12f
+
     activityDataSet.setDrawHorizontalHighlightIndicator(false)
     activityDataSet.setDrawVerticalHighlightIndicator(false)
+
     activityDataSet.circleColors = colors
+
     dataSets.add(activityDataSet)
 
     data = LineData(dataSets)

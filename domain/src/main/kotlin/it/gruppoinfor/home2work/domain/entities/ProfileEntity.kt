@@ -7,6 +7,6 @@ class ProfileEntity(
         val status: ProfileStatusEntity?,
         val karma: KarmaEntity,
         val stats: StatisticsEntity,
-        val activity: Map<Int, SharingActivityEntity>,
+        val activity: Map<String, SharingActivityEntity>,
         val regdate: Date
 )
