@@ -143,18 +143,11 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
                 container_status.show()
                 button_add_status.remove()
 
-                imageLoader.load(
-                        url = localUserData.user!!.avatarUrl,
-                        imageView = image_status_avatar,
-                        placeholder = R.drawable.ic_avatar_placeholder,
-                        transformation = PicassoCircleTransform())
-
                 text_status.text = it.status
                 text_status_date.text = it.date.formatElapsed()
 
                 container_status.setOnClickListener {
-                    // TODO showStatusOptionsDialog()
-                    showNewStatuDialog()
+                    showStatusOptionsDialog()
                 }
 
             } ?: let {
@@ -220,10 +213,16 @@ class ProfileFragment : BaseFragment<ProfileViewModel, ProfileVMFactory>() {
             showNewStatuDialog()
         }
 
-        sheetView.find<TextView>(R.id.delete_status).remove()
         sheetView.find<TextView>(R.id.delete_status).setOnClickListener {
             dialog.dismiss()
-            // TODO eliminazione stato
+            val builder = AlertDialog.Builder(context!!)
+            builder.setTitle("Elimina stato")
+            builder.setMessage("Sei sicuro di voler eliminare il tuo ultimo aggiornamento di stato?")
+            builder.setPositiveButton("Elimina") { _, _ ->
+                viewModel.hideStatus()
+            }
+            builder.setNegativeButton(R.string.dialog_logout_decline, null)
+            builder.show()
         }
     }
 

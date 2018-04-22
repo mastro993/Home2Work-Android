@@ -141,12 +141,6 @@ class UserActivity : BaseActivity<UserViewModel, UserVMFactory>() {
             it.status?.let {
                 container_profile_status.show()
 
-                imageLoader.load(
-                        url = args.userAvatarUrl,
-                        imageView = image_status_avatar,
-                        placeholder = R.drawable.ic_avatar_placeholder,
-                        transformation = PicassoCircleTransform())
-
                 text_status.text = it.status
                 text_status_date.text = it.date.formatElapsed()
             } ?: container_profile_status.remove()
