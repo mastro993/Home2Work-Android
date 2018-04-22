@@ -8,6 +8,7 @@ import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ProfileEntity
 import it.gruppoinfor.home2work.domain.usecases.GetProfile
+import it.gruppoinfor.home2work.domain.usecases.HideUserStatus
 import it.gruppoinfor.home2work.domain.usecases.UpdateStatus
 import it.gruppoinfor.home2work.entities.Profile
 
@@ -15,6 +16,7 @@ import it.gruppoinfor.home2work.entities.Profile
 class ProfileViewModel(
         private val getProfile: GetProfile,
         private val updateStatus: UpdateStatus,
+        private val hideUserStatus: HideUserStatus,
         private val profileMapper: Mapper<ProfileEntity, Profile>
 ) : BaseViewModel() {
 
@@ -50,7 +52,9 @@ class ProfileViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
-                            else ->{""}
+                            else -> {
+                                ""
+                            }
                         }
 
                         val newViewState = viewState.value?.copy(
@@ -88,7 +92,9 @@ class ProfileViewModel(
                             RetrofitException.Kind.NETWORK -> "Nessuna connessione ad internet"
                             RetrofitException.Kind.HTTP -> "Impossibile contattare il server"
                             RetrofitException.Kind.UNEXPECTED -> "Errore sconosciuto"
-                            else ->{""}
+                            else -> {
+                                ""
+                            }
                         }
 
                         errorState.value = errorMessage
@@ -102,12 +108,21 @@ class ProfileViewModel(
                 }))
     }
 
-    fun updateStatus(status:String){
+    fun updateStatus(status: String) {
         addDisposable(updateStatus.update(status)
                 .subscribe({
                     refreshProfile()
-                },{
+                }, {
                     errorState.value = "Impossibile aggiornare lo stato"
+                }))
+    }
+
+    fun hideStatus() {
+        addDisposable(hideUserStatus.createObservable()
+                .subscribe({
+                    refreshProfile()
+                }, {
+                    errorState.value = "Impossibile eliminare lo stato"
                 }))
     }
 

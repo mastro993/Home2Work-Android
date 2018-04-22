@@ -35,10 +35,7 @@ import it.gruppoinfor.home2work.di.splash.SplashSubComponent
 import it.gruppoinfor.home2work.di.user.ProfileSubComponent
 import it.gruppoinfor.home2work.di.user.UserModule
 import it.gruppoinfor.home2work.di.user.UserSubComponent
-import it.gruppoinfor.home2work.services.LiteLocationService
-import it.gruppoinfor.home2work.services.LocationService
-import it.gruppoinfor.home2work.services.MessagingService
-import it.gruppoinfor.home2work.services.SyncJobService
+import it.gruppoinfor.home2work.services.*
 import javax.inject.Singleton
 
 @Singleton

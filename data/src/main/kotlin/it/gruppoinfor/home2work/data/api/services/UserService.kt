@@ -40,5 +40,8 @@ interface UserService {
             @Field("status") status: String
     ): Observable<Boolean>
 
+    @DELETE("user/status")
+    fun hideStatus(): Observable<Boolean>
+
 
 }

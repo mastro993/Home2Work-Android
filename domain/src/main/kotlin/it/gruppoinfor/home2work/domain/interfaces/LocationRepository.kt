@@ -8,4 +8,5 @@ interface LocationRepository {
     fun deleteUserLocations(userId: Long): Observable<Boolean>
     fun saveLocation(userLocation: UserLocationEntity): Observable<Long>
     fun syncUserLocations(userLocations: List<UserLocationEntity>): Observable<Boolean>
+    fun syncUserLastLocation(userLocation: UserLocationEntity): Observable<Boolean>
 }

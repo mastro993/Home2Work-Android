@@ -10,4 +10,9 @@ interface UserLocationService {
     fun uploadLocations(
             @Body userLocations: List<UserLocationData>
     ): Observable<Boolean>
+
+    @POST("user/lastlocation")
+    fun uploadLastLocation(
+            @Body userLocation: UserLocationData
+    ): Observable<Boolean>
 }

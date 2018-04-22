@@ -53,4 +53,9 @@ class LocationRepositoryImpl(
         val locations = userLocations.map { locationEntityDataMapper.mapFrom(it) }
         return locationService.uploadLocations(locations)
     }
+
+    override fun syncUserLastLocation(userLocation: UserLocationEntity): Observable<Boolean> {
+        val location = locationEntityDataMapper.mapFrom(userLocation)
+        return locationService.uploadLastLocation(location)
+    }
 }

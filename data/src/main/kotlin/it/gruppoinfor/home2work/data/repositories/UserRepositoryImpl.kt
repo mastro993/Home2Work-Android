@@ -62,4 +62,8 @@ class UserRepositoryImpl(
     override fun updateStatus(status: String): Observable<Boolean> {
         return userService.updateStatus(status)
     }
+
+    override fun hideStatus(): Observable<Boolean> {
+        return userService.hideStatus()
+    }
 }
