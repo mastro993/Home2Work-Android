@@ -47,9 +47,8 @@ import javax.inject.Singleton
 interface MainComponent {
     fun inject(app: App)
     fun inject(bootReceiver: BootReceiver)
-    fun inject(service: LocationService)
-    fun inject(service: LiteLocationService) // TODO rimuovere
-    fun inject(lastLocationService: LastLocationService) // TODO rimuovere
+    fun inject(service: LocationServiceOld)
+    fun inject(service: LocationService) // TODO rimuovere
     fun inject(syncJobService: SyncJobService)
     fun inject(avatarView: AvatarView)
     fun inject(messagingService: MessagingService)

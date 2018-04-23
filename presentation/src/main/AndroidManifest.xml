@@ -56,15 +56,11 @@
         </receiver>
 
         <service
-            android:name=".services.LocationService"
+            android:name=".services.LocationServiceOld"
             android:enabled="false"
             android:stopWithTask="false" />
         <service
-            android:name=".services.LiteLocationService"
-            android:enabled="true"
-            android:stopWithTask="false" />
-        <service
-            android:name=".services.LastLocationService"
+            android:name=".services.LocationService"
             android:enabled="true"
             android:stopWithTask="false" />
         <service

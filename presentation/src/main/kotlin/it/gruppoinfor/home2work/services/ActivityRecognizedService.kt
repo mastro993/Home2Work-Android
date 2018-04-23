@@ -70,7 +70,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
             return
         }
 
-        startService(intentFor<LiteLocationService>(EXTRA_ACTIVITY to DrivingActivity.STARTED_DRIVING))
+        startService(intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.STARTED_DRIVING))
 
         Timber.i("User is driving")
 
@@ -85,7 +85,7 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
             return
         }
 
-        startService(intentFor<LiteLocationService>(EXTRA_ACTIVITY to DrivingActivity.STOPPED_DRIVING))
+        startService(intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.STOPPED_DRIVING))
 
         Timber.i("Driving finished")
 

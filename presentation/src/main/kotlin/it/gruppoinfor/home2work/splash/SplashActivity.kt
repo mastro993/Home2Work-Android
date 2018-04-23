@@ -17,7 +17,7 @@ import it.gruppoinfor.home2work.domain.usecases.DeleteUserLocations
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 import it.gruppoinfor.home2work.main.MainActivity
-import it.gruppoinfor.home2work.services.LiteLocationService
+import it.gruppoinfor.home2work.services.LocationService
 import it.gruppoinfor.home2work.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import timber.log.Timber
@@ -97,7 +97,7 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
             //testSync(it.id)
 
             jobScheduler.scheduleSyncJob(it.id)
-            LiteLocationService.launch(this)
+            LocationService.launch(this)
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

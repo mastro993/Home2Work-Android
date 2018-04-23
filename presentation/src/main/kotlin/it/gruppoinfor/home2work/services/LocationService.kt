@@ -1,5 +1,6 @@
 package it.gruppoinfor.home2work.services
 
+import android.Manifest
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
@@ -21,26 +23,56 @@ import it.gruppoinfor.home2work.common.mappers.UserLocationUserLocationEntityMap
 import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.common.user.SettingsPreferences
 import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
 import it.gruppoinfor.home2work.domain.usecases.StoreUserLocation
+import it.gruppoinfor.home2work.domain.usecases.SyncUserLastLocation
 import it.gruppoinfor.home2work.entities.UserLocation
 import org.jetbrains.anko.startService
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class LocationService : Service() {
+/**
+ * Servizio che si occupa di sincronizzare la posizione aggiornata dell'utente con il server e
+ * di tracciare gli spostamenti casa lavoro dell'utente
+ */
+class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     @Inject
-    lateinit var saveUserLocation: StoreUserLocation
+    lateinit var storeUserLocation: StoreUserLocation
+    @Inject
+    lateinit var syncUserLastLocation: SyncUserLastLocation
     @Inject
     lateinit var localUserData: LocalUserData
     @Inject
     lateinit var settingsPreferences: SettingsPreferences
 
+    private val lastLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+
+            val userLocation = UserLocationEntity(
+                    userId = localUserData.user!!.id,
+                    latitude = locationResult.lastLocation.latitude,
+                    longitude = locationResult.lastLocation.longitude,
+                    date = Date()
+            )
+
+            syncUserLastLocation.upload(userLocation)
+                    .subscribe({
+                        Timber.i("Posizione utente aggiornata: $userLocation")
+                    }, {
+                        Timber.e(it, "Impossibile aggiornare la posizione utente")
+                    })
+
+        }
+    }
+    private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
+
     companion object {
         const val NOTIFICATION_ID = 2313
+        const val REQ_ACTIVITY_UPDATES = 343
+        const val TIME_ACTIVITY_UPDATES = 10000L // 10 sec
 
         fun launch(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -52,34 +84,16 @@ class LocationService : Service() {
         }
     }
 
-    private var isTracking = false
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
-
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            saveLocation(locationResult!!.lastLocation)
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
+
         DipendencyInjector.mainComponent.inject(this)
 
         localUserData.user?.let {
 
             val mGoogleApiClient = GoogleApiClient.Builder(this@LocationService)
-                    .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                        override fun onConnected(p0: Bundle?) {
-                            startActivityRecognitionService()
-                        }
-
-                        override fun onConnectionSuspended(p0: Int) {
-                            Timber.w("Connessione sospesa. Codice: $p0")
-                        }
-                    })
-                    .addOnConnectionFailedListener { connectionResult ->
-                        Timber.e("Connessione fallita: $connectionResult")
-                    }
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
                     .addApi(ActivityRecognition.API)
                     .addApi(LocationServices.API)
                     .build()
@@ -103,10 +117,45 @@ class LocationService : Service() {
             Timber.i("Servizio avviato")
 
         } ?: let {
-            Timber.v("Nessun utente collegato")
+
+            Timber.w("Nessun utente collegato")
             stopSelf()
+
         }
 
+    }
+
+    override fun onConnected(bundle: Bundle?) {
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val intent = Intent(this, ActivityRecognizedService::class.java)
+
+        val pendingIntent = PendingIntent.getService(
+                this@LocationService,
+                REQ_ACTIVITY_UPDATES,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        // Avvio il servizio di riconoscimento delle attività dell'utente
+        val activityRecognitionClient = ActivityRecognition.getClient(this@LocationService)
+        val task = activityRecognitionClient.requestActivityUpdates(TIME_ACTIVITY_UPDATES, pendingIntent)
+        task.addOnSuccessListener {
+            Timber.v("Activity Recognition Service avviato")
+        }
+
+        // Avvio il listener per l'ultima posizione utente
+        startUserLastLocationUpdates()
+
+    }
+
+    override fun onConnectionSuspended(code: Int) {
+        Timber.w("Connessione sospesa. Codice: $code")
+    }
+
+    override fun onConnectionFailed(connectionResult: ConnectionResult) {
+        Timber.e("Connessione fallita: $connectionResult")
     }
 
     override fun onBind(arg0: Intent): IBinder? {
@@ -118,73 +167,53 @@ class LocationService : Service() {
 
         intent?.let {
             if (ActivityRecognizedService.hasResult(it)) {
-                val drivingActivity = ActivityRecognizedService.extractResult(it)
-                if (drivingActivity == ActivityRecognizedService.DrivingActivity.STARTED_DRIVING && !isTracking) {
-                    startLocationRequests()
-                } else if (drivingActivity == ActivityRecognizedService.DrivingActivity.STOPPED_DRIVING) {
-                    stopLocationRequests()
-                }
+                getUserLocation()
             }
         }
+
         return Service.START_STICKY
     }
 
-    private fun startActivityRecognitionService() {
-
-        val intent = Intent(
-                this@LocationService,
-                ActivityRecognizedService::class.java
-        )
-
-        val pendingIntent = PendingIntent.getService(
-                this@LocationService,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val activityRecognitionClient = ActivityRecognition.getClient(this@LocationService)
-        val task = activityRecognitionClient.requestActivityUpdates(10000, pendingIntent)
-
-        task.addOnSuccessListener {
-            Timber.v("Activity Recognition Service avviato")
-        }
-
-    }
-
-    private fun startLocationRequests() {
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    private fun getUserLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             val locationRequest = LocationRequest.create()
+            // Richiedo un solo aggiornamento di posizione
+            locationRequest.numUpdates = 1
+            // Massima accuratezza possibile
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = TimeUnit.MINUTES.toMillis(10)
-            locationRequest.fastestInterval = TimeUnit.MINUTES.toMillis(1)
-            locationRequest.smallestDisplacement = 2500f
 
-            mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
+            mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
 
-            isTracking = true
+                    val lastLocation = locationResult.lastLocation
 
-            Timber.v("Inizio tracking utente")
+                    Timber.v("User position: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
+
+                    saveLocation(locationResult.lastLocation)
+                    mFusedLocationProviderClient?.removeLocationUpdates(this)
+                }
+            }, Looper.myLooper())
+
         }
-
     }
 
-    private fun stopLocationRequests() {
+    private fun startUserLastLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mFusedLocationClient.lastLocation.addOnSuccessListener({ this.saveLocation(it) })
+            val locationRequest = LocationRequest.create()
+            // Priorità al risparmio batteria
+            locationRequest.priority = LocationRequest.PRIORITY_LOW_POWER
+            // Voglio la posizione non prima di uno spostamento di almeno 1 km dall'ultima posizione nota
+            locationRequest.smallestDisplacement = 1000f
+            // Se altre app hanno richiesto l'aggiornamento della posizine la ottengo anche io ma non prima che siano passati almeno 5 minuti
+            locationRequest.fastestInterval = 5 * 60 * 1000
+            // Se non disponibile, richiedo io un aggiornamento di posizione ogni 30 minuti
+            locationRequest.interval = 30 * 60 * 1000
+
+            mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, lastLocationCallback, Looper.myLooper())
+
         }
-
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-
-        isTracking = false
-
-        Timber.v("Fine tracking utente")
-
     }
 
     private fun saveLocation(location: Location) {
@@ -198,8 +227,8 @@ class LocationService : Service() {
             )
 
             val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)
-            saveUserLocation.save(userLocationEntity).subscribe({
-                Timber.v("Posizione utente registrata: ${userLocation.latitude}, ${userLocation.longitude}")
+            storeUserLocation.save(userLocationEntity).subscribe({
+                Timber.v("User position successfully saved")
             }, {
                 Timber.e(it)
             })
@@ -218,6 +247,13 @@ class LocationService : Service() {
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(chan)
         return channelId
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mFusedLocationProviderClient?.removeLocationUpdates(lastLocationCallback)
 
     }
 
