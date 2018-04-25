@@ -50,11 +50,9 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
                         DetectedActivity.ON_FOOT,
                         DetectedActivity.ON_BICYCLE,
                         DetectedActivity.RUNNING -> {
-                            Timber.d("User is not driving")
                             stopDrivingActivity()
                         }
                         DetectedActivity.STILL -> {
-                            Timber.d("User is still")
                             increaseStillStatus()
                         }
                     }

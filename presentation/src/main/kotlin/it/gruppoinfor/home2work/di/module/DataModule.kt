@@ -76,12 +76,6 @@ class DataModule {
         return ShareRepositoryImpl(shareDataEntityMapper, guestDataEntityMapper)
     }
 
-    @Provides
-    @Singleton
-    fun provideFirebaseTokenRepository(): FirebaseTokenRepository {
-        return FirebaseTokenRepositoryImpl()
-    }
-
 
     @Provides
     @Singleton

@@ -27,19 +27,14 @@
         android:layout_height="48dp"
         android:layout_centerInParent="true"
         android:elevation="6dp"
-        tools:visibility="visible"
-        android:visibility="gone"
         android:src="@drawable/shape_hexagon"
-        app:layout_constraintBottom_toBottomOf="@id/user_propic"
-        app:layout_constraintEnd_toEndOf="@id/user_propic"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="@id/user_propic"
-        app:layout_constraintTop_toTopOf="@id/user_propic"
-        app:layout_constraintVertical_bias="0.95" />
+        android:visibility="gone"
+        app:layout_constraintCircle="@id/user_propic"
+        app:layout_constraintCircleAngle="135"
+        app:layout_constraintCircleRadius="58dp"
+        tools:visibility="visible" />
 
     <TextView
-        tools:visibility="visible"
-        android:visibility="gone"
         android:id="@+id/exp_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,11 +44,10 @@
         android:textColor="@color/light_bg_dark_primary_text"
         android:textSize="16sp"
         android:textStyle="bold|italic"
-        app:layout_constraintBottom_toBottomOf="@id/level_frame"
-        app:layout_constraintEnd_toEndOf="@id/level_frame"
-        app:layout_constraintStart_toStartOf="@id/level_frame"
-        app:layout_constraintTop_toTopOf="@id/level_frame"
-        tools:text="-" />
+        android:visibility="gone"
+        app:layout_constraintCircle="@id/level_frame"
+        tools:text="-"
+        tools:visibility="visible" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -66,4 +66,8 @@ class UserRepositoryImpl(
     override fun hideStatus(): Observable<Boolean> {
         return userService.hideStatus()
     }
+
+    override fun syncUserFCMToken(token: String): Observable<Boolean> {
+        return userService.updateFCMToken(token)
+    }
 }

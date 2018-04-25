@@ -14,21 +14,10 @@ class UserPreferences constructor(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("user", MODE_PRIVATE)
 
     companion object {
-        const val PREF_ACCESS_TOKEN = "access_token"
         const val PREF_EMAIL = "email"
         const val PREF_USER_DATA = "user"
         const val PREF_SESSION_TOKEN = "session_token"
         const val PREF_FIREBASE_TOKEN = "firebase_token"
-    }
-
-    fun getAccessToken(): String? {
-        return prefs.getString(PREF_ACCESS_TOKEN, null)
-    }
-
-    fun setAccessToken(token: String?) {
-        val editor = prefs.edit()
-        editor.putString(PREF_ACCESS_TOKEN, token)
-        editor.apply()
     }
 
     fun getSessionToken(): String? {
@@ -38,12 +27,6 @@ class UserPreferences constructor(context: Context) {
     fun setSessionToken(token: String?) {
         val editor = prefs.edit()
         editor.putString(PREF_SESSION_TOKEN, token)
-        editor.apply()
-    }
-
-    fun clearSessionToken() {
-        val editor = prefs.edit()
-        editor.remove(PREF_SESSION_TOKEN)
         editor.apply()
     }
 
@@ -69,9 +52,11 @@ class UserPreferences constructor(context: Context) {
         }
     }
 
-    fun clearUserData() {
+    fun clear() {
         val editor = prefs.edit()
         editor.remove(PREF_USER_DATA)
+        editor.remove(PREF_FIREBASE_TOKEN)
+        editor.remove(PREF_SESSION_TOKEN)
         editor.apply()
     }
 

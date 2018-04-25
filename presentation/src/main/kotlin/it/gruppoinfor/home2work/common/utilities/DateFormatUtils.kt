@@ -26,7 +26,7 @@ object DateFormatUtils {
 
             }
             elapsedDays > 1 -> return elapsedDays.toString() + " giorni fa"
-            elapsedDays > 0 -> return elapsedDays.toString() + " giorno fa"
+            elapsedDays > 0 -> return "Un giorno fa"
             else -> {
 
                 val elapsedHours = difference / TimeUnit.HOURS.toMillis(1)

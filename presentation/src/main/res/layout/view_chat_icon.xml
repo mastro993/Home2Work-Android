@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inbox_icon_container"
     style="@android:style/Widget.ActionButton"
     android:layout_width="wrap_content"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:animateLayoutChanges="true"
     android:clickable="true"
     android:clipToPadding="false"
-    android:focusable="true"
-    android:orientation="vertical">
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/messages_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="0dp"
         android:gravity="center"
         android:src="@drawable/ic_inbox"
-        android:tint="@color/white" />
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/messages_counter_text_view"
         android:layout_width="21dp"
         android:layout_height="21dp"
-        android:layout_alignEnd="@id/messages_image_view"
-        android:layout_alignTop="@id/messages_image_view"
-        android:layout_marginEnd="-6dp"
-        android:layout_marginTop="-6dp"
         android:background="@drawable/bg_inbox_icon_text"
         android:gravity="center"
         android:includeFontPadding="false"
-        tools:text="3"
         android:textColor="#ffffffff"
         android:textStyle="bold"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        app:layout_constraintCircle="@id/messages_image_view"
+        app:layout_constraintCircleAngle="45"
+        app:layout_constraintCircleRadius="4dp"
+        tools:text="3"
+        tools:visibility="visible" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

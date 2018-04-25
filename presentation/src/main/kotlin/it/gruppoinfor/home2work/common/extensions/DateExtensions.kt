@@ -36,7 +36,7 @@ fun Date.formatElapsed(): String {
             String.format("%1\$s", sdfDate.format(this)).capitalize()
         }
         elapsedDays > 1 -> elapsedDays.toString() + " giorni fa"
-        elapsedDays > 0 -> "Un giorno fa"
+        elapsedDays > 0 -> "Ieri"
         elapsedHours > 1 -> elapsedHours.toString() + " ore fa"
         elapsedHours > 0 -> "Un ora fa"
         elapsedMinutes > 1 -> elapsedMinutes.toString() + " minuti fa"

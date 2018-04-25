@@ -44,8 +44,7 @@ class LocalUserData constructor(
         set(value) = userPreferences.setEmail(value)
 
     fun clear() {
-        userPreferences.clearUserData()
-        userPreferences.clearSessionToken()
+        userPreferences.clear()
     }
 
 }

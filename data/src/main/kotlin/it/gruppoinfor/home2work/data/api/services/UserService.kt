@@ -43,5 +43,11 @@ interface UserService {
     @DELETE("user/status")
     fun hideStatus(): Observable<Boolean>
 
+    @FormUrlEncoded
+    @POST("user/firebase_token")
+    fun updateFCMToken(
+            @Field("token") fcmToken: String
+    ): Observable<Boolean>
+
 
 }

@@ -8,8 +8,10 @@ import android.view.MenuItem
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.data.api.LogoutEvent
 import it.gruppoinfor.home2work.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_settings.*
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.intentFor
 import javax.inject.Inject
@@ -79,13 +81,14 @@ class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
 
         button_logout.setOnClickListener {
 
+
+
             val builder = AlertDialog.Builder(this)
             builder.setTitle(R.string.dialog_logout_title)
             builder.setMessage(R.string.dialog_logout_content)
             builder.setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
 
-                localUserData.clear()
-                startActivity(intentFor<SplashActivity>().clearTask())
+                EventBus.getDefault().post(LogoutEvent())
 
             }
             builder.setNegativeButton(R.string.dialog_logout_decline, null)
