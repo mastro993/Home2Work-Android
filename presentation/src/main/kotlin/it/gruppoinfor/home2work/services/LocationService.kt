@@ -20,10 +20,10 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.mappers.UserLocationUserLocationEntityMapper
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
+import it.gruppoinfor.home2work.domain.interfaces.SettingsRepository
 import it.gruppoinfor.home2work.domain.usecases.StoreUserLocation
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLastLocation
 import it.gruppoinfor.home2work.entities.UserLocation
@@ -46,7 +46,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     @Inject
     lateinit var localUserData: LocalUserData
     @Inject
-    lateinit var settingsPreferences: SettingsPreferences
+    lateinit var settingsRepository: SettingsRepository
 
     private val lastLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {

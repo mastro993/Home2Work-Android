@@ -4,10 +4,9 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.objectbox.BoxStore
-import it.gruppoinfor.home2work.common.mappers.GuestEntityGuestMapper
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.common.user.SettingsPreferences
-import it.gruppoinfor.home2work.common.user.UserPreferences
+import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.common.mappers.UserEntityUserMapper
+import it.gruppoinfor.home2work.common.mappers.UserUserEntityMapper
 import it.gruppoinfor.home2work.data.entities.MyObjectBox
 import it.gruppoinfor.home2work.data.mappers.*
 import it.gruppoinfor.home2work.data.repositories.*
@@ -25,19 +24,19 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideLocalUserData(userPreferences: UserPreferences, settingsPreferences: SettingsPreferences): LocalUserData {
-        return LocalUserData(userPreferences, settingsPreferences)
+    fun provideLocalUserData(preferencesRepository: PreferencesRepository, userEntityUserMapper: UserEntityUserMapper, userEntityMapper: UserUserEntityMapper): LocalUserData {
+        return LocalUserData(preferencesRepository, userEntityUserMapper, userEntityMapper)
     }
 
     @Provides
-    fun provideUserPreferences(context: Context): UserPreferences {
-        return UserPreferences(context)
+    fun providePreferencesRepository(context: Context, userDataEntityMapper: UserDataEntityMapper, userEntityDataMapper: UserEntityDataMapper): PreferencesRepository {
+        return PreferencesRepositoryImpl(context, userDataEntityMapper, userEntityDataMapper)
     }
 
     @Singleton
     @Provides
-    fun provideSettingsPreferences(context: Context): SettingsPreferences {
-        return SettingsPreferences(context)
+    fun provideSettingsRepository(context: Context): SettingsRepository {
+        return SettingsRepositoryImpl(context)
     }
 
     @Provides

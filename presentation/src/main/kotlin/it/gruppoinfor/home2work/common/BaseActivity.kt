@@ -3,8 +3,6 @@ package it.gruppoinfor.home2work.common
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.common.user.SettingsPreferences
 import it.gruppoinfor.home2work.di.DaggerActivity
 import javax.inject.Inject
 

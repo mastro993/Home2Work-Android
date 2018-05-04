@@ -18,9 +18,9 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.mappers.UserLocationUserLocationEntityMapper
-import it.gruppoinfor.home2work.common.user.LocalUserData
-import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.domain.interfaces.SettingsRepository
 import it.gruppoinfor.home2work.domain.usecases.StoreUserLocation
 import it.gruppoinfor.home2work.entities.UserLocation
 import org.jetbrains.anko.startService
@@ -37,7 +37,7 @@ class LocationServiceOld : Service() {
     @Inject
     lateinit var localUserData: LocalUserData
     @Inject
-    lateinit var settingsPreferences: SettingsPreferences
+    lateinit var settingsRepository: SettingsRepository
 
     companion object {
         const val NOTIFICATION_ID = 2313

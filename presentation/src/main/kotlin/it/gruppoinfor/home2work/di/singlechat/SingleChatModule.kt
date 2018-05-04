@@ -6,7 +6,7 @@ import it.gruppoinfor.home2work.chat.SingleChatVMFactory
 import it.gruppoinfor.home2work.common.ASyncTransformer
 import it.gruppoinfor.home2work.common.mappers.MessageEntityMessageMapper
 import it.gruppoinfor.home2work.common.mappers.MessageMessageEntityMapper
-import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.domain.interfaces.ChatRepository
 import it.gruppoinfor.home2work.domain.usecases.GetChatMessage
 import it.gruppoinfor.home2work.domain.usecases.GetChatMessageList

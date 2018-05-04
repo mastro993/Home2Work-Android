@@ -28,7 +28,7 @@ import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.BottomNavBadgeEvent
 import it.gruppoinfor.home2work.common.extensions.*
-import it.gruppoinfor.home2work.common.user.SettingsPreferences
+import it.gruppoinfor.home2work.domain.interfaces.SettingsRepository
 import it.gruppoinfor.home2work.entities.Share
 import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
@@ -50,7 +50,7 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
     private val CAMERA_PERMISSION_REQUEST_CODE = 1
 
     @Inject
-    lateinit var settingsPreferences: SettingsPreferences
+    lateinit var settingsRepository: SettingsRepository
 
     override fun getVMClass(): Class<MainViewModel> {
         return MainViewModel::class.java
@@ -72,10 +72,10 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
         super.onResume()
 
         vacancy_mode_banner.apply {
-            if (settingsPreferences.vacancyModeEnabled) {
+            if (settingsRepository.vacancyModeEnabled) {
                 show()
                 button_disable_vacancy_mode.setOnClickListener {
-                    settingsPreferences.vacancyModeEnabled = false
+                    settingsRepository.vacancyModeEnabled = false
                     hide()
                 }
             } else {

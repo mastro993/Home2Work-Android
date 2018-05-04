@@ -5,7 +5,7 @@ import com.crashlytics.android.Crashlytics
 import it.gruppoinfor.home2work.common.BaseViewModel
 import it.gruppoinfor.home2work.common.SingleLiveEvent
 import it.gruppoinfor.home2work.services.FirebaseTokenService
-import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.data.api.APIAuthenticationInterceptor
 import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.domain.Mapper

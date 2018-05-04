@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.main
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.ShareEntity
 import it.gruppoinfor.home2work.domain.usecases.CreateShare

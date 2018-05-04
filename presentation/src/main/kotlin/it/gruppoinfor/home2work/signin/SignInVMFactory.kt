@@ -2,7 +2,7 @@ package it.gruppoinfor.home2work.signin
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.usecases.UserLogin

@@ -18,7 +18,7 @@ class JobScheduler constructor(private val context: Context) {
 
         val builder = JobInfo.Builder(SyncJobService.ID, ComponentName(context, SyncJobService::class.java))
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-        builder.setPeriodic(TimeUnit.HOURS.toMillis(12))
+        builder.setPeriodic(TimeUnit.HOURS.toMillis(6))
 
         builder.run {
             setRequiresDeviceIdle(true)

@@ -3,7 +3,7 @@ package it.gruppoinfor.home2work.services
 import android.annotation.SuppressLint
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService
-import it.gruppoinfor.home2work.common.user.LocalUserData
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import timber.log.Timber

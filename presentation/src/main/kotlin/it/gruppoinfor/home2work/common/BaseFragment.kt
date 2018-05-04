@@ -2,7 +2,6 @@ package it.gruppoinfor.home2work.common
 
 import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
-import it.gruppoinfor.home2work.common.user.LocalUserData
 import it.gruppoinfor.home2work.di.DaggerFragment
 import javax.inject.Inject
 

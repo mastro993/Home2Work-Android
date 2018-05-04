@@ -7,8 +7,8 @@ import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.common.user.SettingsPreferences
 import it.gruppoinfor.home2work.data.api.LogoutEvent
+import it.gruppoinfor.home2work.domain.interfaces.SettingsRepository
 import it.gruppoinfor.home2work.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.greenrobot.eventbus.EventBus
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
 
     @Inject
-    lateinit var settingsPreferences: SettingsPreferences
+    lateinit var settingsRepository: SettingsRepository
 
     override fun getVMClass(): Class<SettingsViewModel> {
         return SettingsViewModel::class.java
@@ -49,15 +49,15 @@ class SettingsActivity : BaseActivity<SettingsViewModel, SettingsVMFactory>() {
 
     private fun initUI() {
 
-        vacancy_mode_switch.isChecked = settingsPreferences.vacancyModeEnabled
+        vacancy_mode_switch.isChecked = settingsRepository.vacancyModeEnabled
 
         vacancy_mode_switch.setOnCheckedChangeListener { _, isChecked ->
-            settingsPreferences.vacancyModeEnabled = isChecked
+            settingsRepository.vacancyModeEnabled = isChecked
         }
 
         vacancy_mode_title.setOnClickListener {
 
-            if(!settingsPreferences.vacancyModeEnabled){
+            if(!settingsRepository.vacancyModeEnabled){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Modalità vacanza")
                 builder.setMessage("Abilitando la modalità vacanza la tua attività non verrà monitorata e le notifiche saranno disabilitate")
