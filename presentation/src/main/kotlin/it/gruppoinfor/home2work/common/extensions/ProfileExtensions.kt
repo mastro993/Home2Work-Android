@@ -29,8 +29,9 @@ import java.util.*
  */
 
 fun ProgressBar.animateTo(value: Float) {
-    val anim = ProgressBarAnimation(this, this.progress.toFloat(), value)
-    anim.duration = 500
+    val anim = ProgressBarAnimation(this, this.progress.toFloat(), value).apply {
+        duration = 500
+    }
     startAnimation(anim)
 }
 
@@ -38,7 +39,10 @@ fun LineChart.setUp() {
 
     setViewPortOffsets(32f, 0f, 32f, 0f)
 
-    description.isEnabled = false
+    description.apply {
+        isEnabled = false
+    }
+
     isDragEnabled = false
 
     setPinchZoom(false)
@@ -49,25 +53,33 @@ fun LineChart.setUp() {
 
     animateY(1400, Easing.EasingOption.EaseInOutQuad)
 
-    xAxis.isEnabled = true
-    xAxis.axisLineColor = ContextCompat.getColor(context!!, R.color.colorAccent)
-    xAxis.labelCount = 6
-    xAxis.granularity = 1f
-    xAxis.position = XAxis.XAxisPosition.BOTTOM
-    xAxis.setDrawGridLines(false)
-    xAxis.valueFormatter = ActivityXAxisValueFormatter()
-    xAxis.textColor = ContextCompat.getColor(context!!, R.color.colorAccent)
-    xAxis.setAvoidFirstLastClipping(true)
+    xAxis.apply {
+        isEnabled = true
+        axisLineColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+        labelCount = 6
+        granularity = 1f
+        position = XAxis.XAxisPosition.BOTTOM
+        setDrawGridLines(false)
+        valueFormatter = ActivityXAxisValueFormatter()
+        textColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+        setAvoidFirstLastClipping(true)
+    }
 
-    axisLeft.isEnabled = true
-    axisLeft.axisLineColor = ContextCompat.getColor(context!!, R.color.colorAccent)
-    axisLeft.labelCount = 3
-    axisLeft.gridColor = ContextCompat.getColor(context!!, R.color.colorAccentAlpha26)
-    axisLeft.textColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+    axisLeft.apply {
+        isEnabled = true
+        axisLineColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+        labelCount = 3
+        gridColor = ContextCompat.getColor(context!!, R.color.colorAccentAlpha26)
+        textColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+    }
 
-    axisRight.isEnabled = false
+    axisRight.apply {
+        isEnabled = false
+    }
 
-    legend.isEnabled = false
+    legend.apply {
+        isEnabled = false
+    }
 
 }
 
@@ -107,52 +119,55 @@ fun LineChart.setData(activity: Map<String, SharingActivity>, average: Float) {
 
     // Media
     Collections.sort(avgEntries, EntryXComparator())
-    val avgDataSet = LineDataSet(avgEntries, "Media")
 
-    avgDataSet.color = ContextCompat.getColor(context!!, R.color.colorPrimary)
-    avgDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+    val avgDataSet = LineDataSet(avgEntries, "Media").apply {
+        color = ContextCompat.getColor(context!!, R.color.colorPrimary)
+        mode = LineDataSet.Mode.CUBIC_BEZIER
 
-    avgDataSet.setDrawFilled(true)
-    avgDataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.bg_chart_activity_avg_fill)
-    avgDataSet.fillAlpha = 100
-    avgDataSet.lineWidth = 3f
+        setDrawFilled(true)
+        fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.bg_chart_activity_avg_fill)
+        fillAlpha = 100
+        lineWidth = 3f
 
-    avgDataSet.setDrawCircles(false)
-    avgDataSet.setDrawValues(false)
+        setDrawCircles(false)
+        setDrawValues(false)
 
-    avgDataSet.setDrawHorizontalHighlightIndicator(false)
-    avgDataSet.setDrawVerticalHighlightIndicator(false)
+        setDrawHorizontalHighlightIndicator(false)
+        setDrawVerticalHighlightIndicator(false)
 
-    avgDataSet.enableDashedLine(20f, 15f, 0f)
+        enableDashedLine(20f, 15f, 0f)
+    }
 
     dataSets.add(avgDataSet)
 
     // Attività
     Collections.sort(activityEntries, EntryXComparator())
-    val activityDataSet = LineDataSet(activityEntries, "Attività")
 
-    activityDataSet.color = ContextCompat.getColor(context!!, R.color.colorAccent)
-    activityDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-    activityDataSet.setDrawFilled(true)
+    val activityDataSet = LineDataSet(activityEntries, "Attività").apply {
+        color = ContextCompat.getColor(context!!, R.color.colorAccent)
+        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+        setDrawFilled(true)
 
-    activityDataSet.fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.bg_chart_activity_fill)
-    activityDataSet.fillAlpha = 100
-    activityDataSet.lineWidth = 3f
+        fillDrawable = ContextCompat.getDrawable(context!!, R.drawable.bg_chart_activity_fill)
+        fillAlpha = 100
+        lineWidth = 3f
 
-    activityDataSet.setDrawCircles(true)
-    activityDataSet.setDrawCircleHole(true)
-    activityDataSet.setDrawValues(false)
-    activityDataSet.circleRadius = 6f
-    activityDataSet.circleHoleRadius = 4f
-    activityDataSet.setCircleColorHole(ContextCompat.getColor(context!!, R.color.cardview_light_background))
+        setDrawCircles(true)
+        setDrawCircleHole(true)
+        setDrawValues(false)
+        circleRadius = 6f
+        circleHoleRadius = 4f
+        setCircleColorHole(ContextCompat.getColor(context!!, R.color.cardview_light_background))
 
-    activityDataSet.valueTextColor = ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)
-    activityDataSet.valueTextSize = 12f
+        valueTextColor = ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)
+        valueTextSize = 12f
 
-    activityDataSet.setDrawHorizontalHighlightIndicator(false)
-    activityDataSet.setDrawVerticalHighlightIndicator(false)
+        setDrawHorizontalHighlightIndicator(false)
+        setDrawVerticalHighlightIndicator(false)
 
-    activityDataSet.circleColors = colors
+        circleColors = colors
+    }
+
 
     dataSets.add(activityDataSet)
 
@@ -177,30 +192,37 @@ fun PieChart.setUp() {
 }
 
 fun PieChart.setData(stats: Statistics) {
-    val s = SpannableString("${stats.totalShares}\ncondivisioni effettuate")
-    s.setSpan(RelativeSizeSpan(2.1f), 0, "${stats.totalShares}".length, 0)
-    s.setSpan(StyleSpan(Typeface.BOLD), 0, "${stats.totalShares}".length, 0)
-    s.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)), 0, "${stats.totalShares}".length, 0)
+
+    val s = SpannableString("${stats.totalShares}\ncondivisioni effettuate").apply {
+        setSpan(RelativeSizeSpan(2.1f), 0, "${stats.totalShares}".length, 0)
+        setSpan(StyleSpan(Typeface.BOLD), 0, "${stats.totalShares}".length, 0)
+        setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_bg_dark_primary_text)), 0, "${stats.totalShares}".length, 0)
+    }
     centerText = s
 
-    val entriesPie = ArrayList<PieEntry>()
-    if (stats.totalHostShares > 0) entriesPie.add(PieEntry(stats.totalHostShares.toFloat(), "Driver"))
-    if (stats.totalGuestShares > 0) entriesPie.add(PieEntry(stats.totalGuestShares.toFloat(), "Guest"))
+    val entriesPie = ArrayList<PieEntry>().apply {
+        if (stats.totalHostShares > 0) add(PieEntry(stats.totalHostShares.toFloat(), "Driver"))
+        if (stats.totalGuestShares > 0) add(PieEntry(stats.totalGuestShares.toFloat(), "Guest"))
+    }
 
-    val pieDataSet = PieDataSet(entriesPie, null) // add entries to dataset
-    pieDataSet.sliceSpace = 2f
-    pieDataSet.setDrawValues(false)
+    val pieDataSet = PieDataSet(entriesPie, null).apply {
+        sliceSpace = 2f
+        setDrawValues(false)
+    }
 
-    val colors = ArrayList<Int>()
-    colors.add(ContextCompat.getColor(context!!, R.color.colorPrimary))
-    colors.add(ContextCompat.getColor(context!!, R.color.colorAccent))
+    val colors = ArrayList<Int>().apply {
+        add(ContextCompat.getColor(context!!, R.color.colorPrimary))
+        add(ContextCompat.getColor(context!!, R.color.colorAccent))
+    }
 
     pieDataSet.colors = colors
 
-    val pieData = PieData(pieDataSet)
-    pieData.setValueTextColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
-    pieData.setValueFormatter(PercentFormatter())
-    pieData.setValueTextSize(16f)
+    val pieData = PieData(pieDataSet).apply {
+        setValueTextColor(ContextCompat.getColor(context!!, R.color.dark_bg_light_primary_text))
+        setValueFormatter(PercentFormatter())
+        setValueTextSize(16f)
+    }
+
 
     data = pieData
     invalidate()
@@ -210,12 +232,13 @@ fun PieChart.setData(stats: Statistics) {
 class ActivityXAxisValueFormatter : IAxisValueFormatter {
     override fun getFormattedValue(value: Float, axis: AxisBase?): String {
 
-        val cal = Calendar.getInstance()
-        val thisMonth = cal.get(Calendar.MONTH)
-        var month = thisMonth - (5 - value.toInt())
-        if (month < 0) month += 12
+        val cal = Calendar.getInstance().apply {
+            val thisMonth = get(Calendar.MONTH)
+            var month = thisMonth - (5 - value.toInt())
+            if (month < 0) month += 12
+            set(Calendar.MONTH, month)
+        }
 
-        cal.set(Calendar.MONTH, month)
         return SimpleDateFormat("MMM", Locale.ITALY).format(cal.time).toUpperCase()
     }
 }
