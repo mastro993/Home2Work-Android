@@ -1,13 +1,35 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/window_background"
     android:layout_height="match_parent"
     tools:context=".leaderboards.LeaderboardsFragment">
 
-    <TextView
+   <!-- <android.support.v7.widget.RecyclerView
+        tools:listitem="@layout/item_home_feed_share_completed"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="To do..." />
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:transitionGroup="false"
+        android:visibility="visible" />-->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/item_home_feed_status_user" />
+            <include layout="@layout/item_home_feed_share_completed" />
+            <include layout="@layout/item_home_feed_status_company" />
+            <include layout="@layout/item_home_feed_status_user" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>

@@ -8,7 +8,6 @@ import retrofit2.http.*
 
 interface MatchService {
 
-
     @GET("match/{id}")
     fun getMatchById(
             @Path("id") id: Long?

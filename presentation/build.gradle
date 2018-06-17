@@ -116,6 +116,10 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.1.1'
 
+    def work_version = "1.0.0-alpha01"
+
+    implementation "android.arch.work:work-runtime-ktx:$work_version" // use -ktx for Kotlin
+
     testImplementation rootProject.ext.junit
     androidTestImplementation rootProject.ext.androidTestRunner
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

@@ -197,6 +197,7 @@
     <string name="button_complete">Completa</string>
 
     <string name="com.crashlytics.android.build_id">gdfwfrgyt56g46464565645645</string>
+    <string name="completed_share_user"><b>Luca Bianchi</b> ha completato una condivisione</string>
 
     <string-array name="leaderboard_type">
         <item>Condivisioni</item>

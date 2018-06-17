@@ -37,12 +37,10 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
     }
 
     private fun handleDetectedActivities(probableActivities: List<DetectedActivity>) {
-
         probableActivities
                 .asSequence()
                 .filter { it.confidence >= ACTIVITY_TRESHOLD }
                 .forEach {
-
                     when (it.type) {
                         DetectedActivity.IN_VEHICLE -> {
                             startDrivingActivity()
@@ -56,14 +54,10 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
                             increaseStillStatus()
                         }
                     }
-
-
                 }
-
     }
 
     private fun startDrivingActivity() {
-
         if (isDriving) {
             return
         }
@@ -74,11 +68,9 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         isDriving = true
         stillStatusCounter = 0
-
     }
 
     private fun stopDrivingActivity() {
-
         if (!isDriving) {
             return
         }
@@ -89,11 +81,9 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
 
         isDriving = false
         stillStatusCounter = 0
-
     }
 
     private fun increaseStillStatus() {
-
         if (!isDriving) {
             return
         }
@@ -106,7 +96,6 @@ class ActivityRecognizedService : IntentService("ActivityRecognizedService") {
             Timber.d("Drving endend for inactivity")
             stopDrivingActivity()
         }
-
     }
 
     enum class DrivingActivity {

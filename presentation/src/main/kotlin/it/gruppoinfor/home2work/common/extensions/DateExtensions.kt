@@ -28,11 +28,11 @@ fun Date.formatElapsed(): String {
 
     return when {
         elapsedYears > 1 -> {
-            val sdfDate = SimpleDateFormat("dd mmmm yyyy", Locale.ITALIAN)
+            val sdfDate = SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN)
             String.format("%1\$s", sdfDate.format(this)).capitalize()
         }
         elapsedDays > 7 -> {
-            val sdfDate = SimpleDateFormat("dd mmmm", Locale.ITALIAN)
+            val sdfDate = SimpleDateFormat("dd MMMM", Locale.ITALIAN)
             String.format("%1\$s", sdfDate.format(this)).capitalize()
         }
         elapsedDays > 1 -> elapsedDays.toString() + " giorni fa"

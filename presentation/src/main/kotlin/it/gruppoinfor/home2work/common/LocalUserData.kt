@@ -58,6 +58,7 @@ class LocalUserData constructor(
         }
 
     fun clear() {
+        session = null
         preferencesRepository.clear()
     }
 
