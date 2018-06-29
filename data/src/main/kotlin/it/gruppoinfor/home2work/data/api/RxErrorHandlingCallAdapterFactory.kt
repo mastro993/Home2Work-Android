@@ -30,7 +30,7 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
             return wrapped.responseType()
         }
 
-        override fun adapt(call: Call<Any>?): Observable<Any> {
+        override fun adapt(call: Call<Any>): Observable<Any> {
             return (wrapped.adapt(call) as Observable<Any>).onErrorResumeNext(Function {
                 Observable.error(asRetrofitException(it))
             })
@@ -40,7 +40,7 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
 
             // Errore HTTP
             if (throwable is HttpException) {
-                val response: Response<Any> = throwable.response() as Response<Any>
+                val response: Response<*> = throwable.response()
                 if(response.code() == 401){
                     // Utente non autenticato (session token errato o mancante)
                     EventBus.getDefault().post(LogoutEvent())

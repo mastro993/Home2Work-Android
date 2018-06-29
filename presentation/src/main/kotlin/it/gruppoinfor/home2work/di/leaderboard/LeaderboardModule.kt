@@ -12,21 +12,24 @@ import it.gruppoinfor.home2work.domain.usecases.GetUserLeaderboards
 import it.gruppoinfor.home2work.home.HomeVMFactory
 import it.gruppoinfor.home2work.leaderboards.LeaderboardsVMFactory
 
-@LeaderboardScope
+
 @Module
 class LeaderboardModule {
 
     @Provides
+    @LeaderboardScope
     fun provideLeaderboardsRepository(userRankingDataEntityMapper: UserRankingDataEntityMapper): LeaderboardsRepository {
         return LeaderboardRepositoryImpl(userRankingDataEntityMapper)
     }
 
     @Provides
+    @LeaderboardScope
     fun provideGetUserLeaderboardsUseCase(leaderboardsRepository: LeaderboardsRepository): GetUserLeaderboards {
         return GetUserLeaderboards(ASyncTransformer(), leaderboardsRepository)
     }
 
     @Provides
+    @LeaderboardScope
     fun provideLeaderboardsVMFactory(getUserLeaderboards: GetUserLeaderboards, userRankingEntityUserRankingMapper: UserRankingEntityUserRankingMapper): LeaderboardsVMFactory {
         return LeaderboardsVMFactory(getUserLeaderboards, userRankingEntityUserRankingMapper)
     }

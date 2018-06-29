@@ -9,16 +9,17 @@ import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 import it.gruppoinfor.home2work.domain.usecases.GetUser
 import it.gruppoinfor.home2work.splash.SplashVMFactory
 
-@SplashScope
 @Module
 class SplashModule {
 
     @Provides
+    @SplashScope
     fun provideUserTokenLoginUseCase(userRepository: UserRepository): GetUser {
         return GetUser(ASyncTransformer(), userRepository)
     }
 
     @Provides
+    @SplashScope
     fun provideSplashVMFactory(useCase: GetUser, mapper: UserEntityUserMapper, localUserData: LocalUserData): SplashVMFactory {
         return SplashVMFactory(useCase, mapper, localUserData)
     }

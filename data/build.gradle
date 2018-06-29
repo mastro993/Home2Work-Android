@@ -1,15 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.objectbox'
 
 android {
     compileSdkVersion 27
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+        minSdkVersion 21
+        targetSdkVersion 27
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -34,24 +33,41 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    kapt rootProject.ext.daggerCompiler
-    implementation rootProject.ext.dagger
-    implementation rootProject.ext.rxJava
-    implementation rootProject.ext.retrofit
-    implementation rootProject.ext.retrofitGsonConverter
-    implementation rootProject.ext.retrofitRxJava2Adapter
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50"
 
-    implementation rootProject.ext.objectBox
-    kapt rootProject.ext.objectBoxProcessor
-    implementation rootProject.ext.objectBoxRx
+    // Dagger
+    // Dagger
+    compile 'com.google.dagger:dagger:2.16'
+    compile 'com.google.dagger:dagger-android:2.16'
+    compile 'com.google.dagger:dagger-android-support:2.16'
+    kapt 'com.google.dagger:dagger-android-processor:2.16'
+    kapt 'com.google.dagger:dagger-compiler:2.16'
 
-    implementation rootProject.ext.chatKit
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:2.1.7"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.3.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+
+    // Room
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation "android.arch.persistence.room:rxjava2:1.1.1"
+    kapt "android.arch.persistence.room:compiler:1.1.1"
+    androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
+
+    // Chatkit
+    implementation 'com.github.stfalcon:chatkit:0.2.2'
+
+    // Eventbus
     implementation 'org.greenrobot:eventbus:3.1.1'
 
-    testImplementation rootProject.ext.junit
-    androidTestImplementation rootProject.ext.androidTestRunner
+    // Testing
+    implementation "junit:junit:4.12"
+    implementation "com.android.support.test:runner:1.0.2"
 
     implementation project(':domain')
 }

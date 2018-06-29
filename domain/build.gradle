@@ -9,12 +9,9 @@ sourceSets {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation rootProject.ext.rxJava
-
-    // Testing
-    testImplementation rootProject.ext.junit
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50"
+    implementation "io.reactivex.rxjava2:rxjava:2.1.7"
+    implementation "junit:junit:4.12"
 }
 repositories {
     mavenCentral()

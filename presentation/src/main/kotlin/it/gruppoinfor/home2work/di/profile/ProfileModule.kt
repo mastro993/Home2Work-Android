@@ -10,26 +10,30 @@ import it.gruppoinfor.home2work.domain.usecases.HideUserStatus
 import it.gruppoinfor.home2work.domain.usecases.UpdateStatus
 import it.gruppoinfor.home2work.profile.ProfileVMFactory
 
-@ProfileScope
+
 @Module
 class ProfileModule {
 
     @Provides
+    @ProfileScope
     fun provideUpdateStatusUseCase(userRepository: UserRepository): UpdateStatus {
         return UpdateStatus(ASyncTransformer(), userRepository)
     }
 
     @Provides
+    @ProfileScope
     fun provideHideUserStatusUseCase(userRepository: UserRepository): HideUserStatus {
         return HideUserStatus(ASyncTransformer(), userRepository)
     }
 
     @Provides
+    @ProfileScope
     fun provideGetProfileUseCase(userRepository: UserRepository): GetProfile {
         return GetProfile(ASyncTransformer(), userRepository)
     }
 
     @Provides
+    @ProfileScope
     fun provideProfileVMFactory(getProfile: GetProfile, updateStatus: UpdateStatus, hideUserStatus: HideUserStatus, mapper: ProfileEntityProfileMapper): ProfileVMFactory {
         return ProfileVMFactory(getProfile, updateStatus, hideUserStatus, mapper)
     }

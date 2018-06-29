@@ -10,15 +10,16 @@ import it.gruppoinfor.home2work.user.UserVMFactory
 
 
 @Module
-@UserScope
 class UserModule {
 
     @Provides
+    @UserScope
     fun provideGetProfileUseCase(userRepository: UserRepository): GetUserProfile {
         return GetUserProfile(ASyncTransformer(), userRepository)
     }
 
     @Provides
+    @UserScope
     fun provideProfileVMFactory(getUserProfile: GetUserProfile, mapper: ProfileEntityProfileMapper): UserVMFactory {
         return UserVMFactory(getUserProfile, mapper)
     }

@@ -3,11 +3,9 @@ package it.gruppoinfor.home2work.di.module
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import io.objectbox.BoxStore
 import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.common.mappers.UserEntityUserMapper
 import it.gruppoinfor.home2work.common.mappers.UserUserEntityMapper
-import it.gruppoinfor.home2work.data.entities.MyObjectBox
 import it.gruppoinfor.home2work.data.mappers.*
 import it.gruppoinfor.home2work.data.repositories.*
 import it.gruppoinfor.home2work.domain.interfaces.*
@@ -16,11 +14,7 @@ import javax.inject.Singleton
 
 @Module
 class DataModule {
-    @Singleton
-    @Provides
-    fun provideObjectBoxDatabase(context: Context): BoxStore {
-        return MyObjectBox.builder().androidContext(context).build()
-    }
+
 
     @Singleton
     @Provides
@@ -79,10 +73,10 @@ class DataModule {
     @Provides
     @Singleton
     fun provideLocationRepository(
-            boxStore: BoxStore,
+            context: Context,
             locationDataEntityMapper: UserLocationDataEntityMapper,
             locationEntityDataMapper: UserLocationEntityDataMapper
     ): LocationRepository {
-        return LocationRepositoryImpl(boxStore, locationDataEntityMapper, locationEntityDataMapper)
+        return LocationRepositoryImpl(context, locationDataEntityMapper, locationEntityDataMapper)
     }
 }

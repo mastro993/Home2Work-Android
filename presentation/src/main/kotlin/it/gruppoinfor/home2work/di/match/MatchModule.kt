@@ -10,27 +10,31 @@ import it.gruppoinfor.home2work.domain.usecases.GetMatch
 import it.gruppoinfor.home2work.domain.usecases.GetMatchList
 import it.gruppoinfor.home2work.match.MatchVMFactory
 
-@MatchScope
+
 @Module
 class MatchModule {
 
 
     @Provides
+    @MatchScope
     fun provideGetMatchUseCase(matchRepository: MatchRepository): GetMatch {
         return GetMatch(ASyncTransformer(), matchRepository)
     }
 
     @Provides
+    @MatchScope
     fun provideGetMatchListUseCase(matchRepository: MatchRepository): GetMatchList {
         return GetMatchList(ASyncTransformer(), matchRepository)
     }
 
     @Provides
+    @MatchScope
     fun provideEditMatchUseCase(matchRepository: MatchRepository): EditMatch {
         return EditMatch(ASyncTransformer(), matchRepository)
     }
 
     @Provides
+    @MatchScope
     fun provideMatchVMFactory(getMatch: GetMatch, getMatchList: GetMatchList, editMatch: EditMatch, mapper: MatchEntityMatchMapper): MatchVMFactory {
         return MatchVMFactory(getMatch, getMatchList, editMatch, mapper)
     }

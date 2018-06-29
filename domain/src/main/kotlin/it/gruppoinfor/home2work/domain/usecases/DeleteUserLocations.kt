@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.domain.usecases
 
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 import it.gruppoinfor.home2work.domain.common.Transformer
 import it.gruppoinfor.home2work.domain.interfaces.LocationRepository
 
@@ -21,7 +22,6 @@ class DeleteUserLocations(
 
     override fun createObservable(data: Map<String, Any>?): Observable<Boolean> {
         val userId = data?.get(PARAM_USER_ID)
-
 
         userId?.let {
             return locationRepository.deleteUserLocations(userId as Long)

@@ -7,11 +7,11 @@ import it.gruppoinfor.home2work.domain.interfaces.UserRepository
 import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 
 
-@FirebaseScope
 @Module
 class FirebaseModule {
 
     @Provides
+    @FirebaseScope
     fun provideStoreUserFCMToken(userRepository: UserRepository): StoreUserFCMToken {
         return StoreUserFCMToken(ASyncTransformer(), userRepository)
     }

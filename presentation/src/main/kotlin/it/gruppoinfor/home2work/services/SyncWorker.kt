@@ -23,7 +23,8 @@ class SyncWorker : Worker() {
 
 
 
-    override fun doWork(): WorkerResult {
+
+    override fun doWork(): Worker.Result {
         DipendencyInjector.mainComponent.inject(this)
 
         Timber.i("Sync job start")
@@ -43,17 +44,17 @@ class SyncWorker : Worker() {
                 .subscribe({
                     if (it) {
                         Timber.i("Sync completed")
-                        deleteUserLocations.byId(userId).subscribe({
+                        deleteUserLocations.byId(userId).subscribe {
                             Timber.i("All user positions deleted")
-                        })
+                        }
                     }
-                    WorkerResult.SUCCESS
+                    Worker.Result.SUCCESS
                 }, {
                     Timber.e(it, "Sync failed!")
-                    WorkerResult.FAILURE
+                    Worker.Result.FAILURE
                 })
 
-        return WorkerResult.SUCCESS
+        return Worker.Result.SUCCESS
     }
 
     companion object {

@@ -9,7 +9,7 @@ class RetrofitException internal constructor(message: String?,
                                              /** The request URL which produced the error.  */
                                              val url: String?,
                                              /** Response object containing status code, headers, body, etc.  */
-                                             private val response: Response<Any>?,
+                                             private val response: Response<*>?,
                                              /** The event kind which triggered this error.  */
                                              val kind: Kind,
                                              exception: Throwable?,
@@ -34,7 +34,6 @@ class RetrofitException internal constructor(message: String?,
      *
      * @throws IOException if unable to convert the body to the specified `type`.
      */
-    @Throws(IOException::class)
     fun <T> getErrorBodyAs(type: Class<T>): T? {
 
         if (response == null) {
@@ -51,7 +50,7 @@ class RetrofitException internal constructor(message: String?,
     }
 
     companion object {
-        fun httpError(url: String, response: Response<Any>, retrofit: Retrofit): RetrofitException {
+        fun httpError(url: String, response: Response<*>, retrofit: Retrofit): RetrofitException {
             val message = "${response.code()} ${response.message()}"
 
             if (response.code() in 400..499) {

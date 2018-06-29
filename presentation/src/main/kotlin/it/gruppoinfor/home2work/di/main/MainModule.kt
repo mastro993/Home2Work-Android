@@ -12,26 +12,29 @@ import it.gruppoinfor.home2work.domain.usecases.GetActiveShare
 import it.gruppoinfor.home2work.domain.usecases.JoinShare
 
 
-@MainScope
 @Module
 class MainModule {
 
     @Provides
+    @MainScope
     fun provideGetActiveShareUseCase(shareRepository: ShareRepository): GetActiveShare {
         return GetActiveShare(ASyncTransformer(), shareRepository)
     }
 
     @Provides
+    @MainScope
     fun provideJoinShareUseCase(shareRepository: ShareRepository): JoinShare {
         return JoinShare(ASyncTransformer(), shareRepository)
     }
 
     @Provides
+    @MainScope
     fun provideCreateShareUseCase(shareRepository: ShareRepository): CreateShare {
         return CreateShare(ASyncTransformer(), shareRepository)
     }
 
     @Provides
+    @MainScope
     fun provideMainVMFactory(getActiveShare: GetActiveShare, joinShare: JoinShare, createShare: CreateShare, shareMapper: ShareEntityShareMapper, localUserData: LocalUserData): MainVMFactory {
         return MainVMFactory(getActiveShare, joinShare, createShare, shareMapper, localUserData)
     }

@@ -11,9 +11,9 @@ import it.gruppoinfor.home2work.settings.SettingsVMFactory
 
 
 @Module
-@SettingsScope
 class SettingsModule {
     @Provides
+    @SettingsScope
     fun provideSettingsVMFactory(): SettingsVMFactory {
         return SettingsVMFactory()
     }

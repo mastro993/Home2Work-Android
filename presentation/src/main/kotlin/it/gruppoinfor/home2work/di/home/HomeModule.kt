@@ -12,11 +12,13 @@ import it.gruppoinfor.home2work.home.HomeVMFactory
 class HomeModule {
 
     @Provides
+    @HomeScope
     fun provideGetChatListUseCase(chatRepository: ChatRepository): GetChatList {
         return GetChatList(ASyncTransformer(), chatRepository)
     }
 
     @Provides
+    @HomeScope
     fun provideHomeVMFactory(getChatList: GetChatList): HomeVMFactory {
         return HomeVMFactory(getChatList)
     }

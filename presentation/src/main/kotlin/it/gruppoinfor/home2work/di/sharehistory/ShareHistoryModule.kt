@@ -8,17 +8,18 @@ import it.gruppoinfor.home2work.domain.interfaces.ShareRepository
 import it.gruppoinfor.home2work.domain.usecases.GetShareList
 import it.gruppoinfor.home2work.sharehistory.ShareHistoryVMFactory
 
-@ShareHistoryScope
 @Module
 class ShareHistoryModule {
 
     @Provides
+    @ShareHistoryScope
     fun provideGetShareListUseCase(shareRepository: ShareRepository): GetShareList {
         return GetShareList(ASyncTransformer(), shareRepository)
     }
 
 
     @Provides
+    @ShareHistoryScope
     fun provideAuthVMFactory(getShareList: GetShareList, shareEntityShareMapper: ShareEntityShareMapper): ShareHistoryVMFactory {
         return ShareHistoryVMFactory(getShareList, shareEntityShareMapper)
     }

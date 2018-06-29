@@ -1,6 +1,7 @@
 package it.gruppoinfor.home2work.di
 
 import android.content.Context
+import dagger.android.DaggerApplication_MembersInjector
 import it.gruppoinfor.home2work.chat.ChatActivity
 import it.gruppoinfor.home2work.chat.SingleChatActivity
 import it.gruppoinfor.home2work.di.chat.ChatModule
@@ -70,6 +71,7 @@ object DipendencyInjector {
                 .appModule(AppModule(context))
                 .dataModule(DataModule())
                 .build()
+
 
     }
 
