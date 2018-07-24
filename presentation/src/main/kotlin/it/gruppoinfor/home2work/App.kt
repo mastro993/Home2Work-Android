@@ -7,7 +7,6 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
-import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.timber.DebugLogTree
 import it.gruppoinfor.home2work.common.timber.FileLoggingTree
@@ -17,6 +16,7 @@ import it.gruppoinfor.home2work.data.api.APIService
 import it.gruppoinfor.home2work.data.api.LogoutEvent
 import it.gruppoinfor.home2work.data.api.NoInternetErrorEvent
 import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.services.SyncWorker
 import it.gruppoinfor.home2work.splash.SplashActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -29,8 +29,6 @@ class App : Application() {
 
     @Inject
     lateinit var localUserData: LocalUserData
-    @Inject
-    lateinit var jobScheduler: JobScheduler
 
     override fun onCreate() {
         super.onCreate()
@@ -69,7 +67,7 @@ class App : Application() {
     fun onLogoutEvent(event: LogoutEvent) {
 
         localUserData.clear()
-        jobScheduler.removeSyncJob()
+        SyncWorker.remove()
 
         launchActivity<SplashActivity> {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

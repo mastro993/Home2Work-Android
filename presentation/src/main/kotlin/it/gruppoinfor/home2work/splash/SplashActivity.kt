@@ -7,17 +7,19 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.view.View
+import com.google.firebase.iid.FirebaseInstanceId
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
 import it.gruppoinfor.home2work.domain.usecases.DeleteUserLocations
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
+import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.services.LocationService
+import it.gruppoinfor.home2work.services.SyncWorker
 import it.gruppoinfor.home2work.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import timber.log.Timber
@@ -29,13 +31,13 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
     val PERMISSION_FINE_LOCATION = 0
 
     @Inject
-    lateinit var jobScheduler: JobScheduler
-    @Inject
     lateinit var getUserLocations: GetUserLocations
     @Inject
     lateinit var syncUserLocation: SyncUserLocations
     @Inject
     lateinit var deleteUserLocations: DeleteUserLocations
+    @Inject
+    lateinit var storeUserFCMToken: StoreUserFCMToken
 
     override fun getVMClass(): Class<SplashViewModel> {
         return SplashViewModel::class.java
@@ -91,13 +93,14 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
     }
 
     private fun onLoginSuccess() {
-
         localUserData.user?.let {
 
             //testSync(it.id)
-
-            jobScheduler.scheduleSyncJob(it.id)
+            //jobScheduler.scheduleSyncJob(it.id)
+            SyncWorker.schedule(it.id)
+            SyncWorker.singleRun(it.id)
             LocationService.launch(this)
+            updateFirebaseToken()
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -117,6 +120,22 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
 
         }
 
+    }
+
+    private fun updateFirebaseToken() {
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            val savedToken = localUserData.firebaseToken
+            val newToken = it.token
+            if (newToken != savedToken) {
+                storeUserFCMToken.store(newToken)
+                        .subscribe({
+                            Timber.d("Token Firebase aggiornato")
+                            localUserData.firebaseToken = newToken
+                        }, {
+                            Timber.e("Impossibile aggiornare il token Firebase")
+                        })
+            }
+        }
     }
 
     private fun testSync(userId: Long) {

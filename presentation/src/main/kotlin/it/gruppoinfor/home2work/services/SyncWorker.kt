@@ -2,13 +2,16 @@ package it.gruppoinfor.home2work.services
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import androidx.work.Worker
+import android.os.PersistableBundle
+import androidx.work.*
 import io.reactivex.Observable
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.usecases.DeleteUserLocations
 import it.gruppoinfor.home2work.domain.usecases.GetUserLocations
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 import timber.log.Timber
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -20,9 +23,6 @@ class SyncWorker : Worker() {
     lateinit var syncUserLocation: SyncUserLocations
     @Inject
     lateinit var deleteUserLocations: DeleteUserLocations
-
-
-
 
     override fun doWork(): Worker.Result {
         DipendencyInjector.mainComponent.inject(this)
@@ -51,14 +51,53 @@ class SyncWorker : Worker() {
                     Worker.Result.SUCCESS
                 }, {
                     Timber.e(it, "Sync failed!")
-                    Worker.Result.FAILURE
+                    Worker.Result.SUCCESS
                 })
 
         return Worker.Result.SUCCESS
     }
 
     companion object {
-        const val ID: Int = 2342
+        private val TAG = SyncWorker::class.java.simpleName
         const val KEY_USER_ID: String = "user_id"
+        private const val REQUEST_TAG: String = "LOCATION_SYNC"
+
+        fun singleRun(userId: Long) {
+
+            val data: Data = mapOf("USER_ID" to userId).toWorkData()
+
+            val syncWork = OneTimeWorkRequestBuilder<SyncWorker>()
+                    .setInputData(data)
+                    .addTag(REQUEST_TAG)
+                    .build()
+
+            WorkManager.getInstance()?.beginUniqueWork(
+                    TAG,
+                    ExistingWorkPolicy.KEEP,
+                    syncWork
+            )?.enqueue()
+        }
+
+        fun schedule(userId: Long) {
+
+            val data: Data = mapOf("USER_ID" to userId).toWorkData()
+
+            val syncWorker = PeriodicWorkRequestBuilder<SyncWorker>(12, TimeUnit.HOURS)
+                    .setInputData(data)
+                    .addTag(REQUEST_TAG)
+                    .build()
+
+            WorkManager.getInstance()?.enqueueUniquePeriodicWork(
+                    TAG,
+                    ExistingPeriodicWorkPolicy.KEEP,
+                    syncWorker
+            )
+
+        }
+
+        fun remove() {
+            WorkManager.getInstance()?.cancelAllWorkByTag(REQUEST_TAG)
+            WorkManager.getInstance()?.cancelUniqueWork(TAG)
+        }
     }
 }

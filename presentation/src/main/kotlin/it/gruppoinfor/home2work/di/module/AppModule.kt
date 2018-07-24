@@ -5,7 +5,6 @@ import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import it.gruppoinfor.home2work.common.ImageLoader
-import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.PicassoImageLoader
 import javax.inject.Singleton
 
@@ -26,11 +25,6 @@ class AppModule constructor(context: Context) {
         return PicassoImageLoader(Picasso.with(context))
     }
 
-    @Singleton
-    @Provides
-    fun provideJobScheduler(context: Context): JobScheduler {
-        return JobScheduler(context)
-    }
 
 
 }

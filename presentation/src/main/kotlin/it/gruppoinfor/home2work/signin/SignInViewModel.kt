@@ -2,9 +2,10 @@ package it.gruppoinfor.home2work.signin
 
 import android.arch.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
 import it.gruppoinfor.home2work.common.BaseViewModel
 import it.gruppoinfor.home2work.common.SingleLiveEvent
-import it.gruppoinfor.home2work.services.FirebaseTokenService
 import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.data.api.APIAuthenticationInterceptor
 import it.gruppoinfor.home2work.data.api.RetrofitException
@@ -12,6 +13,7 @@ import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.usecases.UserLogin
 import it.gruppoinfor.home2work.entities.User
+import it.gruppoinfor.home2work.services.MessagingService
 
 
 class SignInViewModel(
@@ -60,7 +62,7 @@ class SignInViewModel(
                         when(it.kind){
                             RetrofitException.Kind.SERVER -> errorState.value = "Errore durante il login"
                             RetrofitException.Kind.CLIENT -> errorState.value = "Dati inseriti non validi"
-                            RetrofitException.Kind.NETWORK -> errorState.value = "Nessuna connessione ad internet"
+                            RetrofitException.Kind.NETWORK -> errorState.value = "Problemi di comunicazione al server"
                             else -> errorState.value = "Errore imprevisto"
                         }
                     }
@@ -84,12 +86,7 @@ class SignInViewModel(
         Crashlytics.setUserName(user.fullName)
 
         localUserData.session = APIAuthenticationInterceptor.sessionToken
-
-        // Aggiorno il token Firebase Cloud Messaging sul server
-        FirebaseTokenService().onTokenRefresh()
-
         localUserData.user = user
-
 
         loginSuccessState.value = true
 

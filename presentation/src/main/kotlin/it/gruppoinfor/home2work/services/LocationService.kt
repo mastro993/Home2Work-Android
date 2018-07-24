@@ -68,11 +68,11 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
         }
     }
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
+    private lateinit var mActivityTransitionRecognition: ActivityRecognitionTransition
+
 
     companion object {
         const val NOTIFICATION_ID = 2313
-        const val REQ_ACTIVITY_UPDATES = 343
-        const val TIME_ACTIVITY_UPDATES = 10000L // 10 sec
 
         fun launch(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -127,25 +127,12 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
     override fun onConnected(bundle: Bundle?) {
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
-        val intent = Intent(this, ActivityRecognizedService::class.java)
-
-        val pendingIntent = PendingIntent.getService(
-                this@LocationService,
-                REQ_ACTIVITY_UPDATES,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
         // Avvio il servizio di riconoscimento delle attività dell'utente
-        val activityRecognitionClient = ActivityRecognition.getClient(this@LocationService)
-        val task = activityRecognitionClient.requestActivityUpdates(TIME_ACTIVITY_UPDATES, pendingIntent)
-        task.addOnSuccessListener {
-            Timber.v("Activity Recognition Service avviato")
-        }
+        mActivityTransitionRecognition = ActivityRecognitionTransition()
+        mActivityTransitionRecognition.startTracking(this)
 
         // Avvio il listener per l'ultima posizione utente
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         startUserLastLocationUpdates()
 
     }
@@ -166,7 +153,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
         super.onStartCommand(intent, flags, startId)
 
         intent?.let {
-            if (ActivityRecognizedService.hasResult(it)) {
+            if (ActivityRecognitionReceiver.hasResult(it)) {
                 getUserLocation()
             }
         }
@@ -178,18 +165,13 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             val locationRequest = LocationRequest.create()
-            // Richiedo un solo aggiornamento di posizione
-            locationRequest.numUpdates = 1
-            // Massima accuratezza possibile
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.numUpdates = 1 // Richiedo un solo aggiornamento di posizione
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Massima accuratezza possibile
 
             mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
-
                     val lastLocation = locationResult.lastLocation
-
                     Timber.v("User position: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
-
                     saveLocation(locationResult.lastLocation)
                     mFusedLocationProviderClient?.removeLocationUpdates(this)
                 }
@@ -202,14 +184,10 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             val locationRequest = LocationRequest.create()
-            // Priorità al risparmio batteria
-            locationRequest.priority = LocationRequest.PRIORITY_LOW_POWER
-            // Voglio la posizione non prima di uno spostamento di almeno 1 km dall'ultima posizione nota
-            locationRequest.smallestDisplacement = 1000f
-            // Se altre app hanno richiesto l'aggiornamento della posizine la ottengo anche io ma non prima che siano passati almeno 5 minuti
-            locationRequest.fastestInterval = 5 * 60 * 1000
-            // Se non disponibile, richiedo io un aggiornamento di posizione ogni 30 minuti
-            locationRequest.interval = 30 * 60 * 1000
+            locationRequest.priority = LocationRequest.PRIORITY_LOW_POWER // Priorità al risparmio batteria
+            locationRequest.smallestDisplacement = 1000f // Spostamento di almeno 1 km dall'ultima posizione nota
+            locationRequest.fastestInterval = 5 * 60 * 1000 // 5 Minuti
+            locationRequest.interval = 30 * 60 * 1000 // 30 minuti
 
             mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, lastLocationCallback, Looper.myLooper())
 
@@ -252,9 +230,8 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
     override fun onDestroy() {
         super.onDestroy()
-
+        mActivityTransitionRecognition.stopTracking()
         mFusedLocationProviderClient?.removeLocationUpdates(lastLocationCallback)
-
     }
 
 

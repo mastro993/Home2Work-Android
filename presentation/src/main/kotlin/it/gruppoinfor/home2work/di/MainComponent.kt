@@ -6,8 +6,6 @@ import it.gruppoinfor.home2work.common.boot.BootReceiver
 import it.gruppoinfor.home2work.common.views.AvatarView
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
-import it.gruppoinfor.home2work.di.firebase.FirebaseModule
-import it.gruppoinfor.home2work.di.firebase.FirebaseSubComponent
 import it.gruppoinfor.home2work.di.home.HomeModule
 import it.gruppoinfor.home2work.di.home.HomeSubComponent
 import it.gruppoinfor.home2work.di.leaderboard.LeaderboardModule
@@ -47,13 +45,10 @@ import javax.inject.Singleton
 interface MainComponent {
     fun inject(app: App)
     fun inject(bootReceiver: BootReceiver)
-    fun inject(service: LocationServiceOld)
-    fun inject(service: LocationService) // TODO rimuovere
-    fun inject(syncJobService: SyncJobService)
+    fun inject(service: LocationService)
     fun inject(syncWorker: SyncWorker)
     fun inject(avatarView: AvatarView)
     fun inject(messagingService: MessagingService)
-    fun plus(firebaseModule: FirebaseModule): FirebaseSubComponent
     fun plus(authModule: SignInModule): SignInSubComponent
     fun plus(splashModule: SplashModule): SplashSubComponent
     fun plus(mainModule: MainModule): MainSubComponent

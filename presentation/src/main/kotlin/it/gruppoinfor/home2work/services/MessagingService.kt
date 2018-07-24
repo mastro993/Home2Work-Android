@@ -12,21 +12,44 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.events.ActiveShareEvent
 import it.gruppoinfor.home2work.common.events.NewMessageEvent
 import it.gruppoinfor.home2work.chat.ChatActivity
+import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.di.DipendencyInjector
+import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
+import javax.inject.Inject
 
 
 class MessagingService : FirebaseMessagingService() {
 
+    @Inject
+    lateinit var storeUserFCMToken: StoreUserFCMToken
+    @Inject
+    lateinit var localUserData: LocalUserData
+
     override fun onCreate() {
         super.onCreate()
         DipendencyInjector.mainComponent.inject(this)
+    }
+
+    override fun onNewToken(token: String) {
+        val savedToken = localUserData.firebaseToken
+        if (token != savedToken) {
+            storeUserFCMToken.store(token)
+                    .subscribe({
+                        Timber.d("Token Firebase aggiornato")
+                        localUserData.firebaseToken = token
+                    }, {
+                        Timber.e(it, "Impossibile aggiornare il token Firebase")
+                    })
+        }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

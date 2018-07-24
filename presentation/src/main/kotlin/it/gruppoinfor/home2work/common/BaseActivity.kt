@@ -3,7 +3,9 @@ package it.gruppoinfor.home2work.common
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
+import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.di.DaggerActivity
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -37,4 +39,5 @@ abstract class BaseActivity<VM : BaseViewModel, VMF : ViewModelProvider.Factory>
 
         super.onActivityResult(requestCode, resultCode, data)
     }
+
 }

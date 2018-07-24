@@ -6,8 +6,6 @@ import it.gruppoinfor.home2work.chat.ChatActivity
 import it.gruppoinfor.home2work.chat.SingleChatActivity
 import it.gruppoinfor.home2work.di.chat.ChatModule
 import it.gruppoinfor.home2work.di.chat.ChatSubComponent
-import it.gruppoinfor.home2work.di.firebase.FirebaseModule
-import it.gruppoinfor.home2work.di.firebase.FirebaseSubComponent
 import it.gruppoinfor.home2work.di.home.HomeModule
 import it.gruppoinfor.home2work.di.home.HomeSubComponent
 import it.gruppoinfor.home2work.di.leaderboard.LeaderboardModule
@@ -50,7 +48,6 @@ import it.gruppoinfor.home2work.user.UserActivity
 object DipendencyInjector {
     lateinit var mainComponent: MainComponent
 
-    private var firebaseSubComponent: FirebaseSubComponent? = null
     private var signInSubComponent: SignInSubComponent? = null
     private var splashSubComponent: SplashSubComponent? = null
     private var mainSubComponent: MainSubComponent? = null
@@ -166,14 +163,6 @@ object DipendencyInjector {
         }
     }
 
-    fun createFirebaseComponent(): FirebaseSubComponent {
-        firebaseSubComponent = mainComponent.plus(FirebaseModule())
-        return firebaseSubComponent!!
-    }
-
-    fun releaseFirebaseComponent() {
-        firebaseSubComponent = null
-    }
 
 
 }

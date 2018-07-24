@@ -79,4 +79,6 @@ class DataModule {
     ): LocationRepository {
         return LocationRepositoryImpl(context, locationDataEntityMapper, locationEntityDataMapper)
     }
+
+
 }

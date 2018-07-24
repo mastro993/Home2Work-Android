@@ -54,7 +54,7 @@ class PreferencesRepositoryImpl(
     override var firebaseToken: String?
         get(){
             if (cache.firebaseToken.isNullOrEmpty()) {
-                cache = cache.copy(lastEmail = prefs.getString(PREF_FIREBASE_TOKEN, null))
+                cache = cache.copy(firebaseToken = prefs.getString(PREF_FIREBASE_TOKEN, null))
             }
             return cache.firebaseToken
         }

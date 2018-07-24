@@ -2,15 +2,16 @@ package it.gruppoinfor.home2work.splash
 
 import android.arch.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
+import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.common.BaseViewModel
 import it.gruppoinfor.home2work.common.SingleLiveEvent
-import it.gruppoinfor.home2work.services.FirebaseTokenService
 import it.gruppoinfor.home2work.common.LocalUserData
 import it.gruppoinfor.home2work.data.api.APIAuthenticationInterceptor
 import it.gruppoinfor.home2work.domain.Mapper
 import it.gruppoinfor.home2work.domain.entities.UserEntity
 import it.gruppoinfor.home2work.domain.usecases.GetUser
 import it.gruppoinfor.home2work.entities.User
+import timber.log.Timber
 
 
 class SplashViewModel(
@@ -68,12 +69,10 @@ class SplashViewModel(
         Crashlytics.setUserEmail(user.email)
         Crashlytics.setUserName(user.fullName)
 
-        // Aggiorno il token Firebase Cloud Messaging sul server
-        FirebaseTokenService().onTokenRefresh()
-
         localUserData.user = user
 
         loginState.value = true
+
 
     }
 

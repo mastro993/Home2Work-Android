@@ -6,21 +6,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.common.JobScheduler
 import it.gruppoinfor.home2work.common.extensions.launchActivity
 import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.services.LocationService
+import it.gruppoinfor.home2work.services.SyncWorker
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
 
+
     @Inject
-    lateinit var jobScheduler: JobScheduler
+    lateinit var storeUserFCMToken: StoreUserFCMToken
 
     override fun getVMClass(): Class<SignInViewModel> {
         return SignInViewModel::class.java
@@ -112,8 +116,10 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
 
         localUserData.user?.let {
 
-            jobScheduler.scheduleSyncJob(it.id)
+            //jobScheduler.scheduleSyncJob(it.id)
+            SyncWorker.schedule(it.id)
             LocationService.launch(this)
+            updateFirebaseToken()
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -148,6 +154,22 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
         }
 
         return valid
+    }
+
+    private fun updateFirebaseToken() {
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            val savedToken = localUserData.firebaseToken
+            val newToken = it.token
+            if (newToken != savedToken) {
+                storeUserFCMToken.store(newToken)
+                        .subscribe({
+                            Timber.d("Token Firebase aggiornato")
+                            localUserData.firebaseToken = newToken
+                        }, {
+                            Timber.e("Impossibile aggiornare il token Firebase")
+                        })
+            }
+        }
     }
 
 
