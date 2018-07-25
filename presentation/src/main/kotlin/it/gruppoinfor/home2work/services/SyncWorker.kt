@@ -71,11 +71,11 @@ class SyncWorker : Worker() {
                     .addTag(REQUEST_TAG)
                     .build()
 
-            WorkManager.getInstance()?.beginUniqueWork(
+            WorkManager.getInstance().beginUniqueWork(
                     TAG,
                     ExistingWorkPolicy.KEEP,
                     syncWork
-            )?.enqueue()
+            ).enqueue()
         }
 
         fun schedule(userId: Long) {
@@ -87,7 +87,7 @@ class SyncWorker : Worker() {
                     .addTag(REQUEST_TAG)
                     .build()
 
-            WorkManager.getInstance()?.enqueueUniquePeriodicWork(
+            WorkManager.getInstance().enqueueUniquePeriodicWork(
                     TAG,
                     ExistingPeriodicWorkPolicy.KEEP,
                     syncWorker
@@ -96,8 +96,8 @@ class SyncWorker : Worker() {
         }
 
         fun remove() {
-            WorkManager.getInstance()?.cancelAllWorkByTag(REQUEST_TAG)
-            WorkManager.getInstance()?.cancelUniqueWork(TAG)
+            WorkManager.getInstance().cancelAllWorkByTag(REQUEST_TAG)
+            WorkManager.getInstance().cancelUniqueWork(TAG)
         }
     }
 }

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.view.View
 import com.google.firebase.iid.FirebaseInstanceId
-import io.reactivex.Observable
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
 import it.gruppoinfor.home2work.common.extensions.launchActivity
@@ -19,7 +18,6 @@ import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLocations
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.services.LocationService
-import it.gruppoinfor.home2work.services.SyncWorker
 import it.gruppoinfor.home2work.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import timber.log.Timber
@@ -95,10 +93,6 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
     private fun onLoginSuccess() {
         localUserData.user?.let {
 
-            //testSync(it.id)
-            //jobScheduler.scheduleSyncJob(it.id)
-            SyncWorker.schedule(it.id)
-            SyncWorker.singleRun(it.id)
             LocationService.launch(this)
             updateFirebaseToken()
 
@@ -136,34 +130,6 @@ class SplashActivity : BaseActivity<SplashViewModel, SplashVMFactory>() {
                         })
             }
         }
-    }
-
-    private fun testSync(userId: Long) {
-        getUserLocations.byId(userId)
-                .flatMap {
-                    if (it.isNotEmpty()) {
-                        Timber.v("Sincronizzazione di ${it.size} posizioni utente")
-                        syncUserLocation.upload(it)
-                    } else {
-                        Timber.v("Nessuna posizione da sincronizzare")
-                        Observable.just(false)
-                    }
-                }
-                .doOnNext {
-                    if (it) {
-                        deleteUserLocations.byId(userId).subscribe({
-                            Timber.i("Positioni eliminate")
-                        })
-                    }
-                }
-                .doOnError {
-                    Timber.e(it, "Sincronizzazione fallita")
-                }
-                .doOnComplete {
-                    Timber.i("Sincronizzazione completata")
-                }
-                .subscribe()
-
     }
 
 }

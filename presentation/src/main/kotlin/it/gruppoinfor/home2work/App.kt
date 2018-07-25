@@ -45,6 +45,8 @@ class App : Application() {
             Timber.plant(ReleaseLogTree())
         }
 
+                .build()
+        Fabric.with(this, crashlyticsKit)
         DipendencyInjector.init(applicationContext)
         DipendencyInjector.mainComponent.inject(this)
 

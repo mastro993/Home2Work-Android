@@ -127,8 +127,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
 
     // Leakanary
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
 
     // AhBottom Navigation
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
@@ -147,7 +147,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     // Worker
-    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha04"
+    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha05"
 
     // Testing
     implementation "junit:junit:4.12"
