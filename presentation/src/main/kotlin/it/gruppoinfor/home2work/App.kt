@@ -33,10 +33,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val crashlyticsKit = Crashlytics.Builder()
-                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build()
-        Fabric.with(this, crashlyticsKit)
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return
+        }
+        LeakCanary.install(this)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(FileLoggingTree())
@@ -45,17 +45,15 @@ class App : Application() {
             Timber.plant(ReleaseLogTree())
         }
 
+        val crashlyticsKit = Crashlytics.Builder()
+                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build()
         Fabric.with(this, crashlyticsKit)
+
         DipendencyInjector.init(applicationContext)
         DipendencyInjector.mainComponent.inject(this)
 
         FirebaseApp.initializeApp(this)
-
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return
-        }
-        LeakCanary.install(this)
 
         Fabric.with(this, Crashlytics())
 
