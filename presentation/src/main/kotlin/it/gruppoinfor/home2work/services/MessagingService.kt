@@ -40,19 +40,22 @@ class MessagingService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
+        Timber.d("MessagingService: %1s", "onNewToken")
+
         val savedToken = localUserData.firebaseToken
         if (token != savedToken) {
             storeUserFCMToken.store(token)
                     .subscribe({
-                        Timber.d("Token Firebase aggiornato")
+                        Timber.i("Token Firebase aggiornato")
                         localUserData.firebaseToken = token
                     }, {
-                        Timber.e(it, "Impossibile aggiornare il token Firebase")
+                        Timber.w(it, "Impossibile aggiornare il token Firebase")
                     })
         }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        Timber.d("MessagingService: %1s", "onMessageReceived")
 
         if (remoteMessage.data.isNotEmpty()) {
             sendIntent(remoteMessage)

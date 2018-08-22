@@ -21,13 +21,14 @@ fun View.show() {
     visibility = View.VISIBLE
 }
 
-fun View.setVisibile(visible: Boolean) {
+fun View.setVisibility(visible: Boolean) {
     if (visible) {
         show()
     } else {
         remove()
     }
 }
+
 
 
 /**

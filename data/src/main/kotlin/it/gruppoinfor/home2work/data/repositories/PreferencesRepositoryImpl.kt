@@ -90,6 +90,7 @@ class PreferencesRepositoryImpl(
     override fun clear() {
         val editor = prefs.edit()
         editor.remove(PREF_USER_DATA)
+        //editor.remove(PREF_LAST_EMAIL)
         editor.remove(PREF_FIREBASE_TOKEN)
         editor.remove(PREF_SESSION_TOKEN)
         editor.apply()

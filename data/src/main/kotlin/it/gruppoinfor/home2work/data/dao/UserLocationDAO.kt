@@ -17,6 +17,6 @@ interface UserLocationDAO {
     fun getUserLocations(userId: Long): Maybe<List<UserLocationData>>
 
     @Query("DELETE FROM user_location WHERE userId = :userId")
-    fun deleteUserLocations(userId: Long):Int
+    fun deleteUserLocations(userId: Long): Int
 
 }

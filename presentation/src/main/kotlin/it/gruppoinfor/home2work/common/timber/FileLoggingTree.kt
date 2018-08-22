@@ -4,10 +4,9 @@ import android.os.Environment
 import android.util.Log
 import it.gruppoinfor.home2work.BuildConfig
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import java.io.*
 
 
 class FileLoggingTree : Timber.DebugTree() {
@@ -47,15 +46,23 @@ class FileLoggingTree : Timber.DebugTree() {
 
             file?.let {
                 if (it.exists()) {
+                    val content = it.readText()
 
-                    val fileOutputStream = FileOutputStream(it, true)
+                    it.writeText("<p>" +
+                            "<strong style=\"background:#90A4AE;\">&nbsp&nbsp$logTimeStamp&nbsp&nbsp</strong>" +
+                            "<strong style=\"background:$titleColor;\">&nbsp&nbsp$tag&nbsp&nbsp</strong><br/>" +
+                            "<span style=\"background:#ECEFF1;\">&nbsp&nbsp$message</span>" +
+                            "</p>" + content)
+
+                    /*val fileOutputStream = FileOutputStream(it, false)
 
                     fileOutputStream.write(("<p>" +
                             "<strong style=\"background:#90A4AE;\">&nbsp&nbsp$logTimeStamp&nbsp&nbsp</strong>" +
                             "<strong style=\"background:$titleColor;\">&nbsp&nbsp$tag&nbsp&nbsp</strong><br/>" +
                             "<span style=\"background:#ECEFF1;\">&nbsp&nbsp$message</span>" +
                             "</p>").toByteArray())
-                    fileOutputStream.close()
+
+                    fileOutputStream.close()*/
 
                 }
             }

@@ -9,8 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import com.google.firebase.iid.FirebaseInstanceId
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.BaseActivity
-import it.gruppoinfor.home2work.common.extensions.launchActivity
-import it.gruppoinfor.home2work.common.extensions.showToast
+import it.gruppoinfor.home2work.common.extensions.*
 import it.gruppoinfor.home2work.domain.usecases.StoreUserFCMToken
 import it.gruppoinfor.home2work.main.MainActivity
 import it.gruppoinfor.home2work.services.LocationService
@@ -55,7 +54,7 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
             }
         }
 
-        viewModel.loadSavedEmail()
+        viewModel.loadLastUsedEmail()
         observeViewState()
 
     }
@@ -74,13 +73,13 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
 
     private fun observeViewState() {
 
-        viewModel.errorState.observe(this, Observer {
-            it?.let {
+        viewModel.errorState.observe(this, Observer { error ->
+            error?.let {
                 showToast(it)
             }
         })
-        viewModel.loginSuccessState.observe(this, Observer {
-            it?.let {
+        viewModel.loginSuccessState.observe(this, Observer { success ->
+            success?.let {
                 if (it)
                     onLoginSuccess()
             }
@@ -94,7 +93,7 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
 
     private fun handleViewState(state: SignInViewState?) {
 
-        state?.let {
+        state?.let { it ->
 
             it.savedEmail?.let { email_input.setText(it) }
 
@@ -104,8 +103,15 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
             password_input.isEnabled = !it.isLoading
             password_input.clearFocus()
 
-            sign_in_button.isEnabled = !it.isLoading
-            sign_in_button.text = if (it.isLoading) "Accesso in corso" else "Accedi"
+            if (it.isLoading) {
+                progressbar_loading.show()
+                sign_in_button.hide()
+            } else {
+                progressbar_loading.hide()
+                sign_in_button.show()
+            }
+
+            //sign_in_button.text = if (it.isLoading) "Accesso in corso" else "Accedi"
 
 
         }
@@ -120,6 +126,8 @@ class SignInActivity : BaseActivity<SignInViewModel, SignInVMFactory>() {
             SyncWorker.schedule(it.id)
             LocationService.launch(this)
             updateFirebaseToken()
+
+            viewModel.storeUsedEmail(email_input.text.toString())
 
             launchActivity<MainActivity> {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

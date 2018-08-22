@@ -31,7 +31,7 @@ class SignInViewModel(
         viewState.value = SignInViewState()
     }
 
-    fun loadSavedEmail() {
+    fun loadLastUsedEmail() {
         val email = localUserData.email
 
         val newViewState = viewState.value?.copy(
@@ -39,6 +39,12 @@ class SignInViewModel(
         )
 
         viewState.value = newViewState
+
+    }
+
+    fun storeUsedEmail(email: String) {
+
+        localUserData.email = email
 
     }
 

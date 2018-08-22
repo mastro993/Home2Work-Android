@@ -15,6 +15,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
@@ -27,6 +28,7 @@ import it.gruppoinfor.home2work.domain.interfaces.SettingsRepository
 import it.gruppoinfor.home2work.domain.usecases.StoreUserLocation
 import it.gruppoinfor.home2work.domain.usecases.SyncUserLastLocation
 import it.gruppoinfor.home2work.entities.UserLocation
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startService
 import timber.log.Timber
 import java.util.*
@@ -48,8 +50,12 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     @Inject
     lateinit var settingsRepository: SettingsRepository
 
+
+    private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
+    private lateinit var mActivityTransitionRecognition: ActivityRecognitionTransition
     private val lastLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
+            Timber.d("onLocationResult: $locationResult")
 
             val userLocation = UserLocationEntity(
                     userId = localUserData.user!!.id,
@@ -60,15 +66,13 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
             syncUserLastLocation.upload(userLocation)
                     .subscribe({
-                        Timber.i("Posizione utente aggiornata: $userLocation")
+                        Timber.i("Posizione utente aggiornata con successo")
                     }, {
-                        Timber.e(it, "Impossibile aggiornare la posizione utente")
+                        Timber.w(it, "Impossibile aggiornare la posizione utente")
                     })
 
         }
     }
-    private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
-    private lateinit var mActivityTransitionRecognition: ActivityRecognitionTransition
 
 
     companion object {
@@ -86,6 +90,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
     override fun onCreate() {
         super.onCreate()
+        Timber.d("LocationService: %1s", "onCreate")
 
         DipendencyInjector.mainComponent.inject(this)
 
@@ -114,7 +119,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
             startForeground(NOTIFICATION_ID, serviceNotification)
 
-            Timber.i("Servizio avviato")
+            Timber.i("Servizio avviato per l'utente ${it.email}")
 
         } ?: let {
 
@@ -126,6 +131,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     }
 
     override fun onConnected(bundle: Bundle?) {
+        Timber.d("LocationService client: %1s", "onConnected")
 
         // Avvio il servizio di riconoscimento delle attività dell'utente
         mActivityTransitionRecognition = ActivityRecognitionTransition()
@@ -138,11 +144,11 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     }
 
     override fun onConnectionSuspended(code: Int) {
-        Timber.w("Connessione sospesa. Codice: $code")
+        Timber.w("LocationService client: %1s", "onConnectionSuspended (code $code)")
     }
 
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
-        Timber.e("Connessione fallita: $connectionResult")
+        Timber.e("LocationService client: %1s", "onConnectionFailed $connectionResult")
     }
 
     override fun onBind(arg0: Intent): IBinder? {
@@ -151,6 +157,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        Timber.d("LocationService: %1s", "onStartCommand")
 
         intent?.let {
             if (ActivityRecognitionReceiver.hasResult(it)) {
@@ -171,7 +178,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
             mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     val lastLocation = locationResult.lastLocation
-                    Timber.v("User position: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
+                    Timber.d("onLocationResult: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
                     saveLocation(locationResult.lastLocation)
                     mFusedLocationProviderClient?.removeLocationUpdates(this)
                 }
@@ -189,7 +196,11 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
             locationRequest.fastestInterval = 5 * 60 * 1000 // 5 Minuti
             locationRequest.interval = 30 * 60 * 1000 // 30 minuti
 
-            mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, lastLocationCallback, Looper.myLooper())
+            mFusedLocationProviderClient
+                    ?.requestLocationUpdates(locationRequest, lastLocationCallback, Looper.myLooper())
+                    ?.addOnSuccessListener {
+                        Timber.i("Rilevamento ultima posizione utente avviato")
+                    }
 
         }
     }
@@ -197,19 +208,22 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     private fun saveLocation(location: Location) {
         localUserData.user?.let {
 
-            val userLocation = UserLocation(
-                    userId = it.id,
-                    latitude = location.latitude,
-                    longitude = location.longitude,
-                    date = Date()
-            )
+            doAsync {
+                val userLocation = UserLocation(
+                        userId = it.id,
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        date = Date()
+                )
 
-            val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)
-            storeUserLocation.save(userLocationEntity).subscribe({
-                Timber.v("User position successfully saved")
-            }, {
-                Timber.e(it)
-            })
+                val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)
+                storeUserLocation.save(userLocationEntity).subscribe({
+                    Timber.i("Posizione utente salvata con successo")
+                }, {
+                    Timber.w("Impossibile salvare posizione utente", it)
+                })
+            }
+
         }
 
     }
@@ -230,6 +244,8 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
     override fun onDestroy() {
         super.onDestroy()
+        Timber.d("LocationService: %1s", "onDestroy")
+
         mActivityTransitionRecognition.stopTracking()
         mFusedLocationProviderClient?.removeLocationUpdates(lastLocationCallback)
     }

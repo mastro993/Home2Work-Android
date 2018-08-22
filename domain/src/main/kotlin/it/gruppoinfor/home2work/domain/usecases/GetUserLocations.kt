@@ -22,8 +22,6 @@ class GetUserLocations(
 
     override fun createObservable(data: Map<String, Any>?): Observable<List<UserLocationEntity>> {
         val userId = data?.get(PARAM_USER_ID)
-
-
         userId?.let {
             return locationRepository.getUserLocations(userId as Long)
         } ?: return Observable.error(IllegalArgumentException("latLng list must be provided."))

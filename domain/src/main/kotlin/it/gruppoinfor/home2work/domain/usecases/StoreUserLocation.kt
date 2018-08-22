@@ -22,8 +22,6 @@ class StoreUserLocation(
 
     override fun createObservable(data: Map<String, Any>?): Observable<Long> {
         val userLocation = data?.get(PARAM_USER_LOCAION)
-
-
         userLocation?.let {
             return locationRepository.saveLocation(userLocation as UserLocationEntity)
         } ?: return Observable.error(IllegalArgumentException("userLocation must be provided."))

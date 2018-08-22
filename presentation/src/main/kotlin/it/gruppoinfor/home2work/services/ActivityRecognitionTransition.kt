@@ -24,6 +24,7 @@ class ActivityRecognitionTransition : ActivityRecognitionTransitionAbstract() {
     override fun stopTracking() {
         ActivityRecognition.getClient(mContext).removeActivityTransitionUpdates(mPendingIntent)
                 .addOnSuccessListener {
+                    Timber.d("Rilevamento attività arrestato")
                     mPendingIntent.cancel()
                 }
                 .addOnFailureListener { e ->

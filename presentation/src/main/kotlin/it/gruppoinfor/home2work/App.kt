@@ -66,8 +66,14 @@ class App : Application() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLogoutEvent(event: LogoutEvent) {
 
-        localUserData.clear()
         SyncWorker.remove()
+
+        localUserData.user?.let {
+            SyncWorker.singleRun(it.id)
+        }
+
+        localUserData.clear()
+
 
         launchActivity<SplashActivity> {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

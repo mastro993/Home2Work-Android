@@ -21,8 +21,8 @@ class LocationRepositoryImpl(
 
     override fun getUserLocations(userId: Long): Observable<List<UserLocationEntity>> {
         val db = UserLocationDb.getInstance(context)
-        return db.userLocationDAO().getUserLocations(userId).map {
-            it.map { locationDataEntityMapper.mapFrom(it) }
+        return db.userLocationDAO().getUserLocations(userId).map { locations ->
+            locations.map { locationDataEntityMapper.mapFrom(it) }
         }.toObservable()
     }
 

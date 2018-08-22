@@ -19,8 +19,8 @@ class MatchRepositoryImpl(
     private val matchService = APIService.get<MatchService>()
 
     override fun getMatchList(limit: Int?, page: Int?): Observable<List<MatchEntity>> {
-        return matchService.getMatchList(limit, page).map {
-            it.map { matchDataEntityMapper.mapFrom(it) }
+        return matchService.getMatchList(limit, page).map {matches ->
+            matches.map { matchDataEntityMapper.mapFrom(it) }
         }
     }
 
