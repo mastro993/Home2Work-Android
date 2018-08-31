@@ -21,8 +21,8 @@ android {
         applicationId "it.gruppoinfor.home2work"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 15
-        versionName "0.18.5.4"
+        versionCode 16
+        versionName "0.18.8.29"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         resValue "string", "home2work_api_key", "d1ccf5f1e2f203695f9353d83b14bc41a9b236dea6b439bb00fbf3eff67fcc11"
@@ -89,7 +89,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.1.0'
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51"
     implementation "org.jetbrains.anko:anko-coroutines:0.10.1"
     implementation "org.jetbrains.anko:anko-commons:0.10.1"
 
@@ -147,7 +147,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     // Worker
-    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha05"
+    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha08"
 
     // Testing
     implementation "junit:junit:4.12"

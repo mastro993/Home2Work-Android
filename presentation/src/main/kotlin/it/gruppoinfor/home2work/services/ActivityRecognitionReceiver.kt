@@ -3,7 +3,6 @@ package it.gruppoinfor.home2work.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.ActivityTransitionEvent
 import com.google.android.gms.location.ActivityTransitionResult
 import com.google.android.gms.location.DetectedActivity
@@ -16,6 +15,7 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
 
     companion object {
         const val EXTRA_ACTIVITY = "activity"
+        private var IN_VEHICLE_FLAG = 0
 
         fun hasResult(intent: Intent): Boolean {
             return intent.hasExtra(EXTRA_ACTIVITY)
@@ -48,27 +48,27 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
     }
 
     private fun onDetectedTransitionEvent(activity: ActivityTransitionEvent) {
-        if (activity.activityType == DetectedActivity.IN_VEHICLE) {
-            if (activity.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                startDrivingActivity()
-            } else {
-                stopDrivingActivity()
-            }
+        if (activity.activityType == DetectedActivity.IN_VEHICLE && IN_VEHICLE_FLAG == 0) {
+            startDrivingActivity()
+        } else if (activity.activityType == DetectedActivity.ON_FOOT && IN_VEHICLE_FLAG == 1) {
+            stopDrivingActivity()
         }
     }
 
     private fun startDrivingActivity() {
-        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.STARTED_DRIVING))
+        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.DRIVING))
+        IN_VEHICLE_FLAG = 1
         Timber.i("User is driving")
     }
 
     private fun stopDrivingActivity() {
-        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.STOPPED_DRIVING))
+        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.NOT_DRIVING))
+        IN_VEHICLE_FLAG = 0
         Timber.i("User finished driving")
     }
 
     enum class DrivingActivity {
-        STARTED_DRIVING, STOPPED_DRIVING
+        DRIVING, NOT_DRIVING
     }
 
 }

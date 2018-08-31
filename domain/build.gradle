@@ -9,7 +9,7 @@ sourceSets {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51"
     implementation "io.reactivex.rxjava2:rxjava:2.1.7"
     implementation "junit:junit:4.12"
 }

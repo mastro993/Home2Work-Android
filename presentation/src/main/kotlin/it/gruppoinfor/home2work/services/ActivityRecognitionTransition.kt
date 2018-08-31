@@ -13,7 +13,7 @@ class ActivityRecognitionTransition : ActivityRecognitionTransitionAbstract() {
 
     private val TAG = ActivityRecognitionTransition::class.java.simpleName
     lateinit var mContext: Context
-    lateinit var mPendingIntent: PendingIntent
+    private lateinit var mPendingIntent: PendingIntent
 
 
     override fun startTracking(context: Context) {
@@ -40,10 +40,20 @@ class ActivityRecognitionTransition : ActivityRecognitionTransitionAbstract() {
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build())
 
-        transitions.add(ActivityTransition.Builder()
+        /*transitions.add(ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.IN_VEHICLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build())*/
+
+        transitions.add(ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.ON_FOOT)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build())
+
+       /* transitions.add(ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.ON_FOOT)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build())*/
 
 
         val request = ActivityTransitionRequest(transitions)

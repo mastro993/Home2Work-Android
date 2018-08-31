@@ -22,6 +22,7 @@ import com.google.android.gms.location.*
 import it.gruppoinfor.home2work.R
 import it.gruppoinfor.home2work.common.mappers.UserLocationUserLocationEntityMapper
 import it.gruppoinfor.home2work.common.LocalUserData
+import it.gruppoinfor.home2work.data.api.RetrofitException
 import it.gruppoinfor.home2work.di.DipendencyInjector
 import it.gruppoinfor.home2work.domain.entities.UserLocationEntity
 import it.gruppoinfor.home2work.domain.interfaces.SettingsRepository
@@ -68,7 +69,14 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
                     .subscribe({
                         Timber.i("Posizione utente aggiornata con successo")
                     }, {
-                        Timber.w(it, "Impossibile aggiornare la posizione utente")
+                        if (it is RetrofitException) {
+                            when (it.kind) {
+                                RetrofitException.Kind.NETWORK -> Timber.i(it, "Impossibile aggiornare la posizione utente al momento") // TODO riprovare a caricare la posizione in seguito
+                                else -> Timber.w(it, "Impossibile aggiornare la posizione utente")
+                            }
+                        } else {
+                            Timber.w(it, "Impossibile aggiornare la posizione utente")
+                        }
                     })
 
         }
@@ -192,8 +200,8 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_LOW_POWER // Priorità al risparmio batteria
-            locationRequest.smallestDisplacement = 1000f // Spostamento di almeno 1 km dall'ultima posizione nota
-            locationRequest.fastestInterval = 5 * 60 * 1000 // 5 Minuti
+            locationRequest.smallestDisplacement = 2000f // Spostamento di almeno 2 km dall'ultima posizione nota
+            locationRequest.fastestInterval = 10 * 60 * 1000 // 10 Minuti
             locationRequest.interval = 30 * 60 * 1000 // 30 minuti
 
             mFusedLocationProviderClient
@@ -206,7 +214,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     }
 
     private fun saveLocation(location: Location) {
-        localUserData.user?.let {
+        localUserData.user?.let { it ->
 
             doAsync {
                 val userLocation = UserLocation(

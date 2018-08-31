@@ -68,9 +68,9 @@ class App : Application() {
 
         SyncWorker.remove()
 
-        localUserData.user?.let {
+/*        localUserData.user?.let {
             SyncWorker.singleRun(it.id)
-        }
+        }*/
 
         localUserData.clear()
 
