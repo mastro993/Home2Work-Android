@@ -9,7 +9,7 @@ import javax.inject.Inject
 class UserEntityUserMapper @Inject constructor() : Mapper<UserEntity, User>() {
 
     companion object {
-        const val avatarBaseUrl = "http://home2workapi.azurewebsites.net/images/avatar/"
+        const val avatarBaseUrl = "https://hometoworkapi.azurewebsites.net/api/resources/images/avatar/"
     }
 
 

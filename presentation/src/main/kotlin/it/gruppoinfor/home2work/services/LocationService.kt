@@ -15,7 +15,6 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
@@ -56,18 +55,19 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
     private lateinit var mActivityTransitionRecognition: ActivityRecognitionTransition
     private val lastLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            Timber.d("onLocationResult: $locationResult")
+            /*Timber.d("onLocationResult: $locationResult")*/
 
             val userLocation = UserLocationEntity(
                     userId = localUserData.user!!.id,
                     latitude = locationResult.lastLocation.latitude,
                     longitude = locationResult.lastLocation.longitude,
-                    date = Date()
+                    date = Date(),
+                    type = null
             )
 
             syncUserLastLocation.upload(userLocation)
                     .subscribe({
-                        Timber.i("Posizione utente aggiornata con successo")
+                        /* Timber.i("Posizione utente aggiornata con successo")*/
                     }, {
                         if (it is RetrofitException) {
                             when (it.kind) {
@@ -98,8 +98,6 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
 
     override fun onCreate() {
         super.onCreate()
-        Timber.d("LocationService: %1s", "onCreate")
-
         DipendencyInjector.mainComponent.inject(this)
 
         localUserData.user?.let {
@@ -167,16 +165,23 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
         super.onStartCommand(intent, flags, startId)
         Timber.d("LocationService: %1s", "onStartCommand")
 
+
         intent?.let {
             if (ActivityRecognitionReceiver.hasResult(it)) {
-                getUserLocation()
+                val drivingActivity = it.getSerializableExtra(ActivityRecognitionReceiver.EXTRA_ACTIVITY) as ActivityRecognitionReceiver.DrivingActivity
+                val locationType = if (drivingActivity == ActivityRecognitionReceiver.DrivingActivity.DRIVING_START) {
+                    0
+                } else {
+                    1
+                }
+                getUserLocation(locationType)
             }
         }
 
         return Service.START_STICKY
     }
 
-    private fun getUserLocation() {
+    private fun getUserLocation(type: Int) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             val locationRequest = LocationRequest.create()
@@ -187,7 +192,7 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
                 override fun onLocationResult(locationResult: LocationResult) {
                     val lastLocation = locationResult.lastLocation
                     Timber.d("onLocationResult: ${lastLocation.latitude}, ${lastLocation.longitude} (${lastLocation.accuracy})")
-                    saveLocation(locationResult.lastLocation)
+                    saveLocation(locationResult.lastLocation, type)
                     mFusedLocationProviderClient?.removeLocationUpdates(this)
                 }
             }, Looper.myLooper())
@@ -201,19 +206,19 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_LOW_POWER // Priorità al risparmio batteria
             locationRequest.smallestDisplacement = 2000f // Spostamento di almeno 2 km dall'ultima posizione nota
-            locationRequest.fastestInterval = 10 * 60 * 1000 // 10 Minuti
-            locationRequest.interval = 30 * 60 * 1000 // 30 minuti
+            locationRequest.fastestInterval = 15 * 60 * 1000 // 15 Minuti
+            locationRequest.interval = 60 * 60 * 1000 // 60 minuti
 
             mFusedLocationProviderClient
                     ?.requestLocationUpdates(locationRequest, lastLocationCallback, Looper.myLooper())
-                    ?.addOnSuccessListener {
+/*                    ?.addOnSuccessListener {
                         Timber.i("Rilevamento ultima posizione utente avviato")
-                    }
+                    }*/
 
         }
     }
 
-    private fun saveLocation(location: Location) {
+    private fun saveLocation(location: Location, type: Int) {
         localUserData.user?.let { it ->
 
             doAsync {
@@ -221,7 +226,8 @@ class LocationService : Service(), GoogleApiClient.OnConnectionFailedListener, G
                         userId = it.id,
                         latitude = location.latitude,
                         longitude = location.longitude,
-                        date = Date()
+                        date = Date(),
+                        type = type
                 )
 
                 val userLocationEntity = UserLocationUserLocationEntityMapper().mapFrom(userLocation)

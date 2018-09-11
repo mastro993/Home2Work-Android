@@ -11,5 +11,6 @@ data class UserLocationData(
         @SerializedName("UserId") var userId: Long,
         @SerializedName("Latitude") var latitude: Double = 0.0,
         @SerializedName("Longitude") var longitude: Double = 0.0,
-        @SerializedName("Date") var date: Date
+        @SerializedName("Date") var date: Date,
+        @SerializedName("Type") var type: Int?
 )

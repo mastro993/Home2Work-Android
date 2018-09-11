@@ -34,6 +34,7 @@ import it.gruppoinfor.home2work.home.HomeFragment
 import it.gruppoinfor.home2work.match.MatchesFragment
 import it.gruppoinfor.home2work.profile.ProfileFragment
 import it.gruppoinfor.home2work.leaderboards.LeaderboardsFragment
+import it.gruppoinfor.home2work.services.SyncWorker
 import it.gruppoinfor.home2work.sharecurrent.CurrentShareActivity
 import it.gruppoinfor.home2work.sharecurrent.ShareCompleteDialog
 import kotlinx.android.synthetic.main.activity_main.*
@@ -62,6 +63,8 @@ class MainActivity : BaseActivity<MainViewModel, MainVMFactory>() {
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(false)
+
+        SyncWorker.singleRun(3)
 
         initUI()
         observeViewState()

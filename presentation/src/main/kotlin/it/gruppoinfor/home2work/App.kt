@@ -58,6 +58,7 @@ class App : Application() {
         Fabric.with(this, Crashlytics())
 
         APIService.API_KEY = getString(R.string.home2work_api_key)
+        APIService.initCache(this)
 
         EventBus.getDefault().register(this)
 

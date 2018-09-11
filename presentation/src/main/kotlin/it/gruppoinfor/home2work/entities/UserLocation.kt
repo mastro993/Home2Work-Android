@@ -7,5 +7,6 @@ data class UserLocation(
         var userId: Long,
         var latitude: Double,
         var longitude: Double,
-        var date: Date
+        var date: Date,
+        var type: Int?
 )

@@ -6,5 +6,6 @@ data class UserLocationEntity(
         val userId: Long,
         val latitude: Double,
         val longitude: Double,
-        val date: Date
+        val date: Date,
+        val type: Int?
 )

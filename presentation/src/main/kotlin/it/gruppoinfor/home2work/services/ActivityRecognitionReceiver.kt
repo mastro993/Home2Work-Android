@@ -3,6 +3,7 @@ package it.gruppoinfor.home2work.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.ActivityTransitionEvent
 import com.google.android.gms.location.ActivityTransitionResult
 import com.google.android.gms.location.DetectedActivity
@@ -15,7 +16,6 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
 
     companion object {
         const val EXTRA_ACTIVITY = "activity"
-        private var IN_VEHICLE_FLAG = 0
 
         fun hasResult(intent: Intent): Boolean {
             return intent.hasExtra(EXTRA_ACTIVITY)
@@ -48,27 +48,42 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
     }
 
     private fun onDetectedTransitionEvent(activity: ActivityTransitionEvent) {
-        if (activity.activityType == DetectedActivity.IN_VEHICLE && IN_VEHICLE_FLAG == 0) {
+        logDetectedActivity(activity)
+        if (activity.activityType == DetectedActivity.IN_VEHICLE && activity.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
             startDrivingActivity()
-        } else if (activity.activityType == DetectedActivity.ON_FOOT && IN_VEHICLE_FLAG == 1) {
+        } else if (activity.activityType == DetectedActivity.IN_VEHICLE && activity.transitionType == ActivityTransition.ACTIVITY_TRANSITION_EXIT) {
             stopDrivingActivity()
         }
     }
 
     private fun startDrivingActivity() {
-        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.DRIVING))
-        IN_VEHICLE_FLAG = 1
-        Timber.i("User is driving")
+        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.DRIVING_START))
+        Timber.i("Guida iniziata")
     }
 
     private fun stopDrivingActivity() {
-        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.NOT_DRIVING))
-        IN_VEHICLE_FLAG = 0
-        Timber.i("User finished driving")
+        mContext.startService(mContext.intentFor<LocationService>(EXTRA_ACTIVITY to DrivingActivity.DRIVING_STOP))
+        Timber.i("Guida conclusa")
     }
 
-    enum class DrivingActivity {
-        DRIVING, NOT_DRIVING
+    private fun logDetectedActivity(activity: ActivityTransitionEvent) {
+
+        val type = when (activity.activityType) {
+            DetectedActivity.IN_VEHICLE -> "IN_VEHICLE"
+            DetectedActivity.ON_FOOT -> "ON_FOOT"
+            else -> activity.activityType.toString()
+        }
+
+        val transition = when (activity.transitionType) {
+            ActivityTransition.ACTIVITY_TRANSITION_ENTER -> "ENTER"
+            else -> "EXIT"
+        }
+
+        Timber.d("ActivityTransition: $type -> $transition")
+    }
+
+    public enum class DrivingActivity {
+        DRIVING_START, DRIVING_STOP
     }
 
 }

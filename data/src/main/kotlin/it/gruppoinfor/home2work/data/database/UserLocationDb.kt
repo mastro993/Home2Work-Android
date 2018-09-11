@@ -8,7 +8,7 @@ import android.content.Context
 import it.gruppoinfor.home2work.data.dao.UserLocationDAO
 import it.gruppoinfor.home2work.data.entities.UserLocationData
 
-@Database(entities = [(UserLocationData::class)], version = 1, exportSchema = false)
+@Database(entities = [(UserLocationData::class)], version = 4, exportSchema = false)
 @TypeConverters(DateTypeConverter::class)
 abstract class UserLocationDb : RoomDatabase() {
 
@@ -22,6 +22,7 @@ abstract class UserLocationDb : RoomDatabase() {
                 synchronized(UserLocationDb::class) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
                             UserLocationDb::class.java, "userLocations.db")
+                            .fallbackToDestructiveMigration()
                             .build()
                 }
             }
