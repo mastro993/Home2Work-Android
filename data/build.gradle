@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -33,41 +33,33 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation Libs.support_test_espresso
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51"
+    implementation Libs.kotlin_stdlib
 
-    // Dagger
-    // Dagger
-    compile 'com.google.dagger:dagger:2.16'
-    compile 'com.google.dagger:dagger-android:2.16'
-    compile 'com.google.dagger:dagger-android-support:2.16'
-    kapt 'com.google.dagger:dagger-android-processor:2.16'
-    kapt 'com.google.dagger:dagger-compiler:2.16'
+    compile Libs.dagger
+    compile Libs.dagger_android
+    compile Libs.dagger_android_support
+    kapt Libs.dagger_android_processor
+    kapt Libs.dagger_compiler
 
-    // RxJava
-    implementation "io.reactivex.rxjava2:rxjava:2.1.7"
+    implementation Libs.rxjava
 
-    // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.3.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+    implementation Libs.retrofit
+    implementation Libs.retrofit_gson_converter
+    implementation Libs.retrofit_rxjava_adapter
 
-    // Room
-    implementation "android.arch.persistence.room:runtime:1.1.1"
-    implementation "android.arch.persistence.room:rxjava2:1.1.1"
-    kapt "android.arch.persistence.room:compiler:1.1.1"
-    androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
+    implementation Libs.room_runtime
+    implementation Libs.room_rxjava
+    kapt Libs.room_compiler
+    androidTestImplementation Libs.room_testing
 
-    // Chatkit
-    implementation 'com.github.stfalcon:chatkit:0.2.2'
+    implementation Libs.chatkit
 
-    // Eventbus
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation Libs.eventbus
 
-    // Testing
-    implementation "junit:junit:4.12"
-    implementation "com.android.support.test:runner:1.0.2"
+    implementation Libs.junit
+    implementation Libs.support_test
 
     implementation project(':domain')
 }
