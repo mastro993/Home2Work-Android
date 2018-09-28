@@ -1,5 +1,6 @@
 object Ver {
     val support_lib = "28.0.0"
+    val kotlin = "1.2.71"
     val anko = "0.10.1"
     val dagger = "2.16"
     val retrofit = "2.3.0"
@@ -32,7 +33,7 @@ object Libs {
     val support_test_espresso = "com.android.support.test.espresso:espresso-core:3.0.2"
 
     // Kotlin
-    val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.2.71"
+    val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Ver.kotlin}"
 
     // Anko
     val anko_coroutines = "org.jetbrains.anko:anko-coroutines:${Ver.anko}"
